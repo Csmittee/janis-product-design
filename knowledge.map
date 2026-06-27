@@ -102,5 +102,14 @@ Claude Web → QA pass/fail → writes next prompt if needed
 
 ---
 
+## VM-01-base SCAD VERSION INDEX
+
+| Version | File | Status |
+|---|---|---|
+| v13 | vending-machine/VM-01-base/VM-01-base-v13.scad | Superseded |
+| v14 | vending-machine/VM-01-base/VM-01-base-v14.scad | **ACTIVE** — 2-manifold fix |
+
+---
+
 ## ACTIVE PROJECT STATUS
 See: cc_chat_log.md (updated by cc after every commit)

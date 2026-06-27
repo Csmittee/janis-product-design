@@ -127,6 +127,23 @@ Changes:
 - Prompt archived to prompts/archive/ stamped COMPLETE
 - QA: all 3 checklist items confirmed ✅
 
+### 2026-06-28 | VM-01-base-v14 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v14.scad
+- knowledge.map (v14 added to version index)
+- prompts/archive/VM-01-base-v14-fix-manifold ✅ COMPLETE — 2026-06-28.md
+- cc_chat_log.md
+
+Changes:
+- Fix 1: outer_shell() hollow subtract changed total_h-skin_t → total_h-(skin_t*2). Bottom face now closed — shell is a fully closed solid. Fixes 2-manifold warning.
+- Fix 2: outer_shell opacity 0.15 → 0.75 (solid shell, correct value)
+- Fix 3: Duplicate exit_door_h declaration removed (was at line 52 AND line 62 — kept line 52 only, before tray_0_z)
+- Version header corrected: v12 → v14, date 2026-06-27 → 2026-06-28
+- **Active SCAD:** vending-machine/VM-01-base/VM-01-base-v14.scad
+
+⚑ FLAG FOR JANIS: Open VM-01-base-v14.scad in OpenSCAD, press F6. Confirm the 2-manifold warning is gone before proceeding with STL export.
+
 ## Flags for Claude Web
 - exit_door_w (shell cutout): currently 400mm. Janis may want to confirm this.
 - Flap door dimensions (100mm tall x 250mm wide): confirm with Janis from front render.

@@ -69,6 +69,11 @@ Never delete old entries — they are the project history.
 - Governance: knowledge.map + cc_chat_log.md created.
 - **Active SCAD:** vending-machine/VM-01-base/VM-01-base-v9.scad
 
+### 2026-06-27 | VM-01-base-v10 | COMMITTED
+- Spring zone acrylic panel: transparent customer selection window, Z 300-542, full product_w, #ADD8E6 opacity 0.15, left hinge, shown closed
+- Screen Y: -30mm (protrudes 30mm forward of machine front face — visible from front view)
+- **Active SCAD:** vending-machine/VM-01-base/VM-01-base-v10.scad
+
 ## Flags for Claude Web
 - exit_door_w (shell cutout): currently 400mm. Janis may want to confirm this.
 - Flap door dimensions (100mm tall x 250mm wide): confirm with Janis from front render.

@@ -1,15 +1,15 @@
 // VM-01 Base Vending Machine
 // Janis Product Design
-// Version: v13
+// Version: v12
 // Date: 2026-06-27
 // Units: mm
 // Purpose: Smart donation vending machine — buddha ornaments
 // Payment: Online only, no cash/coin mechanism
 //
-// Changes from v12:
-//   Fix 1: outer_shell opacity restored to 0.75 (solid shell).
-//           left_front_acrylic() opacity updated to 0.25 (front face only transparent).
-//   Fix 2: exit_door_h declared BEFORE tray_0_z — resolves 'undefined variable' warnings.
+// Changes from v11:
+//   Fix 1: outer_shell opacity 0.75 → 0.15 (semi-transparent for QA inspection)
+//   Fix 2: left_front_acrylic() — new module, acrylic panel full left product zone
+//           X=skin_t, Y=0, Z=leg_h(50), W=product_w-(skin_t*2), H=total_h-leg_h(650mm), T=3mm
 
 $fn = 64;
 
@@ -47,12 +47,9 @@ tray_h = 121;           // floor(5) + spring_od(66) + clearance(50)
 partition_h = 40;
 tray_d = spring_l + motor_d;  // 450mm
 
-// Exit zone — declared here so tray zone calculations below can reference it
-exit_door_h = 250;
-exit_door_w = 400;
-
-// Tray zone — depends on exit_door_h
+// Tray zone
 tray_zone_h = tray_h * tray_count;         // 242mm
+exit_door_h = 250;
 tray_0_z = leg_h + exit_door_h;            // 300mm
 tray_zone_top_z = tray_0_z + tray_zone_h;  // 542mm
 upper_display_h = total_h - tray_zone_top_z; // 158mm
@@ -60,6 +57,10 @@ upper_display_h = total_h - tray_zone_top_z; // 158mm
 // Zones
 drop_zone_d = 138;
 tray_start_d = drop_zone_d;
+
+// Exit zone
+exit_door_h = 250;
+exit_door_w = 400;
 
 // Customer pickup flap
 flap_h = 100;
@@ -223,10 +224,9 @@ module tray_rack() {
     }
 }
 
-// FIX 1: opacity restored to 0.75 — solid shell, all faces opaque.
-// Left front face is cut out; left_front_acrylic() provides the transparent front.
 module outer_shell() {
-    color("#C8C8C8", 0.75)
+    // FIX 1: opacity 0.15 — semi-transparent for QA inspection
+    color("#C8C8C8", 0.15)
     difference() {
         rounded_box(total_w, total_h, total_d, corner_r);
 
@@ -234,7 +234,7 @@ module outer_shell() {
         translate([skin_t, skin_t, skin_t])
             rounded_box(total_w-(skin_t*2), total_h-skin_t, total_d-(skin_t*2), corner_r-1);
 
-        // Left product zone front: full height Z 50-700 (covered by left_front_acrylic)
+        // Left product zone front: full height Z 50-542
         translate([skin_t, -1, leg_h])
             cube([product_w-(skin_t*2), skin_t+2, tray_zone_top_z - leg_h]);
 
@@ -262,7 +262,7 @@ module compartment_divider() {
 module front_door() {
     door_h = exit_door_h;   // 250mm
 
-    color("#C0C0C0", 0.6)
+    color("#888888", 0.9)
     translate([skin_t, 0, leg_h])
         cube([product_w-(skin_t*2), door_t, door_h]);
 
@@ -287,16 +287,18 @@ module flap_door() {
 
 // Acrylic customer selection panel — left product zone, Z 300-542.
 module spring_zone_panel() {
-    panel_x = skin_t;
-    panel_w = product_w - (skin_t * 2);     // 412mm
+    panel_x = skin_t;                       // left edge of product zone
+    panel_w = product_w - (skin_t * 2);     // 412mm — left product zone only
     panel_z = leg_h + exit_door_h;          // 300mm world Z
     panel_h = tray_h * tray_count;          // 242mm (Z 300-542)
     panel_t = door_t;                       // 3mm
 
+    // See-through acrylic panel — left product zone front, Z 300-542
     color("#ADD8E6", 0.15)
     translate([panel_x, 0, panel_z])
         cube([panel_w, panel_t, panel_h]);
 
+    // 3 hinges on left edge
     hinge_zs = [
         panel_z + panel_h * 0.2,
         panel_z + panel_h * 0.5,
@@ -309,16 +311,16 @@ module spring_zone_panel() {
     }
 }
 
-// FIX 1: Left front acrylic panel — full left product zone, Z 50-700.
-// opacity 0.25 — customer sees springs, trays, products through front face.
+// FIX 2: Left front acrylic panel — full left product zone, Z 50-700.
+// Customer sees springs, trays, products. Replaces visual of solid front face.
 module left_front_acrylic() {
-    panel_x = skin_t;
-    panel_w = product_w - (skin_t * 2);     // 412mm
+    panel_x = skin_t;                        // X=skin_t
+    panel_w = product_w - (skin_t * 2);      // 412mm
     panel_z = leg_h;                         // Z=50mm
     panel_h = total_h - leg_h;              // 650mm (Z 50-700)
     panel_t = door_t;                        // 3mm
 
-    color("#ADD8E6", 0.25)
+    color("#ADD8E6", 0.15)
     translate([panel_x, 0, panel_z])
         cube([panel_w, panel_t, panel_h]);
 }
@@ -367,17 +369,20 @@ module dashboard() {
     card_z   = qr_z - 30 - card_h;            // 112mm
     speaker_z = card_z - 20 - speaker_h;       // 72mm
 
+    // Screen — protrudes forward (screen_y = -30mm)
     color("#1A1A1A")
     translate([product_w + divider_t + 10, screen_y, screen_z])
         rotate([-30, 0, 0])
             cube([screen_w, 5, screen_h]);
 
+    // Screen bezel
     color("#333333", 0.8)
     translate([product_w + divider_t + 10 - bezel_t,
                screen_y - 2, screen_z - bezel_t])
         rotate([-30, 0, 0])
             cube([screen_w + (bezel_t*2), 3, screen_h + (bezel_t*2)]);
 
+    // Curved support bracket
     color("#444444")
     translate([dash_x + dash_w/2, screen_y, screen_z])
         hull() {
@@ -387,14 +392,17 @@ module dashboard() {
                 rotate([-90, 0, 0]) cylinder(r=bracket_r, h=30);
         }
 
+    // QR scanner
     color("#222222")
     translate([dash_x + (dash_w - qr_w)/2, 0, qr_z])
         cube([qr_w, qr_d, qr_h]);
 
+    // ID card reader
     color("#333333")
     translate([dash_x + (dash_w - card_w)/2, 0, card_z])
         cube([card_w, card_d, card_h]);
 
+    // Speaker grille — 5 slots
     slot_h = 2;
     slot_gap = 2;
     color("#444444")
@@ -460,7 +468,7 @@ for (t = [0:tray_count-1]) spring_tray(t);
 front_door();           // exit zone only, Z 50-300
 flap_door();            // customer pickup, 100mm x 250mm
 spring_zone_panel();    // acrylic customer selection panel, Z 300-542
-left_front_acrylic();   // full left zone acrylic front face, Z 50-700 (#ADD8E6 0.25)
+left_front_acrylic();   // FIX 2: full left zone acrylic, Z 50-700 (#ADD8E6 0.15)
 tray_zone_frame();      // structural frame around spring display zone
 drop_zone_visual();
 

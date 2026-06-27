@@ -11,7 +11,7 @@ Proto uses L-brackets for structure.
 - Total height: 800mm  
 - Total depth: 410mm
 - Corner radius: 20mm
-- Leg height: 150mm, 25mm OD round x4
+- Leg height: 50mm, 25mm OD round x4
 
 ## Spring/Tray System
 - Spring OD: 66mm, Length: 390mm, Pitch: 25mm

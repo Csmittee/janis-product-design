@@ -111,6 +111,21 @@ Changes:
 - exit_door_h = 250 inserted immediately before tray_0_z by Janis manually (Option A)
 - File is a local working copy, not in repo — all 28 warnings resolved
 - Render confirmed clean: solid shell, springs visible through left front acrylic, dashboard visible right compartment
+### 2026-06-28 | VM-01-base-v13 Export Prep | COMMITTED
+
+Files committed:
+- exports/for-supplier/.gitkeep (folder created)
+- exports/for-supplier/README-export-instructions.md
+- renders/.gitkeep (folder created)
+- prompts/archive/VM-01-base-v13-export ✅ COMPLETE — 2026-06-28.md
+- cc_chat_log.md
+
+Changes:
+- Created exports/for-supplier/ folder with .gitkeep
+- Created renders/ folder with .gitkeep
+- Written README-export-instructions.md with full OpenSCAD export steps for Janis (STL + 4x PNG renders, correct file paths)
+- Prompt archived to prompts/archive/ stamped COMPLETE
+- QA: all 3 checklist items confirmed ✅
 
 ## Flags for Claude Web
 - exit_door_w (shell cutout): currently 400mm. Janis may want to confirm this.

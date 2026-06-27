@@ -16,7 +16,7 @@ Janis + Claude Web discuss and agree on goal →
 Claude Web writes cc prompt →
 Janis saves prompt to /prompts/ in repo →
 cc reads prompt, executes, commits →
-cc updates project status in WORKFLOW_SKILL.md →
+cc updates cc_chat_log.md →
 Janis screenshots result → Claude Web does QA
 
 ### What Claude Web controls:
@@ -29,7 +29,7 @@ Janis screenshots result → Claude Web does QA
 - Make design decisions
 - Change dimensions without explicit instruction
 - Skip reading rules files
-- Commit without updating project status
+- Commit without updating cc_chat_log.md
 
 ---
 
@@ -37,7 +37,7 @@ Janis screenshots result → Claude Web does QA
 
 | File | Maintained by | Purpose |
 |---|---|---|
-| WORKFLOW_SKILL.md | cc | Team workflow, project status |
+| WORKFLOW_SKILL.md | Claude Web | Team workflow, workflow governance |
 | chat_rules.md | cc | Rules for Claude Web planning sessions |
 | cc_rules.md | cc | Rules for cc execution sessions |
 | rules-dimensions.md | cc | All confirmed dimensions |
@@ -53,15 +53,24 @@ Janis screenshots result → Claude Web does QA
 
 ---
 
-## 3. Handover Protocol — Start of Every cc Session
+## 3. Handover Protocol — WORKFLOW_SKILL.md Load Order
 
-cc reads in this order:
+WORKFLOW_SKILL.md Load Order:
+1. Claude Web reads this file from repo first
+2. If not in repo, read from project knowledge
+3. If found in neither — STOP. Tell Janis to download
+   WORKFLOW_SKILL.md and install to project knowledge
+   before proceeding. Do not continue session.
+
+---
+
+## 4. Handover Protocol — Start of Every cc Session
+
+cc reads in this order (governed by cc_rules.md):
 1. cc_rules.md
-2. WORKFLOW_SKILL.md Section 6 (current status)
-3. WORKFLOW_SKILL.md Section 7 (critical decisions locked)
-4. The specific prompt file in /prompts/ for today's task
-5. The latest .scad file for the active model
-6. Any rules-xxx.md files specified in the prompt
+2. The specific prompt file in /prompts/ for today's task
+3. The latest .scad file for the active model
+4. Any rules-xxx.md files specified in the prompt
 
 ---
 
@@ -75,7 +84,7 @@ cc reads in this order:
 
 ---
 
-## 4. Handover Protocol — Start of Every Claude Web Session
+## 5. Handover Protocol — Start of Every Claude Web Session
 
 Janis pastes this at start of chat:
 ---
@@ -90,7 +99,7 @@ Janis downloads chat_rules.md to project knowledge so Claude Web reads it automa
 
 ---
 
-## 5. Approval Gates — Before cc Commits Any SCAD
+## 6. Approval Gates — Before cc Commits Any SCAD
 
 □ All dimensions match rules-dimensions.md
 □ No hardcoded numbers inside modules
@@ -99,24 +108,7 @@ Janis downloads chat_rules.md to project knowledge so Claude Web reads it automa
 □ STL exported to /exports/for-supplier/
 □ DXF exported to /exports/for-cnc/
 □ Prompt saved in /prompts/
-□ Project status updated in this file Section 6
-
----
-
-## 6. Current Project Status
-[cc updates this section after every commit]
-
-- VM-01-base-v3: COMMITTED — spring direction fixed, tray Z wrong
-- VM-01-base-v4: COMMITTED — tray_h=86, front face open, tray Z fixed, acrylic right compartment only
-- VM-01-base-v5: COMMITTED — springs visible, acrylic wrong position
-- VM-01-base-v6: COMMITTED — zones wrong, height wrong (was 800)
-- VM-01-base-v7: COMMITTED — total_h=700, all zones fixed, screen visible, acrylic 542-698
-- VM-01-base-v8: COMMITTED — tray side windows restored (3mm frame), screen on front face (Y=skin_t)
-- VM-01-base-v9: COMMITTED — total_d=600, motor_d=60, motor at BACK, sensor strips at Z=280, front door exit-zone only (Z 50-300), right compartment cutout, pickup flap 100x250mm, knowledge.map + cc_chat_log.md created
-- VM-01-base-v10: COMMITTED — acrylic customer selection panel Z 300-542 (opacity 0.15, left hinge), screen protrudes 30mm forward
-- VM-01-base-v11: COMMITTED — spring panel coords fixed (explicit world Z=300), roof restored (hollow height total_h-skin_t), screen_y=skin_t-screen_protrude
-- Prompt delivery protocol: LOCKED June 27 2026
-- PR-01: NOT STARTED
+□ cc_chat_log.md updated after commit
 
 ---
 

@@ -80,6 +80,22 @@ Never delete old entries — they are the project history.
 - Fix 3: screen_y = skin_t - screen_protrude (was 0 - screen_protrude). Screen protrudes 30mm forward from machine front face.
 - **Active SCAD:** vending-machine/VM-01-base/VM-01-base-v11.scad
 
+### 2026-06-27 | VM-01-base-v12 + Governance | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v12.scad
+- WORKFLOW_SKILL.md
+- cc_chat_log.md
+
+Changes:
+- VM-01-base-v12: outer_shell opacity 0.75 → 0.15 (semi-transparent QA shell)
+- VM-01-base-v12: new left_front_acrylic() module — #ADD8E6 opacity 0.15, X=skin_t, Y=0, Z=leg_h(50mm), W=product_w-(skin_t*2)=412mm, H=total_h-leg_h=650mm, T=3mm. Customer sees full left zone.
+- WORKFLOW_SKILL.md FIX A: Section 6 (Current Project Status) removed — cc_chat_log.md is the only living status file
+- WORKFLOW_SKILL.md FIX B: All cc references removed (flow, file table, section headers). WORKFLOW_SKILL.md now governs Claude Web only.
+- WORKFLOW_SKILL.md FIX C: New load order rule added at top of Handover Protocol (Section 3). Sections renumbered.
+- cc_rules.md: No WORKFLOW_SKILL.md references were present — no changes needed.
+- **Active SCAD:** vending-machine/VM-01-base/VM-01-base-v12.scad
+
 ## Flags for Claude Web
 - exit_door_w (shell cutout): currently 400mm. Janis may want to confirm this.
 - Flap door dimensions (100mm tall x 250mm wide): confirm with Janis from front render.

@@ -1,0 +1,106 @@
+# knowledge.map
+# Janis Product Design — Master File Index
+# Version: v1 | June 2026
+# Maintained by: cc
+#
+# cc reads this at EVERY session start (step 2 after cc_rules.md)
+# to know exactly what else to load and where everything lives.
+
+---
+
+## WHO READS WHAT
+
+### Claude Web reads (via Janis downloading to Project Knowledge — NOT repo)
+- chat_rules.md           — every Claude Web session, auto via project knowledge
+- workflow_skill.md       — every Claude Web session, auto via project knowledge
+
+### Claude Web NEVER reads directly from repo.
+### cc NEVER reads chat_rules.md or workflow_skill.md.
+
+---
+
+### cc reads — EVERY session start (in this exact order)
+1. cc_rules.md            — process and coding rules, non-negotiable
+2. knowledge.map          — this file
+3. cc_chat_log.md         — Claude Web flags and last session status
+4. /prompts/[task].md     — today's specific task file (filename given by Janis in chat)
+
+### cc reads — ONLY when task requires
+- rules-dimensions.md     — any SCAD task
+- rules-materials.md      — any SCAD task (in repo root)
+- rules-vm.md             — VM tasks only
+- rules-pr.md             — PR tasks only (create when needed)
+- latest .scad file       — active model only (filename in cc_chat_log.md)
+
+---
+
+## FILE LOCATIONS
+
+| File | Location | Maintained by |
+|---|---|---|
+| knowledge.map | repo root / | cc |
+| cc_rules.md | repo root / | cc |
+| cc_chat_log.md | repo root / | cc |
+| chat_rules.md | repo root / + Project Knowledge | cc |
+| workflow_skill.md | repo root / + Project Knowledge | cc |
+| rules-dimensions.md | repo root / | cc |
+| rules-materials.md | repo root / | cc |
+| rules-vm.md | repo root / | cc (create when needed) |
+| rules-pr.md | repo root / | cc (create when needed) |
+| /prompts/[task].md | repo /prompts/ | Claude Web writes, Janis saves |
+| SCAD files | /vending-machine/[model]/ | cc |
+| SCAD files | /pilates-reformer/[model]/ | cc |
+| STL exports | /exports/for-supplier/ | cc |
+| DXF exports | /exports/for-cnc/ | cc |
+| Screenshots | /renders/ | Janis saves |
+
+---
+
+## cc SESSION START PROCEDURE
+
+```
+1. git fetch --all
+2. git merge origin/main          ← prompts always pushed to main by Janis
+3. Read cc_rules.md
+4. Read knowledge.map (this file)
+5. Read cc_chat_log.md            ← see what Claude Web flagged last session
+6. Read /prompts/[task].md        ← filename told by Janis in chat message
+7. Read latest .scad for active model (see cc_chat_log.md for filename)
+8. Read rules-dimensions.md + rules-materials.md (for SCAD tasks)
+9. Read product-specific rules if prompt specifies
+```
+
+---
+
+## COMMUNICATION FLOW
+
+```
+Janis + Claude Web → agree on goal
+Claude Web → writes /prompts/[task-name].md
+Janis → saves file to repo /prompts/ → git push to main
+Janis → tells cc: "read prompts/[task-name].md and execute"
+cc → git fetch + merge → reads prompt → executes → commits
+cc → updates cc_chat_log.md with results and flags
+Janis → screenshots → pastes to Claude Web
+Claude Web → QA pass/fail → writes next prompt if needed
+```
+
+---
+
+## PROMPT DELIVERY RULE (LOCKED)
+- Claude Web ALWAYS delivers work as a file: /prompts/[task-name].md
+- Janis saves file to repo and pushes to main branch
+- cc reads file from repo — NEVER from chat text paste
+- This ensures every instruction is version controlled
+
+---
+
+## NEVER DUPLICATE RULES FILES
+- rules-dimensions.md: root only (authoritative)
+- No copies in .claude/ folder
+- If a file exists in both places, root wins, delete the other
+
+---
+
+## ACTIVE PROJECT STATUS
+See: cc_chat_log.md (updated by cc after every commit)

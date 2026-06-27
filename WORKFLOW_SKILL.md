@@ -112,6 +112,7 @@ Janis downloads chat_rules.md to project knowledge so Claude Web reads it automa
 - VM-01-base-v6: COMMITTED — zones wrong, height wrong (was 800)
 - VM-01-base-v7: COMMITTED — total_h=700, all zones fixed, screen visible, acrylic 542-698
 - VM-01-base-v8: COMMITTED — tray side windows restored (3mm frame), screen on front face (Y=skin_t)
+- VM-01-base-v9: COMMITTED — total_d=600, motor_d=60, motor at BACK, sensor strips at Z=280, front door exit-zone only (Z 50-300), right compartment cutout, pickup flap 100x250mm, knowledge.map + cc_chat_log.md created
 - Prompt delivery protocol: LOCKED June 27 2026
 - PR-01: NOT STARTED
 
@@ -132,7 +133,7 @@ Janis downloads chat_rules.md to project knowledge so Claude Web reads it automa
 - Trays are INDEPENDENT removable units — not stacked boxes
 - Tray top = OPEN, tray front = OPEN, tray sides = framed window only
 - Rear latch on every tray — 8mm pin
-- Front door = single panel, left hinge, z 50–542mm
+- Front door = EXIT ZONE ONLY — single panel, left hinge, Z 50–300mm — spring display zone 300-542 OPEN
 - Dashboard = right compartment, ATM style recessed 30deg screen
 - Total height = 700mm LOCKED — do not change without Janis approval
 - Upper display zone = 158mm (542–700mm)
@@ -141,3 +142,9 @@ Janis downloads chat_rules.md to project knowledge so Claude Web reads it automa
 - rules-dimensions.md root is authoritative. No duplicate in .claude/ folder ever.
 - Machine purpose = smart donation vending machine for buddha ornaments
 - Payment = online only, no cash/coin mechanism ever
+- Total depth = 600mm (motor_d=60 — increased from 550)
+- Motor at BACK of tray, spring front end at Y=0 (drop zone boundary) — products fall forward
+- Sensor type = parallel IR strip pair, left+right walls, Z=280mm
+- Customer pickup flap = 100mm tall x 250mm wide — LOCKED
+- Governance: knowledge.map = master file index | cc_chat_log.md = cc→Claude Web channel
+- cc session start: git fetch --all + git merge origin/main FIRST (Janis pushes prompts to main)

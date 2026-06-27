@@ -3,6 +3,18 @@
 
 ---
 
+## Zone Stack — LOCKED
+
+| Zone | Z range | Height |
+|---|---|---|
+| Legs | 0–50mm | 50mm |
+| Exit door | 50–300mm | 250mm |
+| Tray 0 | 300–421mm | 121mm |
+| Tray 1 | 421–542mm | 121mm |
+| Upper display | 542–700mm | 158mm |
+
+---
+
 ## Machine Purpose
 
 - Smart donation vending machine — buddha ornaments
@@ -15,7 +27,7 @@
 | Dimension | Value | Notes |
 |---|---|---|
 | Total width | 620mm | |
-| Total height | 800mm | |
+| Total height | 700mm | LOCKED — do not change without Janis approval |
 | Total depth | 550mm | |
 | Corner radius | 20mm | |
 | Skin thickness | 2mm | |
@@ -120,7 +132,7 @@ LOCKED — do not change without Claude Web instruction.
 | Screen size | 165mm x 100mm | 7" TFT touch |
 | Screen angle | 30° | From horizontal |
 | Screen recess | 30% into panel | |
-| Screen center Z | 320mm from ground | |
+| Screen center Z | 280mm from ground | 40% of total_h 700 |
 | QR scanner cutout | 40mm x 30mm x 10mm deep | Below screen |
 | QR Z | screen bottom - 50mm | |
 | ID card slot | 85mm x 8mm x 15mm deep | Below QR |
@@ -132,9 +144,9 @@ LOCKED — do not change without Claude Web instruction.
 |---|---|---|
 | Zone | RIGHT compartment only | LOCKED |
 | Faces covered | Front + right side + top | 3 faces — LOCKED |
-| Bottom Z | 430mm | Above dashboard |
-| Top Z | total_h - skin_t = 798mm | Roof |
-| Height | 368mm | |
+| Bottom Z | 542mm | Top of tray zone |
+| Top Z | total_h - skin_t = 698mm | Roof |
+| Height | 156mm | |
 | Front panel corner radius | 8mm | hull + cylinders |
 | Left zone | Front door only, no acrylic | LOCKED |
 

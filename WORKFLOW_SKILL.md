@@ -109,7 +109,8 @@ Janis downloads chat_rules.md to project knowledge so Claude Web reads it automa
 - VM-01-base-v3: COMMITTED — spring direction fixed, tray Z wrong
 - VM-01-base-v4: COMMITTED — tray_h=86, front face open, tray Z fixed, acrylic right compartment only
 - VM-01-base-v5: COMMITTED — springs visible, acrylic wrong position
-- VM-01-base-v6: COMMITTED — major rebuild: tray system, rack, front door, tray zone frame, dashboard, 3-face acrylic
+- VM-01-base-v6: COMMITTED — zones wrong, height wrong (was 800)
+- VM-01-base-v7: COMMITTED — total_h=700, all zones fixed, screen visible, acrylic 542-698
 - Prompt delivery protocol: LOCKED June 27 2026
 - PR-01: NOT STARTED
 
@@ -132,6 +133,10 @@ Janis downloads chat_rules.md to project knowledge so Claude Web reads it automa
 - Rear latch on every tray — 8mm pin
 - Front door = single panel, left hinge, z 50–542mm
 - Dashboard = right compartment, ATM style recessed 30deg screen
-- Acrylic = right compartment only, above 430mm to roof, 3 faces
+- Total height = 700mm LOCKED — do not change without Janis approval
+- Upper display zone = 158mm (542–700mm)
+- Zone stack LOCKED: legs 0-50 | exit door 50-300 | tray0 300-421 | tray1 421-542 | upper display 542-700
+- Acrylic = right compartment only, above 542mm to roof (698mm), 3 faces
+- rules-dimensions.md root is authoritative. No duplicate in .claude/ folder ever.
 - Machine purpose = smart donation vending machine for buddha ornaments
 - Payment = online only, no cash/coin mechanism ever

@@ -106,6 +106,12 @@ Changes:
 - Fix 2: exit_door_h = 250 moved BEFORE tray zone calculations. Declaration order: exit_door_h → exit_door_w → tray_zone_h → tray_0_z → tray_zone_top_z. Resolves all 'undefined variable' warnings from OpenSCAD.
 - **Active SCAD:** vending-machine/VM-01-base/VM-01-base-v13.scad
 
+### 2026-06-27 | Satu vending 01.scad — Manual fix | CONFIRMED
+
+- exit_door_h = 250 inserted immediately before tray_0_z by Janis manually (Option A)
+- File is a local working copy, not in repo — all 28 warnings resolved
+- Render confirmed clean: solid shell, springs visible through left front acrylic, dashboard visible right compartment
+
 ## Flags for Claude Web
 - exit_door_w (shell cutout): currently 400mm. Janis may want to confirm this.
 - Flap door dimensions (100mm tall x 250mm wide): confirm with Janis from front render.

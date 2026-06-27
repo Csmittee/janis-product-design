@@ -111,6 +111,7 @@ Janis downloads chat_rules.md to project knowledge so Claude Web reads it automa
 - VM-01-base-v5: COMMITTED — springs visible, acrylic wrong position
 - VM-01-base-v6: COMMITTED — zones wrong, height wrong (was 800)
 - VM-01-base-v7: COMMITTED — total_h=700, all zones fixed, screen visible, acrylic 542-698
+- VM-01-base-v8: COMMITTED — tray side windows restored (3mm frame), screen on front face (Y=skin_t)
 - Prompt delivery protocol: LOCKED June 27 2026
 - PR-01: NOT STARTED
 

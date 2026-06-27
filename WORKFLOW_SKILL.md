@@ -114,6 +114,7 @@ Janis downloads chat_rules.md to project knowledge so Claude Web reads it automa
 - VM-01-base-v8: COMMITTED — tray side windows restored (3mm frame), screen on front face (Y=skin_t)
 - VM-01-base-v9: COMMITTED — total_d=600, motor_d=60, motor at BACK, sensor strips at Z=280, front door exit-zone only (Z 50-300), right compartment cutout, pickup flap 100x250mm, knowledge.map + cc_chat_log.md created
 - VM-01-base-v10: COMMITTED — acrylic customer selection panel Z 300-542 (opacity 0.15, left hinge), screen protrudes 30mm forward
+- VM-01-base-v11: COMMITTED — spring panel coords fixed (explicit world Z=300), roof restored (hollow height total_h-skin_t), screen_y=skin_t-screen_protrude
 - Prompt delivery protocol: LOCKED June 27 2026
 - PR-01: NOT STARTED
 

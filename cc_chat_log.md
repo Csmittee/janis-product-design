@@ -74,6 +74,12 @@ Never delete old entries — they are the project history.
 - Screen Y: -30mm (protrudes 30mm forward of machine front face — visible from front view)
 - **Active SCAD:** vending-machine/VM-01-base/VM-01-base-v10.scad
 
+### 2026-06-27 | VM-01-base-v11 | COMMITTED
+- Fix 1: spring_zone_panel() — explicit world coords: X=skin_t, Y=0, Z=leg_h+exit_door_h (300mm), width=product_w-(skin_t*2), height=tray_h*tray_count (242mm). Left product zone only.
+- Fix 2: Roof restored — hollow interior height changed total_h → total_h-skin_t. Top skin now solid at Z=700+leg_h.
+- Fix 3: screen_y = skin_t - screen_protrude (was 0 - screen_protrude). Screen protrudes 30mm forward from machine front face.
+- **Active SCAD:** vending-machine/VM-01-base/VM-01-base-v11.scad
+
 ## Flags for Claude Web
 - exit_door_w (shell cutout): currently 400mm. Janis may want to confirm this.
 - Flap door dimensions (100mm tall x 250mm wide): confirm with Janis from front render.

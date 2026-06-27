@@ -60,3 +60,8 @@ Before moving to next model:
 □ Render/screenshot saved
 □ Prompt saved in /prompts/
 □ lessons_learned.md updated
+## 10. Related Repos (reference only, do not mix)
+- Vending backend: github.com/[you]/[vending-backend-repo]
+- Pilates website: github.com/[you]/[pilates-site-repo]
+- When CAD dimensions must match backend specs,
+  paste relevant spec into chat — never clone other repos here

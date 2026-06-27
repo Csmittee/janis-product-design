@@ -3,6 +3,13 @@
 
 ---
 
+## Machine Purpose
+
+- Smart donation vending machine — buddha ornaments
+- Payment: online only, no cash/coin mechanism ever
+
+---
+
 ## VM-01 Base — Overall
 
 | Dimension | Value | Notes |
@@ -33,24 +40,42 @@
 
 | Dimension | Value | Notes |
 |---|---|---|
-| Tray height | 86mm | Spring OD 66 + 20mm clearance — LOCKED |
-| Tray zone total | 172mm | 2 x 86mm |
+| Tray height | 121mm | Floor 5mm + spring OD 66mm + clearance 50mm — LOCKED |
+| Tray floor thickness | 5mm | Weight bearing (production can use 3mm) |
+| Tray wall thickness | 3mm | Side and rear walls |
+| Tray zone total | 242mm | 2 x 121mm |
 | Tray count | 2 | |
-| Tray wall thickness | 3mm | |
+| Tray construction | Independent removable units | LOCKED |
+| Tray top | OPEN | Hand access, see-through — LOCKED |
+| Tray front | OPEN | Springs and product visible from front — LOCKED |
+| Tray sides | Framed window only | 3mm border, open centre — LOCKED |
+| Tray removal | Lift + pull forward | Rear latch safety |
 | Spring OD | 66mm | |
 | Spring length | 390mm | |
+| Spring clearance | 50mm | Above spring top to next tray floor |
 | Motor depth | 20mm | |
 | Spring gap | 20mm | Between lanes |
 | Spring lanes | 5 | Per tray |
-| Partition height | 40mm | Lane dividers |
-| Tray front face | OPEN | Springs visible from customer side — LOCKED |
+| Partition height | 40mm | Lane dividers — unchanged |
 
 ## VM-01 Base — Tray Z Position Formula
 
 ```
 z = leg_h + exit_door_h + (tray_num * tray_h)
+Tray 0 bottom = 50 + 250 = 300mm
+Tray 1 bottom = 300 + 121 = 421mm
 ```
 LOCKED — do not change without Claude Web instruction.
+
+## VM-01 Base — Tray Rack (fixed to machine)
+
+| Dimension | Value | Notes |
+|---|---|---|
+| Rail cross section | 10mm x 10mm | Left and right per tray slot |
+| Rail depth | Full tray depth | |
+| Rear latch pin OD | 8mm | |
+| Rear latch pin length | 15mm | |
+| Latch hole on tray | 8mm diameter | Centered on rear wall |
 
 ## VM-01 Base — Exit Door
 
@@ -66,17 +91,52 @@ LOCKED — do not change without Claude Web instruction.
 |---|---|---|
 | Drop zone depth | 138mm | Front of machine |
 
-## VM-01 Base — Acrylic Panel
+## VM-01 Base — Front Door
+
+| Dimension | Value | Notes |
+|---|---|---|
+| Door height | 492mm | leg_h(50) to tray_zone_top(542mm) — LOCKED |
+| Door Z range | 50–542mm | LOCKED |
+| Door thickness | 3mm | Stainless panel |
+| Hinge position | Left edge | When viewed from front — LOCKED |
+| Hinge count | 3 | Evenly spaced |
+| Hinge OD | 12mm | |
+| Hinge height | 20mm | |
+
+## VM-01 Base — Tray Zone Frame
+
+| Dimension | Value | Notes |
+|---|---|---|
+| Frame bar width | 20mm | All four sides |
+| Frame Z range | 300–542mm | Tray zone opening |
+
+## VM-01 Base — Dashboard (right compartment)
+
+| Dimension | Value | Notes |
+|---|---|---|
+| Style | ATM recessed | 30 degree screen — LOCKED |
+| X start | product_w + divider_t + skin_t | |
+| Total width | ~160mm | system_w - divider_t - (skin_t x 2) |
+| Screen size | 165mm x 100mm | 7" TFT touch |
+| Screen angle | 30° | From horizontal |
+| Screen recess | 30% into panel | |
+| Screen center Z | 320mm from ground | |
+| QR scanner cutout | 40mm x 30mm x 10mm deep | Below screen |
+| QR Z | screen bottom - 50mm | |
+| ID card slot | 85mm x 8mm x 15mm deep | Below QR |
+| Speaker grille | 60mm x 20mm | 5 slots x 2mm, 2mm gap |
+
+## VM-01 Base — Acrylic Display Zone
 
 | Parameter | Value | Notes |
 |---|---|---|
 | Zone | RIGHT compartment only | LOCKED |
-| X start | product_w + divider_t | |
-| Width | system_w - divider_t - skin_t | |
-| Z start | Above screen | |
-| Z end | total_h - skin_t | Roof |
+| Faces covered | Front + right side + top | 3 faces — LOCKED |
+| Bottom Z | 430mm | Above dashboard |
+| Top Z | total_h - skin_t = 798mm | Roof |
+| Height | 368mm | |
+| Front panel corner radius | 8mm | hull + cylinders |
 | Left zone | Front door only, no acrylic | LOCKED |
-| Left zone range | 472–800mm | |
 
 ## VM-01 Base — Screen
 

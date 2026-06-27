@@ -65,6 +65,16 @@ cc reads in this order:
 
 ---
 
+### Claude Web Prompt Delivery Rule
+- Claude Web always delivers ONE file only: the cc prompt
+- File saved to: /prompts/[task-name].md
+- Janis saves to repo and pushes to cc
+- Claude Web never delivers inline instructions in chat
+- cc reads the prompt file from repo, never from chat paste
+- This ensures every prompt is version controlled in /prompts/
+
+---
+
 ## 4. Handover Protocol — Start of Every Claude Web Session
 
 Janis pastes this at start of chat:
@@ -98,6 +108,9 @@ Janis downloads chat_rules.md to project knowledge so Claude Web reads it automa
 
 - VM-01-base-v3: COMMITTED — spring direction fixed, tray Z wrong
 - VM-01-base-v4: COMMITTED — tray_h=86, front face open, tray Z fixed, acrylic right compartment only
+- VM-01-base-v5: COMMITTED — springs visible, acrylic wrong position
+- VM-01-base-v6: COMMITTED — major rebuild: tray system, rack, front door, tray zone frame, dashboard, 3-face acrylic
+- Prompt delivery protocol: LOCKED June 27 2026
 - PR-01: NOT STARTED
 
 ---
@@ -113,3 +126,12 @@ Janis downloads chat_rules.md to project knowledge so Claude Web reads it automa
 - Left product zone 472–800mm: full front door only, no acrylic
 - Tray Z: leg_h + exit_door_h + (tray_num * tray_h)
 - Never overwrite versions — always increment
+- Tray height = 121mm (5 floor + 66 spring + 50 clearance)
+- Trays are INDEPENDENT removable units — not stacked boxes
+- Tray top = OPEN, tray front = OPEN, tray sides = framed window only
+- Rear latch on every tray — 8mm pin
+- Front door = single panel, left hinge, z 50–542mm
+- Dashboard = right compartment, ATM style recessed 30deg screen
+- Acrylic = right compartment only, above 430mm to roof, 3 faces
+- Machine purpose = smart donation vending machine for buddha ornaments
+- Payment = online only, no cash/coin mechanism ever

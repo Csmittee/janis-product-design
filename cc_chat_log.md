@@ -96,6 +96,16 @@ Changes:
 - cc_rules.md: No WORKFLOW_SKILL.md references were present — no changes needed.
 - **Active SCAD:** vending-machine/VM-01-base/VM-01-base-v12.scad
 
+### 2026-06-27 | VM-01-base-v13 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v13.scad
+
+Changes:
+- Fix 1: outer_shell opacity restored to 0.75 (solid shell). left_front_acrylic() opacity updated 0.15 → 0.25. Shell is solid; only the left front face panel is transparent.
+- Fix 2: exit_door_h = 250 moved BEFORE tray zone calculations. Declaration order: exit_door_h → exit_door_w → tray_zone_h → tray_0_z → tray_zone_top_z. Resolves all 'undefined variable' warnings from OpenSCAD.
+- **Active SCAD:** vending-machine/VM-01-base/VM-01-base-v13.scad
+
 ## Flags for Claude Web
 - exit_door_w (shell cutout): currently 400mm. Janis may want to confirm this.
 - Flap door dimensions (100mm tall x 250mm wide): confirm with Janis from front render.

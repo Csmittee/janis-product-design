@@ -28,7 +28,7 @@
 |---|---|---|
 | Total width | 620mm | |
 | Total height | 700mm | LOCKED — do not change without Janis approval |
-| Total depth | 550mm | |
+| Total depth | 600mm | Increased for motor_d=60 |
 | Corner radius | 20mm | |
 | Skin thickness | 2mm | |
 
@@ -65,7 +65,7 @@
 | Spring OD | 66mm | |
 | Spring length | 390mm | |
 | Spring clearance | 50mm | Above spring top to next tray floor |
-| Motor depth | 20mm | |
+| Motor depth | 60mm | Real motor size — LOCKED |
 | Spring gap | 20mm | Between lanes |
 | Spring lanes | 5 | Per tray |
 | Partition height | 40mm | Lane dividers — unchanged |
@@ -102,13 +102,26 @@ LOCKED — do not change without Claude Web instruction.
 | Dimension | Value | Notes |
 |---|---|---|
 | Drop zone depth | 138mm | Front of machine |
+| Customer pickup flap height | 100mm | Bottom of exit zone |
+| Customer pickup flap width | 250mm | Centred on exit face |
+
+## VM-01 Base — Sensors
+
+| Dimension | Value | Notes |
+|---|---|---|
+| Sensor type | Parallel IR strip pair | Left + right walls |
+| Sensor strip Z | 280mm | Just below tray 0 floor (tray_0_z - 20) |
+| Strip thickness | 5mm | |
+| Strip height | 8mm | |
+| Motor position | BACK of tray | Y = tray_d - motor_d — LOCKED |
+| Spring direction | Front end at Y=0 | Products fall forward into exit zone — LOCKED |
 
 ## VM-01 Base — Front Door
 
 | Dimension | Value | Notes |
 |---|---|---|
-| Door height | 492mm | leg_h(50) to tray_zone_top(542mm) — LOCKED |
-| Door Z range | 50–542mm | LOCKED |
+| Door height | 250mm | EXIT ZONE ONLY — leg_h(50) to exit_top(300mm) — LOCKED |
+| Door Z range | 50–300mm | EXIT ZONE ONLY — spring zone 300-542 is OPEN — LOCKED |
 | Door thickness | 3mm | Stainless panel |
 | Hinge position | Left edge | When viewed from front — LOCKED |
 | Hinge count | 3 | Evenly spaced |

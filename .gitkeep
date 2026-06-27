@@ -1,0 +1,16 @@
+COMMON/pipe-joints/.gitkeep
+COMMON/frame-connectors/.gitkeep
+COMMON/rail-components/.gitkeep
+vending-machine/VM-01-base/.gitkeep
+vending-machine/VM-02-optionA/.gitkeep
+vending-machine/VM-03-optionB/.gitkeep
+pilates-reformer/PR-01-base/.gitkeep
+pilates-reformer/PR-02-optionA/.gitkeep
+pilates-reformer/PR-03-optionB/.gitkeep
+pilates-reformer/PR-04-optionC/.gitkeep
+exports/for-supplier/.gitkeep
+exports/for-cnc/.gitkeep
+exports/for-client/.gitkeep
+prompts/.gitkeep
+drawings/.gitkeep
+renders/.gitkeep

@@ -144,6 +144,20 @@ Changes:
 
 ⚑ FLAG FOR JANIS: Open VM-01-base-v14.scad in OpenSCAD, press F6. Confirm the 2-manifold warning is gone before proceeding with STL export.
 
+### 2026-06-28 | VM-01-base-v15 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v15.scad
+- cc_chat_log.md
+
+Changes:
+- Added e = 0.01 to parameters section (epsilon — prevents z-fighting on coincident front faces)
+- front_door(): Y 0 → e
+- spring_zone_panel(): panel cube Y 0 → e
+- left_front_acrylic(): panel cube Y 0 → e
+- tray_zone_frame(): all 4 translates Y 0 → e
+- **Active SCAD:** vending-machine/VM-01-base/VM-01-base-v15.scad
+
 ## Flags for Claude Web
 - exit_door_w (shell cutout): currently 400mm. Janis may want to confirm this.
 - Flap door dimensions (100mm tall x 250mm wide): confirm with Janis from front render.

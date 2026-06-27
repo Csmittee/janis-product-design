@@ -106,6 +106,22 @@ Changes:
 - Fix 2: exit_door_h = 250 moved BEFORE tray zone calculations. Declaration order: exit_door_h → exit_door_w → tray_zone_h → tray_0_z → tray_zone_top_z. Resolves all 'undefined variable' warnings from OpenSCAD.
 - **Active SCAD:** vending-machine/VM-01-base/VM-01-base-v13.scad
 
+### 2026-06-28 | VM-01-base-v13 Export Prep | COMMITTED
+
+Files committed:
+- exports/for-supplier/.gitkeep (folder created)
+- exports/for-supplier/README-export-instructions.md
+- renders/.gitkeep (folder created)
+- prompts/archive/VM-01-base-v13-export ✅ COMPLETE — 2026-06-28.md
+- cc_chat_log.md
+
+Changes:
+- Created exports/for-supplier/ folder with .gitkeep
+- Created renders/ folder with .gitkeep
+- Written README-export-instructions.md with full OpenSCAD export steps for Janis (STL + 4x PNG renders, correct file paths)
+- Prompt archived to prompts/archive/ stamped COMPLETE
+- QA: all 3 checklist items confirmed ✅
+
 ## Flags for Claude Web
 - exit_door_w (shell cutout): currently 400mm. Janis may want to confirm this.
 - Flap door dimensions (100mm tall x 250mm wide): confirm with Janis from front render.

@@ -98,6 +98,7 @@ Janis downloads chat_rules.md to project knowledge so Claude Web reads it automa
 
 - VM-01-base-v3: COMMITTED — spring direction fixed, tray Z wrong
 - VM-01-base-v4: COMMITTED — tray_h=86, front face open, tray Z fixed, acrylic right compartment only
+- VM-01-base-v5: COMMITTED — acrylic as rounded window panel (hull+cylinders r=10, t=3mm); tray side walls windowed (3mm frame, open centre)
 - PR-01: NOT STARTED
 
 ---

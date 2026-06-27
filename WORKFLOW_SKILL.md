@@ -65,6 +65,16 @@ cc reads in this order:
 
 ---
 
+### Claude Web Prompt Delivery Rule
+- Claude Web always delivers ONE file only: the cc prompt
+- File saved to: /prompts/[task-name].md
+- Janis saves to repo and pushes to cc
+- Claude Web never delivers inline instructions in chat
+- cc reads the prompt file from repo, never from chat paste
+- This ensures every prompt is version controlled in /prompts/
+
+---
+
 ## 4. Handover Protocol — Start of Every Claude Web Session
 
 Janis pastes this at start of chat:
@@ -99,6 +109,7 @@ Janis downloads chat_rules.md to project knowledge so Claude Web reads it automa
 - VM-01-base-v3: COMMITTED — spring direction fixed, tray Z wrong
 - VM-01-base-v4: COMMITTED — tray_h=86, front face open, tray Z fixed, acrylic right compartment only
 - VM-01-base-v5: COMMITTED — acrylic as rounded window panel (hull+cylinders r=10, t=3mm); tray side walls windowed (3mm frame, open centre)
+- Prompt delivery protocol: LOCKED June 27 2026
 - PR-01: NOT STARTED
 
 ---

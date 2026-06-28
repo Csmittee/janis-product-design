@@ -272,3 +272,32 @@ The fix targets the confirmed root cause — if another module is also non-manif
 it will still show after this fix and require a separate v19 pass.
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v18.scad
+
+---
+
+### 2026-06-28 | VM-01-base-v19 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v19.scad (new)
+- knowledge.map (v18 → Superseded, v19 → ACTIVE)
+- cc_chat_log.md
+
+**Context:** Janis confirmed v18 still showed 2-manifold warning. Shell geometry was
+visually correct (cutout fix worked), so source was elsewhere.
+
+**Fix 1 — dashboard() support bracket:**
+Replaced hull() over two rotate([-90,0,0]) cylinder() calls with a flat crossbar cube:
+`cube([screen_w, 30, bracket_r * 2])`
+Rotated cylinders inside hull() produce non-planar faces that OpenSCAD cannot guarantee
+are manifold. Flat cube is clean solid geometry with no risk.
+
+**Fix 2 — sensor_strip() laser beam visual:**
+Changed `cube([..., 1, 1])` to `cube([..., 2, 2])`.
+1mm on two axes = near-zero degenerate geometry = non-manifold trigger.
+
+**Flag for Claude Web — ACTION REQUIRED:**
+Janis must open VM-01-base-v19.scad in OpenSCAD → F6 → check if 2-manifold warning is gone.
+If warning persists, the remaining suspect is tray_zone_frame() — shared cube edges at corners
+without epsilon offset. Report result so cc can write v20 if needed.
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v19.scad

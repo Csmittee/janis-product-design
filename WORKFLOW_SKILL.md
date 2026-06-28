@@ -1,367 +1,295 @@
-# 🎯 WORKFLOW SKILL — Janis Product Design
-> Version 2.0 — 2026-06-28
-> Changes: KT problem solving section upgraded — full trigger rule, repo file reference added
-> Previous: v1.0 — 2026-06-28
+# WORKFLOW_SKILL.md
+# Janis Product Design — How We Work
+# Version: 3.0 — 2026-06-29
+# Changes: cc_chat_log as repo connectivity test, R-111 trigger updated to "2 loops",
+#          KT pointer consolidated to single file, JANIS PREP section simplified
+# Previous: v2.0 — 2026-06-28
 
 ---
 
-## DOCUMENT VERSIONING RULE (applies to ALL .md files in this project)
+## DOCUMENT VERSIONING RULE (all .md files in this project)
 
-Every document must carry a version header. Format:
 ```
 > Version X.Y — YYYY-MM-DD
-> Changes: [one line summary of what changed]
+> Changes: [one line summary]
 > Previous: vX.Y — YYYY-MM-DD
 ```
-
-Version increment rules:
-- **X.Y → X.Y+1**: same sections, detail change only
-- **X.0 → X+1.0**: new section added or structure changed
-
-Who applies this: whoever last edited the file — Claude Web, cc, or Janis.
-No document is committed without a version bump if content changed.
+- X.Y → X.Y+1 = detail change, same structure
+- X.0 → X+1.0 = new section or structure changed
+No file is committed without a version bump if content changed.
 
 ---
 
 ## PROJECT CONTEXT
 
-This repo is the **physical body** of the Satu vending machine system.
-The heart (firmware) and brain (backend) live in separate Satu project repos
-and are already built. This repo designs, versions, and exports the
-mechanical enclosure for supplier fabrication.
-
-**Repo:** github.com/Csmittee/janis-product-design
-**Stack:** OpenSCAD (.scad), STL exports, DXF exports, PNG renders
-**Authoritative dimensions:** rules-dimensions.md (repo root)
-**Design decisions:** rules-dimensions.md only — not duplicated anywhere
+Repo: github.com/Csmittee/janis-product-design
+Product: Satu vending machine — physical enclosure only
+Stack: OpenSCAD (.scad), STL, DXF, PNG renders
+Authoritative dimensions: rules-dimensions.md (repo root) — never duplicated
+Payment: Online only — no cash/coin, never
 
 ---
 
 ## THE THREE ROLES
 
 ### 👤 JANIS (Owner)
-- Describes goals, reports QA results via screenshots
-- Approves or rejects every version before supplier export
-- Pushes prompt files to repo — never pastes prompts directly to cc chat
+- Describes goals, QAs results via screenshots, approves all versions
+- Pushes prompt files to repo — never pastes prompts directly to cc
 - Never edits .scad files manually unless Claude Web gives exact line instruction
-- Observes workflow health — if something feels wrong, checks this document first
 
 ### 🧠 CLAUDE WEB (this session)
-- Reads repo via project knowledge sync
-- Reads cc_chat_log.md last 3 entries at every session open
+- Plans, diagnoses, writes cc prompts — never writes SCAD directly
+- Reads cc_chat_log from project knowledge (synced from repo) at every session open
 - Diagnoses before acting — never guesses dimensions
-- Writes cc prompts as complete .md files (7 sections — see template below)
-- Rapid-fire phrases only for single confirmed one-line fixes
-- Does NOT write .scad code directly
 - Generates CHAT_HANDOFF at session end
-- Flags any decision that touches locked dimensions to Janis before writing prompt
+- Flags any locked dimension change to Janis before writing any prompt
 
 ### 🤖 CC (Claude Code)
-- Reads cc_rules.md + cc_chat_log.md + rules-dimensions.md before every session
-- Reads the prompt file specified for today's task
-- Writes complete replacement .scad files — never patches or diffs
-- Is NOT bound by Claude Web's suggested implementation — verifies from live repo
-- Writes to cc_chat_log.md at end of every session
-- Commits and merges to main before session closes
-- Never writes CHAT_HANDOFF — that is Claude Web's responsibility only
-- Never reads or updates WORKFLOW_SKILL.md — that governs Claude Web only
+- Reads cc_rules.md + required files before every task
+- Writes complete replacement .scad files — never patches
+- Verifies from live repo — not bound by Claude Web's suggested implementation
+- Writes to cc_chat_log.md after every session — this is cc's only response channel back
+- Never writes CHAT_HANDOFF — Claude Web only
 
 ---
 
-## SYMMETRIC 3-DOCUMENT SYSTEM
-
-Every party has: HANDOFF + SKILL + RULE
+## SYMMETRIC COMMUNICATION SYSTEM
 
 | Doc type | Claude Web | CC |
 |---|---|---|
-| **HANDOFF** | `CHAT_HANDOFF.md` — project knowledge only, single use, never in repo | `cc_chat_log.md` — repo root, cc writes, Claude Web reads last 3 |
-| **SKILL** | `WORKFLOW_SKILL.md` — this file, project knowledge master | `cc_rules.md` — repo root, cc reads every session |
-| **RULE** | `chat_rules.md` — project knowledge | `rules-dimensions.md` — repo root, authoritative for all dimensions |
+| **HANDOFF** | CHAT_HANDOFF.md — project knowledge, single use | cc_chat_log.md — repo root, cc writes, Claude Web reads |
+| **SKILL** | WORKFLOW_SKILL.md — this file | cc_rules.md — repo root |
+| **RULE** | chat_rules.md — project knowledge | rules-dimensions.md — repo root |
 
-**File location discipline:**
-- Project knowledge = Claude Web's world (CHAT_HANDOFF, WORKFLOW_SKILL, chat_rules)
-- Repo = cc's world (cc_chat_log, cc_rules, rules-dimensions, all .scad files)
+cc_chat_log.md is the **only channel cc has to respond to Claude Web**.
+Claude Web instructs forward via prompts. cc responds backward via cc_chat_log.
+This asymmetry is by design. All spy tests must be designed for Janis to execute.
 
 ---
 
-## WORKFLOW_SKILL.md LOAD ORDER — MANDATORY
+## CLAUDE WEB SESSION OPENING — MANDATORY SEQUENCE
 
-At start of every Claude Web session:
-1. Try to read WORKFLOW_SKILL.md from repo first — confirms repo access
-2. If not in repo, read from project knowledge
-3. If found in neither — **STOP. Tell Janis to download WORKFLOW_SKILL.md
-   and install to project knowledge before proceeding. Do not continue.**
+Janis pastes CHAT_HANDOFF → Claude Web executes in order:
 
-Claude Web must not respond to any task until this file is confirmed loaded.
+**Step 1:** Search project knowledge for "WORKFLOW_SKILL" — load this file.
+  Not found → tell Janis to upload WORKFLOW_SKILL.md to project knowledge. STOP.
+
+**Step 2:** Search project knowledge for "chat_rules" — load rules.
+  Not found → tell Janis to upload chat_rules.md. STOP.
+
+**Step 3:** Search project knowledge for "cc_chat_log" — read last 3 entries.
+  This file is synced from repo root. Finding it confirms project knowledge is live.
+  Not found → repo sync is broken. Tell Janis before proceeding. Do NOT ask Janis
+  to download and upload manually — that defeats the connectivity check.
+
+**Step 4:** Read CHAT_HANDOFF open items. State "Memory installed."
+
+**Step 5:** Ask "Today's goal?" — even if handoff already states it.
+
+Do not respond to any task until all 5 steps confirmed.
+
+---
+
+## JANIS SESSION PREP
+
+Before opening Claude Web: paste CHAT_HANDOFF.md into new chat.
+Project knowledge syncs from repo — cc_chat_log is always current if sync is healthy.
+No manual download/upload of cc_chat_log needed.
 
 ---
 
 ## THE DEVELOPMENT LOOP
 
 ```
-Janis describes goal or pastes CHAT_HANDOFF
-        ↓
-Claude Web reads cc_chat_log last 3 entries → reads rules-dimensions.md → diagnoses
-        ↓
-Claude Web writes cc prompt as .md file → Janis pushes to /prompts/ in repo
-        ↓
-Janis runs cc: "Hey cc, git fetch --all && git checkout main && git pull first.
-                Then read prompts/[filename].md and execute."
-        ↓
-cc reads cc_rules.md + cc_chat_log + rules-dimensions + prompt → executes
-cc writes complete new .scad file (never overwrites — always increments version)
-cc updates cc_chat_log → commits → merges to main
-        ↓
-Janis opens .scad in OpenSCAD → screenshots → sends to Claude Web
-        ↓
-Claude Web QA: PASS or FAIL with specific reasons
-If PASS → approve for export
-If FAIL → Claude Web writes fix prompt → loop repeats
-        ↓
-Claude Web writes CHAT_HANDOFF → Janis saves to project knowledge
+Janis describes goal
+  → Claude Web reads cc_chat_log + rules-dimensions → diagnoses
+  → Claude Web writes prompt as .md file
+  → Janis pushes to /prompts/ in repo
+  → Janis tells cc to read and execute
+  → cc reads required files → writes new .scad version → commits
+  → cc appends cc_chat_log → archives prompt → updates knowledge.map
+  → Janis opens .scad in OpenSCAD → F5 visual check → F6 manifold check
+  → Screenshots to Claude Web → QA PASS or FAIL
+  → If FAIL → Claude Web writes fix prompt → loop repeats
+  → Claude Web writes CHAT_HANDOFF → Janis saves to project knowledge
 ```
 
 ---
 
-## TRIGGER → ACTION → VALIDATOR CONTRACT
+## TRIGGER → ACTION → VALIDATOR
 
-| Trigger | Detected by | Action | Validator |
-|---|---|---|---|
-| New .scad file created | cc | Add to knowledge.map | Claude Web reads cc_chat_log next session |
-| Same fix fails twice | Claude Web or cc | **STOP → invoke KT framework (see below)** | Claude Web completes all KT phases before next prompt |
-| Dimension change requested | Janis | Claude Web flags impact → Janis approves → update rules-dimensions.md first | cc reads updated rules-dimensions before any .scad change |
-| WORKFLOW_SKILL.md changed | Janis decides, cc writes | Claude Web verifies content before merge | Claude Web confirms to Janis explicitly |
-| Locked decision touched without approval | cc detects | cc stops, writes flag in cc_chat_log, does not proceed | Claude Web reads log, escalates to Janis |
-| Version not incremented on commit | cc or Claude Web | Reject — add version bump before committing | Whoever reviews next flags it |
-| cc_chat_log unreadable or missing | Claude Web | Tell Janis immediately — do not proceed without it | Janis syncs, Claude Web re-reads |
-| Janis works in live file (not versioned) | Janis tells Claude Web | Note in session — only push to repo when stable | cc only edits files that exist in repo |
-| QA screenshot shows geometry missing | Claude Web | Check error log for undefined variables first | Fix variable declaration order before any visual fix |
-| Supplier export requested | Claude Web | Only after QA PASS — write export prompt for STL + DXF + 4-angle PNG | cc confirms all 3 export types in cc_chat_log |
+| Trigger | Action | Validator |
+|---|---|---|
+| Problem not fixed within 2 loops | R-111 — STOP. Claude Web invokes KT. No new prompt until KT complete | Claude Web states "R-111 triggered" explicitly |
+| New .scad file created | cc adds to knowledge.map | Claude Web reads cc_chat_log next session |
+| Dimension change requested | Claude Web flags impact → Janis approves → rules-dimensions.md updated first | cc reads updated file before any .scad change |
+| Locked dimension touched without approval | cc stops, flags in cc_chat_log | Claude Web reads log, escalates to Janis |
+| Version not incremented | Reject commit — add bump first | Whoever reviews next flags it |
+| cc_chat_log not found in project knowledge | Repo sync broken — tell Janis immediately | Do not proceed without resolving |
+| QA screenshot shows geometry missing | Check error log for undefined variables first | Fix variable declaration order before visual fix |
+| Supplier export requested | Only after QA PASS — STL + DXF + 4-angle PNG | cc confirms all 3 in cc_chat_log |
 
 ---
 
 ## INTERVENTION LEVELS — USE THE LIGHTEST ONE
 
-| Level | Who | When | Example |
-|---|---|---|---|
-| Full cc prompt (Build) | cc reads all context | Multi-file, new feature, new model | New product model, major rebuild |
-| Fix prompt | cc reads 1-2 files | Single bug, clear symptom | Fix one module, one variable |
-| Rapid fire phrase | Claude Web tells Janis what to type to cc | One confirmed change, cc still in session | Change one color, insert one variable |
-| Janis direct edit | Janis edits in OpenSCAD | One line, Claude Web gives exact instruction | Insert `exit_door_h = 250;` at line 52 |
+| Level | When | Example |
+|---|---|---|
+| Build prompt (.md file) | New feature, new model, multi-module | Zone redesign |
+| Fix prompt (.md file) | Single confirmed bug, clear module | Fix one module |
+| Rapid-fire phrase (chat) | One confirmed line, cc still in session | Change one parameter |
+| Janis direct edit | One line, Claude Web gives exact instruction | Insert `e = 0.01;` at line 42 |
 
-**Never use a heavier intervention than needed. Saves tokens and time.**
-
----
-
-## CLAUDE WEB SESSION OPENING — MANDATORY SEQUENCE
-
-Janis pastes CHAT_HANDOFF → Claude Web executes in order, confirms each step:
-
-1. Load WORKFLOW_SKILL.md (repo first, project knowledge fallback, STOP if neither)
-2. Read chat_rules.md from project knowledge
-3. Read cc_chat_log.md last 3 entries — state summary + any pending flags
-4. Read open items in CHAT_HANDOFF — state "Memory installed"
-
-Only then ask: "Ready — what's today's goal?" (even if already stated in handoff)
-Do not respond to any task until all 4 steps confirmed.
+Never use a heavier intervention than needed.
 
 ---
 
-## CC PROMPT TEMPLATE (7 sections — all required for build prompts)
+## PROBLEM SOLVING — R-111 AND KT
 
-**DELIVERY RULE:**
-- Full build prompts → .md file in /prompts/ — never a chat text block
-- Rapid-fire fixes → text block in chat is acceptable
+**R-111 triggers when a problem cannot be resolved within 2 fix loops.**
+Claude Web self-triggers. Janis does not need to ask.
+No new fix prompt is written until KT phases are complete.
 
-```markdown
+Read: `.claude/SKILL_problem_solving_kt.md`
+This single file covers all problem types including SCAD manifold.
+
+KT minimum in-session (if file unavailable):
+- Phase 1: Raw symptom only — no interpretation
+- Phase 2: IS / IS-NOT table (WHAT / WHERE / WHEN / EXTENT)
+- Phase 3: Hypotheses — each must explain both IS and IS-NOT or be eliminated
+- Phase 4: Spy test — one change, one observation, then fix
+
+---
+
+## CC PROMPT TEMPLATE (7 sections — build prompts)
+
+**Build prompts → .md file in /prompts/ — never a chat text block.**
+**Rapid-fire fixes → chat text block is acceptable.**
+
+```
 ## 1. CC INTRO
 git fetch --all && git checkout main && git pull origin main
-Read in order before touching anything:
-  1. cc_rules.md
-  2. cc_chat_log.md (last 3 entries)
-  3. rules-dimensions.md
-  4. [source .scad file for this task]
+Read in order: cc_rules.md → cc_chat_log.md (last 3) → rules-dimensions.md → [source .scad]
 State every file read before writing a single line.
 
 ## 2. CONTEXT
-[Why this prompt exists. What problem it solves.]
+Why this prompt exists. What problem it solves.
 
-## 3. NEW FILES (if any)
-[List every new filename being created]
-[Add each to knowledge.map]
-[Write NONE if no new files]
+## 3. NEW FILES
+List all new filenames. NONE if none. Add each to knowledge.map.
 
 ## 4. TASKS
-[Numbered. Root cause stated. Exact file named. Exact fix described.]
-[cc verifies from live repo — not bound by Claude Web's suggested implementation]
+Numbered. Root cause stated. Exact file named. Exact fix described.
+cc verifies from live repo — not bound by Claude Web's suggested implementation.
 
 ## 5. DO NOT TOUCH
-[Explicit exclusion list]
-[Always include: rules-dimensions.md — read only, never edit]
-[Always include: any .scad file not listed in TASKS]
+Explicit exclusion list.
+Always include: rules-dimensions.md — read only.
+Always include: all .scad files not listed in TASKS.
 
 ## 6. QA VERIFICATION
-[What cc confirms before closing PR]
-[Always: confirm no undefined variable warnings in SCAD]
-[Always: confirm version incremented — never overwrite]
+Checklist cc confirms before committing.
+Always: no undefined variable warnings in SCAD.
+Always: version incremented — never overwrite.
 
-## 7. MANDATORY CLOSING (every session)
+## 7. MANDATORY CLOSING
 1. Append cc_chat_log.md — newest entry at BOTTOM
-2. Archive this prompt → /prompts/archive/ stamped ✅ COMPLETE — [date]
-3. Update knowledge.map if any new files created
-4. Bump version header on every file changed
-5. Commit all in correct order → merge to main
+2. Archive prompt → /prompts/archive/ ✅ COMPLETE — [date]
+3. Update knowledge.map if new files created
+4. Bump version on all changed files
+5. Commit all → merge to main
 ```
 
 ---
 
-## CLAUDE WEB PRE-DELIVERY SELF-CHECK
+## PRE-DELIVERY SELF-CHECK (Claude Web — silent, before every prompt)
 
-Before delivering any cc prompt, Claude Web silently verifies:
-- [ ] Is this a build prompt? → must be .md file, never a text block
-- [ ] Does Section 1 include git fetch + all 4 required reads?
-- [ ] Does Section 7 closing steps match the delivery type?
-- [ ] Is the target file path explicit?
-- [ ] Does DO NOT TOUCH list include rules-dimensions.md?
-- [ ] Is the save-as filename explicitly stated with version increment?
+- [ ] Build prompt? → must be .md file
+- [ ] Section 1 has git fetch + all required reads?
+- [ ] Target file path explicit?
+- [ ] DO NOT TOUCH includes rules-dimensions.md?
+- [ ] Save-as filename stated with version increment?
 
-If any check fails → fix before delivering. Never ask Janis to remind Claude Web.
+Fix before delivering. Never ask Janis to remind.
 
 ---
 
 ## CHAT HANDOFF TEMPLATE
 
-> Claude Web generates at end of every session.
-> Janis saves to project knowledge. Never paste to repo.
-> Single use — overwrite each session.
-
-```markdown
+```
 # CHAT HANDOFF — [date] END OF SESSION
-> Paste entire file to open new chat
+> Single-use — paste entire file to open new chat
 > BEFORE SESSION BEGINS — Claude Web reads in order:
-> Step 1: Load WORKFLOW_SKILL.md (repo → project knowledge → STOP if neither)
-> Step 2: Read chat_rules.md
-> Step 3: Read cc_chat_log.md last 3 entries — state summary. STOP if unreadable.
-> Step 4: Read open items below — state "Memory installed"
-> Only then: ask Janis "Today's goal?"
+> Step 1: Load WORKFLOW_SKILL (project knowledge → STOP if missing)
+> Step 2: Load chat_rules (project knowledge → STOP if missing)
+> Step 3: Read cc_chat_log last 3 entries (project knowledge sync from repo → STOP if missing)
+> Step 4: Read open items below → state "Memory installed"
+> Step 5: Ask "Today's goal?"
 
 ## ACTIVE MODEL
-[Current model name and last committed version]
+[model name — last committed version]
 
 ## SYSTEM STATUS
-[Each active model: last version | QA status | export status]
+| Model | Last Version | QA Status | Export Status |
 
 ## WHAT WAS DONE TODAY
-[Specific files changed, prompts sent, QA results]
+[files changed, prompts sent, QA results]
 
 ## OPEN ITEMS — PRIORITY ORDER
 | Item | Status | Notes |
-|---|---|---|
-| [item] | [status] | [notes] |
 
 ## NEXT SESSION — START HERE
-[Exact first action with file names]
+[exact first action with file names]
 
 ## JANIS ACTION REQUIRED
-[Only things Janis must do physically — push file, download, screenshot]
+[physical actions only — push file, screenshot, download]
 
 ## FLAGS FOR NEXT SESSION
-[Decisions pending, things to confirm with supplier, governance notes]
+[pending decisions, governance notes]
 ```
 
 ---
 
-## SESSION CLOSING CHECKLIST
+## SESSION CLOSING
 
-**cc closes every session with:**
-1. Append cc_chat_log.md (newest at BOTTOM)
-2. Archive prompt → /prompts/archive/ stamped ✅ COMPLETE
-3. Update knowledge.map if new files created
-4. Bump version on every file changed
+**Claude Web:**
+1. Read cc_chat_log — verify delivery matches request. Flag any gap to Janis.
+2. Write CHAT_HANDOFF → tell Janis to save to project knowledge.
+
+**cc:**
+1. Append cc_chat_log (newest at BOTTOM)
+2. Archive prompt → /prompts/archive/ ✅ COMPLETE
+3. Update knowledge.map if new files
+4. Bump version on all changed files
 5. Commit all → merge to main
 
-**Claude Web closes every session with:**
-1. Read cc_chat_log — verify delivery matches what was asked
-2. Flag any gap to Janis before session ends
-3. Write CHAT_HANDOFF.md → tell Janis to save to project knowledge
-
 ---
 
-## PROBLEM SOLVING — KT FRAMEWORK
-
-> **R-111: After ANY 2 failed fix attempts on the same symptom — STOP.**
-> Do not write another line of fix code.
-> Complete all KT phases below before any new prompt is written.
-
-**Full KT skill file:** `SKILL_problem_solving_kt.md` in repo root.
-Claude Web: if this file exists in repo, read it before forming any hypothesis.
-If not in repo, ask Janis to upload it from the Satu project repo.
-
-### KT Minimum (when full file unavailable)
-
-**Phase 1 — What exactly is the symptom?** Raw output only. No interpretation.
-
-**Phase 2 — IS / IS-NOT table:**
-| Dimension | IS | IS NOT | Distinctive |
-|---|---|---|---|
-| WHAT | exact failing object | similar object that works | |
-| WHERE | environment where it fails | environment where it doesn't | |
-| WHEN | exact conditions | conditions where it does NOT fail | |
-| EXTENT | frequency / severity | what is NOT affected | |
-
-**Phase 3 — Hypotheses:** Generate ALL possible causes first.
-For each: does it explain BOTH IS and IS-NOT? If not → eliminate immediately.
-Never fix a hypothesis that cannot explain the IS-NOT.
-
-**Phase 4 — Spy test:** Minimum invasive test to confirm hypothesis before fixing.
-One change. One observation. Then fix.
-
-**KT Rules (non-negotiable):**
-- Never fix a symptom you cannot explain with IS/IS-NOT
-- Never change two things at once
-- Seek global knowledge (docs, library notes, rules files) before third attempt
-- Document eliminated hypotheses — they prevent re-investigation next session
-
----
-
-## WHAT CC CANNOT DO (SCAD constraint)
-
-| Task | Workaround |
-|---|---|
-| Render .scad visually | Janis opens in OpenSCAD → screenshots to Claude Web |
-| Confirm geometry looks correct | Janis describes or screenshots — Claude Web QAs |
-| Export STL/DXF/PNG without OpenSCAD | cc writes export script or Janis exports manually |
-| Edit files not in repo | Janis pushes local file to repo first |
-
----
-
-## FILE STRUCTURE — THIS REPO
+## FILE STRUCTURE — REPO
 
 ```
 janis-product-design/
-├── cc_rules.md                      ← cc reads every session
-├── cc_chat_log.md                   ← cc writes, Claude Web reads last 3
-├── chat_rules.md                    ← Claude Web rules (project knowledge master)
-├── rules-dimensions.md              ← authoritative dimensions — never duplicated
-├── rules-codes.md                   ← OpenSCAD coding rules — cc reads for SCAD tasks
-├── SKILL_problem_solving_kt.md      ← KT framework — read when R-111 triggers
-├── knowledge.map                    ← navigation guide, cc updates when files added
-├── WORKFLOW_SKILL.md                ← this file (project knowledge master)
-├── prompts/                         ← active cc prompt files
-│   └── archive/                     ← completed prompts stamped ✅ COMPLETE
-├── vending-machine/
-│   └── VM-01-base/                  ← VM-01 .scad versions
-├── pilates-reformer/
-│   └── PR-01-base/                  ← PR-01 .scad versions (NOT STARTED)
-├── exports/
-│   └── for-supplier/                ← STL files
-│   └── for-cnc/                     ← DXF files
-└── renders/                         ← PNG screenshots per version
+├── cc_rules.md                          ← cc reads every session
+├── cc_chat_log.md                       ← cc writes / Claude Web reads (via project knowledge sync)
+├── chat_rules.md                        ← Claude Web rules
+├── rules-dimensions.md                  ← authoritative dimensions
+├── knowledge.map                        ← navigation — cc updates when files added
+├── WORKFLOW_SKILL.md                    ← this file (also in project knowledge)
+├── .claude/
+│   ├── rules-codes.md                   ← cc — SCAD coding rules
+│   ├── rules-materials.md               ← cc — material specs
+│   ├── rules-vm.md                      ← cc — VM-specific rules
+│   └── SKILL_problem_solving_kt.md      ← Claude Web + cc — R-111 trigger
+├── prompts/                             ← active cc prompts
+│   └── archive/                         ← completed prompts ✅ COMPLETE
+├── vending-machine/VM-01-base/          ← VM-01 .scad versions
+├── pilates-reformer/PR-01-base/         ← PR-01 (NOT STARTED)
+├── exports/for-supplier/                ← STL
+├── exports/for-cnc/                     ← DXF
+└── renders/                             ← PNG screenshots
 ```
 
-**Project knowledge (Claude Web only — never in repo):**
-```
-CHAT_HANDOFF.md      ← single use, overwrite each session
-WORKFLOW_SKILL.md    ← this file (downloaded from repo when updated)
-chat_rules.md        ← Claude Web non-negotiables
-```
+Project knowledge (Claude Web only — never in repo):
+- CHAT_HANDOFF.md — single use, overwrite each session
+- WORKFLOW_SKILL.md — also in repo root, synced when updated
+- chat_rules.md — also in repo root

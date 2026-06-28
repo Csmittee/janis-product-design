@@ -359,3 +359,18 @@ Module definition kept in file — only the assembly call removed.
 No other lines touched.
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v21.scad
+
+---
+
+### 2026-06-28 | VM-01-base-v22 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v22.scad (new)
+- knowledge.map (v21 → Superseded, v22 → ACTIVE)
+- cc_chat_log.md
+
+Change 1: acrylic_display() top panel translate Z: total_h-skin_t → total_h-(skin_t*2). Top panel no longer flush with shell top face.
+Change 2: acrylic_display() right panel translate X: total_w-skin_t → total_w-(skin_t*2). Right panel no longer flush with shell right face.
+Change 3: tray_zone_frame() all 4 bars Y translate: e → e*2. Increased offset from front face to avoid z-fighting.
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v22.scad

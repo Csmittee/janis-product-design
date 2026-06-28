@@ -1,7 +1,7 @@
 # Janis Product Design — OpenSCAD Coding Rules
-> Version 1.3 — 2026-06-28
-> Changes: Added 3 rules to 2-Manifold section: difference() enclosure, union() volume overlap, flush face coplanar
-> Previous: 1.2 — 2026-06-28
+> Version 1.4 — 2026-06-28
+> Changes: Added union() box rule to 2-Manifold section — never build tray/box as union() floor+walls
+> Previous: 1.3 — 2026-06-28
 
 All units: MM. All rules below are mandatory for every SCAD file in this project.
 
@@ -61,6 +61,18 @@ Use epsilon or extend one bar into the other to guarantee volume overlap.
 A component whose face is exactly coplanar with the enclosing shell face
 creates a shared face = non-manifold. Always subtract skin_t or epsilon
 to ensure the component is fully inside or clearly outside the shell.
+
+**Rule: Never build a tray/box using union() of separate floor + wall pieces.**
+When a thin floor cube meets tall wall cubes at a shared Z=0 base, CGAL detects
+T-junction topology = non-manifold. The correct pattern is ONE solid outer box
+with hollow interior subtracted via difference(). This is always manifold.
+Pattern:
+  difference() {
+    cube([w, d, h]);                              // solid outer
+    translate([wall, wall, floor])
+      cube([w-(wall*2), d-(wall*2), h-floor+1]); // hollow interior, +1 open top
+  }
+Never use: union() { thin_floor_cube; tall_wall_cube; tall_wall_cube; }
 
 ---
 

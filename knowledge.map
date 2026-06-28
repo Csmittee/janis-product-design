@@ -116,7 +116,8 @@ Claude Web → QA pass/fail → writes next prompt if needed
 | v20 | vending-machine/VM-01-base/VM-01-base-v20.scad | Superseded |
 | v21 | vending-machine/VM-01-base/VM-01-base-v21.scad | Superseded |
 | v22 | vending-machine/VM-01-base/VM-01-base-v22.scad | Superseded |
-| v23 | vending-machine/VM-01-base/VM-01-base-v23.scad | **ACTIVE** — spring_zone_panel extended to Z 300-700 |
+| v23 | vending-machine/VM-01-base/VM-01-base-v23.scad | Superseded |
+| v24 | vending-machine/VM-01-base/VM-01-base-v24.scad | **ACTIVE** — spring_tray() manifold fix (KT R-111 resolved), frame height 300-700 |
 
 ---
 

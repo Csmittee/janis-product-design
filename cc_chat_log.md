@@ -233,3 +233,42 @@ v17 is delivered with ALL modules uncommented (full assembly restored). Claude W
 - Secondary: sensor_strip() 1x1mm cube — add minimum 2mm on each axis
 - Confirm with Janis whether openscad binary can be installed in cc environment for future manifold testing
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v17.scad
+
+---
+
+### 2026-06-28 | VM-01-base-v18 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v18.scad (new)
+- rules-codes.md (v1.2)
+- knowledge.map (v17 → Superseded, v18 → ACTIVE)
+- cc_chat_log.md
+- prompts/archive/VM-01-base-v18-fix-manifold ✅ COMPLETE — 2026-06-28.md
+
+**Root cause (confirmed by Claude Web):**
+outer_shell() called with `translate([0,0,leg_h])` in assembly, but all 4 front
+face cutouts inside the module used world Z values (leg_h, tray_zone_top_z).
+With the assembly translate applied, those cutouts were shifted 50mm too high —
+cutting outside the shell boundary = non-manifold geometry.
+
+**All 4 cutout Z values corrected to local coordinates:**
+- Left product zone front: `leg_h` → `0` (local Z 0-492, world Z 50-542)
+- Exit zone chute: `leg_h` → `0` (local Z 0-250, world Z 50-300)
+- Upper display: `tray_zone_top_z` → `tray_zone_top_z - leg_h` (local Z 492, world Z 542)
+- Right compartment front: `leg_h` → `0` (local Z 0-492, world Z 50-542)
+- Hollow interior subtract: untouched — was already correct at skin_t
+- Assembly line: unchanged — `translate([0, 0, leg_h]) outer_shell();`
+
+**OpenSCAD --check:** binary not available in cc environment.
+
+**rules-codes.md updated to v1.2: CONFIRMED**
+- New rule added to Z-Stack section: "Local vs world Z — never mix inside one module"
+
+**Flag for Claude Web — ACTION REQUIRED:**
+Janis must open VM-01-base-v18.scad in OpenSCAD and press F6 (full render).
+Confirm the 2-manifold warning is GONE from the console output.
+If warning persists after v18, upload v18.scad to Claude Web for further diagnosis.
+The fix targets the confirmed root cause — if another module is also non-manifold,
+it will still show after this fix and require a separate v19 pass.
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v18.scad

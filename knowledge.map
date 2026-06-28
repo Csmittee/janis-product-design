@@ -110,7 +110,8 @@ Claude Web → QA pass/fail → writes next prompt if needed
 | v14 | vending-machine/VM-01-base/VM-01-base-v14.scad | Superseded |
 | v15 | vending-machine/VM-01-base/VM-01-base-v15.scad | Superseded |
 | v16 | vending-machine/VM-01-base/VM-01-base-v16.scad | Superseded |
-| v17 | vending-machine/VM-01-base/VM-01-base-v17.scad | **ACTIVE** — shell assembly Z revert, 2-manifold diagnosis |
+| v17 | vending-machine/VM-01-base/VM-01-base-v17.scad | Superseded |
+| v18 | vending-machine/VM-01-base/VM-01-base-v18.scad | **ACTIVE** — outer_shell() local Z fix, 2-manifold surgical fix |
 
 ---
 

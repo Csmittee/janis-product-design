@@ -344,3 +344,18 @@ If warning still persists, remaining candidates to investigate:
 - Any module using Y=0 as a face coordinate without epsilon offset
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v20.scad
+
+---
+
+### 2026-06-28 | VM-01-base-v21 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v21.scad (new)
+- knowledge.map (v20 → Superseded, v21 → ACTIVE)
+- cc_chat_log.md
+
+Change: Removed `left_front_acrylic();` from ASSEMBLY section (was line 467 in v20).
+Module definition kept in file — only the assembly call removed.
+No other lines touched.
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v21.scad

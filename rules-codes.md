@@ -1,7 +1,7 @@
 # Janis Product Design — OpenSCAD Coding Rules
-> Version 1.1 — 2026-06-28
-> Changes: Added "Read the live .scad file before writing any fix" rule (2-Manifold section)
-> Previous: 1.0 — 2026-06-28
+> Version 1.2 — 2026-06-28
+> Changes: Added "Local vs world Z — never mix inside one module" rule (Z-Stack section)
+> Previous: 1.1 — 2026-06-28
 
 All units: MM. All rules below are mandatory for every SCAD file in this project.
 
@@ -140,6 +140,14 @@ in preview. QA against rules-dimensions.md, not the render.
 **Rule: Spring direction is locked.**
 Motor at BACK of tray (Y = tray_d - motor_d). Spring front end at Y=0
 (drop zone boundary). Products fall forward into exit zone. Never reverse.
+
+**Rule: Local vs world Z — never mix inside one module.**
+If a module is called with translate([0,0,offset]) in assembly, ALL geometry
+inside that module must use local Z (Z=0 at module base). World Z values must
+be converted: local_z = world_z - assembly_offset.
+Example: outer_shell() is called with translate([0,0,leg_h]).
+Inside outer_shell(), a cutout at world Z=300 must be written as Z=300-leg_h=250.
+Never use world Z values directly inside an offset-assembled module.
 
 ---
 

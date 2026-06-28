@@ -124,7 +124,8 @@ Claude Web → QA pass/fail → writes next prompt if needed
 | v23 | vending-machine/VM-01-base/VM-01-base-v23.scad | Superseded |
 | v24 | vending-machine/VM-01-base/VM-01-base-v24.scad | Superseded |
 | v25 | vending-machine/VM-01-base/VM-01-base-v25.scad | Superseded |
-| v26 | vending-machine/VM-01-base/VM-01-base-v26.scad | **ACTIVE** — spring_gap=13, epsilon offsets corrected |
+| v26 | vending-machine/VM-01-base/VM-01-base-v26.scad | Superseded |
+| v27 | vending-machine/VM-01-base/VM-01-base-v27.scad | **ACTIVE** — spring_coil() solid cylinder, no difference() |
 
 ---
 

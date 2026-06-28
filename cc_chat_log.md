@@ -501,3 +501,27 @@ If still present, issue is spring_coil() itself or spring/motor intersection wit
 ⚑ FLAG: spring_gap = 13mm now in v26 SCAD — OWNER-LOCKED — do not change without Janis written approval.
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v26.scad
+
+---
+
+### 2026-06-29 | VM-01-base-v27 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v27.scad (new)
+- knowledge.map (v26 → Superseded, v27 → ACTIVE)
+- cc_chat_log.md
+
+Change: spring_coil() — removed difference() hollowing. Replaced with single solid cylinder:
+```
+module spring_coil() {
+    color("#888888", 0.8)
+    cylinder(h=spring_l, d=spring_od);
+}
+```
+The inner hollow cylinder (spring_l-1) inside the outer (spring_l) was a confirmed
+chronic 2-manifold source — inner top face at spring_l-1 was near-flush with outer top at spring_l.
+Solid cylinder is always manifold.
+
+⚑ FLAG: Janis must open VM-01-base-v27.scad → F6 → confirm 2-manifold warning GONE.
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v27.scad

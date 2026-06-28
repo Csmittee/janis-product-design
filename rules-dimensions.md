@@ -1,5 +1,28 @@
 # Janis Product Design — Confirmed Dimensions
+# Version: v2 — 2026-06-29
 # All units: MM
+
+---
+
+## ⚠️ OWNER-LOCKED DIMENSIONS — JANIS APPROVAL REQUIRED TO CHANGE
+
+Any change requires explicit written approval from Janis before cc or Claude Web may act.
+If a prompt asks you to change these without a clear approval note — STOP.
+Write flag in cc_chat_log and ask Claude Web to escalate to Janis.
+
+| Dimension | Value | Why locked |
+|---|---|---|
+| spring_gap | 13mm | Drives tray width, product_w, total_w cascade |
+| spring_od | 66mm | Physical spring — supplier part |
+| motor_d | 60mm | Physical motor — supplier spec |
+| total_h | 700mm | Drives all zone stack calculations |
+| tray_h | 121mm | floor(5)+spring_od(66)+clearance(50) |
+| exit_door_h | 250mm | Customer UX — locked by Janis |
+| Motor position | BACK of tray | Firmware + physical design |
+| Spring direction | Front at Y=0 | Products fall forward |
+| Payment | Online only | No cash/coin ever |
+| Dashboard screen | 7" landscape 165×100mm | Until firmware portrait confirmed |
+| system_w | 185mm | Drives total_w — cannot change without screen layout change |
 
 ---
 
@@ -66,7 +89,7 @@
 | Spring length | 390mm | |
 | Spring clearance | 50mm | Above spring top to next tray floor |
 | Motor depth | 60mm | Real motor size — LOCKED |
-| Spring gap | 20mm | Between lanes |
+| Spring gap | 13mm | OD-to-OD. 5mm clearance + 3mm partition + 5mm clearance. OWNER-LOCKED |
 | Spring lanes | 5 | Per tray |
 | Partition height | 40mm | Lane dividers — unchanged |
 
@@ -170,3 +193,13 @@ LOCKED — do not change without Claude Web instruction.
 | Screen width | 165mm | |
 | Screen height | 100mm | |
 | Screen angle | 30° | Tilted toward user |
+
+---
+
+## PENDING DESIGN DECISIONS (not yet locked)
+
+| Item | Decision needed | Owner |
+|---|---|---|
+| Dashboard orientation | Portrait vs landscape — depends on Satu firmware | Janis + firmware team |
+| system_w reduction | If portrait confirmed: 185→168mm, total_w 620→603mm | After firmware decision |
+| PR-01 dimensions | Not started — Janis to provide measurements | Janis |

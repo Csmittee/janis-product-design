@@ -1,4 +1,5 @@
 # Claude Code (cc) Rules
+# Version: v2 — 2026-06-29
 # Read this at the START of every cc session — step 1, always.
 
 ---
@@ -49,7 +50,8 @@ before reporting missing. Janis always pushes to main, not the feature branch.
 - Save SCAD to correct product folder
 - Save STL to /exports/for-supplier/
 - Save DXF to /exports/for-cnc/
-- Root rules files are authoritative — never duplicate in .claude/
+- Root rules files (cc_rules.md, rules-dimensions.md, etc.) stay at root — do not move
+- .claude/ rules files (.claude/rules-codes.md, etc.) stay in .claude/ — do not copy to root
 
 ---
 
@@ -73,6 +75,7 @@ before reporting missing. Janis always pushes to main, not the feature branch.
 
 ## Files cc Reads (see knowledge.map for full index)
 - Always: cc_rules.md, knowledge.map, cc_chat_log.md, /prompts/[task].md
-- SCAD tasks: rules-dimensions.md, rules-materials.md, latest .scad
-- VM tasks: rules-vm.md (when it exists)
+- SCAD tasks: rules-dimensions.md, .claude/rules-materials.md, .claude/rules-codes.md, latest .scad
+- VM tasks: .claude/rules-vm.md (when it exists)
 - PR tasks: rules-pr.md (when it exists)
+- R-111 trigger: .claude/SKILL_problem_solving_kt.md

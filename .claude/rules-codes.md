@@ -1,7 +1,7 @@
 # Janis Product Design — OpenSCAD Coding Rules
-> Version 1.4 — 2026-06-28
-> Changes: Added union() box rule to 2-Manifold section — never build tray/box as union() floor+walls
-> Previous: 1.3 — 2026-06-28
+> Version 1.5 — 2026-06-29
+> Changes: Added Module Isolation Testing section — mandatory for manifold debugging
+> Previous: 1.4 — 2026-06-28
 
 All units: MM. All rules below are mandatory for every SCAD file in this project.
 
@@ -209,3 +209,25 @@ Material and finish specs go in rules-materials.md.
 - [ ] Shell hollow uses `total_h-(skin_t*2)` on both top and bottom
 - [ ] Zone stack matches rules-dimensions.md
 - [ ] cc_chat_log.md updated before committing
+
+---
+
+## Module Isolation Testing — MANDATORY for Manifold Debugging
+
+Every SCAD file must support module-level isolation: each module in ASSEMBLY
+can be commented out independently without breaking other modules.
+
+Pattern — ASSEMBLY must be structured so each line is standalone:
+// legs();
+// outer_shell();
+// for (t = [0:tray_count-1]) spring_tray(t);  ← comment to isolate
+// front_door();
+
+Never combine unrelated modules into one assembly call.
+
+When 2-manifold warning appears — isolate first, fix second.
+Method: comment out one module at a time, press F6. Warning disappears = culprit confirmed.
+Never write a fix before culprit is confirmed by Janis isolation test.
+
+Inner objects inside tray/box must never land exactly on floor or wall faces.
+Offset by e = 0.01 on any contact axis. See .claude/SKILL_problem_solving_kt.md epsilon pattern.

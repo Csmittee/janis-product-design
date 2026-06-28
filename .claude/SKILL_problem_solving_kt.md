@@ -1,294 +1,153 @@
 # SKILL_problem_solving_kt.md
-# Structured Problem Solving — Kepner-Tregoe Adapted for Software & Firmware
-> Version: 1.1 — 2026-06-15 (updated with final resolution of PNGdec case study)
-> Location in repo: .claude/rules/SKILL_problem_solving_kt.md (both repos)
-> Author: Chat — built from owner QA expertise (automotive/aerospace KT practitioner)
->         + Kepner-Tregoe IS/IS-NOT framework + 8D methodology
-> Load this file when: Any bug that fails to resolve after 2 fix attempts (R-111)
-
----
-## UPDATE — 2026-06-15 (appended from PNG investigation session — final chapter)
-
-### CONFIRMED OUTCOME — PNGdec case study final resolution
-
-Actual root cause: `_pngDrawRow()` returned `0`. PNGdec v1.1.4: "return 0 = stop decode early."
-This was documented in the library's own release notes. Never read. 48 hours lost.
-Fix: change `return 0` → `return 1`. One character. rc=0 rows=165 confirmed on hardware.
-
-**KT Post-Mortem:**
-The IS/IS-NOT table correctly identified shared resource conflict as the pattern.
-But the Phase 3a hypothesis table was missing one hypothesis:
-
-| # | Hypothesis | Explains IS? | Explains IS-NOT? | Verdict |
-|---|---|---|---|---|
-| 6 | Wrong callback return value | Yes (PNGdec stops at row 0) | Yes (no display needed to trigger) | ✅ CONFIRMED ROOT CAUSE |
-
-Hypothesis #6 would have been caught by SKILL_library_onboarding.md Step 1 in 5 minutes.
-It was missing because we skipped library onboarding and went straight to hardware hypotheses.
-
-**Mandatory addition to Phase 3a — BEFORE generating hypotheses:**
-> Step 0: Read the library designer's documentation for all APIs in use.
-> LIBRARY_xxx.md must exist before any hypothesis is formed (R-121).
-> This eliminates the entire class of "wrong API usage" hypotheses before any code is changed.
-
-**KT Rule 2 restatement (seek global knowledge before third attempt):**
-"Global knowledge" explicitly includes: library release notes, designer examples, API docs.
-Not just forums and Espressif docs — the library itself is the primary source.
+# Kepner-Tregoe Problem Solving — Janis Product Design
+# Version: 2.0 — 2026-06-29
+# Location: .claude/SKILL_problem_solving_kt.md
+# Replaces: root/SKILL_problem_solving_kt.md (delete old) + SKILL_problem_solving_kt_scad.md (never created)
+# Read when: R-111 triggered — problem not resolved within 2 fix loops
 
 ---
 
-## WHY THIS EXISTS
+## WHAT IS A LOOP
 
-Standard debugging instinct in software is:
-1. See symptom → form hypothesis → try fix → repeat
-
-This is fast for simple bugs. It is catastrophic for complex ones.
-After 2 failed fixes, the team is no longer solving the original problem —
-they are solving the last fix's side effects. Evidence accumulates noise.
-Confidence in assumptions grows while accuracy falls.
-
-Kepner-Tregoe (KT) Problem Analysis, created in the 1960s and adopted by
-automotive (VDA/8D), aerospace (Apollo 13), and manufacturing industries,
-exists precisely to break this loop. It forces fact-based IS/IS-NOT separation
-before any solution is attempted.
-
-This skill formalizes KT for software and firmware debugging.
-
-**The Satu project trigger that created this skill:**
-PNGdec rc=8 was "fixed" across 5 PRs by changing PNG format, color type, zlib
-compression — all wrong. Root cause (PSRAM DMA bandwidth contention) was found
-only when the owner forced a wider search in session 4. KT IS/IS-NOT applied
-at session 1 would have found it in 1 flash cycle.
+One loop = Claude Web writes prompt → cc executes → Janis QAs result.
+Two loops failed on the same problem = R-111. Claude Web self-triggers. No exceptions.
+Janis does not need to ask.
 
 ---
 
-## THE RULE — WHEN TO INVOKE THIS SKILL
+## THE COMMUNICATION CONSTRAINT — DESIGN ALL TESTS AROUND THIS
 
-> **R-111 upgraded:** After ANY 2 failed fix attempts on the same symptom:
-> STOP all code changes. Invoke this skill. Complete all phases before writing
-> a single line of fix code.
-
-Do not skip phases. Do not compress. Do not assume.
+Claude Web → prompt → cc executes → cc writes result to cc_chat_log → Janis reads repo → Janis tells Claude Web.
+cc cannot speak to Claude Web directly. Every spy test must be designed for Janis to run in OpenSCAD.
+cc_chat_log is the ONLY channel cc has to respond back. Claude Web reads it at every session open.
 
 ---
 
-## THE FOUR KT PHASES — ADAPTED FOR SOFTWARE/FIRMWARE
+## KT PROCESS 1 — SITUATION APPRAISAL
 
-### PHASE 1 — SITUATION APPRAISAL
-*What kind of problem is this? Do we actually understand what we're looking at?*
+Before any analysis, confirm what you know vs. what you are assuming.
 
-Questions to answer before anything else:
+- Raw symptom only — exact OpenSCAD output or error text, no interpretation
+- Which version first showed it? Which version last did NOT show it?
+- What changed between those two versions? (check cc_chat_log entries)
+- Is this one problem or multiple? Separate before proceeding.
 
-```
-1. What is the EXACT symptom? (not interpretation — raw output, error code, serial log)
-2. What was WORKING before this symptom appeared?
-3. What CHANGED between working and broken? (code, library, hardware, environment)
-4. Is this one problem or multiple problems mixed together?
-5. What is the IMPACT if not solved? (blocker / workaround available / cosmetic)
-6. Who or what else is affected by this problem?
-```
-
-**Firmware example applied:**
-```
-Symptom:    [UI] PNG decode: rc=8 rows=1 w=165 h=165
-Was working: Bitmap QR rendered correctly (drawQrFromBitmap)
-Changed:     Reverted from bitmap back to PNGdec approach
-Impact:      Blocks live Omise QR — cannot launch product
-Mixed?:      No — single clean symptom, reproducible every time
-```
+"2-manifold warning" is NOT a problem statement.
+"VM-01-base-v19 F6 shows 2-manifold warning. v14 F6 did not." IS a problem statement.
 
 ---
 
-### PHASE 2 — PROBLEM DEFINITION (IS / IS-NOT)
-*The heart of KT. Facts only. No hypotheses yet.*
+## KT PROCESS 2 — PROBLEM ANALYSIS (IS / IS-NOT)
 
-Build a 4-dimension IS/IS-NOT table:
+Fill every cell before forming any hypothesis.
 
-| Dimension | IS (where/when problem exists) | IS NOT (where/when problem does NOT exist) | What is DISTINCTIVE about IS vs IS-NOT? |
+| Dimension | IS | IS NOT | Distinction |
 |---|---|---|---|
-| **WHAT** | What object has the defect? | What similar object does NOT have the defect? | |
-| **WHERE** | Where does the defect appear? | Where does it NOT appear? | |
-| **WHEN** | When did it first occur? When does it recur? | When does it NOT occur? | |
-| **EXTENT** | How many affected? How severe? | How many NOT affected? | |
+| WHAT | which module/geometry fails | similar modules that do not | what is unique to the failing one |
+| WHERE | which file, which render mode | other files, other modes | |
+| WHEN | which version introduced it | last version without it | what changed |
+| EXTENT | blocks export? all modules affected? | what still works fine | |
 
-**Firmware example applied — PNGdec rc=8:**
+Rule: every hypothesis must explain BOTH IS and IS-NOT columns.
+If it cannot explain why similar objects do NOT fail → eliminate immediately.
 
-| Dimension | IS | IS NOT | Distinctive |
+---
+
+## KT PROCESS 3 — HYPOTHESIS TESTING
+
+List all possible causes. For each, answer both:
+1. "If this is the cause — how does it explain IS?"
+2. "If this is the cause — why does IS-NOT not fail?"
+
+If either answer needs an unverifiable assumption → rank lower.
+Select highest-ranked hypothesis. Design spy test before writing any fix.
+
+**For SCAD manifold — always include these in hypothesis list:**
+
+| Cause | Pattern to check |
+|---|---|
+| Coplanar face | Two objects sharing an exact face — no gap, no overlap |
+| Open difference | Inner object ≥ outer on any axis inside `difference()` |
+| Degenerate geometry | Any dimension < 2mm on two or more axes |
+| Corner-only union | Objects share only an edge in `union()`, not a face volume |
+| World/local Z mismatch | Module uses world Z but assembly already translates it |
+| For-loop floor contact | Inner object Z = tray_floor_t exactly — epsilon missing |
+| Hull over rotated geometry | `hull()` on `rotate() cylinder()` — non-planar result |
+
+---
+
+## KT PROCESS 4 — SPY TEST (one change, one observation)
+
+Minimum invasive test to confirm hypothesis before writing any fix.
+Never test two things at once — result is unreadable.
+Never write a fix before spy test confirms the culprit.
+
+**For OpenSCAD manifold — isolation test:**
+Janis comments out modules ONE AT A TIME in ASSEMBLY. Presses F6 after each.
+Claude Web gives Janis the exact line to comment. One module per test.
+
+Order (most likely first):
+1. Most recently added or changed module
+2. Any module with a `for()` loop containing inner geometry
+3. Any module using `union()` with multiple cubes
+4. Any module with `difference()` subtractions
+5. Core modules (outer_shell, legs) — last
+
+Warning disappears → confirmed culprit. Stop. Claude Web writes surgical fix for that module only.
+Warning stays with all modules commented → culprit is in core geometry.
+
+---
+
+## KNOWN SCAD MANIFOLD ROOT CAUSES — CHECK THESE FIRST
+
+Confirmed by isolation test in this project. Skip hypothesis listing if pattern matches directly.
+
+| Confirmed cause | Module pattern | Fix applied |
+|---|---|---|
+| For-loop inner objects flush on tray floor/wall | motor/spring/partition at exact tray_floor_t | `e = 0.01` on contact axes — v26 |
+| Inner cylinder taller than outer in `difference()` | `cylinder(h=spring_l+1)` inside difference | Inner → `spring_l-1` — v20 |
+| Compartment top flush with shell top | height = `total_h-leg_h` placed at `leg_h` | Subtract `skin_t` — v20 |
+| Frame bars corner-edge only in `union()` | 4-bar frame, bars independent cubes | Bars own corners, sides shortened — v20 |
+| World Z inside module with assembly translate | cutout uses `leg_h` inside already-shifted module | Local Z = 0 inside module — v18 |
+| Degenerate geometry | `cube([x, 1, 1])` sensor laser visual | Minimum 2mm all axes — v19 |
+| Hull over rotated cylinders | `hull(){ rotate() cylinder(); }` dashboard bracket | Replace with flat cube — v19 |
+
+---
+
+## EPSILON PATTERN — INNER OBJECTS INSIDE CONTAINERS
+
+Any object inside a box/tray touching a face must use `e` offset.
+Declare `e = 0.01;` in PARAMETERS — always present.
+
+```openscad
+// WRONG — coplanar face = non-manifold
+translate([x, y, tray_floor_t]) cube([w, d, h]);
+
+// CORRECT — epsilon lift from floor
+translate([x, y, tray_floor_t + e]) cube([w, d, h]);
+
+// WRONG — flush with rear wall
+translate([x, tray_d - wall_t, z]) cube([w, d, h]);
+
+// CORRECT — epsilon pull from wall
+translate([x, tray_d - wall_t - e, z]) cube([w, d, h]);
+```
+
+---
+
+## F5 vs F6 — ALWAYS CONFIRM WHICH MODE
+
+| Mode | Key | Purpose | Transparency |
 |---|---|---|---|
-| WHAT | PNGdec decode() after openRAM | openRAM() itself (succeeds, returns w=165 h=165) | Inflate stage only — not parse stage |
-| WHAT | Any PNG variant (grayscale, RGB, stored, deflate) | Bitmap draw (no decode library) |  All compressed formats fail |
-| WHERE | ESP32-8048S070C with 800×480 RGB panel | Browser (same PNG renders fine) | Panel-specific hardware environment |
-| WHEN | During decode() call while display is active | At boot before display init | Display must be running |
-| EXTENT | rc=8 rows=1 every single time | Never rc=0 on any PNG variant | 100% failure rate — not intermittent |
+| Preview | F5 | Visual QA, color, acrylic see-through | YES |
+| Full render | F6 | Manifold check only | NO — all opaque yellow |
 
-**What the IS/IS-NOT reveals:**
-- Fails only when display is active → display is doing something during decode
-- Fails on ALL compressed formats → not a format problem
-- Browser renders fine → PNG is valid
-- openRAM succeeds → library initializes correctly
-- Distinctive: display running + decode failing = shared resource conflict
-
-→ **Hypothesis from IS/IS-NOT: the display hardware consumes a shared resource that decode needs**
-→ That resource = PSRAM bus bandwidth
-
-This analysis alone — done in session 1 — would have eliminated all format-change attempts.
+Never reject a visual based on F6. Never confirm manifold using F5.
 
 ---
 
-### PHASE 3 — ROOT CAUSE HYPOTHESIS & TESTING
-*Generate possible causes. Test each against IS/IS-NOT. Eliminate by logic before touching code.*
+## IF 3RD LOOP FAILS AFTER FULL KT
 
-#### Step 3a — Generate ALL possible causes (no filtering yet)
-
-For each hypothesis, ask: **"Could this cause explain BOTH the IS and the IS-NOT?"**
-
-| # | Hypothesis | Explains IS? | Explains IS-NOT? | Verdict |
-|---|---|---|---|---|
-| 1 | Wrong PNG color type | Yes (decode fails) | No (browser renders same file fine) | ❌ ELIMINATED |
-| 2 | zlib wrapper wrong (RFC1950 vs RFC1951) | Yes | No (browser fine) | ❌ ELIMINATED |
-| 3 | PSRAM allocation failed (g_pngBuf in internal RAM) | Yes (no 32KB window) | No (would fail at boot too) | ⚠️ PARTIAL |
-| 4 | PSRAM bus contention with RGB DMA | Yes (DMA owns bus during decode) | Yes (browser has no DMA) | ✅ CONSISTENT |
-| 5 | PNGdec library version incompatibility | Yes | No (works on 1000s of ESP32 projects) | ❌ ELIMINATED |
-
-**Rule: never fix a hypothesis that cannot explain the IS-NOT.**
-Format changes (#1, #2) were tried for 5 PRs without ever passing this test.
-
-#### Step 3b — For surviving hypotheses, design the minimum spy test
-
-Do not fix yet. Prove the hypothesis with the least invasive measurement possible.
-
-```
-Hypothesis #4 test: does decode succeed when DMA is not competing?
-Spy: digitalWrite(TFT_BL, LOW) + delay(20) before decode
-If rc=0 → confirmed. If still rc=8 → eliminate #4, investigate #3.
-```
-
-This is the "send a spy" principle — one targeted observation that confirms or kills the hypothesis.
-
-#### Step 3c — Verify fix solves IS without creating new IS-NOT
-
-Before deploying: what new problems could this fix cause?
-```
-Fix: backlight off during decode (~100ms)
-New IS-NOT risk: donor sees screen flash
-Assessment: acceptable — QR screen is static, 100ms imperceptible
-No functional regression — display returns to full operation
-```
-
----
-
-### PHASE 4 — SOLUTION & PREVENTION
-*Fix the confirmed root cause. Then prevent recurrence.*
-
-#### Fix
-Only now write code. Fix must:
-- Address the confirmed root cause (not the symptom)
-- Not introduce new defects (verified in 3c)
-- Be documented with the IS/IS-NOT reasoning
-
-#### Prevention — the two questions after every fix:
-```
-1. COULD THIS SAME ROOT CAUSE AFFECT ANYTHING ELSE IN THE SYSTEM?
-   (PSRAM contention affects JPEG decode, GIF decode, NVS writes during display — document all)
-
-2. HOW DO WE DETECT THIS EARLIER NEXT TIME?
-   (Add to SKILL file: board-class constraint documented permanently)
-```
-
-This is what converts a single fix into institutional knowledge.
-
----
-
-## THE ESCALATION LADDER — WHEN TO USE WHAT
-
-```
-Symptom appears
-      │
-      ├── Fix attempt 1 → resolved? → done
-      │
-      ├── Fix attempt 1 fails → Fix attempt 2 (same hypothesis refined)
-      │
-      ├── Fix attempt 2 fails → STOP ← R-111 TRIGGERS HERE
-      │         │
-      │         └── INVOKE THIS SKILL
-      │               │
-      │               ├── Phase 1: Situation appraisal (10 min)
-      │               ├── Phase 2: IS/IS-NOT table (20 min)
-      │               │     └── Eliminate at least half the hypotheses by logic
-      │               ├── Phase 3a: All hypotheses generated (no code yet)
-      │               ├── Phase 3b: Minimum spy test designed
-      │               │     └── ONE flash / ONE test / ONE data point
-      │               ├── Phase 3b result confirms hypothesis
-      │               └── Phase 3c: Fix designed, consequence checked
-      │                     └── NOW write fix code
-      │
-      └── Spy test fails to confirm → back to Phase 3a with remaining hypotheses
-            └── DO NOT CHANGE FORMAT / PARAMETERS / UNRELATED CODE
-```
-
----
-
-## THE FIVE RULES FOR CHAT AND CC
-
-These apply to any bug that has survived 2 fix attempts:
-
-**Rule 1 — Never fix a symptom you cannot explain with IS/IS-NOT.**
-If your fix cannot explain why the problem does NOT appear somewhere, it is not the root cause.
-
-**Rule 2 — Seek global knowledge before the third attempt.**
-Search Arduino forums, ESP-IDF docs, board-specific issues, manufacturer errata.
-The root cause may be a known hardware constraint unknown to local context.
-
-**Rule 3 — Send a spy before sending a fix.**
-The minimum invasive test that confirms or kills a hypothesis is always cheaper than a fix attempt.
-One Serial.printf or one delay() to observe behavior costs zero risk.
-
-**Rule 4 — Never change two things at once.**
-Each fix attempt must change exactly one variable. Otherwise the result is uninterpretable.
-
-**Rule 5 — Document what you eliminate, not just what you find.**
-Eliminated hypotheses are as valuable as the confirmed one — they prevent future sessions from
-re-investigating the same dead ends. Write them into the SKILL file.
-
----
-
-## APPLICATION CHECKLIST — paste into CC PROMPT when invoking this skill
-
-```
-Before writing any fix code, complete and state the following:
-
-IS/IS-NOT TABLE:
-- WHAT IS:     [exact symptom object]
-- WHAT IS NOT: [similar object where problem does NOT appear]
-- WHERE IS:    [environment where it fails]
-- WHERE IS NOT:[environment where same thing works]
-- WHEN IS:     [exact conditions when it fails]
-- WHEN IS NOT: [conditions when it does NOT fail]
-- EXTENT:      [frequency, severity, reproducibility]
-
-ELIMINATED HYPOTHESES (with reason):
-- [hypothesis] → eliminated because: cannot explain IS-NOT [specific]
-
-CONFIRMED HYPOTHESIS:
-- [hypothesis] → explains both IS and IS-NOT because: [specific]
-
-SPY TEST RESULT:
-- Test: [what was measured]
-- Result: [exact output]
-- Conclusion: [confirmed / eliminated]
-
-FIX CONSEQUENCE CHECK:
-- Fix: [what changes]
-- New risk: [what could break]
-- Assessment: [acceptable / not acceptable]
-```
-
----
-
-## REFERENCE
-
-- Kepner-Tregoe Problem Analysis: IS/IS-NOT comparative analysis, developed 1960s
-- 8D Methodology: D2 (problem definition) + D4 (root cause) — automotive standard IATF 16949
-- VDA Red Book: explicitly recommends KT IS/IS-NOT as best practice for D4 root cause
-- Apollo 13: KT methodology used by NASA mission control for life-critical problem solving
-- Satu project: PNGdec rc=8 investigation 2026-06 — 4 sessions without KT, solved in 1 with it
+State: "KT exhausted." Present full IS/IS-NOT table to Janis.
+Janis decides: escalate to supplier, change design approach, or accept constraint.
+Do not write another fix prompt without new information from Janis.

@@ -158,6 +158,18 @@ Changes:
 - tray_zone_frame(): all 4 translates Y 0 → e
 - **Active SCAD:** vending-machine/VM-01-base/VM-01-base-v15.scad
 
+### 2026-06-28 | VM-01-base-v16 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v16.scad
+- cc_chat_log.md
+
+Changes:
+- Fix 1: acrylic_display() — hull() front panel replaced with flat cube: translate([acrylic_front_x, e, acrylic_bot_z]) cube([acrylic_front_w, door_t, acrylic_zone_h]). Simpler geometry, no z-fighting.
+- Fix 2: outer_shell() hollow subtract Z changed from skin_t → leg_h+skin_t. Assembly translate([0,0,leg_h]) removed — outer_shell() now called directly as outer_shell().
+- Fix 3: Version header v15 → v16, date 2026-06-28.
+- **Active SCAD:** vending-machine/VM-01-base/VM-01-base-v16.scad
+
 ## Flags for Claude Web
 - exit_door_w (shell cutout): currently 400mm. Janis may want to confirm this.
 - Flap door dimensions (100mm tall x 250mm wide): confirm with Janis from front render.

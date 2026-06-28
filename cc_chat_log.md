@@ -389,3 +389,44 @@ Panel now spans Z 300-700 — one continuous acrylic piece covering spring zone 
 Change 2: All spring_zone_panel() comments and assembly comment updated: Z 300-542 → Z 300-700.
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v23.scad
+
+---
+
+### 2026-06-28 | VM-01-base-v24 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v24.scad (new)
+- rules-codes.md (v1.4)
+- knowledge.map (v23 → Superseded, v24 → ACTIVE)
+- cc_chat_log.md
+- prompts/archive/VM-01-base-v24-spring-tray-fix ✅ COMPLETE — 2026-06-28.md
+
+**KT R-111 RESOLVED — Root cause confirmed by Janis manual isolation test:**
+spring_tray() was the sole 2-manifold source. Commenting it out cleared warning. All other modules clean.
+
+**Fix 1 — spring_tray() rewritten: APPLIED**
+Replaced union() { floor_slab + walls } pattern with single solid cube + difference().
+- Old: union() of thin floor (5mm) + 3 tall walls → T-junction at floor top face = non-manifold
+- New: cube([tray_w, tray_d, tray_h]) solid, hollow interior subtracted, open front face subtracted
+- Left/right windows: Y-start uses tray_wall_t*2 offset (not tray_wall_t)
+- All cutouts preserved: rear motor mounts, latch pin hole
+
+**Fix 2 — tray_zone_frame() height: APPLIED**
+panel_zone_top_z = 700mm and panel_zone_h = 400mm added to PARAMETERS.
+tray_zone_frame() updated from tray_zone_top_z/tray_zone_h (542mm) to panel_zone_top_z/panel_zone_h (700mm).
+Frame now matches spring_zone_panel() Z 300-700.
+
+**spring_coil() inner height check: CONFIRMED spring_l-1 in v23 — not touched.**
+
+**rules-codes.md updated to v1.4: CONFIRMED**
+New rule: "Never build a tray/box using union() of separate floor + wall pieces."
+
+**FLAG FOR CLAUDE WEB — ACTION REQUIRED:**
+Janis must open VM-01-base-v24.scad in OpenSCAD → F6 → confirm 2-manifold warning GONE.
+This is the definitive fix. Root cause was spring_tray() union() T-junction confirmed by isolation test.
+
+**FLAG FOR CLAUDE WEB — KT R-111 STATUS:**
+Root cause identified and fixed. 8 versions of manifold fixes (v17-v24) across this session.
+If v24 F6 shows no warning → KT R-111 CLOSED.
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v24.scad

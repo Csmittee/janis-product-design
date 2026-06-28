@@ -1,7 +1,7 @@
 # 🎯 WORKFLOW SKILL — Janis Product Design
-> Version 1.0 — 2026-06-28
-> Changes: Full rewrite — adapted from Satu project governance pattern
-> Previous: none
+> Version 2.0 — 2026-06-28
+> Changes: KT problem solving section upgraded — full trigger rule, repo file reference added
+> Previous: v1.0 — 2026-06-28
 
 ---
 
@@ -128,7 +128,7 @@ Claude Web writes CHAT_HANDOFF → Janis saves to project knowledge
 | Trigger | Detected by | Action | Validator |
 |---|---|---|---|
 | New .scad file created | cc | Add to knowledge.map | Claude Web reads cc_chat_log next session |
-| Same fix fails twice | Claude Web or cc | KT framework — stop, diagnose, request more data | Claude Web reviews before next prompt |
+| Same fix fails twice | Claude Web or cc | **STOP → invoke KT framework (see below)** | Claude Web completes all KT phases before next prompt |
 | Dimension change requested | Janis | Claude Web flags impact → Janis approves → update rules-dimensions.md first | cc reads updated rules-dimensions before any .scad change |
 | WORKFLOW_SKILL.md changed | Janis decides, cc writes | Claude Web verifies content before merge | Claude Web confirms to Janis explicitly |
 | Locked decision touched without approval | cc detects | cc stops, writes flag in cc_chat_log, does not proceed | Claude Web reads log, escalates to Janis |
@@ -289,13 +289,38 @@ If any check fails → fix before delivering. Never ask Janis to remind Claude W
 
 ## PROBLEM SOLVING — KT FRAMEWORK
 
-**Trigger:** same symptom fails twice → STOP → invoke before any new code.
+> **R-111: After ANY 2 failed fix attempts on the same symptom — STOP.**
+> Do not write another line of fix code.
+> Complete all KT phases below before any new prompt is written.
 
-- **IS:** where/when/what the problem EXISTS
-- **IS NOT:** where/when/what it does NOT exist
-- Hypothesis must explain BOTH or it is eliminated
-- Request more data or a screenshot before sending another fix
-- Read the SCAD error log before any geometry hypothesis
+**Full KT skill file:** `SKILL_problem_solving_kt.md` in repo root.
+Claude Web: if this file exists in repo, read it before forming any hypothesis.
+If not in repo, ask Janis to upload it from the Satu project repo.
+
+### KT Minimum (when full file unavailable)
+
+**Phase 1 — What exactly is the symptom?** Raw output only. No interpretation.
+
+**Phase 2 — IS / IS-NOT table:**
+| Dimension | IS | IS NOT | Distinctive |
+|---|---|---|---|
+| WHAT | exact failing object | similar object that works | |
+| WHERE | environment where it fails | environment where it doesn't | |
+| WHEN | exact conditions | conditions where it does NOT fail | |
+| EXTENT | frequency / severity | what is NOT affected | |
+
+**Phase 3 — Hypotheses:** Generate ALL possible causes first.
+For each: does it explain BOTH IS and IS-NOT? If not → eliminate immediately.
+Never fix a hypothesis that cannot explain the IS-NOT.
+
+**Phase 4 — Spy test:** Minimum invasive test to confirm hypothesis before fixing.
+One change. One observation. Then fix.
+
+**KT Rules (non-negotiable):**
+- Never fix a symptom you cannot explain with IS/IS-NOT
+- Never change two things at once
+- Seek global knowledge (docs, library notes, rules files) before third attempt
+- Document eliminated hypotheses — they prevent re-investigation next session
 
 ---
 
@@ -314,22 +339,24 @@ If any check fails → fix before delivering. Never ask Janis to remind Claude W
 
 ```
 janis-product-design/
-├── cc_rules.md              ← cc reads every session
-├── cc_chat_log.md           ← cc writes, Claude Web reads last 3
-├── chat_rules.md            ← Claude Web rules (project knowledge master)
-├── rules-dimensions.md      ← authoritative dimensions — never duplicated
-├── knowledge.map            ← navigation guide, cc updates when files added
-├── WORKFLOW_SKILL.md        ← this file (project knowledge master)
-├── prompts/                 ← active cc prompt files
-│   └── archive/             ← completed prompts stamped ✅ COMPLETE
+├── cc_rules.md                      ← cc reads every session
+├── cc_chat_log.md                   ← cc writes, Claude Web reads last 3
+├── chat_rules.md                    ← Claude Web rules (project knowledge master)
+├── rules-dimensions.md              ← authoritative dimensions — never duplicated
+├── rules-codes.md                   ← OpenSCAD coding rules — cc reads for SCAD tasks
+├── SKILL_problem_solving_kt.md      ← KT framework — read when R-111 triggers
+├── knowledge.map                    ← navigation guide, cc updates when files added
+├── WORKFLOW_SKILL.md                ← this file (project knowledge master)
+├── prompts/                         ← active cc prompt files
+│   └── archive/                     ← completed prompts stamped ✅ COMPLETE
 ├── vending-machine/
-│   └── VM-01-base/          ← VM-01 .scad versions
+│   └── VM-01-base/                  ← VM-01 .scad versions
 ├── pilates-reformer/
-│   └── PR-01-base/          ← PR-01 .scad versions (NOT STARTED)
+│   └── PR-01-base/                  ← PR-01 .scad versions (NOT STARTED)
 ├── exports/
-│   └── for-supplier/        ← STL files
-│   └── for-cnc/             ← DXF files
-└── renders/                 ← PNG screenshots per version
+│   └── for-supplier/                ← STL files
+│   └── for-cnc/                     ← DXF files
+└── renders/                         ← PNG screenshots per version
 ```
 
 **Project knowledge (Claude Web only — never in repo):**

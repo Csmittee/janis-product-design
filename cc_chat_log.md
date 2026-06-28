@@ -187,3 +187,49 @@ Changes:
 - Flap door dimensions (100mm tall x 250mm wide): confirm with Janis from front render.
 - rules-materials.md: confirm it is in repo root (it is — .claude/ copy was deleted).
 - PR-01 (pilates reformer): NOT STARTED.
+
+---
+
+### 2026-06-28 | VM-01-base-v17 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v17.scad (new)
+- rules-codes.md (v1.1)
+- knowledge.map (v16 → Superseded, v17 → ACTIVE)
+- cc_chat_log.md
+- prompts/archive/VM-01-base-v17-fix-manifold ✅ COMPLETE — 2026-06-28.md
+
+**Task 1 — Shell assembly revert: APPLIED**
+- Assembly line restored to: `translate([0, 0, leg_h]) outer_shell();`
+- Inside outer_shell(): hollow subtract Z restored to `skin_t` (local origin)
+- Height `total_h-(skin_t*2)` kept — v14 bottom-skin fix preserved
+- Source file v16 was fully read before any edit was made (new rule compliance)
+
+**Task 2 — 2-manifold source diagnosis:**
+openscad binary not available in remote cc environment. Diagnosis performed via code analysis against rules-codes.md patterns.
+
+Most likely culprit: **dashboard()** — specifically the curved support bracket at lines 389–394 of v16:
+```scad
+hull() {
+    translate([-screen_w/2, 0, 0])
+        rotate([-90, 0, 0]) cylinder(r=bracket_r, h=30);
+    translate([screen_w/2, 0, 0])
+        rotate([-90, 0, 0]) cylinder(r=bracket_r, h=30);
+}
+```
+This is `hull()` over two rotated cylinders — complex geometry. Rules-codes.md "No hull() for flat panels" was the original warning; this bracket is not a flat panel but curved hull geometry in a tight space, a known 2-manifold risk.
+
+Secondary suspect: **sensor_strip()** — the "laser beam" cube at `cube([..., 1, 1])` is degenerate (1mm in two axes). Near-zero geometry can cause non-manifold edges.
+
+Third candidate: **tray_zone_frame()** — four cubes in a union() that share edges at corners. Shared edges without epsilon offset can produce degenerate topology.
+
+v17 is delivered with ALL modules uncommented (full assembly restored). Claude Web must perform surgical fix in v18 starting with dashboard() bracket geometry.
+
+**Task 3 — rules-codes.md updated to v1.1: CONFIRMED**
+- New rule added to 2-Manifold section: "Read the live .scad file before writing any fix"
+
+**Flag for Claude Web — v18 planning:**
+- Primary fix target: dashboard() support bracket — replace hull()+rotated cylinders with simpler geometry (two flat cubes or a single extruded profile)
+- Secondary: sensor_strip() 1x1mm cube — add minimum 2mm on each axis
+- Confirm with Janis whether openscad binary can be installed in cc environment for future manifold testing
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v17.scad

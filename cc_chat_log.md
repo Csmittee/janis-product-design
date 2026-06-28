@@ -430,3 +430,30 @@ Root cause identified and fixed. 8 versions of manifold fixes (v17-v24) across t
 If v24 F6 shows no warning → KT R-111 CLOSED.
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v24.scad
+
+---
+
+### 2026-06-28 | VM-01-base-v25 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v25.scad (new)
+- knowledge.map (v24 → Superseded, v25 → ACTIVE)
+- cc_chat_log.md
+
+**Diagnosis:** v24 tray body rewrite was correct but non-manifold persisted.
+Janis confirmed via comment toggle: for loop still triggered warning. Issue was
+INTERNAL objects (motors, springs, partitions) having faces coplanar with tray body faces.
+
+**Coplanar faces fixed with epsilon (e=0.01) offsets:**
+- Motor cube rear Y: was tray_d (450, flush with rear wall outer face) → tray_d - motor_d + e
+- Motor cube depth: motor_d → motor_d - e (shrinks away from rear wall)
+- Motor cube bottom Z: tray_floor_t (5, flush with floor top) → tray_floor_t + e
+- Spring coil bottom Z: tray_floor_t + spring_od/2 (spring bottom at Z=5, flush with floor) → + e added
+- Partition cube bottom Z: tray_floor_t → tray_floor_t + e
+- Partition cube rear Y: tray_d - tray_wall_t (447, flush with rear wall inner face) → depth shortened by e
+
+**FLAG FOR CLAUDE WEB — ACTION REQUIRED:**
+Janis must open VM-01-base-v25.scad → F6 → confirm 2-manifold warning GONE.
+If still present, issue is spring_coil() itself or spring/motor intersection with tray body.
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v25.scad

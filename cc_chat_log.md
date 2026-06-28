@@ -170,6 +170,18 @@ Changes:
 - Fix 3: Version header v15 → v16, date 2026-06-28.
 - **Active SCAD:** vending-machine/VM-01-base/VM-01-base-v16.scad
 
+### 2026-06-28 | rules-codes.md v1.0 | COMMITTED
+
+Files committed:
+- rules-codes.md (new file)
+- knowledge.map (v15, v16 added to version index)
+- cc_chat_log.md
+
+Changes:
+- Created rules-codes.md Version 1.0 — full OpenSCAD coding rule set extracted from VM-01-base v3–v16 build history
+- 7 sections: 2-Manifold Rules, Variable Declaration Rules, Module Structure Rules, File and Version Rules, Z-Stack and Positioning Rules, Color and Opacity Rules, QA Checklist
+- knowledge.map: v14 status → Superseded; v15 and v16 added; v16 marked ACTIVE
+
 ## Flags for Claude Web
 - exit_door_w (shell cutout): currently 400mm. Janis may want to confirm this.
 - Flap door dimensions (100mm tall x 250mm wide): confirm with Janis from front render.

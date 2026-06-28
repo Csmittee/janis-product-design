@@ -107,7 +107,9 @@ Claude Web → QA pass/fail → writes next prompt if needed
 | Version | File | Status |
 |---|---|---|
 | v13 | vending-machine/VM-01-base/VM-01-base-v13.scad | Superseded |
-| v14 | vending-machine/VM-01-base/VM-01-base-v14.scad | **ACTIVE** — 2-manifold fix |
+| v14 | vending-machine/VM-01-base/VM-01-base-v14.scad | Superseded |
+| v15 | vending-machine/VM-01-base/VM-01-base-v15.scad | Superseded |
+| v16 | vending-machine/VM-01-base/VM-01-base-v16.scad | **ACTIVE** — hull→cube, shell Z fix |
 
 ---
 

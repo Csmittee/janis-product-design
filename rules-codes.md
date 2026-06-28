@@ -1,7 +1,7 @@
 # Janis Product Design — OpenSCAD Coding Rules
-> Version 1.0 — 2026-06-28
-> Changes: Initial file — rules extracted from VM-01-base v3–v16 build history
-> Previous: none
+> Version 1.1 — 2026-06-28
+> Changes: Added "Read the live .scad file before writing any fix" rule (2-Manifold section)
+> Previous: 1.0 — 2026-06-28
 
 All units: MM. All rules below are mandatory for every SCAD file in this project.
 
@@ -37,6 +37,13 @@ If a module is called with `translate([0, 0, offset])`, all geometry inside that
 module uses local Z=0 as its base. If the module is called without a translate,
 internal geometry must use world Z coordinates directly. Never mix both patterns
 in the same module — pick one and be consistent.
+
+**Rule: Read the live .scad file before writing any fix.**
+cc must open and read the full active .scad file before writing any geometry change.
+The v16 Fix 2 error (shell assembly Z broken) happened because cc inferred the
+assembly pattern from context instead of reading the file. If the file is not in
+repo, stop and ask Janis to push it before proceeding. Never infer structure —
+always read first.
 
 ---
 

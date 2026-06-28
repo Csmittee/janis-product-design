@@ -1,7 +1,7 @@
 # Janis Product Design — OpenSCAD Coding Rules
-> Version 1.2 — 2026-06-28
-> Changes: Added "Local vs world Z — never mix inside one module" rule (Z-Stack section)
-> Previous: 1.1 — 2026-06-28
+> Version 1.3 — 2026-06-28
+> Changes: Added 3 rules to 2-Manifold section: difference() enclosure, union() volume overlap, flush face coplanar
+> Previous: 1.2 — 2026-06-28
 
 All units: MM. All rules below are mandatory for every SCAD file in this project.
 
@@ -44,6 +44,23 @@ The v16 Fix 2 error (shell assembly Z broken) happened because cc inferred the
 assembly pattern from context instead of reading the file. If the file is not in
 repo, stop and ask Janis to push it before proceeding. Never infer structure —
 always read first.
+
+**Rule: difference() inner geometry must be strictly smaller than outer on ALL faces.**
+Never use outer_dimension+N for the subtract geometry — this creates an open face.
+Use outer_dimension-1 (or any value less than outer) to ensure full enclosure.
+Example: spring_coil() inner cylinder was spring_l+1, outer was spring_l.
+         Inner protruded 1mm above outer top = open edge = non-manifold.
+         Fix: inner = spring_l-1.
+
+**Rule: union() geometry must share volume, not just edges or faces.**
+Two cubes touching only at a corner edge or sharing only a coplanar face
+are non-manifold in CGAL. All joined geometry must have overlapping volume.
+Use epsilon or extend one bar into the other to guarantee volume overlap.
+
+**Rule: module geometry must not land exactly flush with shell boundary.**
+A component whose face is exactly coplanar with the enclosing shell face
+creates a shared face = non-manifold. Always subtract skin_t or epsilon
+to ensure the component is fully inside or clearly outside the shell.
 
 ---
 

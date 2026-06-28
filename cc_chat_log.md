@@ -301,3 +301,46 @@ If warning persists, the remaining suspect is tray_zone_frame() — shared cube 
 without epsilon offset. Report result so cc can write v20 if needed.
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v19.scad
+
+---
+
+### 2026-06-28 | VM-01-base-v20 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v20.scad (new)
+- rules-codes.md (v1.3)
+- knowledge.map (v19 → Superseded, v20 → ACTIVE)
+- cc_chat_log.md
+- prompts/VM-01-base-v20-fix-manifold.md
+- prompts/archive/VM-01-base-v20-fix-manifold ✅ COMPLETE — 2026-06-28.md
+
+**Fix 1 — spring_coil() inner cylinder: APPLIED**
+`cylinder(h=spring_l+1, ...)` → `cylinder(h=spring_l-1, ...)`
+Inner was 1mm taller than outer = open top face = non-manifold.
+Inner now 1mm shorter = fully enclosed on all faces.
+
+**Fix 2 — compartment_divider() height: APPLIED**
+`total_h - leg_h` → `total_h - leg_h - skin_t`
+Top face was exactly flush with shell top (Z=700 coplanar) = non-manifold.
+Now sits 2mm below shell top — no shared face.
+
+**Fix 3 — tray_zone_frame() corner contacts: APPLIED**
+Top/bottom bars now own full-width corner regions.
+Side bars shortened: start at tray_0_z+frame_bar, height = tray_zone_h-(frame_bar*2).
+Side bars no longer share edges with top/bottom bars — all corners are solid volume from top/bottom bars only.
+
+**rules-codes.md updated to v1.3: CONFIRMED**
+Three new rules added to 2-Manifold section:
+- difference() inner must be strictly smaller than outer on all faces
+- union() geometry must share volume not just edges
+- module geometry must not land flush with shell boundary
+
+**FLAG FOR CLAUDE WEB — ACTION REQUIRED:**
+Janis must open VM-01-base-v20.scad in OpenSCAD → F6 → confirm 2-manifold warning status.
+v20 addresses all identified non-manifold sources across 5 versions of fixes.
+If warning still persists, remaining candidates to investigate:
+- spring_tray() difference() subtractions — check all subtract geometry heights
+- tray_rack() cylinder latch pins — check if flush with tray surfaces
+- Any module using Y=0 as a face coordinate without epsilon offset
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v20.scad

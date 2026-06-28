@@ -112,7 +112,8 @@ Claude Web → QA pass/fail → writes next prompt if needed
 | v16 | vending-machine/VM-01-base/VM-01-base-v16.scad | Superseded |
 | v17 | vending-machine/VM-01-base/VM-01-base-v17.scad | Superseded |
 | v18 | vending-machine/VM-01-base/VM-01-base-v18.scad | Superseded |
-| v19 | vending-machine/VM-01-base/VM-01-base-v19.scad | **ACTIVE** — dashboard bracket + sensor strip degenerate cube fixed |
+| v19 | vending-machine/VM-01-base/VM-01-base-v19.scad | Superseded |
+| v20 | vending-machine/VM-01-base/VM-01-base-v20.scad | **ACTIVE** — spring_coil, compartment_divider, tray_zone_frame manifold fixes |
 
 ---
 

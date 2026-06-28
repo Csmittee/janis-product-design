@@ -114,7 +114,8 @@ Claude Web → QA pass/fail → writes next prompt if needed
 | v18 | vending-machine/VM-01-base/VM-01-base-v18.scad | Superseded |
 | v19 | vending-machine/VM-01-base/VM-01-base-v19.scad | Superseded |
 | v20 | vending-machine/VM-01-base/VM-01-base-v20.scad | Superseded |
-| v21 | vending-machine/VM-01-base/VM-01-base-v21.scad | **ACTIVE** — left_front_acrylic() removed from assembly |
+| v21 | vending-machine/VM-01-base/VM-01-base-v21.scad | Superseded |
+| v22 | vending-machine/VM-01-base/VM-01-base-v22.scad | **ACTIVE** — acrylic_display top/right flush fixes, tray_zone_frame Y offset |
 
 ---
 

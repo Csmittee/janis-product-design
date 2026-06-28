@@ -374,3 +374,18 @@ Change 2: acrylic_display() right panel translate X: total_w-skin_t → total_w-
 Change 3: tray_zone_frame() all 4 bars Y translate: e → e*2. Increased offset from front face to avoid z-fighting.
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v22.scad
+
+---
+
+### 2026-06-28 | VM-01-base-v23 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v23.scad (new)
+- knowledge.map (v22 → Superseded, v23 → ACTIVE)
+- cc_chat_log.md
+
+Change 1: spring_zone_panel() panel_h: tray_h*tray_count (242mm) → total_h-(leg_h+exit_door_h) (400mm).
+Panel now spans Z 300-700 — one continuous acrylic piece covering spring zone + upper left zone.
+Change 2: All spring_zone_panel() comments and assembly comment updated: Z 300-542 → Z 300-700.
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v23.scad

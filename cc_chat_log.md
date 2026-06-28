@@ -457,3 +457,47 @@ Janis must open VM-01-base-v25.scad → F6 → confirm 2-manifold warning GONE.
 If still present, issue is spring_coil() itself or spring/motor intersection with tray body.
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v25.scad
+
+---
+
+### 2026-06-29 | Governance Restructure + VM-01-base-v26 | COMMITTED
+
+**Files moved/created:**
+- rules-codes.md → .claude/rules-codes.md (moved, root copy deleted)
+- .claude/rules-vm.md (created — new file with header)
+- .claude/rules-materials.md (already in .claude/ from prior session — root copy was already gone)
+- .claude/SKILL_problem_solving_kt.md (uploaded by Janis — registered only, not rewritten)
+- WORKFLOW_SKILL.md (uploaded by Janis — registered only, not rewritten)
+
+**Files modified:**
+- knowledge.map → v2: FILE LOCATIONS table updated with .claude/ paths; v25 → Superseded; v26 → ACTIVE; SESSION START PROCEDURE updated
+- cc_rules.md → v2: .claude/ file paths updated in "Files cc Reads" section
+- rules-dimensions.md → v2: OWNER-LOCKED section added; spring_gap 20 → 13mm; PENDING DECISIONS section added at bottom
+- .claude/rules-codes.md → v1.5: Module Isolation Testing section added
+- chat_rules.md → v2: Module Isolation Testing rule + R-111 automatic trigger rule added
+
+**Files archived (Task D):**
+- All non-archived prompts in /prompts/ moved to /prompts/archive/ with suffix ✅ COMPLETE — 2026-06-29
+
+**New SCAD file:**
+- vending-machine/VM-01-base/VM-01-base-v26.scad
+  - spring_gap: 20 → 13mm (OWNER-LOCKED, Janis-approved)
+  - spring_tray() for-loop inner object epsilon offsets corrected per REVISED prompt:
+    - Motor Y: tray_d - motor_d + e → tray_d - motor_d - e (rear face clears outer wall)
+    - Spring Y: tray_d - motor_d → tray_d - motor_d - e
+    - Partition Y: tray_wall_t → tray_wall_t + e (clears front inner wall face)
+  - Version header updated to v26, date 2026-06-29
+
+**Tasks H & I — Janis uploads only:**
+- WORKFLOW_SKILL.md: Janis uploaded to repo root. cc registered in knowledge.map. NOT rewritten by cc.
+- .claude/SKILL_problem_solving_kt.md: Janis uploaded to .claude/. cc registered in knowledge.map. NOT rewritten by cc.
+
+---
+
+⚑ FLAG: Janis must open VM-01-base-v26.scad → F6 → confirm 2-manifold warning GONE.
+⚑ FLAG: Janis must upload new WORKFLOW_SKILL.md to Project Knowledge (Claude Web session).
+⚑ FLAG: Janis must upload updated chat_rules.md to Project Knowledge (Claude Web session).
+⚑ FLAG: Janis must confirm .claude/SKILL_problem_solving_kt.md is the new version (uploaded this session).
+⚑ FLAG: spring_gap = 13mm now in v26 SCAD — OWNER-LOCKED — do not change without Janis written approval.
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v26.scad

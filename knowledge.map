@@ -1,6 +1,6 @@
 # knowledge.map
 # Janis Product Design — Master File Index
-# Version: v1 | June 2026
+# Version: v2 | 2026-06-29
 # Maintained by: cc
 #
 # cc reads this at EVERY session start (step 2 after cc_rules.md)
@@ -26,11 +26,13 @@
 4. /prompts/[task].md     — today's specific task file (filename given by Janis in chat)
 
 ### cc reads — ONLY when task requires
-- rules-dimensions.md     — any SCAD task
-- rules-materials.md      — any SCAD task (in repo root)
-- rules-vm.md             — VM tasks only
-- rules-pr.md             — PR tasks only (create when needed)
-- latest .scad file       — active model only (filename in cc_chat_log.md)
+- .claude/rules-codes.md     — any SCAD task
+- rules-dimensions.md        — any SCAD task (in repo root)
+- .claude/rules-materials.md — any SCAD task
+- .claude/rules-vm.md        — VM tasks only
+- rules-pr.md                — PR tasks only (create when needed)
+- .claude/SKILL_problem_solving_kt.md — R-111 trigger
+- latest .scad file          — active model only (filename in cc_chat_log.md)
 
 ---
 
@@ -44,9 +46,11 @@
 | chat_rules.md | repo root / + Project Knowledge | cc |
 | workflow_skill.md | repo root / + Project Knowledge | cc |
 | rules-dimensions.md | repo root / | cc |
-| rules-materials.md | repo root / | cc |
-| rules-vm.md | repo root / | cc (create when needed) |
 | rules-pr.md | repo root / | cc (create when needed) |
+| .claude/rules-codes.md | .claude/ | cc — SCAD tasks |
+| .claude/rules-materials.md | .claude/ | cc — SCAD tasks |
+| .claude/rules-vm.md | .claude/ | cc — VM tasks |
+| .claude/SKILL_problem_solving_kt.md | .claude/ | Claude Web + cc — R-111 trigger |
 | /prompts/[task].md | repo /prompts/ | Claude Web writes, Janis saves |
 | SCAD files | /vending-machine/[model]/ | cc |
 | SCAD files | /pilates-reformer/[model]/ | cc |
@@ -66,8 +70,9 @@
 5. Read cc_chat_log.md            ← see what Claude Web flagged last session
 6. Read /prompts/[task].md        ← filename told by Janis in chat message
 7. Read latest .scad for active model (see cc_chat_log.md for filename)
-8. Read rules-dimensions.md + rules-materials.md (for SCAD tasks)
-9. Read product-specific rules if prompt specifies
+8. Read rules-dimensions.md + .claude/rules-materials.md (for SCAD tasks)
+9. Read .claude/rules-codes.md (for SCAD tasks)
+10. Read product-specific rules if prompt specifies
 ```
 
 ---
@@ -97,8 +102,8 @@ Claude Web → QA pass/fail → writes next prompt if needed
 
 ## NEVER DUPLICATE RULES FILES
 - rules-dimensions.md: root only (authoritative)
-- No copies in .claude/ folder
-- If a file exists in both places, root wins, delete the other
+- .claude/ files: .claude/ only — no root copies
+- If a file exists in both places, root wins for root files, .claude/ wins for .claude/ files
 
 ---
 
@@ -118,7 +123,8 @@ Claude Web → QA pass/fail → writes next prompt if needed
 | v22 | vending-machine/VM-01-base/VM-01-base-v22.scad | Superseded |
 | v23 | vending-machine/VM-01-base/VM-01-base-v23.scad | Superseded |
 | v24 | vending-machine/VM-01-base/VM-01-base-v24.scad | Superseded |
-| v25 | vending-machine/VM-01-base/VM-01-base-v25.scad | **ACTIVE** — spring_tray() internal coplanar faces fixed with epsilon offsets |
+| v25 | vending-machine/VM-01-base/VM-01-base-v25.scad | Superseded |
+| v26 | vending-machine/VM-01-base/VM-01-base-v26.scad | **ACTIVE** — spring_gap=13, epsilon offsets corrected |
 
 ---
 

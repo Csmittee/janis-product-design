@@ -19,6 +19,15 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-29 | janis-product-viewer v1.1 — local WASM path | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- WASM_CDN_CANDIDATES now tries /wasm/openscad.js first (Satu public/wasm/)
+- Janis must place openscad.js + openscad.wasm in Satu public/wasm/ and push
+- Files from: unpkg.com/@openscad/wasm@0.0.3/dist/
+
+---
+
 ### 2026-06-29 | janis-product-viewer v1.1 — WASM CDN fix | COMMITTED
 
 Files: viewer/janis-product-viewer.html, cc_chat_log.md

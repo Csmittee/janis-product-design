@@ -546,3 +546,43 @@ Coil fills tray from Y≈0 (drop zone boundary) to Y≈390 (motor start). Correc
 ⚑ FLAG: Janis must open VM-01-base-v28.scad → F6 → confirm 2-manifold warning GONE.
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v28.scad
+
+---
+
+### 2026-06-29 | VM-01-base-v29 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v29.scad (new)
+- knowledge.map (v28 → Superseded, v29 → ACTIVE)
+- cc_chat_log.md
+- prompts/archive/VM-01-base-v29 ✅ COMPLETE — 2026-06-29.md
+
+**Task 1 — Widen machine: APPLIED**
+- total_w: 620 → 640
+- system_w: 185 → 204 (screen board 180mm + bezel×2 + margin)
+- dash_w = 204 - 19 - 4 = 181mm ✓ Screen circuit board 180×100mm now fits with tilt clearance
+
+**Task 2 — Dashboard undercut: RESOLVED by Task 1**
+- No code change in dashboard(). Width fix in Task 1 provides clearance.
+- Clearance verification: Screen X start = 416 + 19 + 10 = 445mm. Screen right edge (flat) = 445 + 165 = 610mm. Shell right inner face = 640 - 2 = 638mm. Clearance = 638 - 610 = 28mm before tilt displacement. ✓
+
+**Task 3 — Fix 2-manifold spring coil overlap: APPLIED**
+- spring_coil() h: spring_l → spring_l - 2
+- Gives 2mm clearance between coil front face and motor rear face. Fixes 0.02mm overlap.
+- spring_l parameter unchanged at 390. No translate values changed.
+
+**Task 4 — Debug visibility toggles: APPLIED**
+- Added to PARAMETERS: show_shell_top, show_shell_left, show_shell_right (all default true)
+- Added outer_shell_debug() module with 3 if-blocks for panel removal
+- outer_shell() original module kept in file — not deleted
+- Assembly: translate([0, 0, leg_h]) outer_shell_debug()
+
+⚑ FLAG: Janis must F6 v29 — confirm 2-manifold warning GONE
+⚑ FLAG: Janis must test show_shell_right=false to inspect dashboard clearance
+⚑ FLAG: Janis to update rules-dimensions.md with screen spec manually:
+    ## Screen — Dashboard
+    - Circuit board: 180 × 100mm
+    - Active display: 165 × 100mm (landscape, portrait planned for future)
+    - Tilt: -30° (inset for shipping protection — LOCKED)
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v29.scad

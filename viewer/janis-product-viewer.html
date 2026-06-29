@@ -564,7 +564,7 @@
 
     <div class="wasm-notice">
       ⚠ OpenSCAD WASM renders .scad in-browser.<br>
-      First render loads engine from CDN (~30s). If CDN fails, try [Test 3D] to confirm canvas works, then host <code style="color:var(--gold)">openscad.js + openscad.wasm</code> locally and update the src in the HTML.
+      Host <code style="color:var(--gold)">openscad.js</code> + <code style="color:var(--gold)">openscad.wasm</code> in Satu <code style="color:var(--gold)">public/wasm/</code> — viewer loads them from <code style="color:var(--gold)">/wasm/openscad.js</code> first, then falls back to CDN.
     </div>
 
   </div>
@@ -1664,10 +1664,10 @@ async function renderScad() {
   }
 }
 
-// CDN candidates tried in order. jsdelivr and unpkg serve the same npm packages.
-// The .wasm binary is fetched by the JS wrapper relative to its own URL,
-// so the base URL must resolve to a directory containing both .js and .wasm.
+// Local path is tried first — host openscad.js + openscad.wasm in public/wasm/ on Satu.
+// CDN fallbacks follow in case local files are not present.
 const WASM_CDN_CANDIDATES = [
+  '/wasm/openscad.js',
   'https://unpkg.com/@openscad/wasm@0.0.3/dist/openscad.js',
   'https://cdn.jsdelivr.net/npm/@openscad/wasm@0.0.3/dist/openscad.js',
   'https://unpkg.com/@openscad/wasm/dist/openscad.js',

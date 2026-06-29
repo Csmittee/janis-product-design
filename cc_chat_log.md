@@ -19,6 +19,16 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-29 | PR-01-base-v1 | COMMITTED
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v1.scad (new), cc_chat_log.md
+- Full module skeleton: bed_frame, bed_surface, pole_base_socket, pole_body, pole_mid_clamp, pole_top_collar, crossbar_body, crossbar_end_cap, fold_cone_base, fold_u_bracket, fold_hinge, pole_fold_joint
+- All modules stubbed with placeholder geometry (cubes/cylinders) at correct proportions
+- Parameter block from rules-pr.md verbatim; show_fold_joints=false (Classic Std default)
+- Colors applied per rules-pr.md COLOR CODING table; manifold receipts in comments
+- pr01_assembly() calls bed_assembly + 4x pole_assembly + crossbar_assembly — renders F5
+
+⚑ FLAG: All PR-01 dimensions PENDING Janis confirm (bed_l, bed_w, bed_h, pole_od, pole_h). grip_od=32mm OWNER-LOCKED only.
 ### 2026-06-29 | janis-product-viewer v1.1 — WASM CDN fix | COMMITTED
 
 Files: viewer/janis-product-viewer.html, cc_chat_log.md

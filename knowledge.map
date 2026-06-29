@@ -130,7 +130,8 @@ Claude Web → QA pass/fail → writes next prompt if needed
 | v29 | vending-machine/VM-01-base/VM-01-base-v29.scad | Superseded |
 | v30 | vending-machine/VM-01-base/VM-01-base-v30.scad | Superseded |
 | v31 | vending-machine/VM-01-base/VM-01-base-v31.scad | Superseded |
-| v32 | vending-machine/VM-01-base/VM-01-base-v32.scad | **ACTIVE** — latch pin 15→10mm, debug toggles moved above ASSEMBLY |
+| v32 | vending-machine/VM-01-base/VM-01-base-v32.scad | Superseded |
+| v33 | vending-machine/VM-01-base/VM-01-base-v33.scad | **ACTIVE** — coil translate Y: spring_l+e → tray_d-motor_d-2 (clears motor block) |
 
 ---
 

@@ -19,6 +19,16 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-29 | janis-product-viewer v1.1 — model color picker | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- Model Color row in left sidebar: 5 preset swatches (Grey/White/Black/Gold/Blue) + custom color picker
+- setModelColor() updates live material color + persists across STL swaps
+- updateScene() uses currentModelColor so color survives Reload STL / Shells toggle
+- Answered: F6 required before export; SCAD color() only affects OpenSCAD preview not STL
+
+---
+
 ### 2026-06-29 | janis-product-viewer v1.1 — STL orientation + shell toggle | COMMITTED
 
 Files: viewer/janis-product-viewer.html, cc_chat_log.md

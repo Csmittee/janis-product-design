@@ -19,6 +19,17 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-29 | viewer — 3-way STL view cycle (Full / Open / C2 see-through) | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- Added stlC2 URL to VM-01 project (VM-01-v37-C2.stl)
+- Replaced binary shell toggle with 3-way cycle button: Full Exterior → Open Shell → See-Through (C2)
+- stlViewMode state: 'full' | 'open' | 'c2'; cycle skips missing URLs automatically
+- Reload STL button respects current stlViewMode
+- Resets to 'full' on project switch
+
+---
+
 ### 2026-06-29 | VM-01-base-v37 — render_mode for two STL exports | COMMITTED
 
 Files: vending-machine/VM-01-base/VM-01-base-v37.scad, knowledge.map

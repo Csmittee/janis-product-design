@@ -586,3 +586,18 @@ Files committed:
     - Tilt: -30° (inset for shipping protection — LOCKED)
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v29.scad
+
+---
+
+### 2026-06-29 | VM-01-base-v30 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v30.scad (new)
+- knowledge.map (v29 → Superseded, v30 → ACTIVE)
+- cc_chat_log.md
+
+Change: Added show_shell_back = true debug toggle to PARAMETERS and corresponding if-block
+inside outer_shell_debug() difference(). Placed before show_shell_top in parameter order.
+show_shell_top already existed in v29 — not duplicated (rules-codes.md: no duplicate declarations).
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v30.scad

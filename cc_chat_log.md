@@ -19,6 +19,15 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-29 | viewer — update STL URLs to v37, restore 3-way cycle | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- STL URLs updated: v36 → v37 (VM-01-v37.stl, VM-01-v37-open.stl, VM-01-v37-C2.stl)
+- 3-way cycle restored now that all 3 v37 files are on server
+- Cycle order: See-Through (C2, default) → Full Exterior → Open Shell (interior)
+
+---
+
 ### 2026-06-29 | viewer — C2 default view, 2-way cycle, fixed STL error handler | COMMITTED
 
 Files: viewer/janis-product-viewer.html, cc_chat_log.md

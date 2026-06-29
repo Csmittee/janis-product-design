@@ -694,3 +694,31 @@ Files committed:
 ⚑ FLAG: Janis must F6 v34 — confirm 2-manifold warning GONE
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v34.scad
+
+---
+
+### 2026-06-29 | VM-01-base-v35 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v35.scad (new — isolation test, not final)
+- knowledge.map (v34 → Superseded, v35 → ACTIVE)
+- cc_chat_log.md
+
+**Motor hidden for manifold isolation test: APPLIED**
+Motor cube wrapped in if(false) { } — geometry unchanged, just not rendered.
+Spring translate: [x, tray_d-motor_d-2, ...] — references motor_d PARAMETER, not motor object. Position correct.
+Partition unchanged. To restore motor: change if(false) to if(true) in spring_tray() for-loop.
+
+**Debug toggle warning explained:**
+Janis was commenting out variable declaration lines (//show_shell_back = true) in local file.
+outer_shell_debug() still references those variables → OpenSCAD "Ignoring unknown variable" warning.
+Rule: NEVER comment out declaration lines. To hide a panel, change value to false. Keep the line active.
+
+**Isolation test instructions for Janis:**
+1. F6 v35 — if 2-manifold warning GONE: motor cube was the source → restore with if(true), shrink further
+2. F6 v35 — if warning STILL present: motor is NOT the source → spring or partition or tray body
+3. Next isolation: if motor was clear, wrap spring_coil() call in if(false) and test again
+
+⚑ FLAG: Janis must F6 v35 and report result — warning gone or still present?
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v35.scad

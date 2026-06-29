@@ -629,3 +629,29 @@ Note: show_shell_back was already added in v30, show_shell_top already in v29 �
 ⚑ FLAG: Janis test show_shell_back=false — confirm motor cubes no longer visible through back wall
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v31.scad
+
+---
+
+### 2026-06-29 | VM-01-base-v32 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v32.scad (new)
+- knowledge.map (v31 → Superseded, v32 → ACTIVE)
+- cc_chat_log.md
+
+**Fix 1 — latch_pin_l 15 → 10mm: APPLIED**
+Pin in tray_rack() starts at tray_start_d+tray_d-tray_wall_t = 585mm (rear wall inner face).
+At 15mm: pin reached 600mm = outer back shell face. Pin interfered with shell — the "2 dots".
+At 10mm: pin ends at 595mm. Shell inner back face = total_d-skin_t = 598mm. 3mm clearance. ✓
+Pin acts as push-in stopper for tray insertion. No hole in outer shell needed.
+
+**Fix 2 — Debug toggles moved above ASSEMBLY: APPLIED**
+Removed from PARAMETERS section (line ~117). Placed just before // ASSEMBLY comment.
+Now all 4 toggles (show_shell_back/top/left/right) are in one visible block at bottom of file.
+OpenSCAD allows variable declarations anywhere before their use — move is valid.
+
+⚑ FLAG: Janis must F5 v32 — confirm latch pins no longer protrude through back shell
+⚑ FLAG: Janis must F6 v32 — confirm 2-manifold warning GONE
+⚑ FLAG: Test show_shell_back=false to verify motor and pin geometry from rear
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v32.scad

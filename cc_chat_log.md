@@ -19,6 +19,17 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-29 | janis-product-viewer v1.1 | COMMITTED
+
+Files: viewer/janis-product-viewer.html (v1.1), cc_chat_log.md
+- Added COMPONENTS panel to right sidebar below Visibility Toggles
+- VM-01 components: Outer Shell, Spring Trays, Tray Rack, Acrylic Display, Front Door, Exit Door
+- Toggle per component (gold=ON, dim=OFF); [Iso] button isolates single component (all others OFF)
+- [Show All] button at top of panel resets all to ON
+- OFF components inject if(false){} wrapper around matching assembly line before WASM render
+
+---
+
 ### 2026-06-29 | janis-product-viewer | COMMITTED
 
 Files: viewer/janis-product-viewer.html (new), knowledge.map (v4 +VIEWER section), cc_chat_log.md

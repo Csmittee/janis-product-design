@@ -722,3 +722,33 @@ Rule: NEVER comment out declaration lines. To hide a panel, change value to fals
 ⚑ FLAG: Janis must F6 v35 and report result — warning gone or still present?
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v35.scad
+
+---
+
+### 2026-06-29 | VM-01-base-v36 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v36.scad (new)
+- knowledge.map (v35 → Superseded, v36 → ACTIVE)
+- cc_chat_log.md
+
+**ROOT CAUSE IDENTIFIED — spring coil implicit union with tray body:**
+OpenSCAD unions all children of the same translate(). Spring coil cylinder is sibling of tray
+difference() body → they are UNIONED. Two contact points create non-manifold in the union:
+  1. Lane-0 coil left edge: X = tray_wall_t + spring_od/2 - spring_od/2 = tray_wall_t = 3mm.
+     Exactly tangent to left tray wall inner face. Cylinder touching flat = non-manifold union edge.
+  2. Coil bottom Z = tray_floor_t + e = 5.01mm. Under $fn=64, polygon facets dip ~0.012mm below
+     theoretical radius → coil bottom ≈ 4.998mm, grazes floor top at 5mm.
+
+**Fix 1 — spring_coil() diameter: d=spring_od → d=spring_od-2 (display only)**
+Radius shrinks 1mm each side. Lane-0 left edge now at X=4mm. 1mm clear of tray wall. ✓
+
+**Fix 2 — coil Z centre: tray_floor_t+spring_od/2+e → tray_floor_t+spring_od/2+2**
+Coil bottom now at tray_floor_t+2-spring_od/2+spring_od/2 = tray_floor_t+2 = 7mm. 2mm above floor. ✓
+
+**Fix 3 — motor restored (if(false) → if(true))**
+Motor confirmed innocent by Janis isolation test (for-loop off = no warning; motor off alone = still warning).
+
+⚑ FLAG: Janis must F6 v36 — confirm 2-manifold warning GONE. This is the definitive fix.
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v36.scad

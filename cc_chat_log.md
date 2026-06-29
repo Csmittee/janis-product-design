@@ -586,3 +586,46 @@ Files committed:
     - Tilt: -30° (inset for shipping protection — LOCKED)
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v29.scad
+
+---
+
+### 2026-06-29 | VM-01-base-v30 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v30.scad (new)
+- knowledge.map (v29 → Superseded, v30 → ACTIVE)
+- cc_chat_log.md
+
+Change: Added show_shell_back = true debug toggle to PARAMETERS and corresponding if-block
+inside outer_shell_debug() difference(). Placed before show_shell_top in parameter order.
+show_shell_top already existed in v29 — not duplicated (rules-codes.md: no duplicate declarations).
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v30.scad
+
+---
+
+### 2026-06-29 | VM-01-base-v31 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v31.scad (new)
+- knowledge.map (v30 → Superseded, v31 → ACTIVE)
+- cc_chat_log.md
+
+Note: Prompt requested "save as v30" but v30 already existed — saved as v31 per never-overwrite rule.
+Note: show_shell_back was already added in v30, show_shell_top already in v29 — no toggle changes needed.
+
+**Fix 1 — Motor Y position: APPLIED**
+- Before: translate([x-10, tray_d - motor_d - e, tray_floor_t + e])
+- After:  translate([x-10, tray_d - motor_d - tray_wall_t - e, tray_floor_t + e])
+- Motor rear face: was 449.98mm (2.98mm inside rear wall) → now 446.98mm (fully inside hollow)
+- Clears rear wall inner face (447mm) by 0.02mm. Resolves "2 dots" visible through back wall.
+
+**Fix 2 — Rear motor mount cutout height: APPLIED**
+- Before: cube([22, tray_wall_t + 2, 35]) — cutout top at tray_floor_t+35 = 40mm
+- After:  cube([22, tray_wall_t + 2, 36]) — cutout top at tray_floor_t+36 = 41mm
+- Motor top = tray_floor_t + e + 35 = 40.01mm. Was 0.01mm above cutout = manifold risk. Now 0.99mm inside. ✓
+
+⚑ FLAG: Janis must F6 v31 — confirm 2-manifold warning GONE
+⚑ FLAG: Janis test show_shell_back=false — confirm motor cubes no longer visible through back wall
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v31.scad

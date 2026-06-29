@@ -465,6 +465,39 @@
   .btn-isolate:hover { border-color: var(--gold); color: var(--gold); }
   .btn-isolate.active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
 
+  /* ── MATERIAL COLOR ROW ── */
+  .material-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 3px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: border-color 0.15s;
+  }
+  .swatch:hover, .swatch.active { border-color: var(--gold); }
+  .swatch-custom {
+    background: linear-gradient(135deg, red, orange, yellow, green, blue, violet);
+    position: relative;
+    overflow: hidden;
+  }
+  .swatch-custom input[type=color] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+  }
+
   /* ── WASM NOTICE ── */
   .wasm-notice {
     background: var(--bg-card);
@@ -556,6 +589,19 @@
 
     <div>
       <div class="section-label">Actions</div>
+      <div class="section-label" style="margin-top:2px">Model Color</div>
+      <div class="material-row" id="material-row">
+        <div class="swatch active" data-color="#cccccc" title="Grey"    style="background:#cccccc"></div>
+        <div class="swatch"        data-color="#ffffff" title="White"   style="background:#ffffff"></div>
+        <div class="swatch"        data-color="#1a1a1a" title="Black"   style="background:#1a1a1a;border-color:#444"></div>
+        <div class="swatch"        data-color="#d4a843" title="Gold"    style="background:#d4a843"></div>
+        <div class="swatch"        data-color="#4a90d9" title="Blue"    style="background:#4a90d9"></div>
+        <div class="swatch swatch-custom" title="Custom color">
+          <input type="color" id="color-picker" value="#cccccc">
+        </div>
+      </div>
+
+      <button class="btn-action" id="btn-reload-stl">↺ Reload STL</button>
       <button class="btn-action" id="btn-test-3d">⬡ Test 3D Canvas</button>
       <button class="btn-action" id="btn-export-stl">⬇ Export STL</button>
       <button class="btn-action" id="btn-screenshot">📷 Screenshot</button>
@@ -563,8 +609,8 @@
     </div>
 
     <div class="wasm-notice">
-      ⚠ OpenSCAD WASM renders .scad in-browser.<br>
-      First render loads engine from CDN (~30s). If CDN fails, try [Test 3D] to confirm canvas works, then host <code style="color:var(--gold)">openscad.js + openscad.wasm</code> locally and update the src in the HTML.
+      <b style="color:var(--gold)">STL mode:</b> model loads from <code style="color:var(--gold)">/models/VM-01-v36.stl</code> — instant, no WASM.<br>
+      <b style="color:var(--text-dim)">WASM mode:</b> [⟳ Re-render] applies slider/toggle changes live once WASM engine is available.
     </div>
 
   </div>
@@ -587,7 +633,7 @@
     <div>
       <div class="section-label">Parameters</div>
       <div id="params-panel"></div>
-      <button class="btn-apply" id="btn-apply">Apply Changes</button>
+      <button class="btn-apply" id="btn-apply">⟳ Re-render (WASM)</button>
       <button class="btn-reset-params" id="btn-reset-params">Reset Defaults</button>
       <div class="auto-render-row">
         <span>Auto-render on change</span>
@@ -659,6 +705,9 @@ const PROJECTS = {
       { id: 'show_shell_back',  label: 'Back Shell',  default: true },
       { id: 'show_shell_top',   label: 'Top Shell',   default: true },
     ],
+    stl:     'https://api.janishammer.com/models/VM-01-v38-full.stl',
+    stlOpen: 'https://api.janishammer.com/models/VM-01-v38-std.stl',
+    stlC2:   'https://api.janishammer.com/models/VM-01-v38-C2.stl',
     components: [
       { id: 'outer_shell',    label: 'Outer Shell',    default: true, match: 'translate([0, 0, leg_h]) outer_shell_debug();' },
       { id: 'spring_tray',   label: 'Spring Trays',   default: true, match: 'for (t = [0:tray_count-1]) spring_tray(t);' },
@@ -1351,6 +1400,7 @@ function switchProject(id) {
   proj.toggles.forEach(t => { currentToggles[t.id] = t.default; });
   currentComponents = {};
   (proj.components || []).forEach(c => { currentComponents[c.id] = c.default; });
+  stlViewMode = 'open'; // default to standard view (open window)
 
   // Meta
   const metaEl = document.getElementById('project-meta');
@@ -1365,10 +1415,13 @@ function switchProject(id) {
   buildVisibilityPanel();
   buildComponentsPanel();
 
-  if (proj.scad) {
-    document.getElementById('canvas-overlay').style.display = 'none';
-    if (autoRender) triggerRender();
-  } else {
+  if (proj.stlOpen) {
+    loadSTL(proj.stlOpen);  // default to standard view (shell + open window)
+  } else if (proj.stl) {
+    loadSTL(proj.stl);
+  } else if (proj.scad && autoRender) {
+    triggerRender();
+  } else if (!proj.scad) {
     showPlaceholder(proj);
   }
 }
@@ -1437,6 +1490,44 @@ function buildVisibilityPanel() {
     return;
   }
 
+  // STL mode: replace individual toggles with a single Open/Close Shell button
+  if (proj.stl) {
+    panel.style.gridTemplateColumns = '1fr';
+    const note = document.createElement('div');
+    note.style.cssText = 'color:var(--text-dim);font-size:10px;margin-bottom:6px;line-height:1.5';
+    note.textContent = 'STL mode — one button opens/closes all shells.';
+    panel.appendChild(note);
+
+    const viewModes = [
+      { key: 'open', label: '⬡ Standard — open window',  url: proj.stlOpen, cls: '' },
+      { key: 'full', label: '⬜ Full Exterior',            url: proj.stl,     cls: ' off' },
+      { key: 'c2',   label: '◧ C2 — open shell (top+left removed)', url: proj.stlC2, cls: ' off' },
+    ].filter(m => m.url);
+
+    function updateViewBtn(btn) {
+      const m = viewModes.find(m => m.key === stlViewMode) || viewModes[0];
+      btn.className = 'btn-toggle' + m.cls;
+      btn.textContent = m.label;
+    }
+
+    const btn = document.createElement('button');
+    btn.id = 'btn-stl-shell';
+    btn.style.cssText = 'width:100%;grid-column:1/-1';
+    updateViewBtn(btn);
+    btn.addEventListener('click', () => {
+      const idx = viewModes.findIndex(m => m.key === stlViewMode);
+      stlViewMode = viewModes[(idx + 1) % viewModes.length].key;
+      updateViewBtn(btn);
+      const m = viewModes.find(m => m.key === stlViewMode);
+      if (m && m.url) loadSTL(m.url);
+      else log('STL not configured for this view', 'err');
+    });
+    panel.appendChild(btn);
+    return;
+  }
+
+  // WASM mode: individual shell toggles
+  panel.style.gridTemplateColumns = '1fr 1fr';
   proj.toggles.forEach(t => {
     const btn = document.createElement('button');
     btn.className = 'btn-toggle' + (currentToggles[t.id] ? '' : ' off');
@@ -1461,6 +1552,14 @@ function buildComponentsPanel() {
   if (!comps.length) {
     panel.innerHTML = '<div style="color:var(--text-dim);font-size:11px">No components defined.</div>';
     return;
+  }
+
+  // STL mode note
+  if (PROJECTS[activeProject].stl) {
+    const note = document.createElement('div');
+    note.style.cssText = 'color:var(--text-dim);font-size:10px;margin-bottom:6px;line-height:1.5';
+    note.textContent = 'Per-component toggle needs WASM mode or separate STL files.';
+    panel.appendChild(note);
   }
 
   comps.forEach(c => {
@@ -1522,6 +1621,47 @@ function showAllComponents() {
     if (isoBtn) isoBtn.classList.remove('active');
   });
   scheduleAutoRender();
+}
+
+// ─────────────────────────────
+// STL LOADER (fetch pre-rendered STL, no WASM)
+// ─────────────────────────────
+
+let currentSTLUrl = null;
+let stlViewMode = 'full'; // 'full' | 'open' | 'c2'
+
+async function loadSTL(url) {
+  setStatus('● Loading STL...', 'render');
+  log(`Fetching STL: ${url.split('/').pop()}`);
+  document.getElementById('canvas-overlay').style.display = 'none';
+  currentSTLUrl = url;
+  const startTime = Date.now();
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status} — ${url}`);
+    const buffer = await resp.arrayBuffer();
+
+    const loader = new THREE.STLLoader();
+    const geometry = loader.parse(buffer);
+
+    // OpenSCAD is Z-up; Three.js is Y-up. Rotate -90° around X so model stands upright.
+    geometry.applyMatrix4(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
+    geometry.computeVertexNormals();
+    geometry.center();
+
+    updateScene(geometry);
+    lastSTLBuffer = buffer;
+
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+    const tris = Math.floor(geometry.attributes.position.count / 3);
+    log(`✅ STL loaded: ${elapsed}s — ${tris.toLocaleString()} triangles`, 'ok');
+    document.getElementById('canvas-stats').textContent =
+      `${tris.toLocaleString()} tri · ${elapsed}s · STL`;
+    setStatus(`✅ Ready — ${elapsed}s`, 'ready');
+  } catch (err) {
+    log(`❌ STL load failed: ${err.message}`, 'err');
+    setStatus('❌ STL load failed — see log', 'error');
+  }
 }
 
 // ─────────────────────────────
@@ -1664,10 +1804,10 @@ async function renderScad() {
   }
 }
 
-// CDN candidates tried in order. jsdelivr and unpkg serve the same npm packages.
-// The .wasm binary is fetched by the JS wrapper relative to its own URL,
-// so the base URL must resolve to a directory containing both .js and .wasm.
+// Local path is tried first — host openscad.js + openscad.wasm in public/wasm/ on Satu.
+// CDN fallbacks follow in case local files are not present.
 const WASM_CDN_CANDIDATES = [
+  '/wasm/openscad.js',
   'https://unpkg.com/@openscad/wasm@0.0.3/dist/openscad.js',
   'https://cdn.jsdelivr.net/npm/@openscad/wasm@0.0.3/dist/openscad.js',
   'https://unpkg.com/@openscad/wasm/dist/openscad.js',
@@ -1738,7 +1878,7 @@ function updateScene(geometry) {
   clearModel();
 
   const material = new THREE.MeshPhongMaterial({
-    color: 0xcccccc,
+    color: new THREE.Color(currentModelColor),
     shininess: 40,
     side: THREE.DoubleSide
   });
@@ -1877,6 +2017,12 @@ function wireEvents() {
   });
 
   // Actions
+  document.getElementById('btn-reload-stl').addEventListener('click', () => {
+    const proj = PROJECTS[activeProject];
+    const url = stlViewMode === 'full' ? proj.stl : stlViewMode === 'c2' ? proj.stlC2 : proj.stlOpen;
+    if (url) loadSTL(url);
+    else log('No STL URL for this project', 'err');
+  });
   document.getElementById('btn-test-3d').addEventListener('click', testGeometry);
   document.getElementById('btn-export-stl').addEventListener('click', exportSTL);
   document.getElementById('btn-screenshot').addEventListener('click', takeScreenshot);
@@ -1893,6 +2039,39 @@ function wireEvents() {
 }
 
 // ─────────────────────────────
+// MODEL COLOR
+// ─────────────────────────────
+
+let currentModelColor = '#cccccc';
+
+function setModelColor(hex) {
+  currentModelColor = hex;
+  if (modelMesh) {
+    const color = new THREE.Color(hex);
+    if (modelMesh.material) {
+      modelMesh.material.color.set(color);
+    } else if (modelMesh.children) {
+      modelMesh.children.forEach(c => { if (c.material && c.material.color) c.material.color.set(color); });
+    }
+  }
+  // Update active swatch highlight
+  document.querySelectorAll('.swatch').forEach(s => {
+    s.classList.toggle('active', s.dataset.color === hex);
+  });
+  document.getElementById('color-picker').value = hex;
+}
+
+function wireColorPicker() {
+  document.querySelectorAll('.swatch[data-color]').forEach(s => {
+    s.addEventListener('click', () => setModelColor(s.dataset.color));
+  });
+  document.getElementById('color-picker').addEventListener('input', function() {
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+    setModelColor(this.value);
+  });
+}
+
+// ─────────────────────────────
 // INIT
 // ─────────────────────────────
 
@@ -1900,9 +2079,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initThree();
   populateProjectDropdowns();
   wireEvents();
+  wireColorPicker();
   switchProject(activeProject);
   log('Janis Product Design Viewer v1.1 ready');
-  log('Select a project and click [Apply Changes] to render');
+  log('VM-01: loading STL from api.janishammer.com/models/VM-01-v36.stl...');
 });
 </script>
 </body>

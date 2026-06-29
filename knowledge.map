@@ -136,7 +136,9 @@ Claude Web → QA pass/fail → writes next prompt if needed
 | v33 | vending-machine/VM-01-base/VM-01-base-v33.scad | Superseded |
 | v34 | vending-machine/VM-01-base/VM-01-base-v34.scad | Superseded |
 | v35 | vending-machine/VM-01-base/VM-01-base-v35.scad | Superseded |
-| v36 | vending-machine/VM-01-base/VM-01-base-v36.scad | **ACTIVE** — coil d-2 + Z+2 fixes wall/floor tangent; motor restored |
+| v36 | vending-machine/VM-01-base/VM-01-base-v36.scad | Superseded |
+| v37 | vending-machine/VM-01-base/VM-01-base-v37.scad | Superseded |
+| v38 | vending-machine/VM-01-base/VM-01-base-v38.scad | **ACTIVE** — 3 render modes: "standard"=shell+open window, "full"=all opaque, "open"=C2 inspection |
 
 ---
 
@@ -149,4 +151,11 @@ See: cc_chat_log.md (updated by cc after every commit)
 
 | File | Description |
 |---|---|
-| viewer/janis-product-viewer.html | Browser 3D viewer — self-contained HTML. Three.js canvas + OrbitControls. OpenSCAD WASM render. VM-01-base-v36 SCAD fully embedded. Gold/dark Satu theme. Deploy to Satu public/ → api.janishammer.com/janis-product-viewer |
+| viewer/janis-product-viewer.html | Browser 3D viewer — self-contained HTML. Three.js + OrbitControls + STLLoader. Gold/dark Satu theme. Loads STL from api.janishammer.com/models/. 3-way cycle: Standard (open window, default) → Full Exterior → C2 Open Shell. Deploy to Satu public/ → api.janishammer.com/janis-product-viewer |
+
+**STL files (Satu public/models/):**
+| File | View |
+|---|---|
+| VM-01-v38-std.stl | Standard — shell intact, acrylic removed (open window) |
+| VM-01-v38-full.stl | Full Exterior — all components, fully opaque |
+| VM-01-v38-C2.stl | C2 Open Shell — top + left panels removed, interior inspection |

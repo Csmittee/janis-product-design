@@ -28,6 +28,112 @@ Files: pilates-reformer/PR-01-base/PR-01-base-v2.scad (new), cc_chat_log.md
 - All other modules unchanged from v1. Renders F5 no warnings.
 
 ⚑ FLAG: Cam lock currently protrudes +X direction for all 4 poles. Confirm: should rear poles face opposite direction, or all same? Awaiting Janis decision.
+### 2026-06-29 | SESSION COMPLETE — viewer + v38 all 3 views confirmed working | DONE
+
+Files touched this session: VM-01-base-v37.scad, VM-01-base-v38.scad, viewer/janis-product-viewer.html, knowledge.map, cc_chat_log.md
+STL files on Satu server (public/models/): VM-01-v38-std.stl, VM-01-v38-full.stl, VM-01-v38-C2.stl
+Viewer confirmed working — 3 views cycle correctly:
+  ⬡ Standard — open window (default): shell intact, acrylic removed, springs + trays visible
+  ⬜ Full Exterior: all components including acrylic panels, fully opaque
+  ◧ C2 — open shell: top + left panels removed, full interior inspection view
+Next session: no outstanding flags. Ready for PR-01 Pilates Reformer or next VM-01 design task.
+
+---
+
+### 2026-06-29 | v38 + viewer — 3 render modes, correct standard view | COMMITTED
+
+Files: VM-01-base-v38.scad, viewer/janis-product-viewer.html, knowledge.map, cc_chat_log.md
+- v38 SCAD: 3 render_mode options clearly defined:
+    "standard" → shell intact, acrylic panels removed (open window = see-through effect) → VM-01-v38-std.stl
+    "full"     → everything including acrylic, fully opaque → VM-01-v38-full.stl
+    "open"     → shell with show_shell_top/left=false (C2 inspection) → VM-01-v38-C2.stl
+- Viewer default = Standard (open window); cycle: Standard → Full Exterior → C2 Open Shell
+- Viewer URLs updated to v38 filenames
+
+---
+
+### 2026-06-29 | viewer — update STL URLs to v37, restore 3-way cycle | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- STL URLs updated: v36 → v37 (VM-01-v37.stl, VM-01-v37-open.stl, VM-01-v37-C2.stl)
+- 3-way cycle restored now that all 3 v37 files are on server
+- Cycle order: See-Through (C2, default) → Full Exterior → Open Shell (interior)
+
+---
+
+### 2026-06-29 | viewer — C2 default view, 2-way cycle, fixed STL error handler | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- Default view on load = C2 see-through (stlC2 loaded first if available)
+- stlViewMode default = 'c2'; stlViewMode resets to 'c2' on project switch
+- Cycle is now 2-way: See-Through (standard) ↔ Full Exterior — Open Shell removed (file not on server)
+- loadSTL catch: removed triggerRender() fallback — WASM call was corrupting cycle state on 404
+- Reload STL button respects current mode
+
+---
+
+### 2026-06-29 | viewer — 3-way STL view cycle (Full / Open / C2 see-through) | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- Added stlC2 URL to VM-01 project (VM-01-v37-C2.stl)
+- Replaced binary shell toggle with 3-way cycle button: Full Exterior → Open Shell → See-Through (C2)
+- stlViewMode state: 'full' | 'open' | 'c2'; cycle skips missing URLs automatically
+- Reload STL button respects current stlViewMode
+- Resets to 'full' on project switch
+
+---
+
+### 2026-06-29 | VM-01-base-v37 — render_mode for two STL exports | COMMITTED
+
+Files: vending-machine/VM-01-base/VM-01-base-v37.scad, knowledge.map
+- Added render_mode = "full" / "open" parameter at bottom of file before assembly
+- "full": outer shell + all front panels → looks like complete exterior product → export as VM-01-v37.stl
+- "open": shell + front_door + spring_zone_panel + acrylic_display removed → all internals visible → export as VM-01-v37-open.stl
+- Workflow: set render_mode → F6 → File > Export > STL → switch → F6 → export again
+- knowledge.map: v36 → Superseded, v37 → ACTIVE
+
+---
+
+### 2026-06-29 | janis-product-viewer v1.1 — model color picker | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- Model Color row in left sidebar: 5 preset swatches (Grey/White/Black/Gold/Blue) + custom color picker
+- setModelColor() updates live material color + persists across STL swaps
+- updateScene() uses currentModelColor so color survives Reload STL / Shells toggle
+- Answered: F6 required before export; SCAD color() only affects OpenSCAD preview not STL
+
+---
+
+### 2026-06-29 | janis-product-viewer v1.1 — STL orientation + shell toggle | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- geometry.applyMatrix4(rotateX -π/2) fixes Z-up→Y-up: model now stands upright
+- Added stlOpen URL to VM-01 (VM-01-v36-open.stl — shell panels removed in OpenSCAD)
+- Visibility panel in STL mode: single [Shells ON/OFF] button swaps between stl/stlOpen
+- Components panel in STL mode: shows note that per-component toggle needs WASM/separate STLs
+- stlShellOpen resets to false on project switch
+Janis must export VM-01-v36-open.stl from OpenSCAD with show_shell_* = false
+
+---
+
+### 2026-06-29 | janis-product-viewer v1.1 — STL mode | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- VM-01 now has stl: 'https://api.janishammer.com/models/VM-01-v36.stl'
+- switchProject() calls loadSTL() first; falls back to WASM if STL fails
+- loadSTL(): fetch → STLLoader.parse → updateScene; sets lastSTLBuffer for export
+- Added [↺ Reload STL] action button
+- Apply Changes button renamed to [⟳ Re-render (WASM)] — reserved for when WASM is available
+- WASM notice updated to explain STL vs WASM modes
+
+---
+
+### 2026-06-29 | janis-product-viewer v1.1 — local WASM path | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- WASM_CDN_CANDIDATES now tries /wasm/openscad.js first (Satu public/wasm/)
+- Janis must place openscad.js + openscad.wasm in Satu public/wasm/ and push
+- Files from: unpkg.com/@openscad/wasm@0.0.3/dist/
 
 ---
 

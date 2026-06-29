@@ -19,6 +19,15 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-30 | PR-01-base-v3 | COMMITTED
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v3.scad (new), cc_chat_log.md, knowledge.map, prompts/archive/
+- Crossbar axis fix: pole_cx spans 0→bed_l along X, confirming bed length = X-axis. crossbar_body() reverted to rotate([0,90,0]) (X-axis), parameter y_pos, h=grip_l=2300. Assembly uses xbar_y_front=pole_cy[0]=60mm, xbar_y_rear=pole_cy[2]=610mm.
+- Collar bore: corrected to rotate([0,90,0]) center=true — X-axis bore, cuts side-to-side to accept X-axis crossbar.
+- Cam lock moved to +Y side (rotate([-90,0,0])) — perpendicular to crossbar bore, cleaner geometry.
+- All other v2 content unchanged: leg_w=180, leg_t=120, D-profile tapered poles.
+⚑ FLAG: cam lock on all 4 poles still faces same direction (+Y). Rear poles may need opposite. Awaiting Janis decision.
+
 ### 2026-06-30 | PR-01-base-v2 (3-fix update) | COMMITTED
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v2.scad, cc_chat_log.md, knowledge.map, prompts/archive/pr01-base-v2-fix.md

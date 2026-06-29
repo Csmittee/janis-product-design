@@ -19,6 +19,17 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-29 | viewer — C2 default view, 2-way cycle, fixed STL error handler | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- Default view on load = C2 see-through (stlC2 loaded first if available)
+- stlViewMode default = 'c2'; stlViewMode resets to 'c2' on project switch
+- Cycle is now 2-way: See-Through (standard) ↔ Full Exterior — Open Shell removed (file not on server)
+- loadSTL catch: removed triggerRender() fallback — WASM call was corrupting cycle state on 404
+- Reload STL button respects current mode
+
+---
+
 ### 2026-06-29 | viewer — 3-way STL view cycle (Full / Open / C2 see-through) | COMMITTED
 
 Files: viewer/janis-product-viewer.html, cc_chat_log.md

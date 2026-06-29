@@ -1400,7 +1400,7 @@ function switchProject(id) {
   proj.toggles.forEach(t => { currentToggles[t.id] = t.default; });
   currentComponents = {};
   (proj.components || []).forEach(c => { currentComponents[c.id] = c.default; });
-  stlViewMode = 'full';
+  stlViewMode = 'c2'; // default to see-through view
 
   // Meta
   const metaEl = document.getElementById('project-meta');
@@ -1415,7 +1415,9 @@ function switchProject(id) {
   buildVisibilityPanel();
   buildComponentsPanel();
 
-  if (proj.stl) {
+  if (proj.stlC2) {
+    loadSTL(proj.stlC2);  // default to C2 see-through view
+  } else if (proj.stl) {
     loadSTL(proj.stl);
   } else if (proj.scad && autoRender) {
     triggerRender();
@@ -1497,9 +1499,8 @@ function buildVisibilityPanel() {
     panel.appendChild(note);
 
     const viewModes = [
-      { key: 'full', label: '⬜ Full Exterior',        url: proj.stl,     cls: '' },
-      { key: 'open', label: '◧ Open Shell',            url: proj.stlOpen, cls: ' off' },
-      { key: 'c2',   label: '⬡ See-Through (C2)',      url: proj.stlC2,   cls: ' off' },
+      { key: 'c2',   label: '⬡ See-Through (standard)', url: proj.stlC2, cls: '' },
+      { key: 'full', label: '⬜ Full Exterior',           url: proj.stl,   cls: ' off' },
     ].filter(m => m.url);
 
     function updateViewBtn(btn) {
@@ -1659,8 +1660,6 @@ async function loadSTL(url) {
   } catch (err) {
     log(`❌ STL load failed: ${err.message}`, 'err');
     setStatus('❌ STL load failed — see log', 'error');
-    log('Falling back to WASM render...', 'info');
-    triggerRender();
   }
 }
 
@@ -2019,7 +2018,7 @@ function wireEvents() {
   // Actions
   document.getElementById('btn-reload-stl').addEventListener('click', () => {
     const proj = PROJECTS[activeProject];
-    const url = stlViewMode === 'c2' ? proj.stlC2 : stlViewMode === 'open' ? proj.stlOpen : proj.stl;
+    const url = stlViewMode === 'full' ? proj.stl : proj.stlC2;
     if (url) loadSTL(url);
     else log('No STL URL for this project', 'err');
   });

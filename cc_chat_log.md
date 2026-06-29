@@ -19,6 +19,18 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-29 | janis-product-viewer v1.1 — STL mode | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- VM-01 now has stl: 'https://api.janishammer.com/models/VM-01-v36.stl'
+- switchProject() calls loadSTL() first; falls back to WASM if STL fails
+- loadSTL(): fetch → STLLoader.parse → updateScene; sets lastSTLBuffer for export
+- Added [↺ Reload STL] action button
+- Apply Changes button renamed to [⟳ Re-render (WASM)] — reserved for when WASM is available
+- WASM notice updated to explain STL vs WASM modes
+
+---
+
 ### 2026-06-29 | janis-product-viewer v1.1 — local WASM path | COMMITTED
 
 Files: viewer/janis-product-viewer.html, cc_chat_log.md

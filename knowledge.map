@@ -147,7 +147,8 @@ Claude Web → QA pass/fail → writes next prompt if needed
 | Version | File | Status |
 |---|---|---|
 | v1 | pilates-reformer/PR-01-base/PR-01-base-v1.scad | Superseded |
-| v2 | pilates-reformer/PR-01-base/PR-01-base-v2.scad | **ACTIVE** — 3 fixes: Y-axis crossbar bore, legs 50% larger, D-profile tapered pole |
+| v2 | pilates-reformer/PR-01-base/PR-01-base-v2.scad | Superseded |
+| v3 | pilates-reformer/PR-01-base/PR-01-base-v3.scad | **ACTIVE** — crossbar X-axis fix (longitudinal); collar bore X-axis; cam lock +Y side |
 
 ---
 

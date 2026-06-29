@@ -707,6 +707,7 @@ const PROJECTS = {
     ],
     stl:     'https://api.janishammer.com/models/VM-01-v36.stl',
     stlOpen: 'https://api.janishammer.com/models/VM-01-v36-open.stl',
+    stlC2:   'https://api.janishammer.com/models/VM-01-v37-C2.stl',
     components: [
       { id: 'outer_shell',    label: 'Outer Shell',    default: true, match: 'translate([0, 0, leg_h]) outer_shell_debug();' },
       { id: 'spring_tray',   label: 'Spring Trays',   default: true, match: 'for (t = [0:tray_count-1]) spring_tray(t);' },
@@ -1399,7 +1400,7 @@ function switchProject(id) {
   proj.toggles.forEach(t => { currentToggles[t.id] = t.default; });
   currentComponents = {};
   (proj.components || []).forEach(c => { currentComponents[c.id] = c.default; });
-  stlShellOpen = false;
+  stlViewMode = 'full';
 
   // Meta
   const metaEl = document.getElementById('project-meta');
@@ -1495,18 +1496,29 @@ function buildVisibilityPanel() {
     note.textContent = 'STL mode — one button opens/closes all shells.';
     panel.appendChild(note);
 
+    const viewModes = [
+      { key: 'full', label: '⬜ Full Exterior',        url: proj.stl,     cls: '' },
+      { key: 'open', label: '◧ Open Shell',            url: proj.stlOpen, cls: ' off' },
+      { key: 'c2',   label: '⬡ See-Through (C2)',      url: proj.stlC2,   cls: ' off' },
+    ].filter(m => m.url);
+
+    function updateViewBtn(btn) {
+      const m = viewModes.find(m => m.key === stlViewMode) || viewModes[0];
+      btn.className = 'btn-toggle' + m.cls;
+      btn.textContent = m.label;
+    }
+
     const btn = document.createElement('button');
     btn.id = 'btn-stl-shell';
     btn.style.cssText = 'width:100%;grid-column:1/-1';
-    btn.className = 'btn-toggle' + (stlShellOpen ? ' off' : '');
-    btn.textContent = stlShellOpen ? 'Shells OFF — interior visible' : '✓ Shells ON — full model';
+    updateViewBtn(btn);
     btn.addEventListener('click', () => {
-      stlShellOpen = !stlShellOpen;
-      btn.className = 'btn-toggle' + (stlShellOpen ? ' off' : '');
-      btn.textContent = stlShellOpen ? 'Shells OFF — interior visible' : '✓ Shells ON — full model';
-      const url = stlShellOpen ? proj.stlOpen : proj.stl;
-      if (url) loadSTL(url);
-      else log('Open-shell STL not configured for this project', 'err');
+      const idx = viewModes.findIndex(m => m.key === stlViewMode);
+      stlViewMode = viewModes[(idx + 1) % viewModes.length].key;
+      updateViewBtn(btn);
+      const m = viewModes.find(m => m.key === stlViewMode);
+      if (m && m.url) loadSTL(m.url);
+      else log('STL not configured for this view', 'err');
     });
     panel.appendChild(btn);
     return;
@@ -1614,7 +1626,7 @@ function showAllComponents() {
 // ─────────────────────────────
 
 let currentSTLUrl = null;
-let stlShellOpen = false;
+let stlViewMode = 'full'; // 'full' | 'open' | 'c2'
 
 async function loadSTL(url) {
   setStatus('● Loading STL...', 'render');
@@ -2007,7 +2019,8 @@ function wireEvents() {
   // Actions
   document.getElementById('btn-reload-stl').addEventListener('click', () => {
     const proj = PROJECTS[activeProject];
-    if (proj.stl) loadSTL(proj.stl);
+    const url = stlViewMode === 'c2' ? proj.stlC2 : stlViewMode === 'open' ? proj.stlOpen : proj.stl;
+    if (url) loadSTL(url);
     else log('No STL URL for this project', 'err');
   });
   document.getElementById('btn-test-3d').addEventListener('click', testGeometry);

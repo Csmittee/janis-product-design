@@ -675,3 +675,22 @@ Files committed:
 ⚑ FLAG: Janis must F6 v33 — confirm 2-manifold warning GONE
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v33.scad
+
+---
+
+### 2026-06-29 | VM-01-base-v34 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v34.scad (new)
+- knowledge.map (v33 → Superseded, v34 → ACTIVE)
+- cc_chat_log.md
+
+**Fix — motor cube resized and re-centred: APPLIED**
+- cube: [20, motor_d-e, 35] → [18, motor_d-2, 33]
+- translate X: x-10 → x-9 (re-centres 18mm cube: 9mm each side of lane centre)
+- Depth motor_d-2 = 58mm, height 33mm — shrinks clear of floor, wall, and coil contact faces
+- Motor Y start unchanged: tray_d-motor_d-tray_wall_t-e (fully inside hollow)
+
+⚑ FLAG: Janis must F6 v34 — confirm 2-manifold warning GONE
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v34.scad

@@ -128,7 +128,8 @@ Claude Web → QA pass/fail → writes next prompt if needed
 | v27 | vending-machine/VM-01-base/VM-01-base-v27.scad | Superseded |
 | v28 | vending-machine/VM-01-base/VM-01-base-v28.scad | Superseded |
 | v29 | vending-machine/VM-01-base/VM-01-base-v29.scad | Superseded |
-| v30 | vending-machine/VM-01-base/VM-01-base-v30.scad | **ACTIVE** — show_shell_back toggle added to outer_shell_debug() |
+| v30 | vending-machine/VM-01-base/VM-01-base-v30.scad | Superseded |
+| v31 | vending-machine/VM-01-base/VM-01-base-v31.scad | **ACTIVE** — motor Y fixed (clears rear wall), cutout height 35→36 |
 
 ---
 

@@ -525,3 +525,24 @@ Solid cylinder is always manifold.
 ⚑ FLAG: Janis must open VM-01-base-v27.scad → F6 → confirm 2-manifold warning GONE.
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v27.scad
+
+---
+
+### 2026-06-29 | VM-01-base-v28 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v28.scad (new)
+- knowledge.map (v27 → Superseded, v28 → ACTIVE)
+- cc_chat_log.md
+
+Change: spring_tray() for-loop — spring coil Y translate corrected.
+- Before: translate([x, tray_d - motor_d - e, tray_floor_t + spring_od/2 + e])
+- After:  translate([x, spring_l + e, tray_floor_t + spring_od/2 + e])
+
+After rotate([90,0,0]), cylinder extends in -Y direction.
+Front face at Y = spring_l + e = 390.01. Rear face at Y = e = 0.01.
+Coil fills tray from Y≈0 (drop zone boundary) to Y≈390 (motor start). Correct geometry.
+
+⚑ FLAG: Janis must open VM-01-base-v28.scad → F6 → confirm 2-manifold warning GONE.
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v28.scad

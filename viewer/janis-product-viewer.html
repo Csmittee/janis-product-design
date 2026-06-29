@@ -660,7 +660,8 @@ const PROJECTS = {
       { id: 'show_shell_back',  label: 'Back Shell',  default: true },
       { id: 'show_shell_top',   label: 'Top Shell',   default: true },
     ],
-    stl: 'https://api.janishammer.com/models/VM-01-v36.stl',
+    stl:     'https://api.janishammer.com/models/VM-01-v36.stl',
+    stlOpen: 'https://api.janishammer.com/models/VM-01-v36-open.stl',
     components: [
       { id: 'outer_shell',    label: 'Outer Shell',    default: true, match: 'translate([0, 0, leg_h]) outer_shell_debug();' },
       { id: 'spring_tray',   label: 'Spring Trays',   default: true, match: 'for (t = [0:tray_count-1]) spring_tray(t);' },
@@ -1353,6 +1354,7 @@ function switchProject(id) {
   proj.toggles.forEach(t => { currentToggles[t.id] = t.default; });
   currentComponents = {};
   (proj.components || []).forEach(c => { currentComponents[c.id] = c.default; });
+  stlShellOpen = false;
 
   // Meta
   const metaEl = document.getElementById('project-meta');
@@ -1440,6 +1442,33 @@ function buildVisibilityPanel() {
     return;
   }
 
+  // STL mode: replace individual toggles with a single Open/Close Shell button
+  if (proj.stl) {
+    panel.style.gridTemplateColumns = '1fr';
+    const note = document.createElement('div');
+    note.style.cssText = 'color:var(--text-dim);font-size:10px;margin-bottom:6px;line-height:1.5';
+    note.textContent = 'STL mode — one button opens/closes all shells.';
+    panel.appendChild(note);
+
+    const btn = document.createElement('button');
+    btn.id = 'btn-stl-shell';
+    btn.style.cssText = 'width:100%;grid-column:1/-1';
+    btn.className = 'btn-toggle' + (stlShellOpen ? ' off' : '');
+    btn.textContent = stlShellOpen ? 'Shells OFF — interior visible' : '✓ Shells ON — full model';
+    btn.addEventListener('click', () => {
+      stlShellOpen = !stlShellOpen;
+      btn.className = 'btn-toggle' + (stlShellOpen ? ' off' : '');
+      btn.textContent = stlShellOpen ? 'Shells OFF — interior visible' : '✓ Shells ON — full model';
+      const url = stlShellOpen ? proj.stlOpen : proj.stl;
+      if (url) loadSTL(url);
+      else log('Open-shell STL not configured for this project', 'err');
+    });
+    panel.appendChild(btn);
+    return;
+  }
+
+  // WASM mode: individual shell toggles
+  panel.style.gridTemplateColumns = '1fr 1fr';
   proj.toggles.forEach(t => {
     const btn = document.createElement('button');
     btn.className = 'btn-toggle' + (currentToggles[t.id] ? '' : ' off');
@@ -1464,6 +1493,14 @@ function buildComponentsPanel() {
   if (!comps.length) {
     panel.innerHTML = '<div style="color:var(--text-dim);font-size:11px">No components defined.</div>';
     return;
+  }
+
+  // STL mode note
+  if (PROJECTS[activeProject].stl) {
+    const note = document.createElement('div');
+    note.style.cssText = 'color:var(--text-dim);font-size:10px;margin-bottom:6px;line-height:1.5';
+    note.textContent = 'Per-component toggle needs WASM mode or separate STL files.';
+    panel.appendChild(note);
   }
 
   comps.forEach(c => {
@@ -1531,18 +1568,25 @@ function showAllComponents() {
 // STL LOADER (fetch pre-rendered STL, no WASM)
 // ─────────────────────────────
 
+let currentSTLUrl = null;
+let stlShellOpen = false;
+
 async function loadSTL(url) {
   setStatus('● Loading STL...', 'render');
-  log(`Fetching STL: ${url}`);
+  log(`Fetching STL: ${url.split('/').pop()}`);
   document.getElementById('canvas-overlay').style.display = 'none';
+  currentSTLUrl = url;
   const startTime = Date.now();
   try {
     const resp = await fetch(url);
-    if (!resp.ok) throw new Error(`Server returned HTTP ${resp.status} for ${url}`);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status} — ${url}`);
     const buffer = await resp.arrayBuffer();
 
     const loader = new THREE.STLLoader();
     const geometry = loader.parse(buffer);
+
+    // OpenSCAD is Z-up; Three.js is Y-up. Rotate -90° around X so model stands upright.
+    geometry.applyMatrix4(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
     geometry.computeVertexNormals();
     geometry.center();
 

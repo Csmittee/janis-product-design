@@ -19,6 +19,18 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-29 | janis-product-viewer v1.1 — STL orientation + shell toggle | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- geometry.applyMatrix4(rotateX -π/2) fixes Z-up→Y-up: model now stands upright
+- Added stlOpen URL to VM-01 (VM-01-v36-open.stl — shell panels removed in OpenSCAD)
+- Visibility panel in STL mode: single [Shells ON/OFF] button swaps between stl/stlOpen
+- Components panel in STL mode: shows note that per-component toggle needs WASM/separate STLs
+- stlShellOpen resets to false on project switch
+Janis must export VM-01-v36-open.stl from OpenSCAD with show_shell_* = false
+
+---
+
 ### 2026-06-29 | janis-product-viewer v1.1 — STL mode | COMMITTED
 
 Files: viewer/janis-product-viewer.html, cc_chat_log.md

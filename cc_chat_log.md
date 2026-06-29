@@ -19,6 +19,16 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-29 | janis-product-viewer v1.1 — WASM CDN fix | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- WASM loader now tries 4 CDN candidates in order (unpkg + jsdelivr, versioned + unversioned)
+- Added [Test 3D Canvas] action — renders VM-01 bounding box via Three.js only (no WASM) to verify canvas pipeline
+- Improved WASM notice with local hosting instructions for proxy-blocked environments
+- clearModel() handles both Mesh and Group objects
+
+---
+
 ### 2026-06-29 | janis-product-viewer v1.1 | COMMITTED
 
 Files: viewer/janis-product-viewer.html (v1.1), cc_chat_log.md

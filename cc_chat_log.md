@@ -655,3 +655,23 @@ OpenSCAD allows variable declarations anywhere before their use — move is vali
 ⚑ FLAG: Test show_shell_back=false to verify motor and pin geometry from rear
 
 - Active SCAD: vending-machine/VM-01-base/VM-01-base-v32.scad
+
+---
+
+### 2026-06-29 | VM-01-base-v33 | COMMITTED
+
+Files committed:
+- vending-machine/VM-01-base/VM-01-base-v33.scad (new)
+- knowledge.map (v32 → Superseded, v33 → ACTIVE)
+- cc_chat_log.md
+
+**Fix — spring coil translate Y: APPLIED**
+- Before: translate([x, spring_l + e, ...]) → coil rear face at 390.01mm, past motor front (386.99mm) → visual penetration
+- After:  translate([x, tray_d - motor_d - 2, ...]) → coil rear face at 388mm, 1.01mm clear of motor front
+- Coil anchors relative to motor position, not spring_l. Coil no longer penetrates motor block.
+- spring_coil() h = spring_l - 2 = 388mm. Coil front face = 388 - 388 = 0mm (drop zone boundary). ✓
+
+⚑ FLAG: Janis must F5 v33 — confirm coil no longer penetrates motor block visually
+⚑ FLAG: Janis must F6 v33 — confirm 2-manifold warning GONE
+
+- Active SCAD: vending-machine/VM-01-base/VM-01-base-v33.scad

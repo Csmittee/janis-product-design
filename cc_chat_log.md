@@ -29,6 +29,13 @@ Files: pilates-reformer/PR-01-base/PR-01-base-v1.scad (new), cc_chat_log.md
 - pr01_assembly() calls bed_assembly + 4x pole_assembly + crossbar_assembly — renders F5
 
 ⚑ FLAG: All PR-01 dimensions PENDING Janis confirm (bed_l, bed_w, bed_h, pole_od, pole_h). grip_od=32mm OWNER-LOCKED only.
+### 2026-06-29 | janis-product-viewer v1.1 — WASM CDN fix | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- WASM loader now tries 4 CDN candidates in order (unpkg + jsdelivr, versioned + unversioned)
+- Added [Test 3D Canvas] action — renders VM-01 bounding box via Three.js only (no WASM) to verify canvas pipeline
+- Improved WASM notice with local hosting instructions for proxy-blocked environments
+- clearModel() handles both Mesh and Group objects
 
 ---
 

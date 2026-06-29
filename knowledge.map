@@ -1,6 +1,6 @@
 # knowledge.map
 # Janis Product Design — Master File Index
-# Version: v3 | 2026-06-29
+# Version: v4 | 2026-06-29
 # Maintained by: cc
 #
 # cc reads this at EVERY session start (step 2 after cc_rules.md)
@@ -142,3 +142,11 @@ Claude Web → QA pass/fail → writes next prompt if needed
 
 ## ACTIVE PROJECT STATUS
 See: cc_chat_log.md (updated by cc after every commit)
+
+---
+
+## VIEWER
+
+| File | Description |
+|---|---|
+| viewer/janis-product-viewer.html | Browser 3D viewer — self-contained HTML. Three.js canvas + OrbitControls. OpenSCAD WASM render. VM-01-base-v36 SCAD fully embedded. Gold/dark Satu theme. Deploy to Satu public/ → api.janishammer.com/janis-product-viewer |

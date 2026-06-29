@@ -19,6 +19,18 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-29 | janis-product-viewer | COMMITTED
+
+Files: viewer/janis-product-viewer.html (new), knowledge.map (v4 +VIEWER section), cc_chat_log.md
+Archived: prompts/archive/janis-product-viewer ✅ COMPLETE — 2026-06-29
+
+- Self-contained HTML viewer: Three.js canvas + OrbitControls, OpenSCAD WASM renderer
+- VM-01-base-v36 SCAD fully embedded; PR-01 shows placeholder
+- Gold/dark Satu theme; param sliders with lock icons; visibility toggles; STL export; screenshot; print view
+- Janis: copy viewer/janis-product-viewer.html → Satu public/ and push
+
+---
+
 ### 2026-06-29 | Governance — rules-update-post-v36 | COMMITTED
 
 Files: RULES.md (new), .claude/SKILL_manifold_triage.md (new), .claude/rules-codes.md (v1.6 +COLOR+MANIFOLD sections), rules-dimensions.md (v3 +Clearance/Coords/Coil sections), cc_rules.md (v3 PREPEND rule), WORKFLOW_SKILL.md (v3.1 +MANIFOLD FAST-PATH), chat_rules.md (v3.1 +triage bullet), knowledge.map (v3 +RULES.md +SKILL_manifold_triage.md), cc_chat_log.md (top-append flip + reorder)

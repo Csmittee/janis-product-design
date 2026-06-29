@@ -19,6 +19,39 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-29 | VM-01-base-v37 — render_mode for two STL exports | COMMITTED
+
+Files: vending-machine/VM-01-base/VM-01-base-v37.scad, knowledge.map
+- Added render_mode = "full" / "open" parameter at bottom of file before assembly
+- "full": outer shell + all front panels → looks like complete exterior product → export as VM-01-v37.stl
+- "open": shell + front_door + spring_zone_panel + acrylic_display removed → all internals visible → export as VM-01-v37-open.stl
+- Workflow: set render_mode → F6 → File > Export > STL → switch → F6 → export again
+- knowledge.map: v36 → Superseded, v37 → ACTIVE
+
+---
+
+### 2026-06-29 | janis-product-viewer v1.1 — model color picker | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- Model Color row in left sidebar: 5 preset swatches (Grey/White/Black/Gold/Blue) + custom color picker
+- setModelColor() updates live material color + persists across STL swaps
+- updateScene() uses currentModelColor so color survives Reload STL / Shells toggle
+- Answered: F6 required before export; SCAD color() only affects OpenSCAD preview not STL
+
+---
+
+### 2026-06-29 | janis-product-viewer v1.1 — STL orientation + shell toggle | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- geometry.applyMatrix4(rotateX -π/2) fixes Z-up→Y-up: model now stands upright
+- Added stlOpen URL to VM-01 (VM-01-v36-open.stl — shell panels removed in OpenSCAD)
+- Visibility panel in STL mode: single [Shells ON/OFF] button swaps between stl/stlOpen
+- Components panel in STL mode: shows note that per-component toggle needs WASM/separate STLs
+- stlShellOpen resets to false on project switch
+Janis must export VM-01-v36-open.stl from OpenSCAD with show_shell_* = false
+
+---
+
 ### 2026-06-29 | janis-product-viewer v1.1 — STL mode | COMMITTED
 
 Files: viewer/janis-product-viewer.html, cc_chat_log.md

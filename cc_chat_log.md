@@ -19,6 +19,15 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-29 | PR-01-base-v2 | COMMITTED
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v2.scad (new), cc_chat_log.md
+- pole_top_collar() replaced stub with detailed geometry: main body (collar_od=73, h=60, #2C3E50) + horizontal crossbar bore (d=grip_od+1=33 along X) + cam lock body (od=20, h=15, protrudes +X side, 2mm overlap) + red button (#C0392B) + knurled ring (od=77, h=8, 24 ridges)
+- Added 4 params: cam_od, cam_h, ring_h, ridge_count — no hardcoded numbers in module
+- bore_d and ring_od moved to Derived section
+- All other modules unchanged from v1. Renders F5 no warnings.
+
+⚑ FLAG: Cam lock currently protrudes +X direction for all 4 poles. Confirm: should rear poles face opposite direction, or all same? Awaiting Janis decision.
 ### 2026-06-29 | SESSION COMPLETE — viewer + v38 all 3 views confirmed working | DONE
 
 Files touched this session: VM-01-base-v37.scad, VM-01-base-v38.scad, viewer/janis-product-viewer.html, knowledge.map, cc_chat_log.md

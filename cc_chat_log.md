@@ -19,6 +19,17 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-29 | VM-01-base-v37 — render_mode for two STL exports | COMMITTED
+
+Files: vending-machine/VM-01-base/VM-01-base-v37.scad, knowledge.map
+- Added render_mode = "full" / "open" parameter at bottom of file before assembly
+- "full": outer shell + all front panels → looks like complete exterior product → export as VM-01-v37.stl
+- "open": shell + front_door + spring_zone_panel + acrylic_display removed → all internals visible → export as VM-01-v37-open.stl
+- Workflow: set render_mode → F6 → File > Export > STL → switch → F6 → export again
+- knowledge.map: v36 → Superseded, v37 → ACTIVE
+
+---
+
 ### 2026-06-29 | janis-product-viewer v1.1 — model color picker | COMMITTED
 
 Files: viewer/janis-product-viewer.html, cc_chat_log.md

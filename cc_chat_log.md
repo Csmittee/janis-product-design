@@ -19,6 +19,14 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-30 | PR-01-base-v2 (3-fix update) | COMMITTED
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v2.scad, cc_chat_log.md, knowledge.map, prompts/archive/pr01-base-v2-fix.md
+- Fix 1: pole_top_collar() bore reoriented to Y-axis — rotate([90,0,0]) center=true cuts front-to-back through collar (was X-axis rotate([0,90,0]))
+- Fix 2: leg_w 120→180, leg_t 80→120 (50% increase). Pole centerline stays at leg face center (pole_cx[i] = leg_w/2 etc — derived, no explicit move needed)
+- Fix 3: pole_body() replaced cylinder with D-profile + logarithmic taper. New helpers: d_slice() (intersection of cylinder + half-space for convex D shape), pole_lower_taper() (12 hull() loft steps from r=23 base to r=18 at 40% height). Upper 60% = plain cylinder d=pole_top_d=36. crossbar_body() now Y-axis (rotate([-90,0,0])), assembly uses xbar_x_left/right instead of xbar_y_front/rear.
+⚑ FLAG: cam lock still protrudes +X on all 4 poles (unchanged from prior session). Janis decision pending re: rear pole cam direction.
+
 ### 2026-06-29 | PR-01-base-v2 | COMMITTED
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v2.scad (new), cc_chat_log.md

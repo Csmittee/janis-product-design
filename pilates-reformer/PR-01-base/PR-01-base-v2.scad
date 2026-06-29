@@ -1,13 +1,13 @@
 // PR-01-base-v2.scad
 // Janis Product Design — Pilates Reformer with Full Tower
 // Version: v2
-// Date: 2026-06-29
+// Date: 2026-06-30
 // Focus: Frame structure + joints only. No slider, no spring, no strap.
 // Rules: rules-pr.md, rules-dimensions.md, .claude/rules-codes.md
-// Changes from v1:
-//   Fix 1: pole_top_collar() — replaced stub with detailed geometry:
-//           main body + horizontal crossbar bore + cam lock + knurled ring + ridges
-//   Fix 2: Added top collar detail params (cam_od, cam_h, ring_h, ridge_count)
+// Changes from v2 (2026-06-29):
+//   Fix 1: pole_top_collar() — crossbar bore reoriented to Y-axis (rotate [90,0,0], center=true)
+//   Fix 2: leg_w 120→180, leg_t 80→120 (50% increase for structural proportion)
+//   Fix 3: pole_body() — D-profile logarithmic taper lower 40%, circular upper 60%
 
 // ── Global ────────────────────────────────────────────────────────────
 e           = 0.01;   // epsilon — z-fight prevention
@@ -17,8 +17,8 @@ $fn         = 32;     // default resolution (use 64 for final render)
 bed_l       = 2300;   // total bed length (longitudinal) — PENDING Janis confirm
 bed_w       = 670;    // total bed width — PENDING Janis confirm
 bed_h       = 500;    // floor to top of bed surface — PENDING Janis confirm
-leg_w       = 120;    // bed leg width (square) — PENDING
-leg_t       = 80;     // bed leg depth — PENDING
+leg_w       = 180;    // bed leg width — increased 50% for structural proportion
+leg_t       = 120;    // bed leg depth — increased 50% for structural proportion
 frame_rail_t = 60;    // bed rail thickness (wood) — PENDING
 frame_rail_h = 120;   // bed rail height — PENDING
 
@@ -30,9 +30,16 @@ pole_h      = 1600;   // exposed pole height above bed surface — PENDING
 socket_depth = 150;   // how deep socket inserts into bed leg — PENDING
 total_pole_l = pole_h + socket_depth;
 
+// ── Pole D-profile shape (v2 fix) ─────────────────────────────────────
+pole_base_d   = 46;          // effective diameter at base (fat end)
+pole_top_d    = 36;          // diameter at taper end + upper section
+r_base        = pole_base_d / 2;   // 23mm
+r_top_taper   = pole_top_d  / 2;   // 18mm
+taper_steps   = 12;          // hull() loft steps for logarithmic taper
+
 // ── Grip bar (crossbar) ───────────────────────────────────────────────
 grip_od     = 32;     // OWNER-LOCKED — do not change without Janis approval
-grip_l      = bed_l;  // crossbar length = bed length
+grip_l      = bed_l;  // X-axis crossbar length (unused in current Y-axis design — keep for ref)
 grip_offset = 0;      // lateral offset from pole centerline — TBD
 
 // ── Clamp / collar ────────────────────────────────────────────────────
@@ -42,7 +49,7 @@ collar_h    = 60;     // top collar height
 collar_od   = pole_od + 25; // top collar outer diameter — 73mm
 lever_l     = 40;     // lock lever length
 
-// ── Top collar detail (v2) ────────────────────────────────────────────
+// ── Top collar detail ─────────────────────────────────────────────────
 cam_od      = 20;     // cam lock body outer diameter
 cam_h       = 15;     // cam lock body height (protrudes from collar side)
 ring_h      = 8;      // knurled grip ring height
@@ -77,9 +84,9 @@ pole_cx = [leg_w/2, bed_l - leg_w/2, leg_w/2, bed_l - leg_w/2];
 // Pole corner Y positions
 pole_cy = [leg_t/2, leg_t/2, bed_w - leg_t/2, bed_w - leg_t/2];
 
-// Crossbar Y centrelines — front and rear pole rows
-xbar_y_front = leg_t/2;              // front pair
-xbar_y_rear  = bed_w - leg_t/2;     // rear pair
+// Crossbar X centrelines — left and right pole columns (Y-axis bars)
+xbar_x_left  = leg_w/2;           // left column: x = 90mm
+xbar_x_right = bed_l - leg_w/2;   // right column: x = 2210mm
 
 // Mid-clamp Z — 40% up exposed pole height (placeholder; adjustable in v3+)
 clamp_mid_z  = bed_h + pole_h * 0.4;   // 1140mm
@@ -124,17 +131,44 @@ module bed_surface() {
 
 module pole_base_socket(cx, cy) {
     // Metal collar pressed into drilled hole in bed leg — stub cylinder
-    // socket_bore: cx,cy, Z: bed_h-socket_depth to bed_h — gap to any face >= 2mm (M-2)
+    // Contact receipt: socket Z: bed_h-socket_depth to bed_h — gap to any face >= 2mm (M-2)
     color("#888888", 1.0)
         translate([cx, cy, bed_h - socket_depth])
             cylinder(h = socket_depth, d = socket_od);
 }
 
+// D-shaped cross-section slice: circle minus -X flat face (15% depth cut)
+module d_slice(r, h) {
+    intersection() {
+        cylinder(h = h, r = r, $fn = 64);
+        translate([-r * 0.85, -r, 0]) cube([r * 2, r * 2, h]);
+    }
+}
+
+// Logarithmic taper D-profile loft from base (r_base) to top (r_top_taper)
+module pole_lower_taper(taper_h, steps) {
+    step_h = taper_h / steps;
+    for (s = [0 : steps - 1]) {
+        z0 = s * step_h;
+        z1 = (s + 1) * step_h;
+        r0 = r_top_taper + (r_base - r_top_taper) * (1 - ln(1 + z0/taper_h) / ln(2));
+        r1 = r_top_taper + (r_base - r_top_taper) * (1 - ln(1 + z1/taper_h) / ln(2));
+        hull() {
+            translate([0, 0, z0]) d_slice(r0, e);
+            translate([0, 0, z1]) d_slice(r1, e);
+        }
+    }
+}
+
 module pole_body(cx, cy) {
-    // Structural tube — placeholder solid cylinder; hollow in v3+
-    color("#CCCCCC", 1.0)
+    // D-profile tapered lower 40% + circular upper 60%; color: brushed steel
+    taper_h = pole_h * 0.4;   // 640mm
+    color("#CCCCCC", 1.0) {
         translate([cx, cy, bed_h])
-            cylinder(h = pole_h, d = pole_od);
+            pole_lower_taper(taper_h, taper_steps);
+        translate([cx, cy, bed_h + taper_h])
+            cylinder(h = pole_h * 0.6, d = pole_top_d, $fn = 64);
+    }
 }
 
 module pole_mid_clamp(cx, cy) {
@@ -142,50 +176,44 @@ module pole_mid_clamp(cx, cy) {
     color("#2C3E50", 1.0)
         translate([cx, cy, clamp_mid_z - clamp_h/2])
             cylinder(h = clamp_h, d = clamp_od);
-    // Contact receipt: lever inner edge at cx + clamp_od/2 - 4, overlaps 4mm into body ✓
+    // Contact receipt: lever inner edge overlaps 4mm into body ✓
     color("#C0392B", 1.0)
         translate([cx + clamp_od/2 - 4, cy - 4, clamp_mid_z - 4])
             cube([lever_l + 4, 8, 8]);
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// POLE TOP COLLAR — detailed geometry (v2)
-// Collar sits at pole top. Crossbar slides through horizontal bore along X.
-// Cam lock protrudes from +X side. Knurled ring at collar base.
+// POLE TOP COLLAR — detailed geometry
+// Crossbar bore now Y-axis (front-to-back). Cam lock on +X side.
 // ─────────────────────────────────────────────────────────────────────
 
 module pole_top_collar(cx, cy) {
-    collar_base_z = pole_top_z - collar_h;   // 2040mm — collar bottom Z
-
-    // (1) Main body + (2) horizontal crossbar bore subtracted
-    // Bore along X: length = collar_od + 2 for clean cut; centred at collar mid-height
-    // Contact receipt: bore d=33mm, centre at collar_h/2=30mm local Z ✓
+    collar_base_z = pole_top_z - collar_h;
     color("#2C3E50", 1.0)
         translate([cx, cy, collar_base_z])
             difference() {
                 cylinder(h = collar_h, d = collar_od);
-                translate([-(collar_od/2 + 1), 0, collar_h/2])
-                    rotate([0, 90, 0])
-                        cylinder(h = collar_od + 2, d = bore_d);
+                // Y-axis bore: center=true cuts front-to-back through collar
+                translate([0, 0, collar_h/2])
+                    rotate([90, 0, 0])
+                        cylinder(h = collar_od + 2, d = bore_d, center = true);
             }
-
-    // (3) Cam lock body — protrudes from collar +X side, 2mm overlap into body for union ✓
-    // Contact receipt: cam base at cx + collar_od/2 - 2 = cx + 34.5mm (2mm inside collar radius)
+    // Cam lock body — +X side, 2mm overlap into collar for manifold-safe union
+    // Contact receipt: cam base at cx + collar_od/2 - 2 = cx + 34.5mm ✓
     color("#2C3E50", 1.0)
         translate([cx + collar_od/2 - 2, cy, collar_base_z + collar_h * 0.6])
             rotate([0, 90, 0])
                 cylinder(h = cam_h, d = cam_od);
-    // Red accent button — 1mm overlap into cam tip for manifold-safe union ✓
+    // Red accent button — 1mm overlap into cam for manifold-safe union ✓
     color("#C0392B", 1.0)
         translate([cx + collar_od/2 - 2 + cam_h - 1, cy, collar_base_z + collar_h * 0.6])
             rotate([0, 90, 0])
                 cylinder(h = 6, d = cam_od - 4);
-
-    // (4) Knurled ring — wider, shorter cylinder at collar base
+    // Knurled ring — wider, shorter cylinder at collar base
     color("#AAAAAA", 1.0)
         translate([cx, cy, collar_base_z])
             cylinder(h = ring_h, d = ring_od);
-    // Vertical ridges around ring circumference — thin fins, 24 evenly spaced
+    // Vertical ridges around ring — 24 evenly spaced thin fins
     for (a = [0 : 360/ridge_count : 359])
         color("#888888", 1.0)
             translate([cx, cy, collar_base_z]) rotate([0, 0, a])
@@ -194,19 +222,20 @@ module pole_top_collar(cx, cy) {
 }
 
 // ═════════════════════════════════════════════════════════════════════
-// MODULES — CROSSBAR
+// MODULES — CROSSBAR (Y-axis: front-to-back through collar)
 // ═════════════════════════════════════════════════════════════════════
 
-module crossbar_body(y_pos) {
-    // Longitudinal grip bar — passes through all pole top collars at xbar_z
+module crossbar_body(x_pos) {
+    // Y-axis grip bar — passes through front and rear top collars at xbar_z
+    // Contact receipt: at x_pos, runs y=0 to y=bed_w=670mm ✓
     color("#DDDDDD", 1.0)
-        translate([0, y_pos, xbar_z])
-            rotate([0, 90, 0])
-                cylinder(h = grip_l, d = grip_od);
+        translate([x_pos, 0, xbar_z])
+            rotate([-90, 0, 0])
+                cylinder(h = bed_w, d = grip_od);
 }
 
 module crossbar_end_cap(x_pos, y_pos) {
-    // Decorative + safety end cap — sphere, overlaps bar end for union volume
+    // Decorative + safety end cap — sphere overlaps bar end for union volume
     color("#AAAAAA", 1.0)
         translate([x_pos, y_pos, xbar_z])
             sphere(d = grip_od + 4);
@@ -231,7 +260,7 @@ module fold_u_bracket(cx, cy) {
 }
 
 module fold_hinge(cx, cy) {
-    // Contact receipt: hinge at Z=bed_h+cone_h+30 (inside bracket 580–640mm range) ✓
+    // Contact receipt: hinge at Z=bed_h+cone_h+30 (inside bracket range) ✓
     color("#AAAAAA", 1.0)
         translate([cx, cy, bed_h + cone_h + 30])
             rotate([90, 0, 0])
@@ -268,12 +297,14 @@ module pole_assembly(i) {
 
 module crossbar_assembly() {
     if (show_crossbars) {
-        crossbar_body(xbar_y_front);
-        crossbar_body(xbar_y_rear);
-        crossbar_end_cap(0,      xbar_y_front);
-        crossbar_end_cap(grip_l, xbar_y_front);
-        crossbar_end_cap(0,      xbar_y_rear);
-        crossbar_end_cap(grip_l, xbar_y_rear);
+        // Two Y-axis bars — left column (x=xbar_x_left) and right column (x=xbar_x_right)
+        crossbar_body(xbar_x_left);
+        crossbar_body(xbar_x_right);
+        // End caps — 2 bars × 2 ends = 4 caps (front y=0, rear y=bed_w)
+        crossbar_end_cap(xbar_x_left,  0);
+        crossbar_end_cap(xbar_x_left,  bed_w);
+        crossbar_end_cap(xbar_x_right, 0);
+        crossbar_end_cap(xbar_x_right, bed_w);
     }
 }
 

@@ -142,6 +142,15 @@ Claude Web → QA pass/fail → writes next prompt if needed
 
 ---
 
+## PR-01-base SCAD VERSION INDEX
+
+| Version | File | Status |
+|---|---|---|
+| v1 | pilates-reformer/PR-01-base/PR-01-base-v1.scad | Superseded |
+| v2 | pilates-reformer/PR-01-base/PR-01-base-v2.scad | **ACTIVE** — 3 fixes: Y-axis crossbar bore, legs 50% larger, D-profile tapered pole |
+
+---
+
 ## ACTIVE PROJECT STATUS
 See: cc_chat_log.md (updated by cc after every commit)
 

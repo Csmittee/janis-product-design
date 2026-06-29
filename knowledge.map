@@ -132,7 +132,8 @@ Claude Web → QA pass/fail → writes next prompt if needed
 | v31 | vending-machine/VM-01-base/VM-01-base-v31.scad | Superseded |
 | v32 | vending-machine/VM-01-base/VM-01-base-v32.scad | Superseded |
 | v33 | vending-machine/VM-01-base/VM-01-base-v33.scad | Superseded |
-| v34 | vending-machine/VM-01-base/VM-01-base-v34.scad | **ACTIVE** — motor cube [20,motor_d-e,35]→[18,motor_d-2,33], translate x-10→x-9 |
+| v34 | vending-machine/VM-01-base/VM-01-base-v34.scad | Superseded |
+| v35 | vending-machine/VM-01-base/VM-01-base-v35.scad | **ACTIVE** — motor hidden (if false) for manifold isolation; spring/partition unchanged |
 
 ---
 

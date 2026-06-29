@@ -19,6 +19,18 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-29 | SESSION COMPLETE — viewer + v38 all 3 views confirmed working | DONE
+
+Files touched this session: VM-01-base-v37.scad, VM-01-base-v38.scad, viewer/janis-product-viewer.html, knowledge.map, cc_chat_log.md
+STL files on Satu server (public/models/): VM-01-v38-std.stl, VM-01-v38-full.stl, VM-01-v38-C2.stl
+Viewer confirmed working — 3 views cycle correctly:
+  ⬡ Standard — open window (default): shell intact, acrylic removed, springs + trays visible
+  ⬜ Full Exterior: all components including acrylic panels, fully opaque
+  ◧ C2 — open shell: top + left panels removed, full interior inspection view
+Next session: no outstanding flags. Ready for PR-01 Pilates Reformer or next VM-01 design task.
+
+---
+
 ### 2026-06-29 | v38 + viewer — 3 render modes, correct standard view | COMMITTED
 
 Files: VM-01-base-v38.scad, viewer/janis-product-viewer.html, knowledge.map, cc_chat_log.md

@@ -19,6 +19,38 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-29 | v38 + viewer — 3 render modes, correct standard view | COMMITTED
+
+Files: VM-01-base-v38.scad, viewer/janis-product-viewer.html, knowledge.map, cc_chat_log.md
+- v38 SCAD: 3 render_mode options clearly defined:
+    "standard" → shell intact, acrylic panels removed (open window = see-through effect) → VM-01-v38-std.stl
+    "full"     → everything including acrylic, fully opaque → VM-01-v38-full.stl
+    "open"     → shell with show_shell_top/left=false (C2 inspection) → VM-01-v38-C2.stl
+- Viewer default = Standard (open window); cycle: Standard → Full Exterior → C2 Open Shell
+- Viewer URLs updated to v38 filenames
+
+---
+
+### 2026-06-29 | viewer — update STL URLs to v37, restore 3-way cycle | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- STL URLs updated: v36 → v37 (VM-01-v37.stl, VM-01-v37-open.stl, VM-01-v37-C2.stl)
+- 3-way cycle restored now that all 3 v37 files are on server
+- Cycle order: See-Through (C2, default) → Full Exterior → Open Shell (interior)
+
+---
+
+### 2026-06-29 | viewer — C2 default view, 2-way cycle, fixed STL error handler | COMMITTED
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md
+- Default view on load = C2 see-through (stlC2 loaded first if available)
+- stlViewMode default = 'c2'; stlViewMode resets to 'c2' on project switch
+- Cycle is now 2-way: See-Through (standard) ↔ Full Exterior — Open Shell removed (file not on server)
+- loadSTL catch: removed triggerRender() fallback — WASM call was corrupting cycle state on 404
+- Reload STL button respects current mode
+
+---
+
 ### 2026-06-29 | viewer — 3-way STL view cycle (Full / Open / C2 see-through) | COMMITTED
 
 Files: viewer/janis-product-viewer.html, cc_chat_log.md

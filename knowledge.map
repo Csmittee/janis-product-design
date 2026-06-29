@@ -1,6 +1,6 @@
 # knowledge.map
 # Janis Product Design — Master File Index
-# Version: v2 | 2026-06-29
+# Version: v3 | 2026-06-29
 # Maintained by: cc
 #
 # cc reads this at EVERY session start (step 2 after cc_rules.md)
@@ -45,12 +45,14 @@
 | cc_chat_log.md | repo root / | cc |
 | chat_rules.md | repo root / + Project Knowledge | cc |
 | workflow_skill.md | repo root / + Project Knowledge | cc |
+| RULES.md | repo root / | cc — numbered rules R-xxx. Claude Web during diagnosis. Replaces rules.md. |
 | rules-dimensions.md | repo root / | cc |
 | rules-pr.md | repo root / | cc (create when needed) |
 | .claude/rules-codes.md | .claude/ | cc — SCAD tasks |
 | .claude/rules-materials.md | .claude/ | cc — SCAD tasks |
 | .claude/rules-vm.md | .claude/ | cc — VM tasks |
 | .claude/SKILL_problem_solving_kt.md | .claude/ | Claude Web + cc — R-111 trigger |
+| .claude/SKILL_manifold_triage.md | .claude/ | Claude Web only — manifold triage fast-path. cc does NOT read this file. |
 | /prompts/[task].md | repo /prompts/ | Claude Web writes, Janis saves |
 | SCAD files | /vending-machine/[model]/ | cc |
 | SCAD files | /pilates-reformer/[model]/ | cc |

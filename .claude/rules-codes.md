@@ -1,7 +1,7 @@
 # Janis Product Design — OpenSCAD Coding Rules
-> Version 1.5 — 2026-06-29
-> Changes: Added Module Isolation Testing section — mandatory for manifold debugging
-> Previous: 1.4 — 2026-06-28
+> Version 1.6 — 2026-06-29
+> Changes: Added COLOR CODING STANDARD and MANIFOLD SAFETY RULES (M-1 to M-4)
+> Previous: 1.5 — 2026-06-29
 
 All units: MM. All rules below are mandatory for every SCAD file in this project.
 
@@ -231,3 +231,56 @@ Never write a fix before culprit is confirmed by Janis isolation test.
 
 Inner objects inside tray/box must never land exactly on floor or wall faces.
 Offset by e = 0.01 on any contact axis. See .claude/SKILL_problem_solving_kt.md epsilon pattern.
+
+---
+
+## COLOR CODING STANDARD
+Color by part type — never by material. Makes manifold contact visually obvious during QA.
+
+| Part type           | Color    | Opacity  |
+|---|---|---|
+| Tray structural body | #CCCCCC | 1.0      |
+| Motor (display only) | #555555 | 1.0      |
+| Spring coil (display only) | #888888 | 0.8 |
+| Partition (display only)   | #BBBBBB | 1.0 |
+| Rack rails and legs        | #AAAAAA | 1.0 |
+| Outer shell                | #C8C8C8 | 0.75    |
+| Acrylic panels             | #ADD8E6 | 0.15–0.30 |
+
+Display objects (motor, coil, partition) must NEVER use the same color as structural bodies.
+Color difference makes surface tangency visible during F5 inspection.
+
+---
+
+## MANIFOLD SAFETY RULES
+# Hard-won from v17–v36 manifold chase. Violation = multi-revision debug loop.
+
+### Rule M-1 — Implicit Union Rule (CRITICAL)
+All children of translate()/rotate()/color() are implicitly unioned by OpenSCAD.
+A display object placed as a SIBLING of a structural difference() body inside the
+same translate() will be UNIONED with that body. Surface at 0mm = non-manifold.
+
+WRONG:
+  translate([x, y, z]) {
+      difference() { tray_body(); cutouts(); }  // structural
+      cylinder(h=spring_l, d=spring_od);         // display — SILENTLY UNIONED
+  }
+
+RIGHT:
+  translate([x, y, z]) difference() { tray_body(); cutouts(); }
+  spring_display(lane=i, tray_z=z);  // display called from assembly level
+
+### Rule M-2 — Polygon Undercut Rule
+$fn=64 cylinders dip below theoretical radius: r × (1 - cos(180/$fn)) ≈ 0.04mm at r=33mm.
+Epsilon e=0.01mm is NOT sufficient for cylinder-to-flat-face contact.
+Minimum clearance for any cylinder near a flat face: 2mm.
+
+### Rule M-3 — Contact Receipt Rule
+Any object within 5mm of another face MUST have a calculation comment showing gap:
+  // Motor rear face: tray_d - motor_d - tray_wall_t - e = 386.99mm — gap to rear wall = 60.01mm ✓
+  // Coil bottom: tray_floor_t + 2 = 7mm — gap to floor top = 2mm ✓
+No geometry placed near a boundary without a written receipt.
+
+### Rule M-4 — Debug Toggle Rule
+Debug visibility toggles MUST be declared as variable assignments above ASSEMBLY.
+NEVER comment out a declaration line — set to false to hide. See R-003.

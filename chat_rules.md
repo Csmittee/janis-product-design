@@ -1,8 +1,7 @@
 # Claude Web — Chat Rules
-# Version: v3 — 2026-06-29
-# Changes: Full rewrite — governance rules only, Satu structure adopted,
-#          decay symptoms added, handoff quality check added, locked decisions listed
-# Previous: v2 — 2026-06-29
+# Version: v3.1 — 2026-06-29
+# Changes: "first 3 entries (newest at top)" in Reading & Diagnosis; manifold triage bullet in QA Discipline
+# Previous: v3 — 2026-06-29
 # Owner: Claude Web reads this at Step 2 of every session open. CC never reads this.
 
 ---
@@ -11,7 +10,7 @@
 
 - Never guess file contents — search project knowledge first, always
 - Never guess dimensions — read rules-dimensions.md, never calculate from memory
-- Never form any diagnosis before reading cc_chat_log last 3 entries + affected SCAD file
+- Never form any diagnosis before reading cc_chat_log first 3 entries (newest at top) + affected SCAD file
 - Read cc_chat_log at every session open — if unreadable or absent, tell Janis sync is broken before proceeding. Do not proceed.
 
 ---
@@ -60,6 +59,9 @@ Before searching for cc_chat_log, inspect the CHAT_HANDOFF body:
 - Always give explicit PASS or FAIL — never "looks OK" or "should be fine"
 - PASS requires: no 2-manifold warning visible + visual check matches intent
 - If same issue repeats more than 2 fix loops — stop, trigger R-111, do not write another fix prompt
+- 2-manifold warning: read SKILL_manifold_triage.md before writing any prompt.
+  First action is always an isolation test, not a fix.
+  Maximum 3 prompts from warning report to QA PASS — if exceeded, R-111 triggers.
 
 ---
 

@@ -1,5 +1,5 @@
 # Claude Code (cc) Rules
-# Version: v2 — 2026-06-29
+# Version: v3 — 2026-06-29
 # Read this at the START of every cc session — step 1, always.
 
 ---
@@ -56,7 +56,7 @@ before reporting missing. Janis always pushes to main, not the feature branch.
 ---
 
 ## After Every Commit
-1. Update cc_chat_log.md — append new entry with date, version, what changed
+1. Update cc_chat_log.md — PREPEND new entry at TOP (newest first). Max 10 lines per entry.
 2. List every file committed
 3. Flag ambiguity or decisions needed by Claude Web in cc_chat_log.md Flags section
 4. Update knowledge.map Active Project Status if needed

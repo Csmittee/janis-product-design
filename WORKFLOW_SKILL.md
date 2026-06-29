@@ -1,9 +1,8 @@
 # WORKFLOW_SKILL.md
 # Janis Product Design — How We Work
-# Version: 3.0 — 2026-06-29
-# Changes: cc_chat_log as repo connectivity test, R-111 trigger updated to "2 loops",
-#          KT pointer consolidated to single file, JANIS PREP section simplified
-# Previous: v2.0 — 2026-06-28
+# Version: 3.1 — 2026-06-29
+# Changes: MANIFOLD WARNING FAST-PATH section added; Step 3 updated to "first 3 entries (newest at top)"
+# Previous: v3.0 — 2026-06-29
 
 ---
 
@@ -77,7 +76,7 @@ Janis pastes CHAT_HANDOFF → Claude Web executes in order:
 **Step 2:** Search project knowledge for "chat_rules" — load rules.
   Not found → tell Janis to upload chat_rules.md. STOP.
 
-**Step 3:** Search project knowledge for "cc_chat_log" — read last 3 entries.
+**Step 3:** Search project knowledge for "cc_chat_log" — read first 3 entries (newest at top).
   This file is synced from repo root. Finding it confirms project knowledge is live.
   Not found → repo sync is broken. Tell Janis before proceeding. Do NOT ask Janis
   to download and upload manually — that defeats the connectivity check.
@@ -128,6 +127,22 @@ Janis describes goal
 | cc_chat_log not found in project knowledge | Repo sync broken — tell Janis immediately | Do not proceed without resolving |
 | QA screenshot shows geometry missing | Check error log for undefined variables first | Fix variable declaration order before visual fix |
 | Supplier export requested | Only after QA PASS — STL + DXF + 4-angle PNG | cc confirms all 3 in cc_chat_log |
+
+---
+
+## MANIFOLD WARNING FAST-PATH
+
+When Janis reports F6 2-manifold warning:
+1. Read .claude/SKILL_manifold_triage.md immediately.
+2. Complete Phase 1–3 (IS/IS-NOT + hypothesis) BEFORE writing any prompt.
+3. First prompt is ALWAYS an isolation test — never a fix.
+4. Fix prompt written ONLY after Janis confirms isolation test result.
+5. Warning persists after 2 isolation-confirmed fix attempts → R-111.
+
+Maximum 3 prompts from warning to QA PASS:
+  Prompt 1: Isolation test (rapid-fire)
+  Prompt 2: Fix
+  Prompt 3: Confirm F6 clean — PASS or FAIL
 
 ---
 
@@ -193,7 +208,7 @@ Always: no undefined variable warnings in SCAD.
 Always: version incremented — never overwrite.
 
 ## 7. MANDATORY CLOSING
-1. Append cc_chat_log.md — newest entry at BOTTOM
+1. Prepend cc_chat_log.md — newest entry at TOP
 2. Archive prompt → /prompts/archive/ ✅ COMPLETE — [date]
 3. Update knowledge.map if new files created
 4. Bump version on all changed files
@@ -222,7 +237,7 @@ Fix before delivering. Never ask Janis to remind.
 > BEFORE SESSION BEGINS — Claude Web reads in order:
 > Step 1: Load WORKFLOW_SKILL (project knowledge → STOP if missing)
 > Step 2: Load chat_rules (project knowledge → STOP if missing)
-> Step 3: Read cc_chat_log last 3 entries (project knowledge sync from repo → STOP if missing)
+> Step 3: Read cc_chat_log first 3 entries (newest at top) (project knowledge sync from repo → STOP if missing)
 > Step 4: Read open items below → state "Memory installed"
 > Step 5: Ask "Today's goal?"
 
@@ -257,7 +272,7 @@ Fix before delivering. Never ask Janis to remind.
 2. Write CHAT_HANDOFF → tell Janis to save to project knowledge.
 
 **cc:**
-1. Append cc_chat_log (newest at BOTTOM)
+1. Prepend cc_chat_log (newest at TOP)
 2. Archive prompt → /prompts/archive/ ✅ COMPLETE
 3. Update knowledge.map if new files
 4. Bump version on all changed files

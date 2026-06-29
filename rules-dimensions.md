@@ -1,5 +1,5 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v2 — 2026-06-29
+# Version: v3 — 2026-06-29
 # All units: MM
 
 ---
@@ -203,3 +203,37 @@ LOCKED — do not change without Claude Web instruction.
 | Dashboard orientation | Portrait vs landscape — depends on Satu firmware | Janis + firmware team |
 | system_w reduction | If portrait confirmed: 185→168mm, total_w 620→603mm | After firmware decision |
 | PR-01 dimensions | Not started — Janis to provide measurements | Janis |
+
+---
+
+## Global Clearance Tolerance
+| Context | Minimum gap | Reason |
+|---|---|---|
+| Display object to any tray body face | 2mm | Implicit union → manifold risk (R-001) |
+| Cylinder to any flat face | 2mm | Polygon undercut at $fn=64 (R-002) |
+| Structural part to shell face | skin_t (2mm) | Standard skin thickness |
+| Coplanar face suppression (epsilon) | e = 0.01mm | Geometry z-fight only — NOT for display objects |
+
+---
+
+## Coordinate Reference Points — LOCKED
+| Name | World coords | Description |
+|---|---|---|
+| Machine origin | X=0, Y=0, Z=0 | Front-left corner at floor level |
+| Tray local origin | X=lane_x, Y=tray_start_d, Z=tray_z | Front-left of tray floor |
+| Spring lane centre | X = tray_wall_t + spring_od/2 + i*(spring_od+spring_gap) | Per lane i (0-indexed) |
+| Drop zone boundary | Y = tray_start_d = 138mm | Products fall forward from here |
+| Motor rear limit | Y = tray_d - tray_wall_t - e | Never touches or exits rear wall |
+| Coil front face | Y = tray_start_d (local Y=0) | Drop zone boundary |
+
+---
+
+## Spring Coil Physical Spec
+| Parameter | Value | Note |
+|---|---|---|
+| OD | 66mm | Supplier part — LOCKED |
+| Wire diameter | 3mm | |
+| ID | 60mm | OD - 2×wire_d |
+| Pitch | 25mm | |
+| Length | 390mm | spring_l parameter |
+| SCAD model | solid cylinder d=spring_od-2, h=spring_l-2 | 1mm clearance each side — display only |

@@ -1,5 +1,5 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v5 — 2026-06-30
+# Version: v6 — 2026-06-30
 # All units: MM
 
 ---
@@ -230,6 +230,30 @@ LOCKED — do not change without Claude Web instruction.
 | Screen width | 165mm | |
 | Screen height | 100mm | |
 | Screen angle | 30° | Tilted toward user |
+
+---
+
+## PR-01 Base — 4-Part Split Architecture (v7, Stage 1) — Janis-confirmed this session
+
+Janis rejected the v6 one-piece continuous-pole/taper concept (written approval given
+in chat this session to update this section). Pole is now 4 separate physical
+components, self-assembled by customer: pole_top() (crossbar lock/latch junction,
+placeholder), pole_body() (D-profile shaft), pole_base_collar() (insert pin to wood
+socket, placeholder), pole_wood_socket() (drilled-in insert).
+
+| Dimension | Value | Notes |
+|---|---|---|
+| PR-01 body D-section | 50mm constant diameter | No taper — body is constant-diameter top to bottom. SUPERSEDES prior flat_w_base/flat_w_top taper values below. |
+| PR-01 wood socket OD | ~60mm | Fixed (non-foldable) version. Plain cylindrical insert pushed through drilled hole in wood leg. |
+
+### SUPERSEDED — DO NOT USE (kept for history only)
+| Dimension | Value | Superseded by |
+|---|---|---|
+| flat_w_base (pole flat-face width @ base) | 100mm | v7 — replaced by constant 50mm D-section, no taper |
+| flat_w_top (pole flat-face width @ top) | 60mm | v7 — replaced by constant 50mm D-section, no taper |
+| pole taper concept (horn-curve loft, r_base~70mm/r_top~42mm) | — | v7 — taper concept dropped entirely |
+
+Foldable hinge geometry remains explicitly deferred — not part of this fixed-version dimension set.
 
 ---
 

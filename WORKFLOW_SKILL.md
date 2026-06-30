@@ -1,8 +1,8 @@
 # WORKFLOW_SKILL.md
 # Janis Product Design — How We Work
-# Version: 3.1 — 2026-06-29
-# Changes: MANIFOLD WARNING FAST-PATH section added; Step 3 updated to "first 3 entries (newest at top)"
-# Previous: v3.0 — 2026-06-29
+# Version: 3.2 — 2026-06-30
+# Changes: Joint construction skill + rapid-fire template + R-111 self-trigger reinforcement added.
+# Previous: v3.1 — 2026-06-29
 
 ---
 
@@ -127,6 +127,7 @@ Janis describes goal
 | cc_chat_log not found in project knowledge | Repo sync broken — tell Janis immediately | Do not proceed without resolving |
 | QA screenshot shows geometry missing | Check error log for undefined variables first | Fix variable declaration order before visual fix |
 | Supplier export requested | Only after QA PASS — STL + DXF + 4-angle PNG | cc confirms all 3 in cc_chat_log |
+| Joint/transition between mismatched cross-sections fails QA twice | R-111 — read .claude/SKILL_joint_construction.md, complete KT before next prompt | Claude Web states "R-111 triggered" + cites which rule (1/2/3) was violated |
 
 ---
 
@@ -143,6 +144,31 @@ Maximum 3 prompts from warning to QA PASS:
   Prompt 1: Isolation test (rapid-fire)
   Prompt 2: Fix
   Prompt 3: Confirm F6 clean — PASS or FAIL
+
+---
+
+## RAPID-FIRE PROMPT TEMPLATE — MINIMAL BUT COMPLETE
+
+Rapid-fire chat instructions (single confirmed line/module, cc still in
+session) do NOT need to re-list files cc already has in its current session
+context — do not ask cc to re-read cc_rules.md, knowledge.map, or the
+active .scad file again mid-session.
+
+Rapid-fire instructions DO still need, every time, even though they are
+short:
+1. The exact module/line/parameter to change
+2. Current open-item context relevant to this change (one line — e.g.
+   "PR-01-base v18, joint fix, neck-bell still open")
+3. The specific QA confirmation cc must state back (what number/result
+   proves this worked)
+4. Any DO NOT TOUCH items relevant to this specific change (not the full
+   project list — just what's at risk of being accidentally touched by
+   this exact edit)
+
+A rapid-fire instruction that drops items 2-4 to save length is an
+incomplete instruction, not an efficient one. Length savings come from
+skipping redundant file re-reads (item 0, not in the list above) — never
+from skipping open-items/QA/do-not-touch content.
 
 ---
 

@@ -156,7 +156,8 @@ Claude Web → QA pass/fail → writes next prompt if needed
 | v8 | pilates-reformer/PR-01-base/PR-01-base-v8.scad | Superseded — crossbar fix carried into v9 |
 | v9 | pilates-reformer/PR-01-base/PR-01-base-v9.scad | Superseded — pole_body() full-height uniform 50mm D-profile, pole_base_collar() split-clamp sleeve. |
 | v10 | pilates-reformer/PR-01-base/PR-01-base-v10.scad | Superseded — pole_top() head elongated along the wrong axis (Z instead of X), fixed in v11. |
-| v11 | pilates-reformer/PR-01-base/PR-01-base-v11.scad | **ACTIVE** — pole_top() orientation fix: head now elongates along X (toward bore/pipe) — 130mm(X) × 70mm(Y) × 110mm(Z, short axis) — instead of v10's tall Z elongation. Rounder helmet-like profile, tapered fillet_h=15mm blend at neck-to-head transition (polygon-widening approximation, not a true CAD fillet). Bore (d=33mm, TBD), neck (d=50mm h=50mm), bore alignment (xbar_z=2020mm), and 2x M6 screw joint all unchanged from v10. Still Stage 1 of 2 — no latch geometry. |
+| v11 | pilates-reformer/PR-01-base/PR-01-base-v11.scad | Superseded — orientation confirmed correct by Janis; v12 only refines silhouette (height + smoothness). |
+| v12 | pilates-reformer/PR-01-base/PR-01-base-v12.scad | **ACTIVE** — pole_top() height reduced (head_h 110→100mm, top_boss_h 160→150mm) and profile smoothed: back/front edges now sampled via cubic Bezier curves (13 pts each, 26 total) instead of v11's 10 hand-picked polygon corners. $fn=64 locally inside pole_top() only. Bore (d=33mm TBD), neck (d=50mm h=50mm), 2x M6 screw joint unchanged from v11. Bore-clearance floor noted: head_h can't go much below 99mm without the bore breaking through the bottom face (xbar_z formula unchanged). Still Stage 1 of 2 — no latch geometry. |
 
 ---
 

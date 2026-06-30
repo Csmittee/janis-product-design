@@ -19,6 +19,39 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-30 | PR-01-base-v12 (pole_top height reduction + profile rounding) | DONE — flags included
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v12.scad (new), knowledge.map, cc_chat_log.md
+Source: Janis QA on v11 — orientation/axis fix CONFIRMED CORRECT (PASS). This
+round only refines silhouette quality: still too tall/blocky, and faceted
+(looked like a cut gem) instead of a smooth helmet/boot curve.
+
+QA confirmations:
+- Head height before/after: head_h 110mm → 100mm (top_boss_h 160mm → 150mm),
+  a 10mm reduction. ⚠ FLAG: this is the practical floor given the unchanged
+  xbar_z formula (= bed_h+pole_h-top_boss_h*0.5, sits at the envelope's
+  vertical midpoint) — head_h=100 leaves ~8.5mm wall below the bore (was
+  13.5mm at head_h=110); head_h below ~99mm would make the bore break
+  through the head's bottom face. A meaningfully flatter head would require
+  decoupling the head's base from this bore-driven envelope or shortening
+  neck_h (both out of scope — neck must stay >=50mm, bore position unchanged
+  per prompt). Flagging for Janis to decide if further flattening is wanted
+  via a bigger structural change.
+- Loft cross-sections: replaced v11's 10 hand-picked polygon corners with
+  two cubic-Bezier-sampled curves (head_loft_steps=12 → 13 points each,
+  26 points total) for the back and front edges — continuous smooth sweep,
+  not straight facets. $fn=64 applied locally inside pole_top() only (neck/
+  bore/screw cylinders); rest of file remains at the global $fn=32 default.
+- Bore (d=33mm, TBD) and neck (d=50mm, h=50mm) geometry confirmed unchanged
+  from v11 — only head_h/top_boss_h (per the height reduction) and the
+  profile point generation method changed.
+- No undefined variable warnings. Version incremented v11→v12, saved as new
+  file (v11 preserved, not overwritten).
+- ⚠ No OpenSCAD binary available in this sandbox — built/verified by code
+  review only, never F5-rendered. Janis must verify visually after pulling.
+
+---
+
 ### 2026-06-30 | PR-01-base-v11 (pole_top orientation fix) | DONE — flags included
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v11.scad (new), knowledge.map, cc_chat_log.md, prompts/archive/

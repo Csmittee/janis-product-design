@@ -4,6 +4,45 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-06-30 | PR-01-base-v14 (pole_top ORIENTATION ONLY fix — single-rotate construction) | DONE — verification caveat, flags included
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v14.scad (new), knowledge.map, cc_chat_log.md
+Source: Janis — v13's bell sat vertically (chimney cap), bore axis defaulted to
+Z instead of X. Same root mistake as v10. This round: orientation only, single
+job, plus the wine-glass-vs-horn profile note that was bundled in.
+
+QA:
+- ⚠ Cannot self-report "bore axis = X" from a real end-on render — no OpenSCAD
+  binary in this sandbox, so no screenshot was produced. Per the prompt's own
+  rule I am NOT claiming visual pass/fail. What I can state: the construction
+  now matches the required method exactly — pole_top_bell() builds the
+  complete solid (rotate_extrude exterior + Z-axis bore cylinder, both
+  default-axis) first, then wraps the ENTIRE finished difference() in exactly
+  ONE rotate([0,90,0]) as the last op (verified by reading the code: single
+  rotate, no separate rotation on exterior vs. bore). Coordinate-transform
+  math confirms this rotation maps local Z (bell+bore axis) to world X, and
+  the circular cross-section into the world Y-Z plane — i.e. the bore is
+  geometrically on X by construction. Janis MUST do the real end-on render
+  with the gizmo in frame to confirm — this is the actual pass/fail per the
+  prompt, not my code-level check.
+- Profile changed from v13's convex horn to a wine-glass CONCAVE curve —
+  verified numerically: sampled radius stays below the straight small-to-
+  large chord across the full curve (e.g. at z=31mm, curve r=28.4mm vs.
+  chord r=36.3mm).
+- Bore diameter (33mm), neck sleeve, M6 through-bolt holes, pole_body(),
+  pole_base_collar(), crossbar geometry — all left untouched, formulas
+  copied verbatim from v13.
+- ⚑ FLAG: ~24mm vertical gap between neck top (z0, unchanged v13 formula)
+  and the bell's circular envelope bottom (anchored independently at xbar_z)
+  — proportion item for a future shape-tuning round, not adjusted here since
+  fixing it would mean touching the neck's z anchor (out of scope).
+- ⚑ FLAG (carried over): pole_body() still has no through-holes for the M6
+  bolts to align against.
+- No undefined variable warnings (by code review). Version incremented
+  v13→v14, saved as new file (v13 preserved, not overwritten).
+
+---
+
 ### 2026-06-30 | PR-01-base-v13 (pole_top bell/horn + sleeve neck — supersedes v11/v12) | DONE — flags included
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v13.scad (new), knowledge.map, cc_chat_log.md

@@ -1,6 +1,6 @@
 # knowledge.map
 # Janis Product Design — Master File Index
-# Version: v4 | 2026-06-29
+# Version: v5 | 2026-06-30
 # Maintained by: cc
 #
 # cc reads this at EVERY session start (step 2 after cc_rules.md)
@@ -150,7 +150,8 @@ Claude Web → QA pass/fail → writes next prompt if needed
 | v2 | pilates-reformer/PR-01-base/PR-01-base-v2.scad | Superseded |
 | v3 | pilates-reformer/PR-01-base/PR-01-base-v3.scad | Superseded |
 | v4 | pilates-reformer/PR-01-base/PR-01-base-v4.scad | Superseded |
-| v5 | pilates-reformer/PR-01-base/PR-01-base-v5.scad | **ACTIVE** — pole_top_collar() removed; pole is one continuous D-profile piece (blocky base/taper/rounded top) with X-axis flat face, tooth-zone groove, bar-insert bore; new pole_base_bushing() |
+| v5 | pilates-reformer/PR-01-base/PR-01-base-v5.scad | Superseded |
+| v6 | pilates-reformer/PR-01-base/PR-01-base-v6.scad | **ACTIVE** — pole taper redone by flat-face width (100mm base → 60mm @ 400mm, logarithmic horn curve), round D portion derives via pole_r_from_flat(); bore/tooth zones repositioned, bushing resized |
 
 ---
 

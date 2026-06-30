@@ -4,6 +4,39 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-06-30 | PR-01-base-v17 (neck-bell true alignment + seam blend + bolt edge clearance) | DONE — Janis F5/F6 render required, NOT visually confirmed
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v17.scad (new), knowledge.map (v5→v6), cc_chat_log.md, prompts/archive/
+Source: Janis F5/F6 QA on v16 — FAIL, 2 issues: visible neck/bell axis offset
+still present, hard seam at neck-bell joint (reads as 2 assembled parts not
+1 casting); M6 bolt holes too close to both neck edges.
+
+QA (numeric, not "looks aligned"):
+- Re-derived (not assumed) bore axis = world line {y=cy, z=xbar_z,
+  x∈[cx,cx+dir*head_h]}; neck axis = world line {x=cx, y=cy, z∈ℝ}. These
+  intersect at exactly (cx,cy,xbar_z) — CONFIRMED coincident, no
+  discrepancy found. v16's claim held for this exact check; the v15/16
+  visual issue was the separate already-fixed bore-plug problem.
+- Seam blend: NEW pole_top_transition() = hull() between neck-top disc
+  (axis Z) and bell-small-face cylinder slice (axis X), transition_h=10mm
+  (TBD 8-12mm range, Janis to confirm aesthetically). Inside same
+  difference() that cuts the bore-envelope from the neck → bore-safe by
+  construction, cannot intrude the 33mm bore void. Neck+transition+bell
+  remain siblings in one color() block → Rule M-1 → single manifold solid.
+- neck_h 50mm→70mm. Bolt holes recomputed (not 0.3/0.7 fraction) at
+  neck_top-20 and neck_top-50: 20mm/50mm and 50mm/20mm clearance from
+  top/bottom edges respectively — both clear the 15mm TBD minimum by 5mm.
+- pole_body() height auto-adjusts via shared neck_h global, no gap.
+- DO NOT TOUCH items re-verified unchanged: bore d=33mm, bore axis X,
+  bell wine-glass profile, pole_od=40mm, neck_od=47mm.
+- ⚑ FLAG (carried over): bell waist (~44.5mm) still narrower than neck_od
+  (47mm) by ~1.5-2.5mm — bell profile untouched, still pending.
+- No undefined-variable issues, brace/paren balance clean (verified by
+  script: 34/34 braces, 383/383 parens).
+- ⚠ No OpenSCAD binary in this sandbox — code-review + coordinate-math
+  verification only. Janis MUST F5/F6 render and confirm visually before
+  this is treated as PASS.
+
 ### 2026-06-30 | PR-01-base-v16 (neck-bell alignment + bore-clearance fix + rules-pr.md governance) | DONE — 2 flags carried over, need Janis confirm
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v16.scad (new), rules-pr.md (1.2→1.3), knowledge.map, cc_chat_log.md, prompts/archive/

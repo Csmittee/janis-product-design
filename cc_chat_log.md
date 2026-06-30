@@ -19,6 +19,24 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-30 | PR-01-base-v7 (4-part split, Stage 1) | DONE — flags included
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v7.scad (new), rules-dimensions.md,
+knowledge.map, prompts/archive/, cc_chat_log.md
+v6 one-piece pole rejected by Janis. Pole now 4 SEPARATE solids (not unioned):
+pole_top() (placeholder smooth boss junction — crossbar seats here only, no bore
+through body), pole_body() (D-profile, constant 50mm dia, NO taper, taper logic +
+bar-insert bore fully removed), pole_base_collar() (placeholder boss + insert pin),
+pole_wood_socket() (plain cylinder, OD~60mm). rules-dimensions.md updated (v5→v6):
+PR-01 D=50mm + socket OD=60mm added, old 100mm/60mm taper values marked superseded.
+Confirmed no lattice/truss geometry anywhere (visual code review — body is plain
+difference(cylinder, cube) D-section only).
+⚑ TBD placeholders (Stage 2): pin_d=16mm/pin_h=35mm (base collar pin), socket_depth=80mm
+(wood socket) — all parametric guesses, not final values.
+⚠ No OpenSCAD binary in this sandbox — could not F5-render. Janis must pull v7.scad,
+F5 render, confirm 4 parts visually separate/distinguishable and crossbar doesn't
+clip into pole_body().
+
 ### 2026-06-30 | PR-01-base-v6 | DONE — flag included
 pole_body() taper redone per Janis direct spec: flat-face width 100mm@base →
 60mm@transition_h(400mm) via logarithmic horn curve (8-segment hull loft),

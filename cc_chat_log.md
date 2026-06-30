@@ -19,6 +19,28 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-30 | PR-01-base-v9 (split-clamp collar + full-height body) | DONE — flags included
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v9.scad (new), knowledge.map,
+prompts/archive/, cc_chat_log.md
+Janis QA on v8: pole_top() placeholder confirmed expected (Stage 2 scope, not a bug);
+shaft ribbing flagged for F6 ($fn artifact, not lattice — pending Janis confirm, out
+of this prompt's scope). New direction (Janis-confirmed, explicit Q&A): pole_body()
+now spans FULL exposed height as one uniform 50mm D-profile (collar_h offset removed,
+height = pole_h - top_boss_h = 1530mm). pole_base_collar() redesigned as external
+split-clamp sleeve wrapping both pole_body() base and wood leg top across the bed_h
+line — 2 visually separate halves (front/back, cut along Y seam), 3 bolt bosses per
+split face (6 total), clamp carries holding force not the pin. pole_wood_socket()
+reduced to shallow registration depth (socket_depth=20mm, was 80mm) — registration
+only, not load-bearing. pin_h=18mm <= socket_depth=20mm confirmed.
+⚑ TBD placeholders (Stage 2): collar_wrap_h=120mm, collar_wall_t=8mm, collar_bolt_d=4mm,
+collar_bolt_boss_d=10mm, socket_depth=20mm, pin_h=18mm — all parametric guesses, not final.
+Confirmed no lattice/truss geometry anywhere (visual code review).
+⚠ No OpenSCAD binary in this sandbox — could not F5-render. Janis must pull v9.scad,
+F5 render, confirm body is full-height uniform 50mm D-profile, collar wraps both
+pole base + wood leg top as 2 distinguishable halves with 6 bosses, pin fits inside
+shallow socket.
+
 ### 2026-06-30 | PR-01-base-v8 (crossbar seating + overshoot fix) | DONE
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v8.scad (new), knowledge.map,

@@ -153,7 +153,8 @@ Claude Web → QA pass/fail → writes next prompt if needed
 | v5 | pilates-reformer/PR-01-base/PR-01-base-v5.scad | Superseded |
 | v6 | pilates-reformer/PR-01-base/PR-01-base-v6.scad | Superseded — rejected by Janis, one-piece continuous pole concept wrong direction |
 | v7 | pilates-reformer/PR-01-base/PR-01-base-v7.scad | Superseded — Janis QA FAIL: crossbar floated above pole_top() and overshot pole centers |
-| v8 | pilates-reformer/PR-01-base/PR-01-base-v8.scad | **ACTIVE** — crossbar seating + overshoot fix: xbar_z seats mid-height in pole_top() boss, grip_l spans pole-center to pole-center, end caps at pole_cx[] positions, $fn=64 on pole_top/base_collar/wood_socket. Still Stage 1 of 2 — same 4-part split architecture as v7. |
+| v8 | pilates-reformer/PR-01-base/PR-01-base-v8.scad | Superseded — crossbar fix carried into v9 |
+| v9 | pilates-reformer/PR-01-base/PR-01-base-v9.scad | **ACTIVE** — pole_body() now full-height uniform 50mm D-profile (collar_h offset removed, height=pole_h-top_boss_h=1530mm). pole_base_collar() redesigned as split-clamp sleeve (2 visually separate halves, 6 bolt bosses, registration pin). pole_wood_socket() depth reduced to shallow registration (20mm). Still Stage 1 of 2. |
 
 ---
 

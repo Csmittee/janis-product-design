@@ -1,5 +1,5 @@
 # Claude Web — Chat Rules
-# Version: v3.1 — 2026-06-29
+# Version: v3.2 — 2026-06-30
 # Changes: "first 3 entries (newest at top)" in Reading & Diagnosis; manifold triage bullet in QA Discipline
 # Previous: v3 — 2026-06-29
 # Owner: Claude Web reads this at Step 2 of every session open. CC never reads this.
@@ -97,3 +97,11 @@ When decay symptom detected: stop, re-read WORKFLOW_SKILL.md and chat_rules.md f
 - Change a locked decision without flagging to Janis first
 - Write CHAT_HANDOFF to repo
 - Guess dimensions, file contents, or version history
+
+---
+
+## Coordinate System QA Rule
+- Before any orientation diagnosis: read XYZ gizmo from screenshot — never assume
+- Automotive convention: X=longitudinal, Y=lateral, Z=vertical, origin=front-left leg at floor
+- State axis mapping out loud before writing any fix
+- If no gizmo visible in screenshot: request a view that shows it before diagnosing

@@ -1,5 +1,5 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v4 — 2026-06-30
+# Version: v5 — 2026-06-30
 # All units: MM
 
 ---
@@ -28,6 +28,12 @@ OpenSCAD rotation reference (cylinder default axis = Z):
   - To orient cylinder along X (longitudinal): rotate([0,90,0])
   - To orient cylinder along Y (lateral):      rotate([90,0,0])
   - To orient cylinder along Z (vertical):     no rotation needed
+
+Flat-face / D-profile orientation rule:
+  - A flat face described as "front to rear / rear to front facing" means the
+    flat plane's SURFACE NORMAL points along X (the flat surface lies in the Y-Z plane)
+  - This is the orientation needed so a crossbar running along X can glide flush
+    against the flat face
 
 QA CHECK — Claude Web reads XYZ gizmo from every OpenSCAD screenshot
 before making any orientation diagnosis. Never assume axis mapping.

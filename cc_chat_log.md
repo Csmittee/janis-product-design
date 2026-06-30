@@ -19,6 +19,17 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-30 | PR-01-base-v5 (pole redesign) + coordinate rule v2 | COMMITTED
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v5.scad (new), rules-dimensions.md, rules-pr.md, chat_rules.md, cc_chat_log.md, knowledge.map, prompts/archive/
+- pole_top_collar() REMOVED — pole now one continuous D-profile piece (blocky base 0-15% → smooth single-hull taper 15-85% → narrowing rounded top 85-100%, dome cap).
+- D-flat face flipped to X-normal (was Y) per Janis sketch: front pole pair flat faces +X (rear), rear pole pair flat faces -X (front) — flush against X-axis crossbar.
+- Added tooth-zone groove recess (40-88% pole_h, placeholder, no teeth) and bar-insert bore (X-axis, ~96% pole_h) — crossbar now passes through pole directly, xbar_z recomputed from bore_z.
+- New pole_base_bushing() — small ring component at wood/pole interface (NOT the removed top collar).
+- Governance: added flat-face/D-profile orientation rule to rules-dimensions.md (v4→v5), rules-pr.md (1.1→1.2), chat_rules.md (v3.1→v3.2). cc_rules.md already had the coordinate block from last session — no change needed.
+⚠ No OpenSCAD binary available in this environment — could not literally F5-verify; geometry logic reviewed for valid syntax (hull/difference/intersection structure, no orphaned references). Janis: please F5 and screenshot with XYZ gizmo visible.
+⚑ FLAG: cam lock direction on rear poles — N/A now (top collar/cam removed in this version).
+
 ### 2026-06-30 | PR-01-base-v4 + coordinate-system-standard-v1 | COMMITTED
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v4.scad (new), rules-dimensions.md, rules-pr.md, cc_rules.md, cc_chat_log.md, knowledge.map, prompts/archive/

@@ -1,6 +1,6 @@
 # rules-pr.md
 # Janis Product Design — PR-01 Pilates Reformer Rules & Configuration
-# Version: 1.1 — 2026-06-30
+# Version: 1.2 — 2026-06-30
 # Owner: Janis
 # Written by: Claude Web
 # Read by: cc before every PR-01 SCAD task
@@ -36,6 +36,7 @@ First SCAD focus: Joints and frame structure only — no sliding bed, no springs
 - Origin: front-left leg corner at floor (Z=0)
 - Crossbar runs along X → rotate([0,90,0]) in OpenSCAD
 - Pole runs along Z → no rotation needed
+- Pole D-flat face: surface normal points along X — flat lies in Y-Z plane
 - Bed width (Y) = pole-center to pole-center distance
 
 **NOTE:** All dimensions PENDING until Janis measures physical sample or confirms.

@@ -19,6 +19,18 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-30 | PR-01-base-v6 | DONE — flag included
+pole_body() taper redone per Janis direct spec: flat-face width 100mm@base →
+60mm@transition_h(400mm) via logarithmic horn curve (8-segment hull loft),
+constant 60mm from 400mm to pole_h. Round portion derives from flat width via
+pole_r_from_flat() (r=fw*0.70013). r_base~70mm, r_top~42mm. Bore (33mm) wall
+margin re-verified at new r_top: ~12.9mm min wall, clears 2mm rule easily.
+bore_z/tooth zone repositioned to clear taper+dome. pole_base_bushing() resized
+off new r_base.
+⚠ FLAG: No OpenSCAD binary in this sandbox — could not literally F5-render or
+capture screenshots. Janis must pull PR-01-base-v6.scad, F5 render, verify
+crossbar clears bore with no clipping, and confirm cross-section visually.
+
 ### 2026-06-30 | PR-01-base-v5 (pole redesign) + coordinate rule v2 | COMMITTED
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v5.scad (new), rules-dimensions.md, rules-pr.md, chat_rules.md, cc_chat_log.md, knowledge.map, prompts/archive/

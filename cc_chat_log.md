@@ -19,6 +19,21 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-30 | PR-01-base-v8 (crossbar seating + overshoot fix) | DONE
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v8.scad (new), knowledge.map,
+prompts/archive/, cc_chat_log.md
+Janis QA on v7 = FAIL (root cause confirmed by direct code read, not guessed):
+crossbar floated above pole_top() boss and overshot past pole centers (origin/length
+keyed to bed edges, not pole_cx[]). Fixed: xbar_z = bed_h+pole_h-top_boss_h*0.5 =
+2065mm (was +, now seats mid-height in boss). grip_l = bed_l-leg_w = 2120mm
+(pole-center to pole-center, was bed_l=2300 edge-to-edge). crossbar_body() X origin
+now leg_w/2=90mm (was 0). crossbar_end_cap() now uses pole_cx[0..3] = [90, 2210, 90,
+2210] instead of hardcoded 0/grip_l. $fn=64 added explicitly to pole_top()/
+pole_base_collar()/pole_wood_socket() cylinders (matches pole_body(), fixes faceted look).
+⚠ No OpenSCAD binary in this sandbox — could not F5-render. Janis must pull v8.scad,
+F5 render, confirm crossbar sits flush inside pole_top() with no gap/overshoot.
+
 ### 2026-06-30 | PR-01-base-v7 (4-part split, Stage 1) | DONE — flags included
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v7.scad (new), rules-dimensions.md,

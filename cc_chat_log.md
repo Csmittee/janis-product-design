@@ -19,6 +19,59 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-30 | PR-01-base-v10 (pole_top asymmetric foot/boot rebuild + through-bore) | DONE — flags included
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v10.scad (new), knowledge.map, cc_chat_log.md, prompts/archive/
+Source: IMG_3314 sketch (per Janis prompt) — pole_top() was a placeholder
+symmetric frustum/cone in v2–v9, never correct. Fully rebuilt as asymmetric
+"foot/boot" head atop a cylindrical neck, per prompt PR-01-base-v10.
+
+QA checklist confirmations:
+- pole_top_head() built via linear_extrude() of an 8-point asymmetric 2D
+  X-Z profile, mirrored by `dir` per pole side — CONFIRMED NOT a body of
+  revolution, no d1/d2 cylinder/cone anywhere in pole_top()/pole_top_head()/
+  pole_top_neck().
+- Head dims used: head_back_w=20mm, head_front_w=60mm → total head X-width
+  = 80mm (> pole_d=50mm); head_depth=70mm (Y, > pole_d); head_h=110mm (Z).
+- Neck: neck_d=50mm (=pole_d exactly, no taper); neck_h=50mm (meets the
+  50mm minimum spec).
+- Bore: top_bore_d=33mm (TBD — grip_od 32mm +1mm/-0mm clearance, PENDING
+  physical fit test vs a real 32mm pipe sample per prompt). Passes through
+  the HEAD only (head spans z=1990–2100), axis along X via rotate([0,90,0])
+  matching crossbar_body()'s orientation, centered at the existing
+  (unmodified-formula) xbar_z, which now computes to 2020mm.
+- Wall thickness around bore: minimum 13.5mm (Z, bore-center to head
+  bottom side); 63.5mm (Z, to head top); 18.5mm each side (Y). Stated as
+  generous per prompt's future-latch-stage requirement.
+- 2 neck screw bosses (not 3, not 6 — distinct from pole_base_collar()'s
+  6-bolt split clamp): M6 hex countersunk, clearance hole d=6.5mm (TBD),
+  counterbore d=13mm depth=4mm (TBD) — all flagged pending Janis fastener
+  confirmation. Radial holes through the neck at 2 heights (30%/70% of
+  neck_h), axis along Y.
+- No latch/cam/lever/quick-release geometry anywhere — visually confirmed
+  by code review (only neck cylinder, head linear_extrude, bore cylinder,
+  2 screw-hole cylinder pairs).
+- pole_top() confirmed visually/parametrically distinct from
+  pole_base_collar() — no shared params, no shared geometry, different
+  bolt/screw counts (2 vs 6).
+- ⚠ DESIGN DECISION (flag for Janis): top_boss_h increased from v9's 70mm
+  placeholder to 160mm (neck_h 50 + head_h 110) so the new head/bore could
+  fit with real wall thickness. pole_body() and xbar_z formulas are
+  UNCHANGED CODE, but their computed values shift as a result: pole_body()
+  height = pole_h - top_boss_h = 1440mm (was 1530mm); xbar_z = 2020mm (was
+  2065mm). Crossbar code itself was not touched — only top_boss_h, which
+  the prompt scoped as part of pole_top()'s own redesign.
+- ⚠ No OpenSCAD binary available in this sandbox — built/verified by code
+  review only, never F5-rendered. Janis must verify visually after pulling.
+
+Also cleaned up prompts/ root: removed 4 leftover duplicate files
+(PR-01-base-v8-crossbar-seating-fix.md, pr01-base-v2-fix.md,
+pr01-base-v3-crossbar-axis-fix.md, janis-product-viewer.md) that were
+byte-identical to already-archived copies — root now only holds new/unread
+prompts.
+
+---
+
 ### 2026-06-30 | PR-01-base-v9 (split-clamp collar + full-height body) | DONE — flags included
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v9.scad (new), knowledge.map,

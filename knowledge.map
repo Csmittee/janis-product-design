@@ -154,7 +154,8 @@ Claude Web → QA pass/fail → writes next prompt if needed
 | v6 | pilates-reformer/PR-01-base/PR-01-base-v6.scad | Superseded — rejected by Janis, one-piece continuous pole concept wrong direction |
 | v7 | pilates-reformer/PR-01-base/PR-01-base-v7.scad | Superseded — Janis QA FAIL: crossbar floated above pole_top() and overshot pole centers |
 | v8 | pilates-reformer/PR-01-base/PR-01-base-v8.scad | Superseded — crossbar fix carried into v9 |
-| v9 | pilates-reformer/PR-01-base/PR-01-base-v9.scad | **ACTIVE** — pole_body() now full-height uniform 50mm D-profile (collar_h offset removed, height=pole_h-top_boss_h=1530mm). pole_base_collar() redesigned as split-clamp sleeve (2 visually separate halves, 6 bolt bosses, registration pin). pole_wood_socket() depth reduced to shallow registration (20mm). Still Stage 1 of 2. |
+| v9 | pilates-reformer/PR-01-base/PR-01-base-v9.scad | Superseded — pole_body() full-height uniform 50mm D-profile, pole_base_collar() split-clamp sleeve. |
+| v10 | pilates-reformer/PR-01-base/PR-01-base-v10.scad | **ACTIVE** — pole_top() fully rebuilt as asymmetric "foot/boot" head+neck (linear_extrude of 2D profile, NOT a body of revolution). Head 80mm(X)×70mm(Y)×110mm(Z), neck d=50mm(=pole_d) h=50mm. Horizontal 33mm through-bore (TBD, pending fit test) through head, aligned to xbar_z=2020mm. 2 M6 hex countersunk screw holes at neck (TBD dims). top_boss_h resized 70→160mm to fit; pole_body()/xbar_z formulas unchanged, values recompute. Still Stage 1 of 2 — no latch geometry. |
 
 ---
 

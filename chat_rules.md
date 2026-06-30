@@ -1,7 +1,7 @@
 # Claude Web — Chat Rules
-# Version: v3.2 — 2026-06-30
-# Changes: "first 3 entries (newest at top)" in Reading & Diagnosis; manifold triage bullet in QA Discipline
-# Previous: v3 — 2026-06-29
+# Version: v3.3 — 2026-06-30
+# Changes: Strengthened "same issue repeats more than 2 loops" into a mandatory self-check at every QA result, before responding.
+# Previous: v3.2 — 2026-06-30
 # Owner: Claude Web reads this at Step 2 of every session open. CC never reads this.
 
 ---
@@ -81,7 +81,12 @@ Before searching for cc_chat_log, inspect the CHAT_HANDOFF body:
 - cc_chat_log latest entry version does not match ACTIVE MODEL in CHAT_HANDOFF
 - cc_chat_log absent from project knowledge as a standalone file
 - cc prompt format looks wrong or incomplete
-- Same issue repeats more than 2 loops
+- Same issue repeats more than 2 loops — Claude Web MUST self-check loop
+  count at the START of every QA result it receives, BEFORE responding to
+  it. This check happens automatically, every single FAIL, not only when
+  Janis raises it. If 2nd consecutive FAIL on the same root component is
+  detected, state "R-111 triggered" in the same message as the QA
+  response — do not proceed to write or imply a 3rd fix attempt first.
 - Claude Web output drifts from template standards mid-session
 - Naming or vocabulary does not match knowledge.map
 

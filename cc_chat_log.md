@@ -4,6 +4,36 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-06-30 | Governance: joint construction skill + rapid-fire template + R-111 self-trigger | DONE — zero geometry touched
+
+Files: .claude/SKILL_joint_construction.md (NEW), .claude/rules-codes.md
+(1.6→1.7), WORKFLOW_SKILL.md (3.1→3.2), chat_rules.md (v3.2→v3.3),
+knowledge.map (v7→v8), cc_chat_log.md, prompts/archive/
+Source: R-111 (KT root-cause: pole_top() joint failed QA v10-v17 without a
+documented construction rule, unlike bore-orientation which converged once
+documented). Janis also flagged 2 process gaps: Claude Web should
+self-trigger R-111 after 2 loops, and rapid-fire instructions were dropping
+open-items/QA/do-not-touch content.
+
+- NEW SKILL_joint_construction.md: Rule 1 (datum = parent's axis, never
+  child's edge), Rule 2 (mismatched cross-sections need multi-step loft,
+  never single hull()), Rule 3 (state coordinates, don't just claim
+  "aligned"), + isolation-test-first discipline (coord-dump prompt before
+  fix prompt, max 2 prompts from 2nd failure to next QA).
+- rules-codes.md: pointer to new skill added, version bumped.
+- WORKFLOW_SKILL.md: new TRIGGER row for joint/transition QA-fail-twice →
+  R-111; new RAPID-FIRE PROMPT TEMPLATE section (skip redundant file
+  re-reads only — never skip module/line, open-item context, QA
+  confirmation, or relevant DO NOT TOUCH items).
+- chat_rules.md: "same issue repeats >2 loops" strengthened to a mandatory
+  self-check at the START of every QA result, before responding — not only
+  when Janis raises it.
+- Confirmed: NO .scad file touched this session — documentation/governance
+  only, per prompt Section 5.
+- ⚑ FLAG FOR JANIS: re-upload chat_rules.md and WORKFLOW_SKILL.md to
+  Project Knowledge — repo and Project Knowledge must match, manual sync
+  step on Janis's side.
+
 ### 2026-06-30 | PR-01-base-v18 (bell re-centered on neck axis + D-profile carried into neck + bolts through flat face) | DONE — Janis F5/F6 render required, NOT visually confirmed
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v18.scad (new), knowledge.map (v6→v7), cc_chat_log.md

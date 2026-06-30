@@ -1,6 +1,6 @@
 # knowledge.map
 # Janis Product Design — Master File Index
-# Version: v7 | 2026-06-30
+# Version: v8 | 2026-06-30
 # Maintained by: cc
 #
 # cc reads this at EVERY session start (step 2 after cc_rules.md)
@@ -32,6 +32,7 @@
 - .claude/rules-vm.md        — VM tasks only
 - rules-pr.md                — PR tasks only (create when needed)
 - .claude/SKILL_problem_solving_kt.md — R-111 trigger
+- .claude/SKILL_joint_construction.md — any T-junction or mismatched cross-section transition fix/build
 - latest .scad file          — active model only (filename in cc_chat_log.md)
 
 ---
@@ -52,6 +53,7 @@
 | .claude/rules-materials.md | .claude/ | cc — SCAD tasks |
 | .claude/rules-vm.md | .claude/ | cc — VM tasks |
 | .claude/SKILL_problem_solving_kt.md | .claude/ | Claude Web + cc — R-111 trigger |
+| .claude/SKILL_joint_construction.md | .claude/ | cc — joint/T-junction/cross-section transition construction rules (R-111 reference for repeated joint QA failures) |
 | .claude/SKILL_manifold_triage.md | .claude/ | Claude Web only — manifold triage fast-path. cc does NOT read this file. |
 | /prompts/[task].md | repo /prompts/ | Claude Web writes, Janis saves |
 | SCAD files | /vending-machine/[model]/ | cc |

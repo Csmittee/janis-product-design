@@ -1,9 +1,15 @@
 # Janis Product Design — OpenSCAD Coding Rules
-> Version 1.6 — 2026-06-29
-> Changes: Added COLOR CODING STANDARD and MANIFOLD SAFETY RULES (M-1 to M-4)
-> Previous: 1.5 — 2026-06-29
+> Version 1.7 — 2026-06-30
+> Changes: Added pointer to .claude/SKILL_joint_construction.md for joint/cross-section transition issues
+> Previous: 1.6 — 2026-06-29
 
 All units: MM. All rules below are mandatory for every SCAD file in this project.
+
+---
+
+**Joint/cross-section transition issues:** read
+`.claude/SKILL_joint_construction.md` before writing any fix involving a
+T-junction or a transition between mismatched cross-section shapes.
 
 ---
 

@@ -19,6 +19,35 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-30 | PR-01-base-v11 (pole_top orientation fix) | DONE — flags included
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v11.scad (new), knowledge.map, cc_chat_log.md, prompts/archive/
+Source: Janis QA fix on v10 — root cause: v10's pole_top_head() loft elongated
+along Z (tall, narrow, standing upright) when it should elongate along X
+(toward the bore/pipe exit), short in Z.
+
+QA confirmations:
+- Head long axis now runs X (toward bore/pipe), short axis Z — CONFIRMED.
+  head_back_w 20→40mm, head_front_w 60→90mm → head X total = 130mm, vs
+  head_h = 110mm (Z, unchanged from v10). X > Z, fixing the orientation.
+- Bore still centered correctly through the head, fully unchanged from v10:
+  d=33mm (TBD, pending fit test), aligned to xbar_z=2020mm, axis along X.
+  Neck unchanged: d=50mm(=pole_d), h=50mm. 2x M6 screw joint unchanged.
+- Neck-to-head junction: tapered blend added (fillet_h=15mm) — the profile
+  widens gradually from neck_r out to full head width over a 15mm Z
+  transition instead of an instant step. ⚠ This is a polygon-widening
+  approximation of a fillet, NOT a true CAD round/fillet — flagged as a
+  Stage 2 precision-fit item if Janis wants a smoother radiused blend.
+- Profile given more control points (10 vs v10's 8) for a rounder,
+  helmet-like silhouette per the "bicycle helmet / alien-head" reference.
+- No undefined variable warnings (top_boss_d fully removed in v10, not
+  reintroduced). Version incremented v10→v11, saved as new file (v10
+  preserved, not overwritten).
+- ⚠ No OpenSCAD binary available in this sandbox — built/verified by code
+  review only, never F5-rendered. Janis must verify visually after pulling.
+
+---
+
 ### 2026-06-30 | PR-01-base-v10 (pole_top asymmetric foot/boot rebuild + through-bore) | DONE — flags included
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v10.scad (new), knowledge.map, cc_chat_log.md, prompts/archive/

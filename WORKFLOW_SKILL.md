@@ -1,8 +1,8 @@
 # WORKFLOW_SKILL.md
 # Janis Product Design — How We Work
-# Version: 3.2 — 2026-06-30
-# Changes: Joint construction skill + rapid-fire template + R-111 self-trigger reinforcement added.
-# Previous: v3.1 — 2026-06-29
+# Version: 3.3 — 2026-07-01
+# Changes: Local render workflow added (SKILL_local_render.md) — Claude Web now prototypes geometry locally before writing cc prompts. Pre-session Step 0 added. Two trigger rows added.
+# Previous: v3.2 — 2026-06-30
 
 ---
 
@@ -70,6 +70,13 @@ This asymmetry is by design. All spy tests must be designed for Janis to execute
 
 Janis pastes CHAT_HANDOFF → Claude Web executes in order:
 
+**PRE-SESSION STEP 0 — Local Render Environment (geometry sessions only)**
+If this session involves any new module shape design or any joint/seam fix:
+Claude Web installs OpenSCAD locally (apt-get) and verifies geometry with
+local renders BEFORE writing any cc prompt. Read .claude/SKILL_local_render.md.
+Skip this step only for: documentation-only sessions, governance-only sessions,
+or sessions where Janis explicitly says no new geometry is being attempted.
+
 **Step 1:** Search project knowledge for "WORKFLOW_SKILL" — load this file.
   Not found → tell Janis to upload WORKFLOW_SKILL.md to project knowledge. STOP.
 
@@ -128,6 +135,8 @@ Janis describes goal
 | QA screenshot shows geometry missing | Check error log for undefined variables first | Fix variable declaration order before visual fix |
 | Supplier export requested | Only after QA PASS — STL + DXF + 4-angle PNG | cc confirms all 3 in cc_chat_log |
 | Joint/transition between mismatched cross-sections fails QA twice | R-111 — read .claude/SKILL_joint_construction.md, complete KT before next prompt | Claude Web states "R-111 triggered" + cites which rule (1/2/3) was violated |
+| New module shape being designed from scratch | Claude Web installs OpenSCAD, prototypes locally, renders all angles, confirms with Janis BEFORE writing cc prompt | Janis sees renders in this chat and gives explicit PASS before any cc prompt is written |
+| Joint/seam/blend issue fails QA once | Claude Web prototypes the fix locally, renders it, confirms fix works visually BEFORE writing next cc prompt | Local render confirms fix before cc burns a version |
 
 ---
 

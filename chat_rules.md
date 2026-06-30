@@ -1,7 +1,7 @@
 # Claude Web — Chat Rules
-# Version: v3.3 — 2026-06-30
-# Changes: Strengthened "same issue repeats more than 2 loops" into a mandatory self-check at every QA result, before responding.
-# Previous: v3.2 — 2026-06-30
+# Version: v3.4 — 2026-07-01
+# Changes: Added Claude Web Rendering Capability section — mandatory local render before any cc geometry prompt.
+# Previous: v3.3 — 2026-06-30
 # Owner: Claude Web reads this at Step 2 of every session open. CC never reads this.
 
 ---
@@ -102,6 +102,15 @@ When decay symptom detected: stop, re-read WORKFLOW_SKILL.md and chat_rules.md f
 - Change a locked decision without flagging to Janis first
 - Write CHAT_HANDOFF to repo
 - Guess dimensions, file contents, or version history
+
+---
+
+## Claude Web Rendering Capability (added 2026-07-01)
+Claude Web can install OpenSCAD via apt in its bash sandbox and render
+geometry locally. This is now a MANDATORY first step for any new module
+shape design. See .claude/SKILL_local_render.md for the full protocol.
+This capability replaced the screenshot→cc→screenshot loop that previously
+burned 11+ versions per design iteration.
 
 ---
 

@@ -4,6 +4,26 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-01 | PR-01-base-v21 + governance (TASK A+B) | DONE — concept10 mudguard housing, TASK A governance files, Janis F5/F6 required
+
+Files: PR-01-base-v21.scad (new), WORKFLOW_SKILL.md (3.2→3.3), chat_rules.md (3.3→3.4), .claude/rules-codes.md (1.7→1.8), .claude/SKILL_local_render.md (new, 1.0), rules-pr.md (1.3→1.4), knowledge.map (v10→v11), cc_chat_log.md.
+Prompt: prompts/governance-local-render-and-PR-01-base-v21.md → archived.
+
+TASK A — governance: SKILL_local_render.md created. WORKFLOW_SKILL.md: PRE-SESSION STEP 0 added, 2 trigger rows added. chat_rules.md: Claude Web Rendering Capability section added. rules-codes.md: local render pointer added.
+
+TASK B — v21 geometry QA numbers:
+- xbar_z = 2065mm (was 2020). Formula: bed_h+pole_h-housing_r_circ-housing_camber_rise = 500+1600-19-16 = 2065. Camber top = 2065+35 = 2100 = bed_h+pole_h ✓
+- neck_top = xbar_z - housing_r_circ = 2065-19 = 2046mm
+- z_bot (neck base) = xbar_z - housing_r_circ - neck_h = 2065-19-70 = 1976mm
+- body_h = (2046-70)-500 = 1476mm
+- flat_x = dir*0.7*pole_r = dir*14mm (coplanar with pole_body())
+- Bolt Z (world): z_bot+35=2011mm, z_bot+55=2031mm. Edge gaps: bottom 35mm ✓, top 15mm ✓ (both ≥15mm)
+- neck_h=70mm retained (concept10 50mm fails bolt-edge rule), neck_od=47mm retained (concept10 44mm gives 1.5mm wall < 2mm min)
+- top_bore_d changed 33→32 (TBD pending physical multi-pipe OD measurement)
+- Bore subtraction: translate([cx,cy,xbar_z]) rotate([0,90,0]) cylinder(h=housing_len+20, d=top_bore_d, center=true) ✓ symmetric for both dir
+- Brace/paren/bracket balance verified via Python: all 0 diff ✓
+- Patent flag recorded: wedge-lock mechanism (lever→wedge→friction sleeve→pipe clamp) is patent candidate. Zero internal mechanism geometry committed. Lever is color("#CC2222") placeholder only. No wedge/cam/sleeve in this file.
+
 ### 2026-06-30 | PR-01-base-v20 (pole_top_transition() rebuilt as 8-step elbow loft) | DONE — Prompt 2/2 of isolation discipline, Janis F5/F6 required
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v20.scad (new), cc_chat_log.md, knowledge.map (v9→v10)

@@ -1,7 +1,7 @@
 # Janis Product Design — OpenSCAD Coding Rules
-> Version 1.7 — 2026-06-30
-> Changes: Added pointer to .claude/SKILL_joint_construction.md for joint/cross-section transition issues
-> Previous: 1.6 — 2026-06-29
+> Version 1.8 — 2026-07-01
+> Changes: Added pointer to .claude/SKILL_local_render.md for new module geometry design or joint/seam fix
+> Previous: 1.7 — 2026-06-30
 
 All units: MM. All rules below are mandatory for every SCAD file in this project.
 
@@ -10,6 +10,9 @@ All units: MM. All rules below are mandatory for every SCAD file in this project
 **Joint/cross-section transition issues:** read
 `.claude/SKILL_joint_construction.md` before writing any fix involving a
 T-junction or a transition between mismatched cross-section shapes.
+
+**New module geometry design or joint/seam fix:** read
+`.claude/SKILL_local_render.md` before writing any cc prompt.
 
 ---
 

@@ -1,6 +1,8 @@
 # rules-pr.md
 # Janis Product Design — PR-01 Pilates Reformer Rules & Configuration
-# Version: 1.3 — 2026-06-30
+# Version: 1.4 — 2026-07-01
+# Changes: Added pole_top() concept lock entry to §5 COMPONENT SPECIFICATIONS (TASK B-7)
+# Previous: 1.3 — 2026-06-30
 # Owner: Janis
 # Written by: Claude Web
 # Read by: cc before every PR-01 SCAD task
@@ -132,6 +134,14 @@ Foldable variant adds:
   accommodate more than one nominal bar OD — do not assume the 33mm bore
   (top_bore_d, PR-01-base SCAD) forever locks in only the 32mm steel bar
   when material variants are scoped later.
+
+**pole_top() — CONCEPT LOCKED 2026-07-01 (local render verified):**
+  Mudguard/airplane-camber collar body (not wine-glass/horn), same circular
+  OD front and rear, asymmetric camber top, straight bottom, straight D-
+  profile neck sleeve. Wedge-lock quick-release lever = Stage 2, patent-
+  candidate — DO NOT implement mechanism without explicit Janis approval.
+  Multi-pipe bore compatibility (composite/wood/aluminum) = TBD, pending
+  physical OD measurement of all 3 types.
 
 ### 6. CROSSBAR (longitudinal grip bar)
 - OD: 32mm OWNER-LOCKED

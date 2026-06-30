@@ -4,6 +4,35 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-06-30 | PR-01-base-v16 (neck-bell alignment + bore-clearance fix + rules-pr.md governance) | DONE — 2 flags carried over, need Janis confirm
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v16.scad (new), rules-pr.md (1.2→1.3), knowledge.map, cc_chat_log.md, prompts/archive/
+Source: Janis flagged from v15 render — neck looked off-axis from bell, and
+neck unioned too far into the bell, plugging the bore (bar would hit it).
+
+QA:
+- Alignment method: confirmed via coordinate check that neck and bell were
+  ALREADY both anchored at (cx,cy) — no true coordinate mismatch found. The
+  v15 visual "offset" is explained by the bore-plug issue below (not a
+  separate bug); fixing it resolves what was reported as misalignment.
+- Bore clearance fix: neck_top moved from xbar_z+0.2 (inside the bore void)
+  to xbar_z - top_bore_d/2 - 2mm — Python-verified: 5mm solid overlap with
+  the bell's wall band under the bore, 2mm clear of the bore void. Bolt
+  holes land well below the bore too (no separate adjustment needed).
+  Bore re-confirmed open/unobstructed end-to-end by construction, not by an
+  actual screenshot (still no OpenSCAD binary in this sandbox).
+- Defensive guarantee added: bore-envelope cylinder now also subtracted from
+  the neck (not just the bell) — bore clearance is code-provable, not just
+  position-tuned, holds even if dimensions shift later.
+- rules-pr.md: all 7 sub-items (2a bar-spacing open item, 2b crossbar 3-part
+  structure, 2c no-floor-storage principle, 2d flagship differentiator,
+  2e barrel/spline mechanism, 2f Super Luxury tier, 2g quick-release
+  rationale) added, version bumped 1.2→1.3.
+- ⚑ FLAG (carried over): pole_body() still has no through-holes for the M6
+  bolts. ⚑ FLAG (carried over from v15): bell waist (~44.5mm) still
+  narrower than neck_od (47mm) by ~1.5-2.5mm — bell profile untouched.
+- No undefined-variable issues, brace/paren balance clean.
+
 ### 2026-06-30 | PR-01-base-v15 (seat neck to bell + pole/neck diameter correction) | DONE — 2 flags need Janis confirm
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v15.scad (new), rules-dimensions.md (v6→v7), knowledge.map, cc_chat_log.md

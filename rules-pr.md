@@ -1,6 +1,6 @@
 # rules-pr.md
 # Janis Product Design — PR-01 Pilates Reformer Rules & Configuration
-# Version: 1.2 — 2026-06-30
+# Version: 1.3 — 2026-06-30
 # Owner: Janis
 # Written by: Claude Web
 # Read by: cc before every PR-01 SCAD task
@@ -63,9 +63,13 @@ pr01_assembly()
 │   ├── pole_mid_clamp()     — adjustable height clamp (spring hook points)
 │   └── pole_top_collar()    — crossbar receiver, quick release
 └── crossbar_assembly()
-    ├── crossbar_body()      — horizontal bar, longitudinal, both front and rear
-    └── crossbar_end_cap()   — cap or joint at pole top
+    ├── crossbar_joint() x2  — joint at each end, where it meets pole_top's bore
+    └── crossbar_body()      — body section between the two joints
 ```
+**Note (2b):** crossbar follows the same joint-body-joint modular logic as the
+pole, not a single continuous piece spanning the full length — gap-filled into
+this diagram per Janis discussion (2026-06-30), see COMPONENT SPECIFICATIONS
+§6 below.
 
 Foldable variant adds:
 ```
@@ -119,6 +123,15 @@ Foldable variant adds:
 - Options: threaded locking ring (rotate to lock) OR push-pin with spring detent
 - Material: cast aluminum or stainless — CNC finished
 - SCAD model: cylindrical receiver body, bore = grip_bar_od + tolerance, cam detail
+- **(2g) Quick-release rationale — named customer pain point, not cosmetic:**
+  the quick-release exists specifically to let one customer swap between
+  multiple grip bar materials (steel, wood dowel, leather-wrapped, composite,
+  padded) to solve grip-comfort pain points (sweat, sensitivity, hand size,
+  climate, luxury feel). This is a functional requirement, not a finish
+  option. ⚑ FLAG: future bar-material specs may require the bore to
+  accommodate more than one nominal bar OD — do not assume the 33mm bore
+  (top_bore_d, PR-01-base SCAD) forever locks in only the 32mm steel bar
+  when material variants are scoped later.
 
 ### 6. CROSSBAR (longitudinal grip bar)
 - OD: 32mm OWNER-LOCKED
@@ -126,7 +139,12 @@ Foldable variant adds:
 - Spans full total_l — passes through all 4 pole top collars
 - Material options: stainless / aluminum / composite / wood dowel (classic model)
 - End caps at each end — decorative + safety
-- SCAD model: cylinder, length = total_l, collar positions at pole X coordinates
+- **(2b) Modular structure — NOT a single continuous piece:** follows the same
+  joint-body-joint logic as the pole. crossbar_joint() x2 (one at each end,
+  where it meets pole_top()'s bore) + crossbar_body() (the section between).
+  Update any assembly hierarchy diagram or SCAD module list to reflect this —
+  do not model crossbar_body() as a single piece spanning the full length.
+- SCAD model: crossbar_joint() x2 at pole X coordinates + crossbar_body() between them
 
 ### 7. FOLD JOINT (foldable variant only)
 - Located at bed surface height (fold_z = bed_h = 500mm from floor)
@@ -150,6 +168,7 @@ Foldable variant adds:
 | Contemporary Std | Fixed | No | Oak/Maple or Aluminum | Matte anodized | LATER |
 | Contemporary Foldable | Foldable | Yes | Oak/Maple | Matte anodized | LATER |
 | Contemporary Electric | Fixed | No | TBD | TBD | FUTURE — separate project |
+| **(2f) Super Luxury** | Fixed/Foldable | TBD | Thai hardwood | Copper hardware, full CNC-cast joints, crocodile/high-grade leather straps and cable, precision fine-gear movement feel (smooth mechanical "click" quality on all moving joints, comparable to fine watch movement) | LATER — materially distinct tier, NOT a finish variant of Classic Std |
 
 ---
 
@@ -158,9 +177,27 @@ Foldable variant adds:
 Document here so design leaves space for them. cc reads this and ensures
 no geometry blocks these future additions.
 
+**(2c) "No floor storage — fully built-in" principle:** all accessory systems
+(slider rail, spring system, barrel/spline adjuster) must store within the bed
+structure itself when not in use — no external/floor-standing storage
+components. This governs how the future systems below must be designed for
+retraction/concealment within the bed_h and bed_w envelope.
+
+**(2d) Flagship differentiator — repositioning note:** the combined barrel +
+Wunda chair + Cadillac frame capability (the 3 bullets below) is the PRIMARY
+differentiator of this product line, not a minor add-on — flag as a
+patent-candidate. Treat design decisions around bed underside clearance and
+end-frame bolt patterns as protecting this capability, not as incidental.
+
 - Sliding carriage rail: runs inside bed frame longitudinally — bed frame must have interior clearance
 - Spring attachment system: connects to pole mid clamp hook eyes and bed anchor points
-- Barrel / spline adjuster: snake rail under bed surface — bed must have underside clearance
+- Barrel / spline adjuster: snake rail under bed surface — bed must have underside clearance.
+  **(2e) Mechanism detail:** uses U-slot PU foam for variable curve adjustment,
+  retracts under the bed when not in use, and when retracted/filled acts as a
+  flush filler so the bed surface reads as one continuous flat static platform
+  (functioning as a firm Cadillac-style surface) — this dual-mode behavior
+  (curve adjustment + flush filler) must be preserved in any future bed
+  design, not just the curve-adjustment function alone.
 - Wunda chair conversion: foot pedal system at foot end — bed end frame must accept bolt pattern
 - Cadillac static frame: push bar and roll-down bar — uses existing pole top collar
 - Built-in AI sensor: pole body has channel for sensor wire routing — pole must have wire slot
@@ -277,6 +314,20 @@ Additional PR-01 specific risks:
 - Clamp collar around pole: clamp_id = pole_od + 0.5mm clearance (not 0, not e)
 - Fold cone: truncated cone via cylinder(r1, r2) — no coincident faces at bed surface
 - Socket bore: bore_d = pole_od + 0.5mm clearance minimum — never pole_od exactly
+
+---
+
+## OPEN ITEMS
+
+**(2a) Bar spacing / bed width constraint:** pole-to-pole bar spacing target =
+720-740mm (ergonomic, Janis-confirmed). Unlike common market designs that
+mount poles on the OUTSIDE of the bed frame (allowing a narrower bed to hit
+this spacing), this design mounts poles directly through the wood leg itself
+— meaning bed_w as currently scoped may be wider than needed to hit the
+720-740mm target. ⚑ This must be resolved as the FIRST task of the next
+bed-focused session, before any other bed geometry work — recalculate bed_w
+against pole-center spacing, do not assume the current bed_w value carries
+forward unchanged.
 
 ---
 

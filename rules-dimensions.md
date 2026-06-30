@@ -1,6 +1,37 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v3 — 2026-06-29
+# Version: v4 — 2026-06-30
 # All units: MM
+
+---
+
+## COORDINATE SYSTEM STANDARD — ALL MODELS (automotive convention)
+
+Origin: front-left corner of the product at floor level (Z=0)
+  - "Front" = the end the user faces / foot end of reformer / door side of vending machine
+  - "Left" = user's left when standing at front facing the product
+
+X-axis: longitudinal — runs along the LONG side of the product (front to back)
+  - X=0 at front face
+  - X increases toward rear
+  - bed_l / total_l runs along X
+
+Y-axis: lateral — runs along the WIDTH of the product (left to right)
+  - Y=0 at left edge
+  - Y increases toward right
+  - bed_w / total_w runs along Y
+
+Z-axis: vertical — runs upward
+  - Z=0 at floor
+  - Z increases upward
+
+OpenSCAD rotation reference (cylinder default axis = Z):
+  - To orient cylinder along X (longitudinal): rotate([0,90,0])
+  - To orient cylinder along Y (lateral):      rotate([90,0,0])
+  - To orient cylinder along Z (vertical):     no rotation needed
+
+QA CHECK — Claude Web reads XYZ gizmo from every OpenSCAD screenshot
+before making any orientation diagnosis. Never assume axis mapping.
+Always confirm from the gizmo visible in the screenshot.
 
 ---
 

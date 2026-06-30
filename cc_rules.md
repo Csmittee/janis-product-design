@@ -1,5 +1,5 @@
 # Claude Code (cc) Rules
-# Version: v3 — 2026-06-29
+# Version: v4 — 2026-06-30
 # Read this at the START of every cc session — step 1, always.
 
 ---
@@ -79,3 +79,16 @@ before reporting missing. Janis always pushes to main, not the feature branch.
 - VM tasks: .claude/rules-vm.md (when it exists)
 - PR tasks: rules-pr.md (when it exists)
 - R-111 trigger: .claude/SKILL_problem_solving_kt.md
+
+---
+
+## COORDINATE SYSTEM — READ BEFORE ANY GEOMETRY WORK
+
+This project uses automotive convention (locked in rules-dimensions.md):
+  X = longitudinal (long axis), Y = lateral (width), Z = vertical (up)
+  Origin = front-left corner at floor.
+
+Before writing any rotate() or translate() for a directional component:
+1. State the axis explicitly in a comment: // crossbar runs along X
+2. Confirm rotation: along X = rotate([0,90,0]), along Y = rotate([90,0,0])
+3. Never assume — derive from parameter names (bed_l → X, bed_w → Y)

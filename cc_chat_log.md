@@ -4,6 +4,39 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-06-30 | PR-01-base-v18 (bell re-centered on neck axis + D-profile carried into neck + bolts through flat face) | DONE — Janis F5/F6 render required, NOT visually confirmed
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v18.scad (new), knowledge.map (v6→v7), cc_chat_log.md
+Source: Janis inline chat + 5 screenshots on v17 render — 2 ROOT-CAUSE issues
+unresolved since early versions, not just clearance/gap symptoms.
+
+QA (numeric, not "looks aligned"):
+- PROBLEM 1 (cone datum wrong): bell was anchored by its SMALL FACE at
+  (cx,cy,xbar_z), so its whole head_h body extended off the neck's tip —
+  neck only touched the bell's edge, not a true T-junction. Fix: anchor on
+  the bell's BORE MIDPOINT instead — translate([cx-dir*head_h/2,cy,xbar_z]).
+  Proof: local bore midpoint (head_h/2) maps through rotate([0,90,0]) ->
+  scale([dir,1,1]) -> new translate to world X = cx exactly, i.e. the bore's
+  own center now sits on the neck's centerline, perpendicular to it.
+  pole_top_transition()'s bell-side anchor updated to match (bell small face
+  now at world X = cx-dir*head_h/2, was wrongly assumed at cx).
+- PROBLEM 2 (D/round mismatch at joint): pole_top_neck() carries pole_body()'s
+  exact flat_x = dir*0.7*pole_r cut plane down through a new fully-D zone
+  (d_zone_h = neck_h-neck_round_taper_h = 55mm) so it's coplanar (not just
+  close) with pole_body()'s flat face — zero gap by construction. Top 15mm
+  (neck_round_taper_h, NEW global) hull()-tapers the cut back to round so
+  pole_top_transition()/pole_top_bell() still meet a round cross-section,
+  unchanged.
+- Bolts: rotate([90,0,0]) (round wall, Y axis) -> rotate([0,90,0]) (flat
+  D-face, X axis). Z-positions unchanged: neck_top-25 / neck_top-50, both
+  inside the fully-D zone, both still clear bolt_edge_clearance_min (15mm
+  TBD) against the neck's outer edges.
+- DO NOT TOUCH items re-verified unchanged: bore d=33mm, bell exterior
+  profile, pole_od=40mm, neck_od=47mm, pole_base_collar(), pole_wood_socket(),
+  crossbar geometry. Brace/paren balance: 35/35, 485/485.
+- ⚠ No OpenSCAD binary in sandbox — code-review + coordinate-math only.
+  Janis must F5/F6 render to confirm visually.
+
 ### 2026-06-30 | PR-01-base-v17 (neck-bell true alignment + seam blend + bolt edge clearance) | DONE — Janis F5/F6 render required, NOT visually confirmed
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v17.scad (new), knowledge.map (v5→v6), cc_chat_log.md, prompts/archive/

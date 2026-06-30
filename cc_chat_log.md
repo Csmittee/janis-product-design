@@ -4,6 +4,70 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-06-30 | PR-01-base-v20 (pole_top_transition() rebuilt as 8-step elbow loft) | DONE — Prompt 2/2 of isolation discipline, Janis F5/F6 required
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v20.scad (new), cc_chat_log.md, knowledge.map (v9→v10)
+Source: prompts/PR-01-base-v20-elbow-loft-fix.md (Prompt 2 of 2 — v19's coord
+dump was Prompt 1, found root cause = axis-orientation mismatch, not shape).
+
+8 interpolated (x, y, z, rotation_deg) steps — front pole shown (dir=+1,
+cx,cy from corner; bell_small_face_x = cx-45 for dir=+1). t_eased = smoothstep
+for position, rot = 90*t (linear). neck_top=2001.5, xbar_z=2020 (both
+xbar_z/neck_top formulas unchanged from v18/v19):
+- step0 t=0.000 te=0.0000: x=cx+0.000   z=2001.500 rot=0.00°  (== neck top cross-section exactly, 0mm/0° delta)
+- step1 t=0.143 te=0.0554: x=cx-2.493   z=2002.525 rot=12.86°
+- step2 t=0.286 te=0.1983: x=cx-8.921   z=2005.168 rot=25.71°
+- step3 t=0.429 te=0.3936: x=cx-17.711  z=2008.781 rot=38.57°
+- step4 t=0.571 te=0.6064: x=cx-27.289  z=2012.719 rot=51.43°
+- step5 t=0.714 te=0.8017: x=cx-36.079  z=2016.332 rot=64.29°
+- step6 t=0.857 te=0.9446: x=cx-42.507  z=2018.975 rot=77.14°
+- step7 t=1.000 te=1.0000: x=cx-45.000  z=2020.000 rot=90.00°  (== bell small-face cross-section exactly, 0mm/0° delta)
+(dir=-1 rear poles: same z/rot, x offsets sign-flipped, e.g. step7 x=cx+45.000)
+
+- neck_od=47mm used identically (cylinder(h=e, d=neck_od, $fn=64)) at all 8
+  steps — zero diameter drift, confirmed by reading the single shared
+  `d = neck_od` argument in the loop (not 8 separate literals).
+- t=0/t=1 endpoint match: position delta 0.000mm, rotation delta 0.00° at
+  both ends vs the neck's/bell's pre-existing anchor formulas (verified
+  above — step0 rot=0° is the identity transform = cylinder()'s untouched
+  default Z orientation; step7 rot=90° = rotate([0,90,0]), same as the
+  bell's existing small-face cut).
+- Non-self-intersecting check: each step's circle radius is 23.5mm
+  (constant); consecutive step centers are 6.86-8.05mm apart in 3D
+  (computed from the table above) — center spacing is well under 2×radius,
+  so adjacent circles always overlap in their hull-bridging span (no
+  degenerate/zero-area hull at any of the 7 pairs).
+- Bore-envelope clearance per step (bore axis line = {y=cy, z=xbar_z}, bore
+  radius 16.5mm; distance = xbar_z - z_step since y already coincides):
+  step0=18.5mm, step1=17.475mm, step2=14.832mm, step3=11.219mm,
+  step4=7.281mm, step5=3.668mm, step6=1.025mm, step7=0mm (step7 sits
+  exactly ON the bore axis, by design — same as the bell's own small face,
+  which the bore already passes through). Steps 5-7 have disc material
+  well inside the 16.5mm bore radius; this is EXPECTED and handled by the
+  bore-envelope subtraction in pole_top()'s outer difference(), which
+  already wraps union(pole_top_neck(), pole_top_transition()) UNCHANGED
+  from v16-v19 — no code edit needed there, confirmed by reading
+  pole_top(): the subtraction is structurally outside and after the union,
+  so it automatically applies to all 8 new steps.
+- neck + transition + bell remain siblings in the same color() block in
+  pole_top() (union() unchanged) — Rule M-1 implicit union, one continuous
+  manifold solid, unchanged from v17-v19.
+- Brace/paren balance: 36/36, 569/569. No undefined-variable issues (code
+  review; neck_bell_transition_h global is now unused by the new loft code
+  but left defined, not deleted — not in scope this prompt).
+- DO NOT TOUCH items re-verified unchanged: bore (33mm, X axis), bell
+  wine-glass profile both ends (v19), head_large_r (40mm)/head_small_r
+  (23.5mm), pole_od (40mm), neck_od (47mm), neck_h, D-profile zone, bolt
+  positions/orientation, pole_body(), pole_base_collar(),
+  pole_wood_socket(), crossbar geometry.
+- ⚠ No OpenSCAD binary in this sandbox — code-review + coordinate-math
+  verification only. Janis must F5/F6 render to confirm visually
+  (specifically: confirm the diagonal crease is gone) before PASS.
+- Per SKILL_joint_construction.md isolation discipline this was Prompt 2 of
+  2 (v19 coord dump = Prompt 1) — if this fails QA, R-111 fires again on
+  this same problem and escalates to Janis directly, no 3rd attempt without
+  new input from Janis.
+
 ### 2026-06-30 | PR-01-base-v19 (Item A: transition coord-dump diagnostic ONLY + Item B: bell wine-glass both ends, head_large_r -6mm) | DONE — Item A diagnostic for Claude Web review, Item B needs Janis F5/F6
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v19.scad (new), cc_chat_log.md, knowledge.map (v8→v9)

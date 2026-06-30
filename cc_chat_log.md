@@ -19,6 +19,14 @@ Never delete old entries — they are the project history.
 
 ## Session Log
 
+### 2026-06-30 | PR-01-base-v4 + coordinate-system-standard-v1 | COMMITTED
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v4.scad (new), rules-dimensions.md, rules-pr.md, cc_rules.md, cc_chat_log.md, knowledge.map, prompts/archive/
+- Pole lattice fix: removed 12-step hull() loft (d_slice/pole_lower_taper) that rendered as visible seams. Replaced with single hull() between two pole_d_section() cross-sections (base r=23 @ z=0 → taper r=18 @ z=taper_h=640mm) — one smooth solid D-profile, no truss/ribs. dir computed per-pole from cy vs bed_w/2 so flat face points toward bed centerline.
+- Collar bore + crossbar: confirmed already X-axis-correct from v3, unchanged.
+- Governance: locked automotive coordinate standard (X=longitudinal, Y=lateral, Z=vertical) into rules-dimensions.md (v3→v4), rules-pr.md (1.0→1.1), cc_rules.md (v3→v4). No SCAD files touched by this doc-only prompt.
+⚑ FLAG: cam lock direction on rear poles still unresolved (carried over from v3). Awaiting Janis decision.
+
 ### 2026-06-30 | PR-01-base-v3 | COMMITTED
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v3.scad (new), cc_chat_log.md, knowledge.map, prompts/archive/

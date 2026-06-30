@@ -1,6 +1,6 @@
 # rules-pr.md
 # Janis Product Design — PR-01 Pilates Reformer Rules & Configuration
-# Version: 1.0 — 2026-06-29
+# Version: 1.1 — 2026-06-30
 # Owner: Janis
 # Written by: Claude Web
 # Read by: cc before every PR-01 SCAD task
@@ -28,6 +28,15 @@ First SCAD focus: Joints and frame structure only — no sliding bed, no springs
 | grip_bar_od | 32mm | OWNER-LOCKED — human grip, lady/child must hold |
 | crossbar_l | 2300mm | Matches total_l — longitudinal only |
 | pole_count | 4 | One at each bed corner |
+
+## PR-01 COORDINATE MAPPING (automotive convention — see rules-dimensions.md)
+- X = longitudinal = bed_l direction (front foot-end to rear head-end)
+- Y = lateral = bed_w direction (left pole pair to right pole pair)
+- Z = vertical = floor to tower top
+- Origin: front-left leg corner at floor (Z=0)
+- Crossbar runs along X → rotate([0,90,0]) in OpenSCAD
+- Pole runs along Z → no rotation needed
+- Bed width (Y) = pole-center to pole-center distance
 
 **NOTE:** All dimensions PENDING until Janis measures physical sample or confirms.
 Do NOT lock any dimension without Janis written approval in chat.

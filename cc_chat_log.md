@@ -4,6 +4,38 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-06-30 | PR-01-base-v15 (seat neck to bell + pole/neck diameter correction) | DONE — 2 flags need Janis confirm
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v15.scad (new), rules-dimensions.md (v6→v7), knowledge.map, cc_chat_log.md
+Source: Janis screenshots of v14 render — bore axis correctly horizontal now, but
+2 real problems: gap between neck and bell, neck OD overpowering bell waist.
+
+QA:
+- Gap fixed: neck_top = xbar_z + 0.2mm overlap (replaces old independent z0
+  anchor) — bell's small face provably sits at world Z=xbar_z since rotate/
+  scale pivot around the translated local origin, so this directly seats the
+  neck 0.2mm into the bell's small face. Both siblings in same color() block
+  → Rule M-1 implicit union → one continuous solid, no seam. pole_body()
+  height extended to meet the new neck bottom, no gap there either.
+- pole_od 50mm→40mm, neck_wall_t 6mm→3mm/side applied consistently.
+- ⚑ FLAG: neck_od computed = 47mm (kept unchanged 1mm slip-fit formula:
+  neck_id=pole_d+1=41, +2×3mm wall), 1mm more than Janis's stated 46mm
+  (pole_od+2×3mm, which implies 0mm clearance) — both stated, not silently
+  picked, for Janis to confirm.
+- ⚑ FLAG: bell's actual waist (Python Bezier sampling, not at the small
+  face — partway along the concave curve) = 44.5mm diameter at z≈16.8mm.
+  Neck OD (47mm or even Janis's 46mm) still EXCEEDS this by 1.5-2.5mm —
+  much improved vs v14's 63mm but not a clean fit. Not resolved since bell
+  profile is DO NOT TOUCH this round.
+- ⚑ Side effect: pole_base_collar()'s collar_id = pole_d+1 auto-cascades
+  (51mm→41mm) — code untouched, automatic result of approved pole_od change.
+- Bore axis re-confirmed X (unchanged from v14, only neck Z-anchor changed).
+- No undefined-variable issues found (grep + brace/paren balance clean).
+- ⚠ No OpenSCAD binary in this sandbox — could not F5-render; all geometry
+  verified via code review + Python coordinate/Bezier calculations only.
+- rules-dimensions.md updated: pole_od 50mm→40mm with Janis-approval note,
+  version bumped v6→v7.
+
 ### 2026-06-30 | PR-01-base-v14 (pole_top ORIENTATION ONLY fix — single-rotate construction) | DONE — verification caveat, flags included
 
 Files: pilates-reformer/PR-01-base/PR-01-base-v14.scad (new), knowledge.map, cc_chat_log.md

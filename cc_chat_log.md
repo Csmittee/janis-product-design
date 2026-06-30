@@ -4,6 +4,58 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-06-30 | PR-01-base-v19 (Item A: transition coord-dump diagnostic ONLY + Item B: bell wine-glass both ends, head_large_r -6mm) | DONE — Item A diagnostic for Claude Web review, Item B needs Janis F5/F6
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v19.scad (new), cc_chat_log.md, knowledge.map (v8→v9)
+Source: prompts/PR-01-base-v19-transition-coorddump-and-bell-profile.md
+
+ITEM A — pole_top_transition() coordinate dump (NO geometry change, verified
+zero diff vs v18 for this module):
+- Neck top cross-section: round, neck_od=47mm (neck_or=23.5mm), axis Z, world
+  center (cx, cy, neck_top=2001.5) — neck_top = xbar_z - top_bore_d/2 -
+  neck_bore_clearance = 2020 - 16.5 - 2.
+- Bell small-face cross-section: round, head_small_r*2=47mm (same diameter as
+  neck — SHAPE/SIZE do NOT differ), axis X, world center (cx - dir*head_h/2,
+  cy, xbar_z=2020) = (cx∓45, cy, 2020).
+- Verbatim hull() (line 524-531 v19): `hull() { translate([cx, cy, neck_top])
+  cylinder(h=e, d=neck_od, $fn=64); translate([bell_small_face_x, cy, xbar_z])
+  rotate([0,90,0]) scale([dir,1,1]) cylinder(h=neck_bell_transition_h,
+  d=neck_od, $fn=64); } }`
+- Shape mismatch: NONE in cross-section type/size (round=round, 47mm=47mm,
+  Rule 2's facet-crease-from-corner-extent does not apply numerically here).
+  The actual mismatch is AXIS ORIENTATION (90°, Z vs X) combined with a
+  48.65mm 3D center-to-center offset between the two non-coplanar,
+  non-parallel-axis circles (dx=45mm in X, dz=18.5mm in Z) — a single hull()
+  across that gap/twist is what produces the diagonal saddle-facet crease
+  Janis saw, per Rule 2's "never a single hull() across mismatched
+  cross-sections" even though here the mismatch is orientation, not shape.
+- Confirmed: zero geometry edits to pole_top_transition() this session (diff
+  vs v18 is byte-identical for this module).
+
+ITEM B — bell profile, both faces wine-glass concave + head_large_r -6mm:
+- head_large_r: 46mm (v18 live value) → 40mm (-6mm exactly). head_small_r
+  unchanged 23.5mm. Margin: 40 - 23.5 = 16.5mm, still > 0 — proceeded.
+- p2 control point changed [head_large_r*0.60, head_h*0.70] →
+  [head_large_r*0.80, head_h*0.65] — mirrors p1's existing small-end logic
+  (80% pull-in, 35%-of-head_h offset from its own end) for true symmetry.
+- Concavity verified via Python Bezier sampling, 11 points t=0.0-1.0: curve_r
+  < chord_r at every interior t (e.g. t=0.5: curve_r=26.99 vs chord_r=31.75;
+  t=0.9: curve_r=37.47 vs chord_r=38.35) — concave at BOTH ends, no convex
+  bulge, confirmed numerically not "looks fine."
+- Bore: top_bore_d=33mm, axis X — unchanged, exterior-only edit (p2/p3/
+  head_large_r only; bore cylinder code in pole_top_bell() untouched).
+- Min wall at new large face: head_large_r(40) - top_bore_d/2(16.5) = 23.5mm
+  — clears the project's 2mm-minimum wall rule (rules-pr.md "wall_t minimum
+  2mm") by a large margin.
+- Brace/paren balance: 35/35, 512/512. No undefined-variable issues (code
+  review).
+- ⚠ No OpenSCAD binary in this sandbox — Item B is code-review +
+  coordinate/Bezier-math verified only. Janis must F5/F6 render to confirm
+  visually before PASS.
+- Next step (per prompt, intentionally NOT done here): Claude Web reviews
+  Item A's numbers above against Rule 1/2 and writes the actual
+  transition-blend fix prompt as a separate next step.
+
 ### 2026-06-30 | Governance: joint construction skill + rapid-fire template + R-111 self-trigger | DONE — zero geometry touched
 
 Files: .claude/SKILL_joint_construction.md (NEW), .claude/rules-codes.md

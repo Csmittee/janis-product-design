@@ -3,6 +3,45 @@
 # Claude Web reads this at start of every planning session (via Janis paste or download).
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
+
+### 2026-06-30 | PR-01-base-v13 (pole_top bell/horn + sleeve neck — supersedes v11/v12) | DONE — flags included
+
+Files: pilates-reformer/PR-01-base/PR-01-base-v13.scad (new), knowledge.map, cc_chat_log.md
+Source: Janis hand sketch (BAR/POLE annotated) — new exterior concept entirely,
+NOT an iteration on v12's foot/helmet silhouette.
+
+QA confirmations:
+- Head exterior confirmed body of revolution: rotate_extrude() around Z, small
+  circular end-face (head_small_r=31.5mm, bottom, matches neck OD — continuous,
+  no step) → large circular end-face (head_large_r=46mm, top/pipe-entry side),
+  smooth single loft via cubic-Bezier-sampled curve (head_loft_steps=12 → 13
+  points). Replaces v12's asymmetric linear_extrude side-profile entirely.
+- Bore confirmed constant 33mm diameter through both end-faces, not tapered —
+  drilled as a straight horizontal cylinder through the revolved solid.
+- Min wall thickness at narrowest point (head base, r=head_small_r=31.5mm,
+  minus bore radius 16.5mm) = 15mm — above the 3mm minimum spec.
+- Neck confirmed redesigned as external sleeve: hollow tube (neck_id=51mm =
+  pole_d+1mm slip-fit clearance, neck_wall_t=6mm TBD, neck_od=63mm) that
+  slides OVER the top 50mm of pole_body() from outside. pole_body() itself
+  untouched per prompt scope.
+- 2x M6 through-bolt clearance holes (d=6.5mm TBD) confirmed — pass fully
+  through both walls of the sleeve, axis along X, NOT blind/threaded.
+  Positions: neck_h*0.3 and neck_h*0.7 below the head base (z0), symmetric
+  about sleeve mid-height — single part bolts from either side, mirrorable
+  for both left/right pole positions.
+- ⚑ FLAG: pole_body() currently has no through-holes of its own to align
+  these neck bolt holes against — out of scope this round per the prompt
+  ("do not modify pole_body() itself"). The bolts pass cleanly through the
+  sleeve but are not yet functional against the pole until pole_body() gets
+  matching holes in a follow-up prompt. Flagging for Janis to confirm hole
+  positions before that next step.
+- No undefined variable warnings. Version incremented v12→v13, saved as new
+  file (v12 preserved, not overwritten). v11/v12 silhouette concept marked
+  Superseded in knowledge.map.
+- ⚠ No OpenSCAD binary available in this sandbox — built/verified by code
+  review only, never F5-rendered. Janis must verify visually after pulling.
+
+---
 # Format: ### DATE | VERSION | STATUS
 
 ---

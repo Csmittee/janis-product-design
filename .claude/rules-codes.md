@@ -1,7 +1,7 @@
 # Janis Product Design — OpenSCAD Coding Rules
-> Version 1.9 — 2026-07-01
-> Changes: Added MULTI-FILE MODULE CONVENTION section (ghost-context preview) established by PR-01-multifile-split-v25
-> Previous: 1.8 — 2026-07-01
+> Version 1.10 — 2026-07-01
+> Changes: Amended MULTI-FILE MODULE CONVENTION — corrected /modules/ subfolder guidance to flat-folder (no subfolder), per PR-01-flatten-modules-v26; added requirement that every global a module file references (not only ghost-context ones) gets an is_undef() guarded default.
+> Previous: 1.9 — 2026-07-01
 
 All units: MM. All rules below are mandatory for every SCAD file in this project.
 
@@ -298,16 +298,36 @@ NEVER comment out a declaration line — set to false to hide. See R-003.
 
 ## MULTI-FILE MODULE CONVENTION — GHOST-CONTEXT PREVIEW
 
-Every module file under any /modules/ folder MUST follow this pattern,
-established PR-01-multifile-split-v25 (2026-07-01):
+> Amended PR-01-flatten-modules-v26 (2026-07-01) — corrects the folder
+> guidance below. The original /modules/ subfolder guidance broke on
+> Janis's actual workflow (local, download-only from GitHub, no git clone —
+> a subfolder cannot be relied on to survive that download step) and is
+> superseded, not just noted alongside.
 
+Every module file MUST follow this pattern, established
+PR-01-multifile-split-v25 (2026-07-01), folder rule corrected v26:
+
+0. FOLDER: module files live FLAT, in the SAME folder as the assembly file
+   that includes them — NO subfolder (e.g. `include <pole_top.scad>`, never
+   `include <modules/pole_top.scad>`). Janis's local working folder only
+   ever receives individually-downloaded files, one at a time — a
+   subfolder structure is not recreated by that workflow and breaks
+   silently (OpenSCAD reports a generic "can't open include file" with no
+   hint the real cause is a missing local folder).
 1. Top of file: `$is_assembly = is_undef($is_assembly) ? false : $is_assembly;`
-2. Bottom of file (after all module/function defs): if (!$is_assembly),
+2. Every global this file references — anywhere in the file, not only in
+   the ghost-context stanza — must ALSO get an `is_undef()`-guarded
+   default, same pattern as `$is_assembly`, sourced from rules-dimensions.md
+   (or the same value the assembly file currently supplies). This is what
+   makes a standalone open self-sufficient: opening the module file
+   directly, with no assembly file in scope, must produce ZERO
+   undefined-variable warnings.
+3. Bottom of file (after all module/function defs): if (!$is_assembly),
    call the module's own real geometry PLUS gray (30% opacity) simple
    primitive stand-ins for whatever mating parts this module joins to —
    sourced from rules-dimensions.md, positioned approximately correct,
    never the real geometry of the neighboring part.
-3. Top-level assembly file sets `$is_assembly = true;` BEFORE any include,
+4. Top-level assembly file sets `$is_assembly = true;` BEFORE any include,
    so full-assembly renders show only real parts, never ghost stand-ins.
 
 Applies to every future module file: pole_mesh/gear_teeth (show pole

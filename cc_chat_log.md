@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-01 | PR-01-multifile-split-v25 | DONE — Janis F5/F6 required + PK re-upload
+
+Files: PR-01-assembly-v25.scad (new), modules/pole_top.scad (new), WORKFLOW_SKILL.md(3.3→3.4), cc_rules.md(v4→v5), .claude/rules-codes.md(1.8→1.9), knowledge.map(v13→v14), prompts/archive/.
+TASK A: pure reorg, PR-01-base-v24.scad kept unchanged in repo. All module bodies + globals diffed byte-identical to v24 (confirmed via `diff`). Ghost-context added: pole_top()+gray pole_d/grip_od stand-ins, gated by $is_assembly (suppressed in v25 assembly). Globals placed BEFORE include (not after, per rules-codes.md "globals first...modules third...assembly last") — deviates from prompt's bullet-list reading order but avoids undefined-var risk at include boundary; flagging this judgment call explicitly.
+CONFIRMED: understand modules/ unversioned exception — scoped ONLY to files under modules/, will not silently apply elsewhere.
+Tasks B/C/D/E done as specified. Brace/paren/bracket balance: 33/33,270/270,77/77 (combined). No OpenSCAD binary in sandbox — diff+code-review only, not rendered.
+FLAG: Janis must re-upload WORKFLOW_SKILL.md to Project Knowledge — repo copy changed, PK copy now stale.
+
 ### 2026-07-01 | PR-01-base-v24 (smooth profile + remove blend ring) | DONE — Janis F5/F6 required
 
 Files: PR-01-base-v24.scad (new), cc_chat_log.md, prompts/archive/. Source: v23.

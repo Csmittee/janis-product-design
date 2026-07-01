@@ -1,8 +1,8 @@
 # WORKFLOW_SKILL.md
 # Janis Product Design — How We Work
-# Version: 3.3 — 2026-07-01
-# Changes: Local render workflow added (SKILL_local_render.md) — Claude Web now prototypes geometry locally before writing cc prompts. Pre-session Step 0 added. Two trigger rows added.
-# Previous: v3.2 — 2026-06-30
+# Version: 3.4 — 2026-07-01
+# Changes: Added trigger row for Option B (unified neck+collar loft) resume — points to .claude/SKILL_option_b_unified_loft.md, per PR-01-multifile-split-v25.
+# Previous: v3.3 — 2026-07-01
 
 ---
 
@@ -137,6 +137,7 @@ Janis describes goal
 | Joint/transition between mismatched cross-sections fails QA twice | R-111 — read .claude/SKILL_joint_construction.md, complete KT before next prompt | Claude Web states "R-111 triggered" + cites which rule (1/2/3) was violated |
 | New module shape being designed from scratch | Claude Web installs OpenSCAD, prototypes locally, renders all angles, confirms with Janis BEFORE writing cc prompt | Janis sees renders in this chat and gives explicit PASS before any cc prompt is written |
 | Joint/seam/blend issue fails QA once | Claude Web prototypes the fix locally, renders it, confirms fix works visually BEFORE writing next cc prompt | Local render confirms fix before cc burns a version |
+| pole_top seam/T-junction work resumes (Option B) | Read .claude/SKILL_option_b_unified_loft.md in full before any prompt — STATUS block must be updated first | Claude Web states file was read + confirms STATUS block matches current repo state |
 
 ---
 

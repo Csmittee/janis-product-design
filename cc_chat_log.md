@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-01 | PR-01-base-v22 (profile orientation fix) | DONE — profile_pts() condition sin→cos, Janis F5/F6 required
+
+Files: PR-01-base-v22.scad (new), cc_chat_log.md.
+Single change: profile_pts() function only. Condition sin(a)>0 → cos(a)>=0; point formula [-r*sin(a), r*cos(a)] → [r*cos(a), r*sin(a)].
+Root cause: v21 profile produced camber dome sideways (along Y) instead of on top (along Z). The correct polygon for a top-dome cross-section needs r_top when cos(a)<0 (left half, maps to world +Z after rotate([0,90,0])) and r_bot when cos(a)>=0 (right half, maps to world -Z). Point formula [r*cos(a), r*sin(a)] maps directly to world Y=r*cos(a), world Z=r*sin(a) after the rotate — dome at a=90° (top). No other changes. Brace/paren/bracket balance unchanged from v21 (all diffs=0 ✓).
+Profile orientation fix applied, sin→cos condition.
+QA: F5 — housing dome must be visible on TOP of the T-junction, not sideways.
+
 ### 2026-07-01 | PR-01-base-v21 + governance (TASK A+B) | DONE — concept10 mudguard housing, TASK A governance files, Janis F5/F6 required
 
 Files: PR-01-base-v21.scad (new), WORKFLOW_SKILL.md (3.2→3.3), chat_rules.md (3.3→3.4), .claude/rules-codes.md (1.7→1.8), .claude/SKILL_local_render.md (new, 1.0), rules-pr.md (1.3→1.4), knowledge.map (v10→v11), cc_chat_log.md.

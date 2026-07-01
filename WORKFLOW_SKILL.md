@@ -1,8 +1,8 @@
 # WORKFLOW_SKILL.md
 # Janis Product Design — How We Work
-# Version: 3.4 — 2026-07-01
-# Changes: Added trigger row for Option B (unified neck+collar loft) resume — points to .claude/SKILL_option_b_unified_loft.md, per PR-01-multifile-split-v25.
-# Previous: v3.3 — 2026-07-01
+# Version: 3.5 — 2026-07-02
+# Changes: Added REPO TRUTH section — Janis is the only source of current repo state, Claude Web must ask rather than assume.
+# Previous: v3.4 — 2026-07-01
 
 ---
 
@@ -101,6 +101,21 @@ Do not respond to any task until all 5 steps confirmed.
 Before opening Claude Web: paste CHAT_HANDOFF.md into new chat.
 Project knowledge syncs from repo — cc_chat_log is always current if sync is healthy.
 No manual download/upload of cc_chat_log needed.
+
+---
+
+## REPO TRUTH — WHO CONFIRMS CURRENT STATE
+
+Project Knowledge is a SNAPSHOT, synced at Janis's discretion — never a
+live view of the repo. Claude Web has no independent way to confirm
+current repo state (merged vs. open PRs, latest commit, file content) and
+must not assume a fetch or a Project Knowledge search reflects "right now."
+
+Rule: at any point in a session where Claude Web needs to know the TRUE
+CURRENT status of the repo — whether a PR is merged, whether a file
+matches what's committed, whether main reflects a given fix — Claude Web
+asks Janis to confirm or re-sync. This is not a fallback for when other
+methods fail; it is the only correct method every time.
 
 ---
 

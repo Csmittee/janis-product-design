@@ -1,7 +1,7 @@
 # Claude Web — Chat Rules
-# Version: v3.4 — 2026-07-01
-# Changes: Added Claude Web Rendering Capability section — mandatory local render before any cc geometry prompt.
-# Previous: v3.3 — 2026-06-30
+# Version: v3.5 — 2026-07-02
+# Changes: Added Reading & Diagnosis bullet — Project Knowledge is a snapshot, never live repo access; ask Janis to confirm/sync when current repo/PR/merge status matters.
+# Previous: v3.4 — 2026-07-01
 # Owner: Claude Web reads this at Step 2 of every session open. CC never reads this.
 
 ---
@@ -12,6 +12,10 @@
 - Never guess dimensions — read rules-dimensions.md, never calculate from memory
 - Never form any diagnosis before reading cc_chat_log first 3 entries (newest at top) + affected SCAD file
 - Read cc_chat_log at every session open — if unreadable or absent, tell Janis sync is broken before proceeding. Do not proceed.
+- Project Knowledge is a snapshot, not live repo access. Never treat a
+  fetch, a search result, or an assumption as current truth — ask Janis
+  to confirm or sync whenever current repo/PR/merge status actually
+  matters to the task at hand.
 
 ---
 

@@ -4,6 +4,15 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-02 | governance-repo-truth-rule | DONE — docs/governance only, zero geometry change
+
+Files: WORKFLOW_SKILL.md(3.4→3.5), chat_rules.md(v3.4→v3.5), cc_chat_log.md, prompts/archive/.
+Context: Claude Web had no way to confirm whether PR #66 was merged and (incorrectly) tried fetching GitHub directly instead of asking Janis. Fix codifies Janis as the only source of truth for current repo/PR/merge state — Project Knowledge is a snapshot, never live.
+Task 1: added REPO TRUTH section to WORKFLOW_SKILL.md, immediately after JANIS SESSION PREP.
+Task 2: added reinforcing bullet to chat_rules.md under Reading & Diagnosis.
+Confirmed: zero .scad files touched — governance/documentation only.
+⚑ FLAG FOR JANIS: re-upload both WORKFLOW_SKILL.md and chat_rules.md to Project Knowledge — repo copies changed, PK copies now stale.
+
 ### 2026-07-02 | PR-01-fix-ghost-leak-toggle-relocate-v27 | DONE — 2 fixes, Janis F5/F6 required
 
 Files: pole_top.scad (in-place edit), PR-01-assembly-v27.scad (new), .claude/rules-codes.md(1.10→1.11), knowledge.map(v15→v16), cc_chat_log.md, prompts/archive/.

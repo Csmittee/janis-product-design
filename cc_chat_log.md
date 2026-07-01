@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-01 | PR-01-flatten-modules-v26 | DONE — 3 tasks, Janis F5/F6 required
+
+Files: PR-01-assembly-v26.scad (new), pole_top.scad (moved from modules/, modules/ deleted), .claude/rules-codes.md(1.9→1.10), knowledge.map(v14→v15), cc_chat_log.md, prompts/archive/.
+Issue 1 (include path): root cause confirmed by Janis directly — local workflow downloads files individually, no git clone, so modules/ subfolder never survives. Fix: flattened — pole_top.scad now sits flat next to the assembly file, include path `<pole_top.scad>`. v26 identical to v25 except header comments + this one include line (diffed).
+Issue 2 (undefined globals standalone): guarded every global pole_top.scad's ghost-context call path actually reaches (not just pole_d/xbar_z/grip_od named in the prompt — also e, bed_l, bed_h, pole_r, neck_h, neck_id, neck_od, neck_bolt_d, top_bore_d, all housing_* params, pole_cx/pole_cy) with is_undef() defaults matching current assembly values — guarding only the 3 named globals would still leave warnings. Flagging this scope judgment call explicitly.
+rules-codes.md MULTI-FILE MODULE CONVENTION amended (not appended) — flat-folder now the stated rule, subfolder guidance corrected, plus new "every referenced global gets is_undef() default" requirement.
+Zero geometry/module-logic change — structure + defaults only. Brace/paren/bracket balance: 33/33, 202/202, 74/74.
+
 ### 2026-07-01 | PR-01-multifile-split-v25 | DONE — Janis F5/F6 required + PK re-upload
 
 Files: PR-01-assembly-v25.scad (new), modules/pole_top.scad (new), WORKFLOW_SKILL.md(3.3→3.4), cc_rules.md(v4→v5), .claude/rules-codes.md(1.8→1.9), knowledge.map(v13→v14), prompts/archive/.

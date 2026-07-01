@@ -1,22 +1,60 @@
-// modules/pole_top.scad
+// pole_top.scad
 // Janis Product Design — Pilates Reformer PR-01-base — module file
 // NOT individually versioned (see PR-01-multifile-split-v25 Task A note):
 // this is an organizational component, not a standalone deliverable Janis
 // opens directly. Its history is tracked by git commit + the version number
 // of whichever PR-01-assembly-vXX.scad includes it. This is a deliberate,
 // scoped exception to the "never overwrite, always version" rule — applies
-// ONLY to files under modules/.
+// ONLY to this file (module files are the scoped exception, regardless of
+// folder — flattened out of modules/ per PR-01-flatten-modules-v26).
 //
 // Content moved unchanged from PR-01-base-v24.scad (pure reorg, zero logic/
-// parameter/variable-name changes) as part of PR-01-multifile-split-v25.
-// All global parameters (bed/pole/housing/collar/socket/grip dimensions,
-// derived xbar_z/pole_cx/pole_cy) live in the including assembly file, NOT
-// here — see PR-01-assembly-v25.scad.
+// parameter/variable-name changes) as part of PR-01-multifile-split-v25;
+// flattened from modules/pole_top.scad to this same flat location as part
+// of PR-01-flatten-modules-v26 (Janis's workflow downloads files
+// individually, no git clone — a modules/ subfolder cannot be relied on to
+// exist locally). All global parameters (bed/pole/housing/collar/socket/grip
+// dimensions, derived xbar_z/pole_cx/pole_cy) are normally supplied by the
+// including assembly file — see PR-01-assembly-v26.scad — but every global
+// this file itself evaluates also gets a standalone-safe is_undef() default
+// below, so opening this file directly (no assembly include) is warning-free.
 
 // Ghost-context preview convention (see .claude/rules-codes.md, MULTI-FILE
 // MODULE CONVENTION section). Assembly file sets this true before including,
 // so full-assembly renders never show this file's ghost stand-ins.
 $is_assembly = is_undef($is_assembly) ? false : $is_assembly;
+
+// ── Standalone-safe defaults ──────────────────────────────────────────
+// Every global this file evaluates (module bodies reachable from the
+// ghost-context stanza below, plus the stanza's own direct references),
+// guarded so a standalone open (no assembly include) is warning-free.
+// Fallback values mirror PR-01-assembly-v26.scad's current values (pole_d
+// per rules-dimensions.md's "PR-01 body D-section" 40mm; the rest are the
+// same figures the assembly file supplies today — same numbers, not new
+// design decisions).
+e                   = is_undef(e)                   ? 0.01  : e;      // epsilon
+bed_l               = is_undef(bed_l)               ? 2300  : bed_l;
+bed_h               = is_undef(bed_h)               ? 500   : bed_h;
+pole_d              = is_undef(pole_d)              ? 40    : pole_d;
+pole_r              = is_undef(pole_r)              ? pole_d / 2 : pole_r;
+neck_h              = is_undef(neck_h)              ? 70    : neck_h;
+neck_id             = is_undef(neck_id)             ? pole_d + 1 : neck_id;
+neck_od             = is_undef(neck_od)             ? neck_id + 6 : neck_od;
+neck_bolt_d         = is_undef(neck_bolt_d)         ? 6.5   : neck_bolt_d;
+top_bore_d          = is_undef(top_bore_d)          ? 32    : top_bore_d;
+housing_len         = is_undef(housing_len)         ? 104   : housing_len;
+housing_r_circ      = is_undef(housing_r_circ)      ? 19    : housing_r_circ;
+housing_camber_rise = is_undef(housing_camber_rise) ? 16    : housing_camber_rise;
+housing_peak_t      = is_undef(housing_peak_t)      ? 0.60  : housing_peak_t;
+housing_bump_w      = is_undef(housing_bump_w)      ? 0.55  : housing_bump_w;
+housing_steps       = is_undef(housing_steps)       ? 60    : housing_steps;
+housing_neck_t      = is_undef(housing_neck_t)      ? 0.50  : housing_neck_t;
+housing_bulge_rise  = is_undef(housing_bulge_rise)  ? 5     : housing_bulge_rise;
+housing_bulge_w     = is_undef(housing_bulge_w)     ? 0.18  : housing_bulge_w;
+xbar_z              = is_undef(xbar_z)              ? 2065  : xbar_z;  // bed_h+pole_h-housing_r_circ-housing_camber_rise
+grip_od             = is_undef(grip_od)             ? 32    : grip_od; // OWNER-LOCKED
+pole_cx             = is_undef(pole_cx)             ? [90, 2210, 90, 2210] : pole_cx;
+pole_cy             = is_undef(pole_cy)             ? [60, 60, 610, 610]   : pole_cy;
 
 // ── Functions ─────────────────────────────────────────────────────────
 

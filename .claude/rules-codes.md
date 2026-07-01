@@ -1,7 +1,7 @@
 # Janis Product Design — OpenSCAD Coding Rules
-> Version 1.10 — 2026-07-01
-> Changes: Amended MULTI-FILE MODULE CONVENTION — corrected /modules/ subfolder guidance to flat-folder (no subfolder), per PR-01-flatten-modules-v26; added requirement that every global a module file references (not only ghost-context ones) gets an is_undef() guarded default.
-> Previous: 1.9 — 2026-07-01
+> Version 1.11 — 2026-07-02
+> Changes: Amended Rule M-4 (Debug Toggle Rule) — toggle block must sit immediately before the final assembly render call at the bottom of the file, not buried in PARAMETERS, per PR-01-fix-ghost-leak-toggle-relocate-v27.
+> Previous: 1.10 — 2026-07-01
 
 All units: MM. All rules below are mandatory for every SCAD file in this project.
 
@@ -293,6 +293,12 @@ No geometry placed near a boundary without a written receipt.
 ### Rule M-4 — Debug Toggle Rule
 Debug visibility toggles MUST be declared as variable assignments above ASSEMBLY.
 NEVER comment out a declaration line — set to false to hide. See R-003.
+
+Debug toggle block MUST be located immediately before the final assembly
+render call at the bottom of the file — never buried in the PARAMETERS
+block. This applies to every current and future assembly file (PR-01,
+foldable base, and any module requiring show_* flags for visual isolation
+inspection) from Day 1 of that file's creation.
 
 ---
 

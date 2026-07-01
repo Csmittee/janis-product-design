@@ -20,9 +20,17 @@
 // below, so opening this file directly (no assembly include) is warning-free.
 
 // Ghost-context preview convention (see .claude/rules-codes.md, MULTI-FILE
-// MODULE CONVENTION section). Assembly file sets this true before including,
-// so full-assembly renders never show this file's ghost stand-ins.
-$is_assembly = is_undef($is_assembly) ? false : $is_assembly;
+// MODULE CONVENTION section). Assembly file sets $is_assembly=true before
+// including, so full-assembly renders never show this file's ghost stand-ins.
+// v27 fix (PR-01-fix-ghost-leak-toggle-relocate-v27): this used to be a
+// self-referential reassignment (`$is_assembly = is_undef($is_assembly) ?
+// false : $is_assembly;`). Because `include` flattens this file's scope
+// together with the assembly file's, OpenSCAD collapses both assignments
+// of the same variable into one — the reassignment always won and always
+// evaluated false, leaking the ghost stanza into every full-assembly
+// render regardless of the assembly file's `$is_assembly = true`. Fix:
+// a function that only ever READS $is_assembly, never reassigns it.
+function ghost_mode() = is_undef($is_assembly) || !$is_assembly;
 
 // ── Standalone-safe defaults ──────────────────────────────────────────
 // Every global this file evaluates (module bodies reachable from the
@@ -341,7 +349,7 @@ module pr01_assembly() {
 // axis rotate([0,90,0])).
 // ═════════════════════════════════════════════════════════════════════
 
-if (!$is_assembly) {
+if (ghost_mode()) {
     ghost_cx = pole_cx[0];
     ghost_cy = pole_cy[0];
     pole_top(ghost_cx, ghost_cy);

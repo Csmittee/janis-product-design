@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-02 | PR-01-fix-ghost-leak-toggle-relocate-v27 | DONE — 2 fixes, Janis F5/F6 required
+
+Files: pole_top.scad (in-place edit), PR-01-assembly-v27.scad (new), .claude/rules-codes.md(1.10→1.11), knowledge.map(v15→v16), cc_chat_log.md, prompts/archive/.
+Issue 1 (ghost-leak): root cause confirmed by Claude Web via real local render — `include` flattens pole_top.scad's `$is_assembly = is_undef($is_assembly)?false:$is_assembly;` into the assembly file's scope, so OpenSCAD collapses both assignments to the module's always-false one, leaking ghost stand-ins (incl. pole 0) into every full-assembly render regardless of show_* toggles. Fix: read-only `function ghost_mode()`, replaces both the reassignment and the sole `if(!$is_assembly)` usage. Note: prompt claimed 2 usages to replace; only 1 actually existed in the committed file — flagging, not silently reconciling.
+Issue 2 (toggle relocation): 6 show_* flags moved from PARAMETERS to immediately above pr01_assembly() in new v27, diffed against v26 — only location changed.
+NOT fixed (explicitly out of scope, do not mark resolved): the ~23 "assigned...but overwritten" warnings from v26's per-variable is_undef() standalone-defaults block — separate open item.
+Zero geometry change. Brace/paren/bracket balance: 33/33, 204/204, 74/74.
+
 ### 2026-07-01 | PR-01-flatten-modules-v26 | DONE — 3 tasks, Janis F5/F6 required
 
 Files: PR-01-assembly-v26.scad (new), pole_top.scad (moved from modules/, modules/ deleted), .claude/rules-codes.md(1.9→1.10), knowledge.map(v14→v15), cc_chat_log.md, prompts/archive/.

@@ -1,5 +1,7 @@
 # Claude Code (cc) Rules
-# Version: v4 — 2026-06-30
+# Version: v5 — 2026-07-01
+# Changes: Added pointer to .claude/SKILL_option_b_unified_loft.md — read before touching pole_top seam/joint geometry (PR-01-multifile-split-v25).
+# Previous: v4 — 2026-06-30
 # Read this at the START of every cc session — step 1, always.
 
 ---
@@ -79,6 +81,9 @@ before reporting missing. Janis always pushes to main, not the feature branch.
 - VM tasks: .claude/rules-vm.md (when it exists)
 - PR tasks: rules-pr.md (when it exists)
 - R-111 trigger: .claude/SKILL_problem_solving_kt.md
+- .claude/SKILL_option_b_unified_loft.md — read in full BEFORE touching
+  pole_top_body(), pole_top_housing(), pole_top_neck(), or any pole_top
+  seam/joint geometry. Do not reconstruct Option B architecture from memory.
 
 ---
 

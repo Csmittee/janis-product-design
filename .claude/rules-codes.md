@@ -1,7 +1,7 @@
 # Janis Product Design — OpenSCAD Coding Rules
-> Version 1.8 — 2026-07-01
-> Changes: Added pointer to .claude/SKILL_local_render.md for new module geometry design or joint/seam fix
-> Previous: 1.7 — 2026-06-30
+> Version 1.9 — 2026-07-01
+> Changes: Added MULTI-FILE MODULE CONVENTION section (ghost-context preview) established by PR-01-multifile-split-v25
+> Previous: 1.8 — 2026-07-01
 
 All units: MM. All rules below are mandatory for every SCAD file in this project.
 
@@ -293,3 +293,25 @@ No geometry placed near a boundary without a written receipt.
 ### Rule M-4 — Debug Toggle Rule
 Debug visibility toggles MUST be declared as variable assignments above ASSEMBLY.
 NEVER comment out a declaration line — set to false to hide. See R-003.
+
+---
+
+## MULTI-FILE MODULE CONVENTION — GHOST-CONTEXT PREVIEW
+
+Every module file under any /modules/ folder MUST follow this pattern,
+established PR-01-multifile-split-v25 (2026-07-01):
+
+1. Top of file: `$is_assembly = is_undef($is_assembly) ? false : $is_assembly;`
+2. Bottom of file (after all module/function defs): if (!$is_assembly),
+   call the module's own real geometry PLUS gray (30% opacity) simple
+   primitive stand-ins for whatever mating parts this module joins to —
+   sourced from rules-dimensions.md, positioned approximately correct,
+   never the real geometry of the neighboring part.
+3. Top-level assembly file sets `$is_assembly = true;` BEFORE any include,
+   so full-assembly renders show only real parts, never ghost stand-ins.
+
+Applies to every future module file: pole_mesh/gear_teeth (show pole
+context), base_foldable (show pole + wood base context), pole_mid_clamp
+(show pole context), etc. Do not skip this when creating new module files —
+it is the reason isolated fast-render iteration remains usable as parts
+increase.

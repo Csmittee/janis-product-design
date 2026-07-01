@@ -4,6 +4,20 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-01 | PR-01-base-v23 (v21 F5 QA fail — 3 fixes) | DONE — Janis F5/F6 required
+
+Files: PR-01-base-v23.scad (new), cc_chat_log.md, knowledge.map, prompts/archive/.
+Source: v22 already existed in repo (rapid-fire applied sin->cos fix only, per
+prompt's superseded-rapid-fire warning) — used v22 as source, saved as v23.
+Issue 1 (dome direction): profile_pts() cos(a)>=0 already correct in v22, unchanged.
+Issue 2 (fat face outward): housing_peak_t 0.40→0.60 — peak now +10.4mm inward, both dirs.
+Issue 3 (neck-housing gap): new pole_top_neck_blend() hull-tapers housing base
+d=38 down to neck_od+2=49 over 4mm, bore kept hollow; called in pole_top() union.
+DEBUG: crossbar_body() extended 50mm past each joint end (h=grip_l+100) — revert before production.
+Brace/paren/bracket balance: 35/35, 279/279, 74/74 ✓. No OpenSCAD binary in
+this sandbox — code-review + coordinate-math verification only, not rendered.
+QA: F5 — dome on top, fat face inward, no neck/housing gap, bar visibly passes through.
+
 ### 2026-07-01 | PR-01-base-v22 (profile orientation fix) | DONE — profile_pts() condition sin→cos, Janis F5/F6 required
 
 Files: PR-01-base-v22.scad (new), cc_chat_log.md.

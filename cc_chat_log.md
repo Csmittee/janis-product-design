@@ -4,6 +4,21 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-01 | PR-01-base-v24 (smooth profile + remove blend ring) | DONE — Janis F5/F6 required
+
+Files: PR-01-base-v24.scad (new), cc_chat_log.md, prompts/archive/. Source: v23.
+Root cause (both v23 issues, one fix): profile_pts() binary cos(a)>=0 step
+replaced with smooth cosine blend `blend=(1-cos(a))/2, r=r_bot+(r_top-r_bot)*blend`.
+Issue A (diamond end-face): binary jump at a=90°/270° removed — smooth oval now.
+Issue B (side gap): side radius now (r_bot+r_top)/2≈27mm > neck radius 23.5mm —
+housing covers neck naturally, no gap needed.
+Removed module pole_top_neck_blend() entirely (v23 patch, now redundant + was
+causing double-ring z-fighting); pole_top() union back to 2 calls (housing+neck).
+housing_peak_t=0.60 and crossbar DEBUG extension unchanged from v23.
+Brace/paren/bracket balance: 32/32, 260/260, 70/70 ✓. No OpenSCAD binary in
+this sandbox — code-review + coordinate-math verification only, not rendered.
+QA: F5 — smooth oval end-face (not diamond), clean T-junction crease, no side gap.
+
 ### 2026-07-01 | PR-01-base-v23 (v21 F5 QA fail — 3 fixes) | DONE — Janis F5/F6 required
 
 Files: PR-01-base-v23.scad (new), cc_chat_log.md, knowledge.map, prompts/archive/.

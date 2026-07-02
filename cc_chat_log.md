@@ -4,7 +4,11 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
-### 2026-07-02 | bed-height-pad-cutaway-fix | DONE — Janis F5/F6 required, full detail in knowledge.map v30 entry
+### 2026-07-03 | base-file-consolidation | DONE — zero visual/dimensional change, full detail in knowledge.map v31 entry
+
+Files: pole_top.scad (in-place, bell collar bundle removed → pointer comment), leg_socket.scad (in-place, bell collar bundle + 16 standalone defaults + ghost call added), PR-01-assembly-v31.scad (new, ACTIVE, source v30), knowledge.map(v21→v22), cc_chat_log.md, prompts/archive/. rules-dimensions.md: confirmed no change needed — file location only, zero dimension change.
+`bell_lock_collar()`+5 helpers moved pole_top.scad→leg_socket.scad, byte-identical bodies (diffed). Full-assembly CSG dump md5sum-identical v30 vs v31, confirming zero geometry leakage/change. Both files render standalone with zero undefined-var warnings; leg_socket.scad's pre-existing manifold warning traced to bell_lock_collar() itself (isolated test) — pre-existing, not introduced by the move.
+TASK 5: **44 dormant-override warnings confirmed via real OpenSCAD compile** — 20 pole_top.scad + 8 leg_socket.scad(pre-existing) + 16 leg_socket.scad(new, bell-collar set). Not fixed, per prompt — flagged as higher-priority input to the PENDING "TASK 2 audit" item, count roughly double prior ~23 estimate.
 
 Files: pole_top.scad (in-place, dormant bed_h self-reassignment removed), leg_socket.scad (in-place, pad call commented out + ghost-only cutaway), PR-01-assembly-v30.scad (new, ACTIVE, source v29), rules-dimensions.md(v10→v11), knowledge.map(v20→v21), cc_chat_log.md, prompts/archive/.
 OpenSCAD 2021.01 installed this session — real renders used throughout, not just code review. TASK 1a confirmed: pole_top.scad/leg_socket.scad both render standalone with zero undefined-var warnings. bed_h 500→600: xbar_z 2065→2165, collar_z0 440→540, bed_frame() leg height 470→570 — all changed as expected. body_h stayed 1476mm — verified algebraically inherent (bed_h cancels out of its formula), NOT a sign the fix failed; other 3 values prove it did.

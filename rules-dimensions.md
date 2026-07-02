@@ -1,5 +1,5 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v7 — 2026-06-30
+# Version: v8 — 2026-07-02
 # All units: MM
 
 ---
@@ -254,6 +254,51 @@ socket, placeholder), pole_wood_socket() (drilled-in insert).
 | pole taper concept (horn-curve loft, r_base~70mm/r_top~42mm) | — | v7 — taper concept dropped entirely |
 
 Foldable hinge geometry remains explicitly deferred — not part of this fixed-version dimension set.
+
+---
+
+### SUPERSEDED — DO NOT USE (kept for history only)
+Replaced 2026-07-02 by the Bell Collar concept below. External split-clamp
+bracket approach abandoned in favor of pole pushing directly into an embedded
+leg socket.
+
+NOTE: rules-dimensions.md never carried a discrete numeric table for the
+split-clamp collar (collar_wrap_h/collar_wall_t/collar_bolt_d/etc.) — those
+placeholder values live only in .scad file comments (PR-01-base-v9.scad
+onward, see cc_chat_log.md 2026-06-30 entry) and in the pole_base_collar()
+prose reference just above. This note is placed here, against that prose
+reference, as the closest existing textual anchor for the superseded concept —
+flagging this explicitly rather than inventing a table that was never
+committed to this file.
+
+## PR-01 Base — Pole Holder, Bell Collar (CONCEPT CONFIRMED via Customizer, 2026-07-02)
+
+Replaces the external split-clamp collar above (superseded, kept for history)
+with a bell-shaped copper/brass holder — pole pushes directly into an embedded
+leg socket, no external bracket. Values confirmed live by Janis via OpenSCAD
+Customizer. Proportion/appearance only — NOT load-tested, not production-ready.
+
+| Parameter | Value | Note |
+|---|---|---|
+| r_base | 51mm | foot ring radius, flush at wood surface |
+| r_top | 29mm | neck radius, meets washer/cap |
+| foot_h | 8mm | straight vertical foot ring height |
+| dome_h | 35mm | curved dome height |
+| dome_steps | 16 | loft resolution |
+| curve_power | 1.4 | profile exponent: 1=straight cone, >1=convex bulge, <1=concave converge |
+| cap_h | 10mm | knurled brass cap height |
+| cap_knurl_count | 45 | knurl notch count |
+| washer_h | 5mm | copper washer reveal height |
+| washer_overhang | 1mm | copper washer reveal radial overhang beyond dome top |
+| pole_od | 40mm | LOCKED, unchanged from existing spec |
+
+Still open, not yet decided:
+- Socket-to-wood depth/architecture — Janis directed a >300mm pass-through
+  sleeve through a fully drilled leg channel (replaces shallow bonded pocket),
+  not yet reconciled with this collar concept.
+- Internal lock mechanism — hybrid thread+cam single bezel vs. 3-part reference
+  system (separate socket thread + holder bayonet + compression cap/washer).
+  Not decided.
 
 ---
 

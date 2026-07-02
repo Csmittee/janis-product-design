@@ -1,8 +1,8 @@
 # WORKFLOW_SKILL.md
 # Janis Product Design — How We Work
-# Version: 3.5 — 2026-07-02
-# Changes: Added REPO TRUTH section — Janis is the only source of current repo state, Claude Web must ask rather than assume.
-# Previous: v3.4 — 2026-07-01
+# Version: 3.6 — 2026-07-02
+# Changes: Added TRIGGER→ACTION→VALIDATOR row for Customizer-first aesthetic/artistic geometry workflow (.claude/SKILL_customizer_profile.md).
+# Previous: v3.5 — 2026-07-02
 
 ---
 
@@ -153,6 +153,7 @@ Janis describes goal
 | New module shape being designed from scratch | Claude Web installs OpenSCAD, prototypes locally, renders all angles, confirms with Janis BEFORE writing cc prompt | Janis sees renders in this chat and gives explicit PASS before any cc prompt is written |
 | Joint/seam/blend issue fails QA once | Claude Web prototypes the fix locally, renders it, confirms fix works visually BEFORE writing next cc prompt | Local render confirms fix before cc burns a version |
 | pole_top seam/T-junction work resumes (Option B) | Read .claude/SKILL_option_b_unified_loft.md in full before any prompt — STATUS block must be updated first | Claude Web states file was read + confirms STATUS block matches current repo state |
+| Aesthetic/artistic geometry ambiguous in words (curve character, stylistic proportion) | Claude Web builds OpenSCAD Customizer-enabled prototype (.claude/SKILL_customizer_profile.md), Janis tunes sliders live, reports final values | Janis explicitly confirms final parameter values in chat before any cc prompt is written |
 
 ---
 

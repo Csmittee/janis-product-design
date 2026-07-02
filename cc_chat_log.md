@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-02 | customizer-skill-mandatory-toggles | DONE — governance amendment only, zero geometry change
+
+Files: .claude/SKILL_customizer_profile.md(1.0→1.1), cc_chat_log.md, prompts/archive/.
+Added 3 new bullets to CRITICAL RULES verbatim per prompt: mandatory `/* [Visibility] */` show/hide toggle group for every major component; mandatory cutaway/section toggle for any nested component; all owner-adjustable parameters MUST be Customizer-exposed, editor pane read-only for version header.
+Diffed: only version-bump line + the 3 new bullets changed — no other line touched, no existing bullets altered.
+Confirmed: zero .scad files touched. No knowledge.map update needed (no new files).
+
 ### 2026-07-02 | bed-width-720-crossbar-gap | DONE — single dimensional fix, Janis F5/F6 required
 
 Files: PR-01-assembly-v28.scad (new, source v27), rules-dimensions.md(v8→v9), knowledge.map(v17→v18), cc_chat_log.md, prompts/archive/.

@@ -32,6 +32,29 @@
 // a function that only ever READS $is_assembly, never reassigns it.
 function ghost_mode() = is_undef($is_assembly) || !$is_assembly;
 
+// v28 fix (fix-pole-cx-cy-override-bug): pole_cx/pole_cy used to have their
+// own standalone-safe default here, using the same self-reassignment
+// pattern as the old $is_assembly bug above: `pole_cx = is_undef(pole_cx) ?
+// [fallback] : pole_cx;`. Same root cause, same failure mode — `include`
+// flattens scope, so this reassignment collapses against the assembly
+// file's real `pole_cx`/`pole_cy` assignment (set before the include) into
+// one variable, and the self-referencing ternary always resolved to the
+// hardcoded fallback, never the assembly's actual computed array. This was
+// invisible for pole_cx (fallback [90,2210,90,2210] happened to numerically
+// match every pole_cx value ever computed by the assembly file) but broke
+// pole_cy silently: fallback [60,60,610,610] matched the OLD bed_w=670
+// design, so legs/poles stayed frozen at the old Y positions even after
+// bed_w was changed to 840 in v28 (crossbar gap fix) — bed surface resized,
+// legs did not move. Fix: never reassign pole_cx/pole_cy in this file at
+// all. bed_frame(), pole_assembly(), and crossbar_assembly() below all
+// reference the raw globals directly and are only ever instantiated from
+// the full assembly (pr01_assembly()), so they always see the assembly's
+// real values with nothing left in this file to collide against. The one
+// place in this file that DOES need a standalone fallback — the ghost-
+// context preview stanza at the bottom — computes it into distinct local
+// variable names (ghost_cx/ghost_cy) that cannot collapse against pole_cx/
+// pole_cy under scope-flattening, since they are never the same variable.
+
 // ── Standalone-safe defaults ──────────────────────────────────────────
 // Every global this file evaluates (module bodies reachable from the
 // ghost-context stanza below, plus the stanza's own direct references),
@@ -61,8 +84,9 @@ housing_bulge_rise  = is_undef(housing_bulge_rise)  ? 5     : housing_bulge_rise
 housing_bulge_w     = is_undef(housing_bulge_w)     ? 0.18  : housing_bulge_w;
 xbar_z              = is_undef(xbar_z)              ? 2065  : xbar_z;  // bed_h+pole_h-housing_r_circ-housing_camber_rise
 grip_od             = is_undef(grip_od)             ? 32    : grip_od; // OWNER-LOCKED
-pole_cx             = is_undef(pole_cx)             ? [90, 2210, 90, 2210] : pole_cx;
-pole_cy             = is_undef(pole_cy)             ? [60, 60, 610, 610]   : pole_cy;
+// pole_cx/pole_cy: NO standalone default here — see comment above
+// ghost_mode(). Fallback now lives only in the ghost stanza's ghost_cx/
+// ghost_cy locals, not as a reassignment of these global names.
 
 // ── Functions ─────────────────────────────────────────────────────────
 
@@ -350,8 +374,10 @@ module pr01_assembly() {
 // ═════════════════════════════════════════════════════════════════════
 
 if (ghost_mode()) {
-    ghost_cx = pole_cx[0];
-    ghost_cy = pole_cy[0];
+    // Fallback lives here only, in locals that cannot collapse against
+    // pole_cx/pole_cy — see fix-pole-cx-cy-override-bug comment above.
+    ghost_cx = is_undef(pole_cx) ? 90 : pole_cx[0];
+    ghost_cy = is_undef(pole_cy) ? 60 : pole_cy[0];
     pole_top(ghost_cx, ghost_cy);
     // ghost: vertical pole stub (pole_body(), real diameter pole_d) below the neck
     ghost_neck_top = xbar_z - housing_r_circ;

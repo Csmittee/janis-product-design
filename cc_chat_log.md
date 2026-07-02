@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-02 | fix-pole-cx-cy-override-bug | DONE — Janis F6 required
+
+Files: pole_top.scad (in-place edit, still v28), knowledge.map(v18→v19), cc_chat_log.md, prompts/archive/.
+Root cause (same bug class as v27 $is_assembly ghost-leak): pole_cx/pole_cy self-reassignment in pole_top.scad collapsed to hardcoded fallback under `include` flattening, never the assembly's real value. pole_cx fallback [90,2210,90,2210] coincidentally matched (dormant); pole_cy fallback [60,60,610,610] was the OLD bed_w=670 value (diverged) — legs/poles frozen after v28's bed_w→840. Fix: removed both reassignments; ghost stanza now uses its own ghost_cx/ghost_cy locals for standalone fallback. Verified: pole_cx=[90,2210,90,2210], pole_cy=[60,60,780,780].
+TASK 2 audit: all ~21 remaining guarded globals (e, bed_l, bed_h, pole_d, pole_r, neck_h, neck_id, neck_od, neck_bolt_d, top_bore_d, all housing_*, xbar_z, grip_od) currently dormant (fallback = live assembly value), none diverged, none fixed — same latent pattern flagged as standing risk, not resolved.
+Brace/paren/bracket balance: 290/290, 33/33, 76/76. No OpenSCAD binary — code-review + arithmetic verification only, not rendered.
+
 ### 2026-07-02 | customizer-skill-mandatory-toggles | DONE — governance amendment only, zero geometry change
 
 Files: .claude/SKILL_customizer_profile.md(1.0→1.1), cc_chat_log.md, prompts/archive/.

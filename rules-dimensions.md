@@ -1,5 +1,5 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v9 — 2026-07-02
+# Version: v10 — 2026-07-02
 # All units: MM
 
 ---
@@ -300,6 +300,93 @@ Still open, not yet decided:
 - Internal lock mechanism — hybrid thread+cam single bezel vs. 3-part reference
   system (separate socket thread + holder bayonet + compression cap/washer).
   Not decided.
+
+### SUPERSEDED BY REVISED VALUES BELOW (kept for history only)
+The table above (r_top=29mm, curve_power=1.4) is superseded by the REVISED —
+CONFIRMED table immediately below (r_top=25mm, curve_power=2.2), confirmed by
+Janis via a second Customizer screenshot, 2026-07-02.
+
+## PR-01 Base — Pole Holder, Bell Collar — REVISED — CONFIRMED via Customizer screenshot, 2026-07-02
+
+Supersedes the r_top=29/curve_power=1.4 table above. Same bell-shaped
+copper/brass holder concept — pole pushes directly into an embedded leg
+socket, no external bracket. Values confirmed live by Janis via OpenSCAD
+Customizer (`bell_holder_customizer.scad`). Proportion/appearance only —
+NOT load-tested, not production-ready. First production geometry pass
+committed in `bell_lock_collar()` (pole_top.scad), pole-base-bell-collar-
+socket-build, 2026-07-02.
+
+| Parameter | Value | Note |
+|---|---|---|
+| r_base | 51mm | foot ring radius, flush at wood surface |
+| r_top | 25mm | neck radius, meets washer/cap |
+| foot_h | 8mm | straight vertical foot ring height |
+| dome_h | 35mm | curved dome height |
+| dome_steps | 16 | loft resolution |
+| curve_power | 2.2 | profile exponent: 1=straight cone, >1=convex bulge, <1=concave converge |
+| cap_h | 12mm | knurled brass cap height |
+| cap_knurl_count | 45 | knurl notch count |
+| washer_h | 5mm | copper washer reveal height |
+| washer_overhang | 4mm | copper washer reveal radial overhang beyond dome top |
+| pole_od | 40mm | LOCKED, unchanged from existing spec (= pole_d in SCAD) |
+
+## PR-01 Base — Socket/Leg Architecture (CONFIRMED, first-time lock, 2026-07-02)
+
+First-time lock — was PLACEHOLDER before this. Confirmed by Janis via
+Customizer screenshot (`pole_top_housing_customizer` leg/bed panel).
+Resolves the "Socket-to-wood depth/architecture" open item above: a
+>300mm pass-through sleeve through a fully drilled leg channel, replacing
+the old shallow bonded pocket (`pole_wood_socket()`, socket_depth=20mm —
+NOTE: that module remains actively called alongside this new one in the
+committed SCAD, not yet retired; flagged as a likely redundancy, not
+resolved by this entry). Committed in new `leg_socket.scad`.
+
+| Parameter | Value | Note |
+|---|---|---|
+| leg_h | 600mm | leg's own full height — NOT reconciled against bed_h(500mm)/existing bed_frame() leg height(470mm) — see leg_socket.scad INTERPRETATION FLAG, not a confirmed architectural decision |
+| leg_w | 180mm | shared with existing bed_frame()/pole_top.scad global, unchanged |
+| leg_t | 120mm | shared with existing bed_frame()/pole_top.scad global, unchanged |
+| pad_t | 20mm | foot pad thickness |
+| pad_overhang | 50mm | foot pad radial overhang beyond leg footprint |
+| socket_depth | 400mm | pass-through sleeve depth (named `leg_socket_depth` in SCAD — see below) |
+| socket_od | 46mm | named `leg_socket_od` in SCAD |
+| socket_wall_t | 2.5mm | named `leg_socket_wall_t` in SCAD |
+| pole_od | 40mm | LOCKED, unchanged from existing spec (= pole_d in SCAD) |
+
+Derived: socket_id = socket_od - 2×socket_wall_t = 41mm. Radial clearance
+against pole_od(40mm) = 0.5mm — tight tolerance, not a blocker, flagged for
+print/fit tolerance awareness.
+
+NAMING NOTE: the SCAD globals are `leg_socket_od`/`leg_socket_wall_t`/
+`leg_socket_depth`, deliberately NOT `socket_od`/`socket_depth` — those
+names already exist as PR-01-assembly globals (60mm/20mm, used by
+`pole_wood_socket()`); reusing them would silently override
+`pole_wood_socket()`'s values via OpenSCAD's last-declaration-wins
+duplicate-variable behavior — the same bug class already chased twice
+this project. Renamed to avoid it outright.
+
+## PR-01 Base — Lock Mechanism (ENGINEER-PROPOSED, NOT Janis-measured, NOT validated, 2026-07-02)
+
+Thread + bayonet + cap engagement specs were NOT part of either Customizer
+screenshot set — Janis explicitly delegated these to Claude Web as
+engineering judgment based on standard practice for hand-assembled
+quick-release fittings at this scale. ENGINEER-PROPOSED, NOT Janis-measured,
+NOT load-tested. Committed as simplified representative geometry (visual
+single-start helix / lug bumps, not a literal mating female thread/slot cut
+into the cap) in `bell_thread()`/`bell_bayonet()` (pole_top.scad) — avoids
+first-pass manifold risk on an unvalidated spec. Requires prototype
+fit-test before tooling.
+
+| Parameter | Value | Note |
+|---|---|---|
+| thread_pitch | 3mm | single-start |
+| thread_depth | 1.5mm | radial depth |
+| thread_engagement_l | 8mm | of cap_h's 12mm total — remaining ~4mm proud as knurled grip reveal |
+| bayonet_lug_count | 3 | lugs |
+| bayonet_spacing | 120° | between lugs |
+| bayonet_lug_w | 5mm | lug width |
+| bayonet_engagement_depth | 3mm | |
+| bayonet_rotation | 30° | rotation to lock |
 
 ---
 

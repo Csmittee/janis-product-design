@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-02 | pole-base-bell-collar-socket-build | DONE — Janis F5/F6 required, full detail in knowledge.map v29 entry
+
+Files: pole_top.scad (in-place, bell_lock_collar()+split-clamp call retired), leg_socket.scad (new), PR-01-assembly-v29.scad (new, ACTIVE), rules-dimensions.md(v9→v10), knowledge.map(v19→v20), cc_chat_log.md, prompts/archive/.
+Bell collar REVISED values (r_top=25/curve_power=2.2/cap_h=12/washer_overhang=4) render at 4 pole positions; thread/bayonet disclaimer comment present verbatim; old split-clamp `pole_base_collar()` call commented out (module kept). leg_socket(): socket_id=41mm, radial clearance vs pole_d(40mm)=0.5mm — tight, flagged. leg_socket.scad uses current `ghost_mode()` pattern (mirrored from live pole_top.scad), confirmed NOT the old self-reassigning `$is_assembly` pattern. Version increment confirmed: only PR-01-assembly-vXX bumped (v29); pole_top.scad/leg_socket.scad unversioned per flat-file exception.
+Diffed unchanged: bed_w=840, leg_t=120, xbar_y_front=60, xbar_y_rear=780.
+⚑ FLAGS (not resolved, need Claude Web/Janis decision): (1) prompt named the old collar `pole_top_collar()` — no such module exists, actual module is `pole_base_collar()`, retired that instead. (2) `pole_wood_socket()` (old 20mm placeholder) still actively called alongside new `leg_socket()` — likely redundant, not retired. (3) renamed leg_socket's socket params (`leg_socket_od/_wall_t/_depth`) to avoid colliding with existing `socket_od`/`socket_depth` globals. (4) `leg_h`=600mm never reconciled against `bed_h`(500)/existing bed_frame() leg height(470) — leg extends ~100mm above bed surface, documented interpretation not confirmed decision.
+No OpenSCAD binary in this sandbox — code-review + arithmetic verification only, not rendered.
+
 ### 2026-07-02 | fix-pole-cx-cy-override-bug | DONE — Janis F6 required
 
 Files: pole_top.scad (in-place edit, still v28), knowledge.map(v18→v19), cc_chat_log.md, prompts/archive/.

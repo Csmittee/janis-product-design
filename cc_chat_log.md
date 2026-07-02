@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-02 | customizer-skill-and-bell-collar-confirm | DONE — docs/governance + dimension-record only, zero geometry change
+
+Files: .claude/SKILL_customizer_profile.md (new), WORKFLOW_SKILL.md(3.5→3.6), chat_rules.md(v3.5→v3.6), rules-dimensions.md(v7→v8), knowledge.map(v16→v17), cc_chat_log.md, prompts/archive/.
+Task 1: new skill file created verbatim per spec, Claude-Web-only (cc does not read).
+Tasks 2-3: trigger row + bullet added as specified.
+Task 4: added Bell Collar CONCEPT CONFIRMED section (all 11 values) under 4-Part Split Architecture area. ⚑ FLAG: the prompt's "existing split-clamp collar dimension block (collar_wrap_h/collar_wall_t/collar_bolt_d)" does not exist in rules-dimensions.md — those placeholders live only in .scad file comments (PR-01-base-v9.scad onward) and the 2026-06-30 cc_chat_log entry. Placed the SUPERSEDED note against the file's only textual anchor for that concept (the pole_base_collar() prose mention) instead of inventing a table — flagging, not silently reconciling, per repo convention.
+Confirmed: zero .scad files touched.
+
 ### 2026-07-02 | governance-repo-truth-rule | DONE — docs/governance only, zero geometry change
 
 Files: WORKFLOW_SKILL.md(3.4→3.5), chat_rules.md(v3.4→v3.5), cc_chat_log.md, prompts/archive/.

@@ -1,7 +1,7 @@
 # Claude Web — Chat Rules
-# Version: v3.5 — 2026-07-02
-# Changes: Added Reading & Diagnosis bullet — Project Knowledge is a snapshot, never live repo access; ask Janis to confirm/sync when current repo/PR/merge status matters.
-# Previous: v3.4 — 2026-07-01
+# Version: v3.6 — 2026-07-02
+# Changes: Added bullet under Claude Web Rendering Capability — Customizer-first workflow for aesthetic/artistic geometry decisions (.claude/SKILL_customizer_profile.md).
+# Previous: v3.5 — 2026-07-02
 # Owner: Claude Web reads this at Step 2 of every session open. CC never reads this.
 
 ---
@@ -115,6 +115,10 @@ geometry locally. This is now a MANDATORY first step for any new module
 shape design. See .claude/SKILL_local_render.md for the full protocol.
 This capability replaced the screenshot→cc→screenshot loop that previously
 burned 11+ versions per design iteration.
+- For aesthetic/artistic geometry decisions (curve character, stylistic
+  proportion — not purely dimensional), build a Customizer-enabled prototype
+  per .claude/SKILL_customizer_profile.md instead of iterating on static
+  screenshots.
 
 ---
 

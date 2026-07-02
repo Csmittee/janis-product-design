@@ -1,8 +1,8 @@
 # knowledge.map
 # Janis Product Design — Master File Index
-# Version: v24 | 2026-07-03
-# Changes: PR-01-current-state-rapid-amend — CURRENT_STATE.md redesigned as a "where we left off" resumption memo (open items, updates only on Janis-confirmed pause) replacing the rigid conclusions-only format from v23; WORKFLOW_SKILL.md/chat_rules.md wired to read it at session-open; row description updated to match
-# Previous: v23 | 2026-07-03
+# Version: v25 | 2026-07-03
+# Changes: PR-01-viewer-integration — PR-01 wired into viewer/janis-product-viewer.html (v1.1→v1.2) as a real PROJECTS entry (single-mode STL, PR-01-v31.stl), replacing the placeholder; VIEWER STL table below updated with the new row
+# Previous: v24 | 2026-07-03
 # Maintained by: cc
 #
 # cc reads this at EVERY session start (step 2 after cc_rules.md)
@@ -201,7 +201,7 @@ See: cc_chat_log.md (updated by cc after every commit)
 
 | File | Description |
 |---|---|
-| viewer/janis-product-viewer.html | Browser 3D viewer — self-contained HTML. Three.js + OrbitControls + STLLoader. Gold/dark Satu theme. Loads STL from api.janishammer.com/models/. 3-way cycle: Standard (open window, default) → Full Exterior → C2 Open Shell. Deploy to Satu public/ → api.janishammer.com/janis-product-viewer |
+| viewer/janis-product-viewer.html | Browser 3D viewer — self-contained HTML. Three.js + OrbitControls + STLLoader. Gold/dark Satu theme. Loads STL from api.janishammer.com/models/. VM-01: 3-way cycle, Standard (open window, default) → Full Exterior → C2 Open Shell. PR-01: single-mode (`stl` key only, no toggle equivalent — no `show_*` render-mode/view toggle exists in the assembly, only per-component debug visibility toggles). Deploy to Satu public/ → api.janishammer.com/janis-product-viewer |
 
 **STL files (Satu public/models/):**
 | File | View |
@@ -209,3 +209,4 @@ See: cc_chat_log.md (updated by cc after every commit)
 | VM-01-v38-std.stl | Standard — shell intact, acrylic removed (open window) |
 | VM-01-v38-full.stl | Full Exterior — all components, fully opaque |
 | VM-01-v38-C2.stl | C2 Open Shell — top + left panels removed, interior inspection |
+| PR-01-v31.stl | Single mode — full assembly (bed+poles+crossbars+bell collars+leg sockets), all `show_*` debug toggles left at their `true` defaults. **NOT YET UPLOADED** — Janis must export from PR-01-assembly-v31.scad and push to this filename; 404 in the viewer until then is expected. |

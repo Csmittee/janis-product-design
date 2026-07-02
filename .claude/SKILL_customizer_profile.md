@@ -1,6 +1,6 @@
 # SKILL_customizer_profile.md
 # Customizer-First Design Profiling — Janis Product Design
-# Version: 1.0 — 2026-07-02
+# Version: 1.1 — 2026-07-02
 # Location: .claude/SKILL_customizer_profile.md
 # Claude Web only — cc does NOT read this file.
 
@@ -37,6 +37,16 @@ this skill instead of a third blind guess.
   slider position is not confirmation — state the values back and get a yes).
 - This skill does not replace SKILL_local_render.md — it precedes it, for the
   subset of decisions that are aesthetic rather than dimensional.
+- Every Customizer prototype MUST include a `/* [Visibility] */` group with
+  a boolean show/hide toggle for every major component in the assembly —
+  never a single fixed render the owner cannot decompose.
+- Where the prototype has any component nested inside another (e.g. a socket
+  embedded in a leg), MUST include a cutaway/section boolean toggle so the
+  internal fit is inspectable without hiding the outer part entirely.
+- All parameters the owner might reasonably want to adjust MUST be exposed
+  as Customizer sliders/values — never require the owner to open the code
+  editor pane to change a value. The editor pane is for reading the version
+  header comment only, never for making edits.
 
 ## KNOWN FUTURE IMPROVEMENT — NOT YET IMPLEMENTED
 Janis has requested a future version expose control points as freeform

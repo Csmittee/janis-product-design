@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-03 | PR-01-viewer-integration | DONE — PR-01 wired into viewer, zero .scad files touched, 404 EXPECTED until Janis uploads STL
+
+Files: viewer/janis-product-viewer.html (v1.1→v1.2), knowledge.map(v24→v25), cc_chat_log.md, prompts/archive/.
+TASK 1: PR-01 PROJECTS entry added, all values read live from PR-01-assembly-v31.scad+includes (not VM-01, not guessed): version='PR-01-assembly-v31', status copied verbatim from CURRENT_STATE.md. params[] = curated 15-value subset (bed_l/w/h, pole_d, pole_h, leg_w/t/h, neck_h, top_bore_d, leg_socket_od/depth, r_base/r_top, grip_od) mirroring VM-01's 6-of-~50 curation, not literally every global — all min/max ranges guessed (none exist anywhere), flagging explicitly. Locked: pole_d (=pole_od, rules-dimensions.md "LOCKED") and grip_od (OWNER-LOCKED, scad comment + rules-pr.md) — no other PR-01 value is marked locked anywhere. components[] = 7 real module names confirmed against live pole_top.scad/leg_socket.scad (bed_assembly, pole_wood_socket, pole_body, pole_top, crossbar_assembly, bell_lock_collar, leg_socket) — NOT rules-pr.md's stale "COMPONENT MODE" table (pole_base_socket/pole_mid_clamp/pole_top_collar don't exist in v31; flagging that table as stale, separate cleanup task). No show_* render-MODE toggle exists (only per-component debug visibility toggles) — confirmed no VM-01 std/full/C2 equivalent, so added property key **`stl`** only (not `stlOpen`/`stlC2`) = `https://api.janishammer.com/models/PR-01-v31.stl` — Janis must export+upload exactly `PR-01-v31.stl`.
+TASK 2: found + fixed 2 genuine VM-01-specific hardcodes in switchProject()/buildVisibilityPanel() that would have broken any future stl-only project (PR-01 included): (1) `stlViewMode` was force-set to `'open'` regardless of which URL keys exist, breaking Reload for single-mode projects — now derived stlOpen>stl>stlC2. (2) buildVisibilityPanel() checked `toggles.length` before `proj.stl`, so an stl-only project with empty toggles[] fell through to "No toggles defined" instead of the STL view button — reordered. Both verified inert for VM-01 (has both stlOpen and non-empty toggles, unaffected either way).
+TASK 3: knowledge.map VIEWER STL table — new PR-01-v31.stl row added, marked NOT YET UPLOADED.
+Confirmed: zero .scad files touched, zero VM-01 PROJECTS values/URLs/params altered (diffed). Selecting PR-01 now attempts loadSTL() and will 404 until Janis uploads — expected, not a bug.
+
 ### 2026-07-03 | PR-01-current-state-rapid-amend | DONE — rapid follow-up to PR #75, zero .scad files touched
 
 Files: CURRENT_STATE.md (replaced entirely — now "where we left off" format, updates only on Janis-confirmed pause), WORKFLOW_SKILL.md(3.6→3.7), chat_rules.md(v3.6→v3.7), knowledge.map(v23→v24), cc_chat_log.md, prompts/archive/.

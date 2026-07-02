@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-03 | PR-01-waiver-and-current-state-files | DONE — 2 new governance files, zero .scad files touched
+
+Files: .claude/rules-waivers.md (new, 49 lines, under 200-line cap), CURRENT_STATE.md (new, repo root), knowledge.map(v22→v23), cc_chat_log.md, prompts/archive/.
+W-001 (dormant global-override, 44 instances) registered verbatim per spec. CURRENT_STATE.md: corrected one line vs. the prompt's draft text — PR-01's "Pending: base-file-consolidation-fix ... will become v31 once merged" was stale by the time this ran; verified via `git log` that PR #74 is already merged and v31 exists in main (per REPO TRUTH rule), so wrote "MERGED... verified via git log" instead of copying the stale pending wording. Flagging this correction explicitly, not silently reconciling.
+⚑ FLAG (no fix, TASK 4): `.claude/rules-codes.md` is 343 lines, over the 200-line-per-file cap under `.claude/` — confirmed via `wc -l`. Not split/edited this prompt — separate dedicated task.
+Confirmed: zero `.scad` files touched.
+
 ### 2026-07-03 | base-file-consolidation | DONE — zero visual/dimensional change, full detail in knowledge.map v31 entry
 
 Files: pole_top.scad (in-place, bell collar bundle removed → pointer comment), leg_socket.scad (in-place, bell collar bundle + 16 standalone defaults + ghost call added), PR-01-assembly-v31.scad (new, ACTIVE, source v30), knowledge.map(v21→v22), cc_chat_log.md, prompts/archive/. rules-dimensions.md: confirmed no change needed — file location only, zero dimension change.

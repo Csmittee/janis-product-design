@@ -4,7 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
-### 2026-07-02 | pole-base-bell-collar-socket-build | DONE — Janis F5/F6 required, full detail in knowledge.map v29 entry
+### 2026-07-02 | bed-height-pad-cutaway-fix | DONE — Janis F5/F6 required, full detail in knowledge.map v30 entry
+
+Files: pole_top.scad (in-place, dormant bed_h self-reassignment removed), leg_socket.scad (in-place, pad call commented out + ghost-only cutaway), PR-01-assembly-v30.scad (new, ACTIVE, source v29), rules-dimensions.md(v10→v11), knowledge.map(v20→v21), cc_chat_log.md, prompts/archive/.
+OpenSCAD 2021.01 installed this session — real renders used throughout, not just code review. TASK 1a confirmed: pole_top.scad/leg_socket.scad both render standalone with zero undefined-var warnings. bed_h 500→600: xbar_z 2065→2165, collar_z0 440→540, bed_frame() leg height 470→570 — all changed as expected. body_h stayed 1476mm — verified algebraically inherent (bed_h cancels out of its formula), NOT a sign the fix failed; other 3 values prove it did.
+Pad removed (commented out). leg_socket.scad ghost cutaway added; CSG-dump diff confirms it does NOT leak into full-assembly render (leg_socket() calls there are unchanged plain cubes).
+Pre-existing (confirmed via diff against unmodified v29, not introduced here): ~28 "overwritten" global warnings (bed_h dropped off this list — proof of fix), and a 2-manifold warning on both standalone pole_top.scad and the full assembly (Volumes:12) — not touched, per manifold triage protocol.
+FLAG (no action): bed_frame() leg cube (Z 0-570) and leg_socket() leg cube (Z 0-600) confirmed via CSG dump as two overlapping solids per corner, same footprint.
 
 Files: pole_top.scad (in-place, bell_lock_collar()+split-clamp call retired), leg_socket.scad (new), PR-01-assembly-v29.scad (new, ACTIVE), rules-dimensions.md(v9→v10), knowledge.map(v19→v20), cc_chat_log.md, prompts/archive/.
 Bell collar REVISED values (r_top=25/curve_power=2.2/cap_h=12/washer_overhang=4) render at 4 pole positions; thread/bayonet disclaimer comment present verbatim; old split-clamp `pole_base_collar()` call commented out (module kept). leg_socket(): socket_id=41mm, radial clearance vs pole_d(40mm)=0.5mm — tight, flagged. leg_socket.scad uses current `ghost_mode()` pattern (mirrored from live pole_top.scad), confirmed NOT the old self-reassigning `$is_assembly` pattern. Version increment confirmed: only PR-01-assembly-vXX bumped (v29); pole_top.scad/leg_socket.scad unversioned per flat-file exception.

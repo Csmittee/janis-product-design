@@ -1,7 +1,7 @@
 # Claude Web — Chat Rules
-# Version: v3.6 — 2026-07-02
-# Changes: Added bullet under Claude Web Rendering Capability — Customizer-first workflow for aesthetic/artistic geometry decisions (.claude/SKILL_customizer_profile.md).
-# Previous: v3.5 — 2026-07-02
+# Version: v3.7 — 2026-07-03
+# Changes: Added bullet under Reading & Diagnosis — read CURRENT_STATE.md at every session open (Step 3.5, WORKFLOW_SKILL.md), ask before a mid-session product switch proceeds without updating it.
+# Previous: v3.6 — 2026-07-02
 # Owner: Claude Web reads this at Step 2 of every session open. CC never reads this.
 
 ---
@@ -12,6 +12,11 @@
 - Never guess dimensions — read rules-dimensions.md, never calculate from memory
 - Never form any diagnosis before reading cc_chat_log first 3 entries (newest at top) + affected SCAD file
 - Read cc_chat_log at every session open — if unreadable or absent, tell Janis sync is broken before proceeding. Do not proceed.
+- Read CURRENT_STATE.md at every session open (Step 3.5, WORKFLOW_SKILL.md)
+  — short file, read in full, not just skimmed. If a mid-session request
+  clearly shifts to a different product than its active entry reflects,
+  ask Janis whether to update it before continuing — see MID-SESSION
+  PROJECT SWITCH in WORKFLOW_SKILL.md.
 - Project Knowledge is a snapshot, not live repo access. Never treat a
   fetch, a search result, or an assumption as current truth — ask Janis
   to confirm or sync whenever current repo/PR/merge status actually

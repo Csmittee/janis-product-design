@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-02 | bed-width-720-crossbar-gap | DONE — single dimensional fix, Janis F5/F6 required
+
+Files: PR-01-assembly-v28.scad (new, source v27), rules-dimensions.md(v8→v9), knowledge.map(v17→v18), cc_chat_log.md, prompts/archive/.
+bed_w 670→840mm — Janis-confirmed, derived from 720mm crossbar-gap target (bed_w = 720 + leg_t, leg_t=120 unchanged).
+Verified: xbar_y_front = leg_t/2 = 60mm, xbar_y_rear = bed_w - leg_t/2 = 780mm, gap = xbar_y_rear - xbar_y_front = 720mm ✓.
+Diffed v27→v28: only version-bump header + the bed_w line changed, confirmed via `diff`. Brace/paren/bracket balance: 33/33, 0/0, 4/4.
+No OpenSCAD binary in this sandbox — diff + arithmetic verification only, not rendered. Janis must pull v28, F5 render, confirm crossbar gap reads correct.
+
 ### 2026-07-02 | customizer-skill-and-bell-collar-confirm | DONE — docs/governance + dimension-record only, zero geometry change
 
 Files: .claude/SKILL_customizer_profile.md (new), WORKFLOW_SKILL.md(3.5→3.6), chat_rules.md(v3.5→v3.6), rules-dimensions.md(v7→v8), knowledge.map(v16→v17), cc_chat_log.md, prompts/archive/.

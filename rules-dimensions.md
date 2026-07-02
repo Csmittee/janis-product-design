@@ -1,5 +1,5 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v8 — 2026-07-02
+# Version: v9 — 2026-07-02
 # All units: MM
 
 ---
@@ -245,6 +245,7 @@ socket, placeholder), pole_wood_socket() (drilled-in insert).
 |---|---|---|
 | PR-01 body D-section | 40mm constant diameter | No taper — body is constant-diameter top to bottom. pole_od changed 50mm→40mm — Janis-approved in chat, 2026-06-30, to proportionally fit pole_top() neck within bell waist. Still above 36mm market-standard floor. SUPERSEDES prior 50mm value and prior flat_w_base/flat_w_top taper values below. |
 | PR-01 wood socket OD | ~60mm | Fixed (non-foldable) version. Plain cylindrical insert pushed through drilled hole in wood leg. |
+| bed_w | 840mm | Janis-confirmed 2026-07-02, derived from 720mm crossbar-gap target (bed_w = 720 + leg_t, leg_t=120mm unchanged). Supersedes prior 670mm PENDING value. |
 
 ### SUPERSEDED — DO NOT USE (kept for history only)
 | Dimension | Value | Superseded by |

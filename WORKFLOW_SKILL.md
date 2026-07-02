@@ -1,8 +1,8 @@
 # WORKFLOW_SKILL.md
 # Janis Product Design — How We Work
-# Version: 3.6 — 2026-07-02
-# Changes: Added TRIGGER→ACTION→VALIDATOR row for Customizer-first aesthetic/artistic geometry workflow (.claude/SKILL_customizer_profile.md).
-# Previous: v3.5 — 2026-07-02
+# Version: 3.7 — 2026-07-03
+# Changes: Added Step 3.5 (read CURRENT_STATE.md) to session-opening sequence + CHAT HANDOFF TEMPLATE, renumbered subsequent steps; added MID-SESSION PROJECT SWITCH section after REPO TRUTH; updated FILE STRUCTURE — REPO with CURRENT_STATE.md and .claude/rules-waivers.md.
+# Previous: v3.6 — 2026-07-02
 
 ---
 
@@ -88,11 +88,15 @@ or sessions where Janis explicitly says no new geometry is being attempted.
   Not found → repo sync is broken. Tell Janis before proceeding. Do NOT ask Janis
   to download and upload manually — that defeats the connectivity check.
 
-**Step 4:** Read CHAT_HANDOFF open items. State "Memory installed."
+**Step 3.5:** Search project knowledge for "CURRENT_STATE" — read it in full
+  (it's short, unlike cc_chat_log). This is synced from repo root, same as
+  cc_chat_log. Not found → tell Janis sync is broken, same as Step 3.
 
-**Step 5:** Ask "Today's goal?" — even if handoff already states it.
+**Step 5:** Read CHAT_HANDOFF open items. State "Memory installed."
 
-Do not respond to any task until all 5 steps confirmed.
+**Step 6:** Ask "Today's goal?" — even if handoff already states it.
+
+Do not respond to any task until all 6 steps confirmed.
 
 ---
 
@@ -116,6 +120,22 @@ CURRENT status of the repo — whether a PR is merged, whether a file
 matches what's committed, whether main reflects a given fix — Claude Web
 asks Janis to confirm or re-sync. This is not a fallback for when other
 methods fail; it is the only correct method every time.
+
+---
+
+## MID-SESSION PROJECT SWITCH — PROACTIVE CURRENT_STATE CHECK
+
+CURRENT_STATE.md only updates when Janis explicitly confirms a pause — but
+Janis does not always announce a switch. If, mid-conversation, Janis's
+requests clearly move to a different product line than CURRENT_STATE.md's
+active entry reflects (e.g. session opened on PR-01, conversation shifts
+to VM-01 or a new product with no CURRENT_STATE.md entry), Claude Web MUST
+ask, before proceeding with the new topic, whether to update
+CURRENT_STATE.md for the product being left first. Offer two options
+explicitly: (a) Claude Web sends a small cc prompt to update it now, or
+(b) Janis updates it directly and pastes the result back. Do not proceed
+silently on the new topic without asking this first — an un-updated
+CURRENT_STATE.md that looks current but isn't is worse than no file at all.
 
 ---
 
@@ -290,8 +310,9 @@ Fix before delivering. Never ask Janis to remind.
 > Step 1: Load WORKFLOW_SKILL (project knowledge → STOP if missing)
 > Step 2: Load chat_rules (project knowledge → STOP if missing)
 > Step 3: Read cc_chat_log first 3 entries (newest at top) (project knowledge sync from repo → STOP if missing)
-> Step 4: Read open items below → state "Memory installed"
-> Step 5: Ask "Today's goal?"
+> Step 3.5: Read CURRENT_STATE.md in full (project knowledge sync from repo → STOP if missing)
+> Step 5: Read open items below → state "Memory installed"
+> Step 6: Ask "Today's goal?"
 
 ## ACTIVE MODEL
 [model name — last committed version]
@@ -342,10 +363,12 @@ janis-product-design/
 ├── rules-dimensions.md                  ← authoritative dimensions
 ├── knowledge.map                        ← navigation — cc updates when files added
 ├── WORKFLOW_SKILL.md                    ← this file (also in project knowledge)
+├── CURRENT_STATE.md                     ← where-we-left-off resumption memo, updates only on Janis-confirmed pause
 ├── .claude/
 │   ├── rules-codes.md                   ← cc — SCAD coding rules
 │   ├── rules-materials.md               ← cc — material specs
 │   ├── rules-vm.md                      ← cc — VM-specific rules
+│   ├── rules-waivers.md                 ← known/accepted issues registry — check FIRST before flagging as new
 │   └── SKILL_problem_solving_kt.md      ← Claude Web + cc — R-111 trigger
 ├── prompts/                             ← active cc prompts
 │   └── archive/                         ← completed prompts ✅ COMPLETE

@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-03 | PR-01-current-state-rapid-amend | DONE — rapid follow-up to PR #75, zero .scad files touched
+
+Files: CURRENT_STATE.md (replaced entirely — now "where we left off" format, updates only on Janis-confirmed pause), WORKFLOW_SKILL.md(3.6→3.7), chat_rules.md(v3.6→v3.7), knowledge.map(v23→v24), cc_chat_log.md, prompts/archive/.
+CURRENT_STATE.md: new open item added — leg_socket() wood leg is one solid cube, socket sleeve a separate overlapping tube, no boolean cut — not manufacturable as modeled, NOT waived (Janis hasn't decided fix-vs-waive), correctly kept OUT of rules-waivers.md per prompt's distinction.
+WORKFLOW_SKILL.md: Step 3.5 (read CURRENT_STATE.md) inserted, old Steps 4/5→5/6, "5 steps"→"6 steps"; MID-SESSION PROJECT SWITCH section added after REPO TRUTH; CHAT HANDOFF TEMPLATE + FILE STRUCTURE updated to match — all diffed to confirm no other content touched.
+Confirmed: `.claude/rules-waivers.md` untouched (git diff empty), zero `.scad` files touched.
+
 ### 2026-07-03 | PR-01-waiver-and-current-state-files | DONE — 2 new governance files, zero .scad files touched
 
 Files: .claude/rules-waivers.md (new, 49 lines, under 200-line cap), CURRENT_STATE.md (new, repo root), knowledge.map(v22→v23), cc_chat_log.md, prompts/archive/.

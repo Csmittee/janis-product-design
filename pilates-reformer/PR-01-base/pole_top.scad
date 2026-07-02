@@ -65,7 +65,16 @@ function ghost_mode() = is_undef($is_assembly) || !$is_assembly;
 // design decisions).
 e                   = is_undef(e)                   ? 0.01  : e;      // epsilon
 bed_l               = is_undef(bed_l)               ? 2300  : bed_l;
-bed_h               = is_undef(bed_h)               ? 500   : bed_h;
+// bed_h removed (bed-height-pad-cutaway-fix, 2026-07-02): same self-
+// reassignment bug class as the pole_cx/pole_cy fix above — `include`
+// flattens this file's scope into the assembly's, so this reassignment
+// collapsed bed_h to the hardcoded 500 fallback regardless of the
+// assembly's real value. Dormant only because the assembly's bed_h
+// (500) happened to equal the fallback; confirmed dormant via local
+// render (bed_h=600 in assembly produced a byte-identical render to
+// bed_h=500 until this line was removed). No standalone fallback is
+// reintroduced here — see ghost_bed_h local in the ghost-context stanza
+// below, the only place in this file that needs one.
 pole_d              = is_undef(pole_d)              ? 40    : pole_d;
 pole_r              = is_undef(pole_r)              ? pole_d / 2 : pole_r;
 neck_h              = is_undef(neck_h)              ? 70    : neck_h;
@@ -484,12 +493,13 @@ if (ghost_mode()) {
     // pole_cx/pole_cy — see fix-pole-cx-cy-override-bug comment above.
     ghost_cx = is_undef(pole_cx) ? 90 : pole_cx[0];
     ghost_cy = is_undef(pole_cy) ? 60 : pole_cy[0];
+    ghost_bed_h = is_undef(bed_h) ? 500 : bed_h;
     pole_top(ghost_cx, ghost_cy);
     // ghost: vertical pole stub (pole_body(), real diameter pole_d) below the neck
     ghost_neck_top = xbar_z - housing_r_circ;
-    ghost_body_h   = (ghost_neck_top - neck_h) - bed_h;
+    ghost_body_h   = (ghost_neck_top - neck_h) - ghost_bed_h;
     color("gray", 0.3)
-        translate([ghost_cx, ghost_cy, bed_h])
+        translate([ghost_cx, ghost_cy, ghost_bed_h])
             cylinder(h = ghost_body_h, d = pole_d, $fn = 32);
     // ghost: horizontal crossbar/grip bar (real diameter grip_od) through the bore
     color("gray", 0.3)

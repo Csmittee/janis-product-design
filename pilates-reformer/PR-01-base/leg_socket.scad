@@ -69,8 +69,12 @@ module leg_socket(cx, cy) {
     color("#C8A96E", 1.0) {
         translate([cx - leg_w / 2, cy - leg_t / 2, 0])
             cube([leg_w, leg_t, leg_h]);
-        translate([cx - leg_w / 2 - pad_overhang, cy - leg_t / 2 - pad_overhang, 0])
-            cube([leg_w + 2 * pad_overhang, leg_t + 2 * pad_overhang, pad_t]);
+        // Foot pad removed — Janis-confirmed 2026-07-02, was never part of the
+        // intended design, only surfaced on first visual render. pad_t/
+        // pad_overhang variables kept (unused) for history; do not resurrect
+        // this call without Janis re-confirming.
+        // translate([cx - leg_w / 2 - pad_overhang, cy - leg_t / 2 - pad_overhang, 0])
+        //     cube([leg_w + 2 * pad_overhang, leg_t + 2 * pad_overhang, pad_t]);
     }
     color("#888888", 1.0)
         translate([cx, cy, leg_h - leg_socket_depth])
@@ -97,7 +101,16 @@ module leg_socket(cx, cy) {
 if (ghost_mode()) {
     ghost_cx = is_undef(pole_cx) ? 90 : pole_cx[0];
     ghost_cy = is_undef(pole_cy) ? 60 : pole_cy[0];
-    leg_socket(ghost_cx, ghost_cy);
+    // Cutaway — standalone-preview only (bed-height-pad-cutaway-fix,
+    // 2026-07-02): reveals the embedded socket bore, otherwise fully
+    // hidden inside the solid wood leg. Applies only inside ghost_mode();
+    // full-assembly render calls leg_socket() directly (unchanged) via
+    // PR-01-assembly-vXX.scad's per-pole loop, never this stanza.
+    difference() {
+        leg_socket(ghost_cx, ghost_cy);
+        translate([ghost_cx - leg_w, ghost_cy, -e])
+            cube([leg_w * 2, leg_t, leg_h + 2 * e]);
+    }
     color("gray", 0.3)
         translate([ghost_cx, ghost_cy, leg_h])
             cylinder(h = 200, d = pole_d, $fn = 32);

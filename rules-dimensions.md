@@ -1,5 +1,5 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v10 — 2026-07-02
+# Version: v11 — 2026-07-02
 # All units: MM
 
 ---
@@ -343,15 +343,20 @@ resolved by this entry). Committed in new `leg_socket.scad`.
 
 | Parameter | Value | Note |
 |---|---|---|
-| leg_h | 600mm | leg's own full height — NOT reconciled against bed_h(500mm)/existing bed_frame() leg height(470mm) — see leg_socket.scad INTERPRETATION FLAG, not a confirmed architectural decision |
+| leg_h | 600mm | leg's own full height — RECONCILED against bed_h 2026-07-02 (bed-height-pad-cutaway-fix): see `bed_h` row below, no change to leg_h itself |
 | leg_w | 180mm | shared with existing bed_frame()/pole_top.scad global, unchanged |
 | leg_t | 120mm | shared with existing bed_frame()/pole_top.scad global, unchanged |
-| pad_t | 20mm | foot pad thickness |
-| pad_overhang | 50mm | foot pad radial overhang beyond leg footprint |
+| bed_h | 600mm | floor to top of bed surface — Janis-confirmed 2026-07-02 (bed-height-pad-cutaway-fix), reconciled to leg_h(600mm) so the bed surface sits flush on top of the embedded-socket leg instead of appearing sunk below it (was 500mm, PENDING). Supersedes prior 500mm PENDING value. Fix required removing a dormant pole_top.scad self-reassignment bug (same class as pole_cx/pole_cy) that was silently collapsing bed_h to a hardcoded 500 fallback — see PR-01-assembly-v30.scad / cc_chat_log. |
 | socket_depth | 400mm | pass-through sleeve depth (named `leg_socket_depth` in SCAD — see below) |
 | socket_od | 46mm | named `leg_socket_od` in SCAD |
 | socket_wall_t | 2.5mm | named `leg_socket_wall_t` in SCAD |
 | pole_od | 40mm | LOCKED, unchanged from existing spec (= pole_d in SCAD) |
+
+### SUPERSEDED — DO NOT USE (kept for history only)
+| Dimension | Value | Superseded by |
+|---|---|---|
+| pad_t | 20mm | Foot pad removed entirely, 2026-07-02 (bed-height-pad-cutaway-fix) — Janis-confirmed, was never part of the intended design, only surfaced on first visual render of leg_socket(). Draw call commented out in leg_socket.scad, variable kept unused for history. |
+| pad_overhang | 50mm | Same as above — removed with pad_t, kept unused for history. |
 
 Derived: socket_id = socket_od - 2×socket_wall_t = 41mm. Radial clearance
 against pole_od(40mm) = 0.5mm — tight tolerance, not a blocker, flagged for

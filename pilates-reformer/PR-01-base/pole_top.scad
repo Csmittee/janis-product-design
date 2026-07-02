@@ -308,103 +308,13 @@ module pole_top(cx, cy) {
     pole_top_lever_placeholder(cx, cy, dir);
 }
 
-// ═════════════════════════════════════════════════════════════════════
-// BELL LOCK COLLAR — pole-base bell/mushroom collar + quick-release cap
-// pole-base-bell-collar-socket-build (2026-07-02). Pole pushes directly
-// into leg_socket.scad's embedded sleeve; this collar is the visible
-// dome+cap that sits flush at the wood surface where pole meets leg.
-// Dome profile REVISED CONFIRMED via Customizer screenshot 2026-07-02
-// (r_top=25/curve_power=2.2 — supersedes the earlier r_top=29/
-// curve_power=1.4 rules-dimensions.md table entry). Replaces the old
-// external split-clamp collar (pole_base_collar() below) — its call
-// site in pole_assembly() is commented out; module kept, not deleted,
-// per the prompt's "do not delete without confirming nothing else
-// depends on it" instruction.
-// All r_base/r_top/foot_h/dome_h/dome_steps/curve_power/cap_h/
-// cap_knurl_count/washer_h/washer_overhang/leg_h globals are supplied
-// by the assembly file and referenced directly (not reassigned here) —
-// bell_lock_collar() is never invoked from this file's own ghost-context
-// stanza, so per this file's own documented guard policy ("every global
-// reachable from the ghost-context stanza") no is_undef() default is
-// required or added for them here.
-// ═════════════════════════════════════════════════════════════════════
-
-// Dome profile: solid-of-revolution from r_base (foot) to r_top (neck).
-// curve_power exponent: 1=straight cone, >1=convex bulge, <1=concave
-// converge (matches rules-dimensions.md note).
-function bell_dome_pts(r_b, r_t, h, steps, power) = concat(
-    [[0, 0]],
-    [for (i = [0 : steps])
-        let(t = i / steps, y = t * h, r = r_t + (r_b - r_t) * pow(1 - t, power))
-        [r, y]],
-    [[0, h]]
-);
-
-module bell_dome(r_b, r_t, h, steps, power) {
-    rotate_extrude($fn = 64)
-        polygon(bell_dome_pts(r_b, r_t, h, steps, power));
-}
-
-// ENGINEER-PROPOSED lock mechanism (thread + bayonet), Claude Web,
-// market-standard practice for hand-assembled quick-release fittings at
-// this scale. Lock mechanism dimensions are engineering estimates based
-// on standard quick-release fitting practice — NOT physically validated,
-// NOT production-ready. Requires prototype fit-test before tooling.
-// Simplified representative geometry (visual single-start helix / lug
-// bumps, not a literal mating female thread/slot cut into the cap) —
-// avoids first-pass manifold risk on an unvalidated spec; revisit with
-// real thread/bayonet geometry after physical fit-test.
-module bell_thread(r_neck, pitch, depth, length) {
-    turns = length / pitch;
-    linear_extrude(height = length, twist = -360 * turns, slices = 64, convexity = 10)
-        translate([r_neck, 0])
-            polygon([[0, -depth / 2], [depth, 0], [0, depth / 2]]);
-}
-
-module bell_bayonet(r_neck, lug_w, lug_depth, lug_count) {
-    for (i = [0 : lug_count - 1])
-        rotate([0, 0, i * 360 / lug_count])
-            translate([r_neck, -lug_w / 2, 0])
-                cube([lug_depth, lug_w, lug_w]);
-}
-
-module bell_cap(r, h, knurl_count) {
-    difference() {
-        cylinder(h = h, r = r, $fn = 64);
-        for (i = [0 : knurl_count - 1])
-            rotate([0, 0, i * 360 / knurl_count])
-                translate([r - 0.5, 0, -e])
-                    cylinder(h = h + 2 * e, d = 1.2, $fn = 8);
-    }
-}
-
-// bell_lock_collar(cx, cy) — foot ring + dome + washer reveal + thread/
-// bayonet zone + knurled cap, unioned, single central bore subtracted
-// once (Rule M-1 — never per-piece). Foot ring flush at wood surface
-// (leg_socket.scad's leg top, world Z=leg_h). Bore = pole_d+1 (0.5mm/side
-// slip-fit clearance, same convention as pole_top_neck()'s neck_id).
-module bell_lock_collar(cx, cy) {
-    lock_z0 = foot_h + dome_h + washer_h;  // thread/bayonet/cap start Z (local)
-    color("#B08D57", 1.0)
-        translate([cx, cy, leg_h])
-            difference() {
-                union() {
-                    cylinder(h = foot_h, r = r_base, $fn = 64);
-                    translate([0, 0, foot_h])
-                        bell_dome(r_base, r_top, dome_h, dome_steps, curve_power);
-                    translate([0, 0, foot_h + dome_h])
-                        cylinder(h = washer_h, r = r_top + washer_overhang, $fn = 64);
-                    translate([0, 0, lock_z0])
-                        bell_thread(r_top, thread_pitch, thread_depth, thread_engagement_l);
-                    translate([0, 0, lock_z0])
-                        bell_bayonet(r_top, bayonet_lug_w, bayonet_engagement_depth, bayonet_lug_count);
-                    translate([0, 0, lock_z0])
-                        bell_cap(r_top, cap_h, cap_knurl_count);
-                }
-                translate([0, 0, -e])
-                    cylinder(h = lock_z0 + cap_h + 2 * e, d = pole_d + 1, $fn = 48);
-            }
-}
+// BELL LOCK COLLAR — moved to leg_socket.scad (base-file-consolidation,
+// 2026-07-03). This module physically belongs to the base/leg system, not
+// the top-joint housing this file covers — was misplaced here during the
+// 2026-07-02 bell-collar-socket-build. bell_lock_collar() and its helpers
+// (bell_dome_pts, bell_dome, bell_thread, bell_bayonet, bell_cap) now live
+// in leg_socket.scad. Global scope unaffected (still include-flattened
+// alongside this file by the assembly), only the file location changed.
 
 // ═════════════════════════════════════════════════════════════════════
 // MODULES — CROSSBAR

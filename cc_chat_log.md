@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-03 | VM-01-shell-height-fix-v40 | DONE — Janis F5/F6 required, 1 new bug FLAGGED not fixed
+
+Files: VM-01-base-v40.scad (new, source v39), knowledge.map(v28→v29), cc_chat_log.md, prompts/archive/.
+TASK 1: `outer_shell_debug()` (the module ASSEMBLY actually calls, via `translate([0,0,leg_h])`) got a local `shell_h = total_h - leg_h;` and both `rounded_box()` calls switched from `total_h` to `shell_h` — fixes leg_h double-count that made the shell's real world Z range 50-750 instead of 700. Arithmetic-verified: shell_h=650, +leg_h(50) translate = world Z 50-700 ✓. No OpenSCAD binary in this sandbox — could not do the requested STL bounding-box measurement, arithmetic only.
+Confirmed unaffected: the 4 zone-cutout translate()s (already using `world_Z - leg_h` convention) and `outer_shell()` (unused twin, out of scope). Diffed v39→v40: only header + 1 new local-var line + the 2 specified `rounded_box()` calls changed.
+⚑ FLAG (discovered, NOT fixed, outside this prompt's "only 2 lines" scope): `show_shell_top=false` (C2 mode) cutout still targets old `total_h-skin_t-1` (local Z 697), now above the solid's new top (Z=650) — toggling it silently does nothing in v40. Needs a follow-up 1-line fix (`shell_h-skin_t-1`). back/left/right cutouts confirmed still fine (harmless overshoot).
+
 ### 2026-07-03 | VM-01-acrylic-corner-fix | DONE — Janis F5/F6 required
 
 Files: VM-01-base-v39.scad (new, source v38), rules-dimensions.md(v11→v12), knowledge.map(v27→v28), cc_chat_log.md, prompts/archive/.

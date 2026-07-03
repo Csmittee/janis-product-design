@@ -4,6 +4,16 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-03 | create-SKILL_viewer_update | DONE — governance/docs only, zero .scad and zero viewer.html change
+
+Files: .claude/SKILL_viewer_update.md (new), WORKFLOW_SKILL.md(3.7→3.8), knowledge.map(v25→v26), cc_chat_log.md, prompts/archive/.
+Note: this session's designated branch (claude/pr-01-viewer-integration-mcggyg) had its prior PR (#77) already merged to main — restarted the branch from latest origin/main per protocol before starting this task, no stacking on merged history.
+TASK 1: `.claude/SKILL_viewer_update.md` created verbatim per prompt spec (TRIGGER PHRASES, PROCEDURE — CLAUDE WEB, PROCEDURE — JANIS, QUICK REFERENCE PROJECTS shape, FILENAME CONVENTION) — Claude Web only, cc does NOT read this file, matching the existing SKILL_manifold_triage.md/SKILL_local_render.md/SKILL_customizer_profile.md pattern.
+TASK 2: new TRIGGER→ACTION→VALIDATOR row added to WORKFLOW_SKILL.md, verbatim wording from prompt, appended after the existing Customizer row — diffed to confirm no other row touched.
+TASK 3: FILE STRUCTURE — REPO's `.claude/` block gets the new file (one line, matching existing style); WORKFLOW_SKILL.md version bumped 3.7→3.8 (same-structure addition, per DOCUMENT VERSIONING RULE) with changelog line.
+knowledge.map: new FILE LOCATIONS row added for the new file.
+Confirmed: zero `.scad` files touched, `viewer/janis-product-viewer.html` untouched (read-only per prompt — PROJECTS object was only *read*, not edited, this session), `chat_rules.md` and all other `.claude/` skill files untouched.
+
 ### 2026-07-03 | PR-01-viewer-integration | DONE — PR-01 wired into viewer, zero .scad files touched, 404 EXPECTED until Janis uploads STL
 
 Files: viewer/janis-product-viewer.html (v1.1→v1.2), knowledge.map(v24→v25), cc_chat_log.md, prompts/archive/.

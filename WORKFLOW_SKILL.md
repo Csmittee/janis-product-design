@@ -1,8 +1,8 @@
 # WORKFLOW_SKILL.md
 # Janis Product Design — How We Work
-# Version: 3.7 — 2026-07-03
-# Changes: Added Step 3.5 (read CURRENT_STATE.md) to session-opening sequence + CHAT HANDOFF TEMPLATE, renumbered subsequent steps; added MID-SESSION PROJECT SWITCH section after REPO TRUTH; updated FILE STRUCTURE — REPO with CURRENT_STATE.md and .claude/rules-waivers.md.
-# Previous: v3.6 — 2026-07-02
+# Version: 3.8 — 2026-07-03
+# Changes: Added TRIGGER → ACTION → VALIDATOR row for "update the viewer" (points to new .claude/SKILL_viewer_update.md); added that file to FILE STRUCTURE — REPO's .claude/ block.
+# Previous: v3.7 — 2026-07-03
 
 ---
 
@@ -174,6 +174,7 @@ Janis describes goal
 | Joint/seam/blend issue fails QA once | Claude Web prototypes the fix locally, renders it, confirms fix works visually BEFORE writing next cc prompt | Local render confirms fix before cc burns a version |
 | pole_top seam/T-junction work resumes (Option B) | Read .claude/SKILL_option_b_unified_loft.md in full before any prompt — STATUS block must be updated first | Claude Web states file was read + confirms STATUS block matches current repo state |
 | Aesthetic/artistic geometry ambiguous in words (curve character, stylistic proportion) | Claude Web builds OpenSCAD Customizer-enabled prototype (.claude/SKILL_customizer_profile.md), Janis tunes sliders live, reports final values | Janis explicitly confirms final parameter values in chat before any cc prompt is written |
+| Janis says "update the viewer" / "new design released" | Read `.claude/SKILL_viewer_update.md`, follow its procedure before writing any cc prompt | Claude Web states which project/version this targets before drafting the prompt |
 
 ---
 
@@ -369,7 +370,8 @@ janis-product-design/
 │   ├── rules-materials.md               ← cc — material specs
 │   ├── rules-vm.md                      ← cc — VM-specific rules
 │   ├── rules-waivers.md                 ← known/accepted issues registry — check FIRST before flagging as new
-│   └── SKILL_problem_solving_kt.md      ← Claude Web + cc — R-111 trigger
+│   ├── SKILL_problem_solving_kt.md      ← Claude Web + cc — R-111 trigger
+│   └── SKILL_viewer_update.md           ← Claude Web only — viewer PROJECTS-entry update procedure
 ├── prompts/                             ← active cc prompts
 │   └── archive/                         ← completed prompts ✅ COMPLETE
 ├── vending-machine/VM-01-base/          ← VM-01 .scad versions

@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-03 | VM-01-acrylic-corner-fix | DONE — Janis F5/F6 required
+
+Files: VM-01-base-v39.scad (new, source v38), rules-dimensions.md(v11→v12), knowledge.map(v27→v28), cc_chat_log.md, prompts/archive/.
+TASK 1: `acrylic_display()` right-side panel Y-range changed `skin_t`→`total_d-skin_t` to `corner_r`→`total_d-corner_r` verbatim per prompt — recesses panel into the shell's flat-wall region, clearing both rounded corners (front + rear). Root-cause math re-verified against live v38 params (total_w=640, not rules-dimensions.md's stale 620mm) before editing: curved wall at Y=2mm sits at X≈628.7mm vs. old panel's X=636mm, confirming the 7.28mm protrusion.
+CONFIRMED per prompt: front panel (right edge X=618mm) and top panel (same width) both fall inside the flat-wall region, outside the corner's effective arc (sub-0.1mm) — no change made to either.
+Diffed v38→v39: only header/version comments + the one panel translate()/cube() line changed. Brace/paren/bracket balance: 288/288, 33/33, 122/122. No OpenSCAD binary in this sandbox — diff + arithmetic verification only, not rendered.
+⚑ FLAG: viewer's STL filename table (knowledge.map) still references VM-01-v38-*.stl — not updated, out of scope (separate SKILL_viewer_update.md task); Janis will need a new v39 export/upload pass when ready.
+
 ### 2026-07-03 | viewer-turntable-measure-and-filename-rule | DONE — zero .scad files, zero PROJECTS-registry values touched (diffed byte-identical)
 
 Files: viewer/janis-product-viewer.html (v1.2→v1.3), .claude/SKILL_viewer_update.md (1.0→1.1), knowledge.map(v26→v27), cc_chat_log.md, prompts/archive/.

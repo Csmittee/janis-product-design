@@ -1,5 +1,5 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v11 — 2026-07-02
+# Version: v12 — 2026-07-03
 # All units: MM
 
 ---
@@ -222,6 +222,7 @@ LOCKED — do not change without Claude Web instruction.
 | Height | 156mm | |
 | Front panel corner radius | 8mm | hull + cylinders |
 | Left zone | Front door only, no acrylic | LOCKED |
+| Right panel Y-range | corner_r to total_d - corner_r | As of v39 (was skin_t to total_d - skin_t). Reason: shell corner clearance — the flat panel was protruding 7.28mm past the shell's curved corner wall at the front-right corner. Confirmed by Janis this session: production acrylic is a flat sheet screwed in from inside the metal frame, so it does not need to match the shell's curve — recessing to the flat-wall region is the correct fix. |
 
 ## VM-01 Base — Screen
 

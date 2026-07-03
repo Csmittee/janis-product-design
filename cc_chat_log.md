@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-03 | viewer-turntable-measure-and-filename-rule | DONE — zero .scad files, zero PROJECTS-registry values touched (diffed byte-identical)
+
+Files: viewer/janis-product-viewer.html (v1.2→v1.3), .claude/SKILL_viewer_update.md (1.0→1.1), knowledge.map(v26→v27), cc_chat_log.md, prompts/archive/.
+TASK 1: FILENAME CONVENTION section replaced verbatim as specified (output filename = source .scad name verbatim, `.scad`→`.stl` only, no strip/rename step) + NEVER-rename-via-GitHub-web-UI line added to PROCEDURE — JANIS step 2 + VM-01/PR-01-v31 grandfather exception preserved verbatim. Version 1.0→1.1.
+TASK 2: [⏺ Record Turntable] button added — orbits camera 360° around Y (vertical) axis over `TURNTABLE_DURATION_MS`=8000ms pivoting on `controls.target`, `captureStream(30)`+`MediaRecorder('video/webm')`, disables button + pauses OrbitControls during capture, restores both on `onstop`, downloads `${activeProject}-${proj.version}-turntable.webm`. INTERPRETATION FLAG: prompt's literal filename pattern was `{activeProject}-{version}-turntable.webm` but parenthetically said "use label/version fields" — read this as "don't hardcode literal strings," so mirrored `exportSTL()`'s existing `${activeProject}-${version}` pattern (not `proj.label`, which contains spaces) for consistency; flagging this judgment call explicitly. Fails gracefully (log error, no crash) if `captureStream`/`MediaRecorder` unsupported.
+TASK 3: [📏 Measure] toggle + [Clear Measurement] added — raycaster against `modelMesh` only, 2 clicks drop gold sphere markers (radius scaled to `modelMaxDim`) + a connecting line, computes Euclidean distance, displayed in a new `#measure-readout` div next to the button (right sidebar was not used — left-sidebar placement kept it next to the trigger button, cc's choice per prompt). **STL units = mm confirmed**: OpenSCAD's native/only unit is mm (see VM-01/PR-01 `.scad` headers, "Units: mm" / rules-dimensions.md "All units MM — always"), so both projects' STL exports are already mm — no conversion applied. 3rd click while 2 points exist is a no-op (Clear required first) — deliberate single-active-measurement scope per prompt, not an oversight. Resets on `switchProject()` per spec.
+Confirmed: zero `.scad` files touched; `PROJECTS` object diffed byte-identical against the pre-session file (both VM-01 and PR-01 entries, all STL URLs/filenames unchanged) — this prompt only added UI/interaction code.
+
 ### 2026-07-03 | create-SKILL_viewer_update | DONE — governance/docs only, zero .scad and zero viewer.html change
 
 Files: .claude/SKILL_viewer_update.md (new), WORKFLOW_SKILL.md(3.7→3.8), knowledge.map(v25→v26), cc_chat_log.md, prompts/archive/.

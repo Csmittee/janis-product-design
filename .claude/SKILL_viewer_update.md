@@ -1,6 +1,7 @@
 # SKILL_viewer_update.md
 # Viewer Update Procedure — Janis Product Design
-# Version: 1.0 — 2026-07-03
+# Version: 1.1 — 2026-07-03
+# Changes: FILENAME CONVENTION rewritten (verbatim filename, no strip/rename step — 2026-07-03 STL-corruption incident) + a NEVER-rename-via-GitHub-web-UI line added to PROCEDURE — JANIS step 2.
 # Location: .claude/SKILL_viewer_update.md
 # Claude Web only — cc does NOT read this file.
 
@@ -37,6 +38,12 @@ unprompted.
 2. Export STL → filename EXACTLY matching what cc stated in
    cc_chat_log. Mismatched filenames are the #1 cause of "nothing
    shows up."
+   NEVER use GitHub's web "Rename" or "Edit" on an existing STL/binary
+   file — this can silently corrupt it (real incident, 2026-07-03: a
+   renamed file collapsed to 2 bytes with no visible error). Always
+   upload the real binary fresh via "Add file → Upload files", dragged
+   directly from local disk, with the correct final filename set at
+   upload time in one step.
 3. Copy `viewer/janis-product-viewer.html` → Satu backend repo as
    `public/janis-product-viewer.html` (drop the `viewer/` prefix,
    keep the filename) — only needed if the HTML itself changed.
@@ -65,7 +72,23 @@ unprompted.
 in that order. A project with no `stl`/`stlOpen` key always falls to the
 placeholder even if `scad` is non-null but autoRender conditions aren't met.
 
-## FILENAME CONVENTION
-Drop `base`/`assembly` from the source filename, keep the version number.
-Example: `VM-01-base-v38.scad` → `VM-01-v38-full.stl` (+ `-std`/`-C2` for
-multi-mode). `PR-01-assembly-v31.scad` → `PR-01-v31.stl`.
+## FILENAME CONVENTION (v1.1 — 2026-07-03, supersedes v1.0's rule)
+Going forward: output filename = source `.scad` filename VERBATIM, only
+the extension changes (`.scad` → `.stl`), plus an optional `-modename`
+suffix before the extension for multi-mode exports (e.g. `-std`, `-full`,
+`-C2`). NEVER strip, abbreviate, or drop words from the source filename.
+Example: `PR-01-assembly-v32.scad` → `PR-01-assembly-v32.stl`.
+
+Reason: the old "drop base/assembly" rule required a manual rename step
+after export. On 2026-07-03, renaming an already-uploaded STL through
+GitHub's web UI silently replaced its binary content with 2 bytes —
+the file looked correctly named but was empty. Naming the export
+correctly at export/upload time, with zero rename step, removes the
+failure mode entirely.
+
+EXCEPTION — grandfathered, do not touch: VM-01's existing URLs
+(`VM-01-v38-std.stl`, `VM-01-v38-full.stl`, `VM-01-v38-C2.stl`) and
+PR-01's current `PR-01-v31.stl` predate this rule and are already
+deployed/working. Do not rename or retrofit them. The new rule applies
+to PR-01-v32 onward and any new project wired into the viewer after
+2026-07-03.

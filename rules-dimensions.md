@@ -1,5 +1,5 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v12 — 2026-07-03
+# Version: v13 — 2026-07-03
 # All units: MM
 
 ---
@@ -181,12 +181,43 @@ LOCKED — do not change without Claude Web instruction.
 | Dimension | Value | Notes |
 |---|---|---|
 | Door height | 250mm | EXIT ZONE ONLY — leg_h(50) to exit_top(300mm) — LOCKED |
-| Door Z range | 50–300mm | EXIT ZONE ONLY — spring zone 300-542 is OPEN — LOCKED |
+| Door Z range | 50–300mm | SUPERSEDED 2026-07-03 — see "SUPERSEDED" note + "VM-01 Base — Left-Zone Front Door" section below |
 | Door thickness | 3mm | Stainless panel |
 | Hinge position | Left edge | When viewed from front — LOCKED |
 | Hinge count | 3 | Evenly spaced |
 | Hinge OD | 12mm | |
 | Hinge height | 20mm | |
+
+### SUPERSEDED — DO NOT USE (kept for history only)
+| Dimension | Value | Superseded by |
+|---|---|---|
+| Door Z range | 50–300mm, EXIT ZONE ONLY | v41 (VM-01-front-door-redesign-v41): `left_zone_door()` replaces `front_door()`+`flap_door()`+`spring_zone_panel()` entirely, full left-zone height — see "VM-01 Base — Left-Zone Front Door" below |
+
+## VM-01 Base — Left-Zone Front Door (CONFIRMED 2026-07-03, v41)
+
+Root cause of the exit-flap feature's prior failures (38 SCAD versions, 6+
+sessions): `front_door()` was a single uncut solid panel with no
+`difference()` cutting a hole for `flap_door()` — the flap was
+geometrically invisible in every prior render. Separately, the old hinge
+sat directly on the rounded front-left corner (`corner_r`), which cannot
+accept hinge hardware in production. `left_zone_door()` replaces all three
+old modules (`front_door()`, `flap_door()`, `spring_zone_panel()`) with one
+full-height left-zone door: concealed hinge on the flat left-side wall
+(off the corner, via a return flange), an inset acrylic viewing window,
+and a top-hinged exit flap swinging inward onto a static stopper rod.
+
+| Dimension | Value | Notes |
+|---|---|---|
+| Door Z range (full height) | 50–698mm | CONFIRMED 2026-07-03 |
+| Door X range (left zone only) | 2–414mm | CONFIRMED 2026-07-03 — product_w zone only, NOT total_w |
+| Hinge line offset from corner | 25mm (corner_r + 5) | CONFIRMED 2026-07-03 |
+| Return flange depth | 23mm | CONFIRMED 2026-07-03 |
+| Exit flap dimensions | 300mm W x 150mm H | CONFIRMED 2026-07-03 — supersedes old flap_w=250/flap_h=100 |
+| Exit flap hinge | top, swings inward | CONFIRMED 2026-07-03 |
+| Exit flap max open angle | 55 deg | CONFIRMED 2026-07-03 |
+| Stopper rod | spans left-to-right interior panels, position derived from flap_open_deg | CONFIRMED 2026-07-03 — no switch yet, deferred |
+| Acrylic border overlap | 5mm | CONFIRMED 2026-07-03 |
+| Hinge hardware spec (barrel/boss/cavity) | NOT YET SPECIFIED | OPEN ITEM 2026-07-03 — concept only, needs hinge-supplier input before manufacturing |
 
 ## VM-01 Base — Tray Zone Frame
 

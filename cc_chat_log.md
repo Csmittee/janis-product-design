@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-03 | VM-01-front-door-redesign-v41 | DONE — Janis F6 required across all toggle combos, several judgment calls FLAGGED
+
+Files: VM-01-base-v41.scad (new, source v40), rules-dimensions.md(v12→v13), knowledge.map(v29→v30), cc_chat_log.md, prompts/archive/.
+TASK 1: `front_door()`+`flap_door()`+`spring_zone_panel()` deleted, replaced by `left_zone_door()` — full left-zone door (Z 50-698, X 2-414), concealed hinge on the flat left wall via a return flange (off the rounded corner), inset acrylic window (`render_mode=="full"` gated, matching old convention), top-hinged 300x150mm exit flap swinging inward to a static stopper rod. Door/flap rotation math independently derived via rotation-matrix algebra (not guessed) and cross-checked (stopper rod position matches the flap's own open-angle formula exactly). Full arithmetic self-check (Python) confirms all X/Z ranges non-overlapping and in-bounds — no OpenSCAD binary in this sandbox, not yet rendered.
+TASK 2: `door_open`/`flap_open`/`tray_out_pct` toggles added, verified to combine independently; `tray_out_pct` wired into `spring_tray()` only (not `tray_rack()`, which stays fixed).
+TASK 3: rules-dimensions.md — old Door Z range row marked SUPERSEDED (kept), new "Left-Zone Front Door" section added per spec verbatim.
+⚑ FLAGS (judgment calls, not silently made — full detail in knowledge.map v41 entry): door swings OUTWARD (direction unspecified by prompt for door, only flap); window's right margin mirrors left; acrylic/flap reuse door_t/flap_t; stopper rod reuses hinge_od; flap_w/flap_h/hinge_h deleted (fully dead, avoids dormant-global bug class) vs. flap_t/hinge_od kept (reused). `tray_zone_frame()`'s comment now stale (references deleted spring_zone_panel()) — module itself untouched, out of scope. v40's `show_shell_top` bug also remains unfixed, out of scope here too.
+
 ### 2026-07-03 | VM-01-shell-height-fix-v40 | DONE — Janis F5/F6 required, 1 new bug FLAGGED not fixed
 
 Files: VM-01-base-v40.scad (new, source v39), knowledge.map(v28→v29), cc_chat_log.md, prompts/archive/.

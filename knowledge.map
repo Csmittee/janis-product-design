@@ -1,8 +1,8 @@
 # knowledge.map
 # Janis Product Design — Master File Index
-# Version: v26 | 2026-07-03
-# Changes: create-SKILL_viewer_update — new .claude/SKILL_viewer_update.md (Claude Web only, viewer PROJECTS-entry update procedure) added to FILE LOCATIONS
-# Previous: v25 | 2026-07-03
+# Version: v27 | 2026-07-03
+# Changes: viewer-turntable-measure-and-filename-rule — viewer/janis-product-viewer.html bumped v1.2→v1.3 (Record Turntable + Measure features added); .claude/SKILL_viewer_update.md FILENAME CONVENTION rewritten (1.0→1.1, verbatim-filename rule, 2026-07-03 STL-corruption incident)
+# Previous: v26 | 2026-07-03
 # Maintained by: cc
 #
 # cc reads this at EVERY session start (step 2 after cc_rules.md)
@@ -202,7 +202,7 @@ See: cc_chat_log.md (updated by cc after every commit)
 
 | File | Description |
 |---|---|
-| viewer/janis-product-viewer.html | Browser 3D viewer — self-contained HTML. Three.js + OrbitControls + STLLoader. Gold/dark Satu theme. Loads STL from api.janishammer.com/models/. VM-01: 3-way cycle, Standard (open window, default) → Full Exterior → C2 Open Shell. PR-01: single-mode (`stl` key only, no toggle equivalent — no `show_*` render-mode/view toggle exists in the assembly, only per-component debug visibility toggles). Deploy to Satu public/ → api.janishammer.com/janis-product-viewer |
+| viewer/janis-product-viewer.html | Browser 3D viewer — self-contained HTML. Three.js + OrbitControls + STLLoader. Gold/dark Satu theme. Loads STL from api.janishammer.com/models/. VM-01: 3-way cycle, Standard (open window, default) → Full Exterior → C2 Open Shell. PR-01: single-mode (`stl` key only, no toggle equivalent — no `show_*` render-mode/view toggle exists in the assembly, only per-component debug visibility toggles). v1.3: adds [⏺ Record Turntable] (360° camera orbit, `renderer.domElement.captureStream()` + `MediaRecorder`, downloads a `.webm`) and [📏 Measure] (raycaster point-to-point mm distance, single active measurement, resets on project switch). Deploy to Satu public/ → api.janishammer.com/janis-product-viewer |
 
 **STL files (Satu public/models/):**
 | File | View |

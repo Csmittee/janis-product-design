@@ -1,8 +1,8 @@
 # knowledge.map
 # Janis Product Design — Master File Index
-# Version: v25 | 2026-07-03
-# Changes: PR-01-viewer-integration — PR-01 wired into viewer/janis-product-viewer.html (v1.1→v1.2) as a real PROJECTS entry (single-mode STL, PR-01-v31.stl), replacing the placeholder; VIEWER STL table below updated with the new row
-# Previous: v24 | 2026-07-03
+# Version: v26 | 2026-07-03
+# Changes: create-SKILL_viewer_update — new .claude/SKILL_viewer_update.md (Claude Web only, viewer PROJECTS-entry update procedure) added to FILE LOCATIONS
+# Previous: v25 | 2026-07-03
 # Maintained by: cc
 #
 # cc reads this at EVERY session start (step 2 after cc_rules.md)
@@ -60,6 +60,7 @@
 | .claude/SKILL_local_render.md | .claude/ | Claude Web only — mandatory local OpenSCAD render protocol before any cc geometry prompt. Installed 2026-07-01. cc does NOT read this file. |
 | .claude/SKILL_customizer_profile.md | .claude/ | Claude Web only — Customizer-first workflow for aesthetic/artistic geometry decisions. cc does NOT read this file. |
 | .claude/SKILL_option_b_unified_loft.md | .claude/ | Claude Web + cc — Option B unified loft spec. Read before pole_top seam work. Pushed by Janis 2026-07-01. |
+| .claude/SKILL_viewer_update.md | .claude/ | Claude Web only — viewer PROJECTS-entry update procedure (first-time wiring or version bump). Triggered by "update the viewer" / "new design released". cc does NOT read this file. Installed 2026-07-03. |
 | .claude/rules-waivers.md | .claude/ | Known/accepted issues registry — check FIRST before flagging something as new. Read by Claude Web AND cc. |
 | CURRENT_STATE.md | / (repo root) | Where-we-left-off resumption memo, one entry per product, includes open/unresolved items. Updates ONLY on Janis-confirmed pause. Read by Claude Web AND cc. |
 | pilates-reformer/PR-01-base/PR-01-assembly-v31.scad | pilates-reformer/PR-01-base/ | cc — top-level PR-01 assembly, versioned |

@@ -1,5 +1,5 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v13 — 2026-07-03
+# Version: v14 — 2026-07-05
 # All units: MM
 
 ---
@@ -54,7 +54,7 @@ Write flag in cc_chat_log and ask Claude Web to escalate to Janis.
 | motor_d | 60mm | Physical motor — supplier spec |
 | total_h | 700mm | Drives all zone stack calculations |
 | tray_h | 121mm | floor(5)+spring_od(66)+clearance(50) |
-| exit_door_h | 250mm | Customer UX — locked by Janis |
+| exit_door_h | 250mm | Customer UX — locked by Janis. NOTE 2026-07-05 (v42): no longer determines tray_0_z's position (decoupled — see Zone Stack below); still governs the shell's own exit-zone chute cutout width/height and drop_zone_visual(). Value itself unchanged. |
 | Motor position | BACK of tray | Firmware + physical design |
 | Spring direction | Front at Y=0 | Products fall forward |
 | Payment | Online only | No cash/coin ever |
@@ -63,7 +63,14 @@ Write flag in cc_chat_log and ask Claude Web to escalate to Janis.
 
 ---
 
-## Zone Stack — LOCKED
+## Zone Stack — SUPERSEDED 2026-07-05 (v42), see below
+
+### SUPERSEDED — DO NOT USE (kept for history only)
+This table was hand-authoritative and hardcoded independently in this file
+AND in `.claude/rules-codes.md` — no single source of truth. That's what
+let `tray_0_z` and the door's `window_z0`/`window_z1` drift apart in v41
+(window floated ~170mm above the actual trays). Superseded by the DATUM_*
+block below.
 
 | Zone | Z range | Height |
 |---|---|---|
@@ -72,6 +79,40 @@ Write flag in cc_chat_log and ask Claude Web to escalate to Janis.
 | Tray 0 | 300–421mm | 121mm |
 | Tray 1 | 421–542mm | 121mm |
 | Upper display | 542–700mm | 158mm |
+
+## Zone Stack — CONFIRMED 2026-07-05 (v42), DATUM-derived
+
+Janis-approved 2026-07-05 (VM-01-door-fixes-v42 chat thread): the tray
+zone's absolute position is not independently locked — the real
+constraint is that the door/flap stay close enough to the floor for a
+customer to reach in, which the flap's own datum chain already
+guarantees. This is real written approval for `tray_0_z` moving off the
+old fixed 300mm position; `exit_door_h`'s own 250mm value (OWNER-LOCKED
+above) is unchanged, it's simply decoupled from tray positioning now.
+
+Single source of truth — see `VM-01-base-v42.scad` DATUMS block and
+`.claude/rules-codes.md` "Datum Rules":
+
+| Datum | Z (world) | Formula |
+|---|---|---|
+| DATUM_FLOOR | 0mm | — |
+| DATUM_LEG_TOP | 50mm | leg_h |
+| DATUM_FLAP_TOP | 230mm | DATUM_LEG_TOP + 30 + exit_h |
+| DATUM_TRAY_BOT | 270mm | DATUM_FLAP_TOP + window_flap_gap |
+| DATUM_TRAY_TOP | 512mm | DATUM_TRAY_BOT + tray_zone_h (242mm, 2 trays × 121mm) |
+| DATUM_ROOFLINE | 700mm | total_h |
+
+Derived zone stack:
+
+| Zone | Z range | Height | Notes |
+|---|---|---|---|
+| Legs | 0–50mm | 50mm | Unchanged |
+| Door base (solid) | 50–80mm | 30mm | Floor clearance below the exit flap |
+| Exit flap opening | 80–230mm | 150mm | `exit_h` — replaces the old full-height "Exit door" concept (already superseded in practice by the v41 door redesign, not just this table) |
+| Door base (solid, above flap) | 230–270mm | 40mm | `window_flap_gap` |
+| Tray 0 | 270–391mm | 121mm | Moved from 300mm |
+| Tray 1 | 391–512mm | 121mm | Moved from 421mm |
+| Upper display | 512–700mm | 188mm | Was 158mm |
 
 ---
 
@@ -193,7 +234,7 @@ LOCKED — do not change without Claude Web instruction.
 |---|---|---|
 | Door Z range | 50–300mm, EXIT ZONE ONLY | v41 (VM-01-front-door-redesign-v41): `left_zone_door()` replaces `front_door()`+`flap_door()`+`spring_zone_panel()` entirely, full left-zone height — see "VM-01 Base — Left-Zone Front Door" below |
 
-## VM-01 Base — Left-Zone Front Door (CONFIRMED 2026-07-03, v41)
+## VM-01 Base — Left-Zone Front Door (CONFIRMED 2026-07-03, v41; geometry rebuilt + window resynced 2026-07-05, v42)
 
 Root cause of the exit-flap feature's prior failures (38 SCAD versions, 6+
 sessions): `front_door()` was a single uncut solid panel with no
@@ -206,18 +247,37 @@ full-height left-zone door: concealed hinge on the flat left-side wall
 (off the corner, via a return flange), an inset acrylic viewing window,
 and a top-hinged exit flap swinging inward onto a static stopper rod.
 
+v42 fix: the return flange + main panel were two disconnected cubes in
+v41 (20mm gap, X 5-25mm — a spec error, not a build error) — rebuilt as
+ONE `linear_extrude()` of a single bent L-shaped polygon, a true
+single-piece manifold solid. Also: the door leaf now has its own local
+origin (the hinge line, at floor level) per
+`.claude/SKILL_reference_point_first.md`, placed in world space with one
+`translate()`. The stopper rod moved to its own static module
+(`flap_stopper_rod()`) — it no longer swings with `door_open` (v41 bug:
+a stop that swings with the thing it's stopping isn't a stop).
+
 | Dimension | Value | Notes |
 |---|---|---|
-| Door Z range (full height) | 50–698mm | CONFIRMED 2026-07-03 |
+| Door Z range (full height) | 50–698mm | CONFIRMED 2026-07-03, unchanged by v42 |
 | Door X range (left zone only) | 2–414mm | CONFIRMED 2026-07-03 — product_w zone only, NOT total_w |
 | Hinge line offset from corner | 25mm (corner_r + 5) | CONFIRMED 2026-07-03 |
 | Return flange depth | 23mm | CONFIRMED 2026-07-03 |
+| Viewing window Z range | 270–512mm | CHANGED 2026-07-05 (v42) — was an independently-derived 270-683mm (413mm tall, floating ~170mm above the actual trays); now = DATUM_TRAY_BOT to DATUM_TRAY_TOP exactly, so the window/acrylic frame bounds the real 2-tray zone (242mm), not empty space above it |
 | Exit flap dimensions | 300mm W x 150mm H | CONFIRMED 2026-07-03 — supersedes old flap_w=250/flap_h=100 |
 | Exit flap hinge | top, swings inward | CONFIRMED 2026-07-03 |
 | Exit flap max open angle | 55 deg | CONFIRMED 2026-07-03 |
-| Stopper rod | spans left-to-right interior panels, position derived from flap_open_deg | CONFIRMED 2026-07-03 — no switch yet, deferred |
-| Acrylic border overlap | 5mm | CONFIRMED 2026-07-03 |
+| Stopper rod | spans left-to-right interior panels, position derived from flap_open_deg, FIXED to cabinet (own module, `flap_stopper_rod()`) | CONFIRMED 2026-07-03, fixed-vs-door_open behavior corrected 2026-07-05 (v42) — no switch yet, deferred |
+| Acrylic border overlap | 5mm | CONFIRMED 2026-07-03, formula unchanged by v42 (the v41 framing asymmetry was caused by the flange/panel gap above, not the acrylic formula) |
 | Hinge hardware spec (barrel/boss/cavity) | NOT YET SPECIFIED | OPEN ITEM 2026-07-03 — concept only, needs hinge-supplier input before manufacturing |
+
+⚑ FLAG (side effect, not a v42 task target): moving `tray_0_z` (and thus
+`tray_zone_top_z`) also moves `acrylic_bot_z` and the shell's right-
+compartment (dashboard/acrylic_display()) front-opening height, since both
+already derived from `tray_zone_top_z` before v42 — that module's own code
+is untouched, but its effective world position shifts ~30mm as a
+consequence of the shared datum. Flagged for Janis's awareness, not
+independently resolved.
 
 ## VM-01 Base — Tray Zone Frame
 

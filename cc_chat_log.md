@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-05 | VM-01-door-fixes-v42 | DONE — Janis F6 required, new datum/local-origin convention adopted project-wide
+
+Files: VM-01-base-v42.scad (new, source v41), rules-dimensions.md(v13→v14), rules-codes.md(1.11→1.12), cc_rules.md(v5→v6), knowledge.map(v30→v31), .claude/SKILL_reference_point_first.md (new), cc_chat_log.md, prompts/archive/.
+6-issue fix from Janis's real v41 QA: (1) `left_zone_door()` rebuilt as ONE `linear_extrude()` L-polygon (was 2 disconnected cubes, 20mm gap) with its own LOCAL ORIGIN (hinge line at floor) per the new skill — `door_open` is now a plain `rotate()`, no translate-dance. (2) new shell left-wall recess for the flange/hinge. (3) stopper rod split to its own static `flap_stopper_rod()` module, no longer swings with `door_open` — cross-checked algebraically against the flap's own open-position formula, exact match. (4) `show_door`/`show_acrylic`/`show_flap` isolation toggles added. (5) confirmed acrylic asymmetry was a side effect of #1, formula untouched. (6) DATUMS block — `tray_0_z`/window Z no longer independently derived; window shrinks from a floating 413mm to exactly the tray zone's 242mm. EXTRA fix (not in the prompt's literal list, required for #6 to work): `spring_tray()`/`tray_rack()` were re-deriving position locally instead of referencing `tray_0_z` — fixed.
+Janis-approved live in this chat: tray position isn't independently locked (floor clearance for customer access is the real constraint) — `rules-dimensions.md`/`rules-codes.md` zone-stack tables updated accordingly (old tables marked SUPERSEDED, not deleted).
+⚑ FLAG: `tray_zone_top_z` shift also ripples into the right-zone `acrylic_display()`/dashboard shell-opening (~30mm) — that module's code is untouched, only its effective position shifts via the shared datum; documented in rules-dimensions.md.
+No OpenSCAD binary in this sandbox — full arithmetic self-check (Python) instead, all cutout/window/flap coordinates verified non-overlapping and in-bounds. Janis F6 render + 2-manifold isolation test (SKILL_manifold_triage.md) required.
+
 ### 2026-07-03 | VM-01-front-door-redesign-v41 | DONE — Janis F6 required across all toggle combos, several judgment calls FLAGGED
 
 Files: VM-01-base-v41.scad (new, source v40), rules-dimensions.md(v12→v13), knowledge.map(v29→v30), cc_chat_log.md, prompts/archive/.

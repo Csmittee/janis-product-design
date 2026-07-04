@@ -1,7 +1,11 @@
 # Janis Product Design — OpenSCAD Coding Rules
-> Version 1.11 — 2026-07-02
-> Changes: Amended Rule M-4 (Debug Toggle Rule) — toggle block must sit immediately before the final assembly render call at the bottom of the file, not buried in PARAMETERS, per PR-01-fix-ghost-leak-toggle-relocate-v27.
-> Previous: 1.10 — 2026-07-01
+> Version 1.12 — 2026-07-05
+> Changes: Added "Datum Rules" section (VM-01-door-fixes-v42) — shared reference
+> points must be named DATUM_* constants, never re-derived independently per
+> module. Reconciled the "World coordinates, not local" rule below with the new
+> local-origin-per-part convention (see .claude/SKILL_reference_point_first.md).
+> Zone stack table superseded — see "Datum Rules" for the current version.
+> Previous: 1.11 — 2026-07-02
 
 All units: MM. All rules below are mandatory for every SCAD file in this project.
 
@@ -13,6 +17,10 @@ T-junction or a transition between mismatched cross-section shapes.
 
 **New module geometry design or joint/seam fix:** read
 `.claude/SKILL_local_render.md` before writing any cc prompt.
+
+**New part/module geometry — reference point first:** read
+`.claude/SKILL_reference_point_first.md` before dimensioning any new part.
+Ask "what is this actually measured FROM" before writing any numbers down.
 
 ---
 
@@ -158,13 +166,21 @@ assembly last.
 
 ## Z-Stack and Positioning Rules
 
-**Rule: World coordinates, not local, in all module translates.**
-Modules that represent fixed machine geometry (shell, doors, trays) must use
-world Z coordinates. Use named variables (`tray_0_z`, `leg_h`) — never
-hardcode the Z value inside a translate.
+**Rule: Named DATUM_* references, not hardcoded numbers or independent
+re-derivation, for any shared position.** (Amended v42 — see "Datum Rules"
+below for the full rule and rationale.) A module's OWN internal geometry
+gets its own clean local origin (0,0,0), per `.claude/SKILL_reference_point_first.md`
+— build the part relative to that local origin, then place it with ONE
+`translate()` to a named world-space `DATUM_*`. This is not in tension with
+"local vs world Z" below: the local origin itself must be tied to exactly
+one datum, never to a private copy of another module's formula.
 
-**Rule: The zone stack is the source of truth.**
-All vertical positioning derives from the locked zone stack in rules-dimensions.md:
+### SUPERSEDED — DO NOT USE (kept for history only)
+The zone-stack table below was treated as hand-authoritative and hardcoded
+in two places (this file and rules-dimensions.md) with no single source of
+truth — exactly the bug class that caused v41's tray/window desync
+(`tray_0_z` and the door's `window_z0/z1` drifted apart silently). Superseded
+by the DATUM_* block in "Datum Rules" below.
 ```
 Legs:         Z   0–50mm
 Exit door:    Z  50–300mm
@@ -172,8 +188,6 @@ Tray 0:       Z 300–421mm
 Tray 1:       Z 421–542mm
 Upper display: Z 542–700mm
 ```
-Any module that diverges from this stack is wrong regardless of how it looks
-in preview. QA against rules-dimensions.md, not the render.
 
 **Rule: Spring direction is locked.**
 Motor at BACK of tray (Y = tray_d - motor_d). Spring front end at Y=0
@@ -186,6 +200,45 @@ be converted: local_z = world_z - assembly_offset.
 Example: outer_shell() is called with translate([0,0,leg_h]).
 Inside outer_shell(), a cutout at world Z=300 must be written as Z=300-leg_h=250.
 Never use world Z values directly inside an offset-assembled module.
+
+---
+
+## Datum Rules
+
+**Rule: Shared reference points must be named datums, referenced directly
+— never re-derived per module.**
+If two or more modules need the same Z (or X/Y) reference point, it must
+be defined ONCE as a named DATUM_* constant, computed only from raw
+dimensions (never from another derived variable in a separate chain).
+Every module needing that reference point must use the datum directly.
+This was violated in v41: `tray_0_z` and the door's `window_z0`/`window_z1`
+were each derived independently, drifted apart when the flap height
+changed, and produced a visible mismatch between the window/acrylic frame
+and the actual tray rack. Fixed in v42 via an explicit DATUMS block — see
+VM-01-base-v42.scad header.
+
+**Current VM-01 Z datums (v42, supersedes the zone-stack table above):**
+```
+DATUM_FLOOR      = 0
+DATUM_LEG_TOP    = leg_h                          // 50
+DATUM_FLAP_TOP   = DATUM_LEG_TOP + 30 + exit_h    // 230 -- exit flap hinge line
+DATUM_TRAY_BOT   = DATUM_FLAP_TOP + window_flap_gap // 270 -- tray zone starts here
+DATUM_TRAY_TOP   = DATUM_TRAY_BOT + tray_zone_h   // 512 -- 242mm of trays
+DATUM_ROOFLINE   = total_h                        // 700
+```
+Janis-approved 2026-07-05 (VM-01-door-fixes-v42 chat thread): the tray
+zone's absolute position is not independently locked — the real
+constraint is that the door/flap stay close enough to the floor for a
+customer to reach in, which the flap's own datum chain already guarantees.
+Supersedes the old fixed "Tray 0: 300-421mm" position.
+
+**Rule: Reference point first — read `.claude/SKILL_reference_point_first.md`
+before designing any new part's geometry.** Each part gets one clean local
+origin, tied to exactly one DATUM_* via a single `translate()`. If a part
+contains sub-parts (e.g. a tray containing springs, a door containing an
+acrylic pane and a flap), the sub-parts are dimensioned relative to the
+PARENT part's local origin, not the world datum directly — move the parent,
+the children move with it.
 
 ---
 

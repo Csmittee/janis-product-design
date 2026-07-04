@@ -1,7 +1,10 @@
 # Claude Code (cc) Rules
-# Version: v5 — 2026-07-01
-# Changes: Added pointer to .claude/SKILL_option_b_unified_loft.md — read before touching pole_top seam/joint geometry (PR-01-multifile-split-v25).
-# Previous: v4 — 2026-06-30
+# Version: v6 — 2026-07-05
+# Changes: Added pointer to .claude/SKILL_reference_point_first.md — read before
+# designing any new part/module's geometry (VM-01-door-fixes-v42, tray/window
+# desync bug). Every module needs one clean local origin, tied to a world DATUM_*
+# via a single translate() — never a chain of independently-derived values.
+# Previous: v5 — 2026-07-01
 # Read this at the START of every cc session — step 1, always.
 
 ---
@@ -43,6 +46,10 @@ before reporting missing. Janis always pushes to main, not the feature branch.
 - Comment every section
 - hull() for rounded shapes
 - difference() for cutouts
+- Shared reference points (any Z/X/Y position two or more modules need) are
+  named DATUM_* constants, computed once from raw dimensions — never
+  re-derived independently per module. See .claude/SKILL_reference_point_first.md
+  and .claude/rules-codes.md "Datum Rules".
 
 ---
 
@@ -84,6 +91,10 @@ before reporting missing. Janis always pushes to main, not the feature branch.
 - .claude/SKILL_option_b_unified_loft.md — read in full BEFORE touching
   pole_top_body(), pole_top_housing(), pole_top_neck(), or any pole_top
   seam/joint geometry. Do not reconstruct Option B architecture from memory.
+- .claude/SKILL_reference_point_first.md — read in full BEFORE designing any
+  new part/module's geometry. Each module gets its own local origin (0,0,0)
+  tied to a named DATUM_* via one translate() — never scattered world-Z
+  formulas re-derived independently per module.
 
 ---
 

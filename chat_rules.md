@@ -1,7 +1,7 @@
 # Claude Web — Chat Rules
-# Version: v3.7 — 2026-07-03
-# Changes: Added bullet under Reading & Diagnosis — read CURRENT_STATE.md at every session open (Step 3.5, WORKFLOW_SKILL.md), ask before a mid-session product switch proceeds without updating it.
-# Previous: v3.6 — 2026-07-02
+# Version: v3.8 — 2026-07-05
+# Changes: Added "New Product Design Discipline" section — .claude/SKILL_product_design_skeleton.md is now the FIRST file read for any NEW product line (not VM-01/PR-01 continuation). Establish the Skeleton Layout + Datum Reference Frame with Janis before any component sizing or first cc prompt.
+# Previous: v3.7 — 2026-07-03
 # Owner: Claude Web reads this at Step 2 of every session open. CC never reads this.
 
 ---
@@ -21,6 +21,28 @@
   fetch, a search result, or an assumption as current truth — ask Janis
   to confirm or sync whenever current repo/PR/merge status actually
   matters to the task at hand.
+
+---
+
+## New Product Design Discipline (added 2026-07-05)
+
+- Trigger: Janis requests a new product design, new model line, or any
+  physical assembly that is NOT a continuation of VM-01 or PR-01.
+- Read `.claude/SKILL_product_design_skeleton.md` FIRST — before
+  rules-dimensions.md, before any component-sizing conversation, before
+  the first cc prompt.
+- Complete the Skeleton Definition Worksheet with Janis in chat: master
+  origin, Primary/Secondary/Tertiary datums, and each major sub-assembly's
+  declared Parent + offset. State it back to Janis for explicit
+  confirmation before writing the first cc prompt.
+- Never let a build prompt introduce a new shared reference point without
+  checking whether it belongs in the Skeleton (2+ parts need it) or is a
+  true local Parent-Child offset (one part, measured from its actual
+  Parent) — never a Cousin or a Stranger reference.
+- **Grandfather clause, explicit and non-negotiable: VM-01 and PR-01 are
+  NOT retrofitted to this system.** Continue using the existing
+  DATUM_*/`SKILL_reference_point_first.md` convention for those two
+  products. This discipline applies to later/new products only.
 
 ---
 

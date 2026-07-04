@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-05 | new-product-design-skeleton-skill | DONE — governance only, zero .scad files touched, direct Janis chat request (no /prompts/ file)
+
+Files: .claude/SKILL_product_design_skeleton.md (new), .claude/SKILL_reference_point_first.md (marked superseded, kept), cc_rules.md(v6→v7), rules-codes.md(1.12→1.13), rules-dimensions.md(v14→v15), chat_rules.md(v3.7→v3.8), WORKFLOW_SKILL.md(3.8→3.9), knowledge.map(v31→v32), cc_chat_log.md.
+Janis asked for a permanent Top-Down Skeleton/Datum Reference Frame design skill (Primary/Secondary/Tertiary datums, Parent-Child coordinate offsets, no Cousin/Stranger references — "football field" rule), extending the draft SKILL_reference_point_first.md from this same session. New skill is the FIRST file read for any NEW product line, includes a Claude Web "Skeleton Definition Worksheet" procedure (complete with Janis BEFORE any component sizing) and a cc procedure (SKELETON block + per-module Parent declaration comments).
+Wired into every governance file: cc_rules.md session-start trigger, rules-codes.md "Datum Rules" pointer, chat_rules.md new section, WORKFLOW_SKILL.md new TRIGGER row + FILE STRUCTURE, knowledge.map FILE LOCATIONS + new "GOVERNANCE" section, rules-dimensions.md COORDINATE SYSTEM cross-reference.
+**Grandfather clause, explicit per Janis's direct instruction: VM-01 and PR-01 are NOT retrofitted** — both continue under the existing DATUM_*/SKILL_reference_point_first.md convention. Applies to new/later products only.
+
 ### 2026-07-05 | VM-01-door-fixes-v42 | DONE — Janis F6 required, new datum/local-origin convention adopted project-wide
 
 Files: VM-01-base-v42.scad (new, source v41), rules-dimensions.md(v13→v14), rules-codes.md(1.11→1.12), cc_rules.md(v5→v6), knowledge.map(v30→v31), .claude/SKILL_reference_point_first.md (new), cc_chat_log.md, prompts/archive/.

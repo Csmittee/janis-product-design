@@ -47,11 +47,21 @@ confirmed against the live file by Claude Web (not assumptions):
    entirely, which can look like "it stayed behind." Re-test with
    `render_mode="full"` once Task 2 below lands.
 4. Exit flap — confirmed working, no change needed.
-5. **Acrylic/window framing looks asymmetric** — traced to the same root
-   cause as #1: the window/acrylic X-position is calculated relative to
-   the door's intended left edge (`door_left_x`), but the panel's actual
-   (buggy) left edge sits 20mm further right, making the left frame
-   border look too thin relative to the right. Fixing #1 resolves this.
+5. **Acrylic/window framing looks asymmetric — confirmed NOT a separate
+   acrylic-sizing bug, verified numerically in sandbox.** Window area =
+   138,768mm² (336×413), acrylic area = 146,358mm² (346×423) — a uniform
+   +5mm border on every side, exactly per spec. The acrylic formula itself
+   is correct; do not change it. The visible mismatch is entirely a side
+   effect of issue #1: frame border left of the window currently measures
+   only 15mm (`window_x0=40` minus the panel's buggy actual edge at
+   X=25) versus 38mm on the right — the uniform 5mm acrylic overlap eats
+   a third of the already-too-thin left margin, reading as "acrylic
+   bigger than the frame" when it's actually "frame too thin on one
+   side." Fixing #1 alone resolves this — once the panel's true left edge
+   moves to X≈5, left frame becomes ~35mm, roughly symmetric with the
+   right (38mm). Do NOT touch `acrylic_border`, `window_margin_side`, or
+   any acrylic dimension in this prompt — only the panel geometry from
+   Task 1.
 6. **2-manifold warning returned.** Primary suspect: the flange/panel gap
    itself (a gap is non-manifold by definition) plus the hinge-seam mark
    cubes, which currently only touch the flange along a partial face
@@ -140,6 +150,84 @@ not replacing, the existing `render_mode=="full"` gate — both conditions
 must be true to show it). Wire `show_flap` around the flap geometry
 specifically, independent of the rest of the door.
 
+### TASK 5a — Establish named Z-datums (prevents this class of bug recurring)
+
+Root structural issue, not just the tray_0_z symptom fixed in Task 5b below:
+this file has no single source of truth for shared reference heights. Values
+like `window_z0`, `tray_0_z`, `flap_top_z` are each derived from their own
+independent formula chain (e.g. `tray_0_z = leg_h + exit_door_h` vs
+`flap_top_z = exit_bot_z + exit_h` vs `door_bot_z = leg_h` — three separate
+chains that can drift apart silently, which is exactly what happened here).
+
+Add ONE block near the top of the file, clearly marked, defining the
+machine's key Z-reference planes as named datums — computed once, from
+raw dimensions only (never from each other in a multi-step chain):
+
+```
+// ─────────────────────────────
+// DATUMS — single source of truth for shared Z-reference planes.
+// Every module below must reference ONE of these directly for any
+// position shared with another module. Never derive a new "local"
+// version of one of these values inside a module — reference the
+// datum itself. If a datum's definition changes, everything that
+// references it updates automatically; nothing should need editing
+// in more than one place.
+// ─────────────────────────────
+DATUM_FLOOR      = 0;
+DATUM_LEG_TOP    = leg_h;                        // 50 -- body sits here
+DATUM_FLAP_TOP   = DATUM_LEG_TOP + 30 + exit_h;  // hinge line of the exit flap
+DATUM_TRAY_BOT   = DATUM_FLAP_TOP + window_flap_gap; // tray zone starts here
+DATUM_TRAY_TOP   = DATUM_TRAY_BOT + tray_zone_h; // 242mm of trays, from real tray_h*tray_count
+DATUM_ROOFLINE   = total_h;                      // 700 -- absolute top
+```
+
+Then refactor every module that currently derives a shared reference point
+independently to use these datums instead:
+- `tray_0_z` → `DATUM_TRAY_BOT` (this IS Task 5b, done via the datum, not
+  a one-off patch)
+- `flap_top_z` (inside `left_zone_door()`) → `DATUM_FLAP_TOP`
+- `window_z0` → `DATUM_TRAY_BOT` (not a separately-derived value)
+- `window_z1` → `DATUM_TRAY_TOP` (window now bounds the actual tray rack,
+  not an independently-guessed size)
+- `door_bot_z` → `DATUM_LEG_TOP`
+
+Verify no module still computes its own local copy of any of these five
+values via a separate formula — every one of them must reference the
+datum directly.
+
+### TASK 5b — Tray/window sync (now implemented via Task 5a's datums)
+
+With Task 5a's datums in place, `tray_0_z`, `window_z0`, and `window_z1`
+now share the same source of truth automatically — this replaces the
+need for a separate one-off numeric patch. Confirm `tray_zone_h` (242mm,
+2 trays × 121mm) still fits cleanly between `DATUM_TRAY_BOT` and
+`DATUM_TRAY_TOP` with no overlap or gap. Flag to Janis in cc_chat_log if
+tray count/spacing needs to change to fit — do not silently alter it.
+
+After this, the window/acrylic frame should visibly bound the actual
+tray rack exactly — not float around it or crop it.
+
+### TASK 6 — Add datum-referencing rule to rules-codes.md
+
+Append to rules-codes.md, under a "Datum Rules" section (new section if
+none exists):
+
+```
+**Rule: Shared reference points must be named datums, referenced directly
+— never re-derived per module.**
+If two or more modules need the same Z (or X/Y) reference point, it must
+be defined ONCE as a named DATUM_* constant, computed only from raw
+dimensions (never from another derived variable in a separate chain).
+Every module needing that reference point must use the datum directly.
+This was violated in v41: tray_0_z and the door's window_z0/z1 were each
+derived independently, drifted apart when the flap height changed, and
+produced a visible mismatch between the window/acrylic frame and the
+actual tray rack. Fixed in v42 via an explicit DATUMS block — see
+VM-01-base-v42.scad header.
+```
+
+Bump rules-codes.md version, date 2026-07-05.
+
 ---
 
 ## 5. DO NOT TOUCH
@@ -165,6 +253,16 @@ specifically, independent of the rest of the door.
       pane visibly rotates WITH the door
 - [ ] `show_acrylic=false` screenshot: acrylic hidden, door frame/window
       opening still visible
+- [ ] Frame border left of window ≈35mm, right ≈38mm (roughly symmetric)
+      — confirms issue #5 (acrylic looking oversized) is resolved by
+      Task 1 alone; no change to acrylic dimensions themselves
+- [ ] Tray rack visibly sits within the window/acrylic frame bounds after
+      Task 5's resync — not floating in empty space above/below it, and
+      not cropped by the window edges
+- [ ] DATUMS block exists near the top of the file, and `tray_0_z`,
+      `flap_top_z`, `window_z0`, `window_z1`, `door_bot_z` each reference
+      a named datum directly — confirm none of them still compute their
+      own independent formula chain
 - [ ] `show_flap=false` screenshot: flap hidden independent of door
 - [ ] 2-manifold warning gone — confirm via isolation method in
       SKILL_manifold_triage.md, report which specific change (if more

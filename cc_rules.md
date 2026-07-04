@@ -1,10 +1,13 @@
 # Claude Code (cc) Rules
-# Version: v6 — 2026-07-05
-# Changes: Added pointer to .claude/SKILL_reference_point_first.md — read before
-# designing any new part/module's geometry (VM-01-door-fixes-v42, tray/window
-# desync bug). Every module needs one clean local origin, tied to a world DATUM_*
-# via a single translate() — never a chain of independently-derived values.
-# Previous: v5 — 2026-07-01
+# Version: v7 — 2026-07-05
+# Changes: Added pointer to .claude/SKILL_product_design_skeleton.md — the
+# FIRST file read for any NEW product line (not VM-01/PR-01 continuation).
+# Formalizes the DATUM_*/local-origin habit into a full Skeleton Layout +
+# Datum Reference Frame + Parent-Child design discipline, established BEFORE
+# any component sizing. VM-01/PR-01 explicitly grandfathered — not retrofitted.
+# .claude/SKILL_reference_point_first.md superseded by it but still the
+# relevant reference for ongoing VM-01/PR-01 work specifically.
+# Previous: v6 — 2026-07-05
 # Read this at the START of every cc session — step 1, always.
 
 ---
@@ -35,6 +38,15 @@
 **If prompt file not found:** do git fetch --all + git merge origin/main
 before reporting missing. Janis always pushes to main, not the feature branch.
 
+**If the task is a NEW product line** (not a VM-01 or PR-01 continuation —
+check whether the product already has committed `.scad` versions in its
+own folder): read `.claude/SKILL_product_design_skeleton.md` FIRST, before
+step 8 below, before rules-dimensions.md, before writing a single
+parameter. Confirm the Skeleton Layout + Datum Reference Frame was
+established with Janis (per that file's Claude Web procedure) before
+proceeding — if the prompt doesn't show evidence of this, flag it in
+cc_chat_log rather than silently inventing datums.
+
 ---
 
 ## Coding Rules
@@ -50,6 +62,9 @@ before reporting missing. Janis always pushes to main, not the feature branch.
   named DATUM_* constants, computed once from raw dimensions — never
   re-derived independently per module. See .claude/SKILL_reference_point_first.md
   and .claude/rules-codes.md "Datum Rules".
+- New product lines: the datum block is a SKELETON, established before any
+  part is dimensioned, and every module carries an explicit Parent
+  declaration comment. See .claude/SKILL_product_design_skeleton.md.
 
 ---
 
@@ -92,9 +107,15 @@ before reporting missing. Janis always pushes to main, not the feature branch.
   pole_top_body(), pole_top_housing(), pole_top_neck(), or any pole_top
   seam/joint geometry. Do not reconstruct Option B architecture from memory.
 - .claude/SKILL_reference_point_first.md — read in full BEFORE designing any
-  new part/module's geometry. Each module gets its own local origin (0,0,0)
-  tied to a named DATUM_* via one translate() — never scattered world-Z
-  formulas re-derived independently per module.
+  new part/module's geometry within VM-01 or PR-01 specifically. Each module
+  gets its own local origin (0,0,0) tied to a named DATUM_* via one
+  translate() — never scattered world-Z formulas re-derived independently
+  per module.
+- .claude/SKILL_product_design_skeleton.md — read FIRST, before any other
+  file, for any product line that is NOT VM-01 or PR-01. Establishes the
+  Skeleton Layout + Datum Reference Frame with Janis before a single
+  component is sized. VM-01/PR-01 are explicitly grandfathered out of this
+  file's scope.
 
 ---
 

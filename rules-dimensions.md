@@ -1,5 +1,5 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v14 — 2026-07-05
+# Version: v15 — 2026-07-05
 # All units: MM
 
 ---
@@ -38,6 +38,15 @@ Flat-face / D-profile orientation rule:
 QA CHECK — Claude Web reads XYZ gizmo from every OpenSCAD screenshot
 before making any orientation diagnosis. Never assume axis mapping.
 Always confirm from the gizmo visible in the screenshot.
+
+**NEW PRODUCT LINES (2026-07-05):** this global coordinate convention is
+still the outer World frame, but individual parts must NOT dimension
+themselves directly against it. See
+`.claude/SKILL_product_design_skeleton.md` (read FIRST for any new
+product) — every part's position is Parent's origin + offset, where the
+Parent is either a named Skeleton datum or another part's own local
+origin, never a raw world coordinate re-derived per part. VM-01 and PR-01
+are explicitly grandfathered out of this requirement.
 
 ---
 

@@ -1,5 +1,12 @@
 # SKILL — Reference Point First (Local Datum Origin)
 # Added: 2026-07-05, after VM-01 door redesign (v41→v42) tray/window desync bug
+#
+# SUPERSEDED 2026-07-05 — kept for history only. Formalized and extended
+# into the full Skeleton / Datum Reference Frame / Parent-Child system by
+# .claude/SKILL_product_design_skeleton.md, which is now the FIRST skill
+# read for any new product design. That file applies to NEW products only
+# — VM-01 and PR-01 remain governed by this file's simpler habit where
+# relevant (e.g. VM-01-base-v42's left_zone_door(), built under this file).
 
 ## What this fixes
 

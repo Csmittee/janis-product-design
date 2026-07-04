@@ -1,11 +1,12 @@
 # Janis Product Design — OpenSCAD Coding Rules
-> Version 1.12 — 2026-07-05
-> Changes: Added "Datum Rules" section (VM-01-door-fixes-v42) — shared reference
-> points must be named DATUM_* constants, never re-derived independently per
-> module. Reconciled the "World coordinates, not local" rule below with the new
-> local-origin-per-part convention (see .claude/SKILL_reference_point_first.md).
-> Zone stack table superseded — see "Datum Rules" for the current version.
-> Previous: 1.11 — 2026-07-02
+> Version 1.13 — 2026-07-05
+> Changes: Added pointer to .claude/SKILL_product_design_skeleton.md — the
+> FIRST file read for any NEW product line (not VM-01/PR-01). Formalizes
+> "Datum Rules" below into a full Skeleton/DRF/Parent-Child design
+> discipline, applied BEFORE any component sizing, not retrofitted after.
+> .claude/SKILL_reference_point_first.md superseded by it (kept for history,
+> still the relevant reference for VM-01/PR-01 work specifically).
+> Previous: 1.12 — 2026-07-05
 
 All units: MM. All rules below are mandatory for every SCAD file in this project.
 
@@ -18,9 +19,17 @@ T-junction or a transition between mismatched cross-section shapes.
 **New module geometry design or joint/seam fix:** read
 `.claude/SKILL_local_render.md` before writing any cc prompt.
 
-**New part/module geometry — reference point first:** read
-`.claude/SKILL_reference_point_first.md` before dimensioning any new part.
-Ask "what is this actually measured FROM" before writing any numbers down.
+**NEW PRODUCT LINE (not VM-01/PR-01 continuation) — read FIRST:**
+`.claude/SKILL_product_design_skeleton.md`, before rules-dimensions.md,
+before any component sizing, before any prompt. Establishes the Skeleton
+Layout + Datum Reference Frame (Primary/Secondary/Tertiary) with Janis
+before a single dimension is written down. VM-01 and PR-01 are explicitly
+grandfathered — do not retrofit either to this system.
+
+**Existing VM-01/PR-01 work — reference point first:** read
+`.claude/SKILL_reference_point_first.md` before dimensioning any new part
+within those two products. Ask "what is this actually measured FROM"
+before writing any numbers down.
 
 ---
 
@@ -239,6 +248,15 @@ contains sub-parts (e.g. a tray containing springs, a door containing an
 acrylic pane and a flap), the sub-parts are dimensioned relative to the
 PARENT part's local origin, not the world datum directly — move the parent,
 the children move with it.
+
+**For NEW products (not VM-01/PR-01): read
+`.claude/SKILL_product_design_skeleton.md` FIRST, before this section
+applies at the module level.** That skill formalizes everything above into
+a full Skeleton Layout + Datum Reference Frame (Primary/Secondary/Tertiary)
+discipline, established with Janis BEFORE any component is sized — not
+retrofitted after the fact the way VM-01's DATUMS block was. Every module
+in a new product must carry an explicit Parent declaration comment (a
+DATUM_* or another part's local origin) — never a Cousin or a Stranger.
 
 ---
 

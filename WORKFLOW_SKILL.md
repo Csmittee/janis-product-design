@@ -1,8 +1,8 @@
 # WORKFLOW_SKILL.md
 # Janis Product Design — How We Work
-# Version: 3.8 — 2026-07-03
-# Changes: Added TRIGGER → ACTION → VALIDATOR row for "update the viewer" (points to new .claude/SKILL_viewer_update.md); added that file to FILE STRUCTURE — REPO's .claude/ block.
-# Previous: v3.7 — 2026-07-03
+# Version: 3.9 — 2026-07-05
+# Changes: Added TRIGGER → ACTION → VALIDATOR row for new product design requests (points to new .claude/SKILL_product_design_skeleton.md — FIRST file read for any product line that is not VM-01/PR-01); added that file to FILE STRUCTURE — REPO's .claude/ block.
+# Previous: v3.8 — 2026-07-03
 
 ---
 
@@ -175,6 +175,7 @@ Janis describes goal
 | pole_top seam/T-junction work resumes (Option B) | Read .claude/SKILL_option_b_unified_loft.md in full before any prompt — STATUS block must be updated first | Claude Web states file was read + confirms STATUS block matches current repo state |
 | Aesthetic/artistic geometry ambiguous in words (curve character, stylistic proportion) | Claude Web builds OpenSCAD Customizer-enabled prototype (.claude/SKILL_customizer_profile.md), Janis tunes sliders live, reports final values | Janis explicitly confirms final parameter values in chat before any cc prompt is written |
 | Janis says "update the viewer" / "new design released" | Read `.claude/SKILL_viewer_update.md`, follow its procedure before writing any cc prompt | Claude Web states which project/version this targets before drafting the prompt |
+| New product design requested (not VM-01/PR-01 continuation) | Read `.claude/SKILL_product_design_skeleton.md` FIRST; establish Skeleton Layout + Datum Reference Frame (Primary/Secondary/Tertiary) with Janis via the Skeleton Definition Worksheet BEFORE any component sizing or the first cc prompt | Claude Web states the completed worksheet (master origin + 3 datums + sub-assembly Parents) back to Janis for explicit confirmation before writing the first cc prompt |
 
 ---
 
@@ -371,7 +372,9 @@ janis-product-design/
 │   ├── rules-vm.md                      ← cc — VM-specific rules
 │   ├── rules-waivers.md                 ← known/accepted issues registry — check FIRST before flagging as new
 │   ├── SKILL_problem_solving_kt.md      ← Claude Web + cc — R-111 trigger
-│   └── SKILL_viewer_update.md           ← Claude Web only — viewer PROJECTS-entry update procedure
+│   ├── SKILL_viewer_update.md           ← Claude Web only — viewer PROJECTS-entry update procedure
+│   ├── SKILL_reference_point_first.md   ← Claude Web + cc — SUPERSEDED, kept for VM-01/PR-01 work
+│   └── SKILL_product_design_skeleton.md ← Claude Web + cc — FIRST file read for any NEW product line (not VM-01/PR-01)
 ├── prompts/                             ← active cc prompts
 │   └── archive/                         ← completed prompts ✅ COMPLETE
 ├── vending-machine/VM-01-base/          ← VM-01 .scad versions

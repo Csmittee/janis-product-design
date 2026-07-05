@@ -1,5 +1,11 @@
 # Claude Code (cc) Rules
-# Version: v7 — 2026-07-05
+# Version: v8 — 2026-07-05
+# Changes: Added Toggle-Completeness Rule (every ASSEMBLY-called module
+# needs a show_* toggle or a named safety-critical exception in that
+# product's PART_MANIFEST.md) — root cause fix for tray_zone_frame() going
+# ~10 versions with zero toggle and no one noticing its wrong reference
+# point. See VM-01-governance-batch-post-v44.
+# Previous: v7 — 2026-07-05
 # Changes: Added pointer to .claude/SKILL_product_design_skeleton.md — the
 # FIRST file read for any NEW product line (not VM-01/PR-01 continuation).
 # Formalizes the DATUM_*/local-origin habit into a full Skeleton Layout +
@@ -65,6 +71,27 @@ cc_chat_log rather than silently inventing datums.
 - New product lines: the datum block is a SKELETON, established before any
   part is dimensioned, and every module carries an explicit Parent
   declaration comment. See .claude/SKILL_product_design_skeleton.md.
+
+## Toggle-Completeness Rule (added 2026-07-05)
+
+Every module called directly in a product's ASSEMBLY section MUST have
+its own `show_*` isolation toggle, with ONE exception: modules that are
+safety-critical and must never be hidden (e.g. `drop_zone_guards()`) may
+be marked "(none — always on, safety-critical)" in that product's
+PART_MANIFEST.md instead — this exception must be explicit and named in
+the manifest, never silent.
+
+Before every commit that adds a new ASSEMBLY-called module: grep the
+ASSEMBLY block, confirm every call is either gated by a show_* toggle or
+explicitly listed as a safety-critical exception in PART_MANIFEST.md.
+Report this check's result in cc_chat_log ("N modules in ASSEMBLY, N
+toggled, 0 untoggled-and-unexplained" or flag the gap).
+
+Root cause this prevents: tray_zone_frame() had zero toggle for ~10
+versions, made it impossible to isolate/inspect independently, and it
+sat wrong-referenced against the shell's exterior corner the entire time
+without anyone noticing. See PART_MANIFEST.md for the plain-language part
+identity this rule pairs with.
 
 ---
 

@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-05 | VM-01-governance-batch-post-v44 | DONE — toggle-wiring + docs only, zero geometry change (diffed)
+
+Files: VM-01-base-v45.scad (new, source v44, toggle-only), vending-machine/VM-01-base/PART_MANIFEST.md (new), pilates-reformer/PR-01-base/PART_MANIFEST.md (new), cc_rules.md(v7→v8), knowledge.map(v34→v35), cc_chat_log.md, prompts/archive/.
+TASK 1: Toggle-Completeness Rule added to cc_rules.md verbatim. TASK 3: v44 shipped tray_zone_frame()'s full H-frame rebuild with ZERO isolation toggle — confirmed via grep, this was the exact gap that let it sit wrong-referenced for ~10 versions unnoticed. Added `show_frame` (default true), gating the call in ASSEMBLY. Diffed v44→v45: only the toggle declaration + gated call line + header comments changed, zero geometry/dimension lines touched.
+Toggle-completeness audit (VM-01, 13 ASSEMBLY-called modules): 4/13 compliant (show_door/show_frame/show_sensor + drop_zone_guards()'s named safety-critical exception). 9 flagged GAPS, NOT fixed (out of this prompt's explicit toggle-wiring-only scope, not silently expanding): legs(), outer_shell_debug() (partial panel toggles only), compartment_divider(), tray_rack(), spring_tray(), acrylic_display() (render_mode-gated not show_*), flap_stopper_rod(), dashboard(), rear_service_door() — full detail + candidate reasoning in PART_MANIFEST.md.
+PR-01 PART_MANIFEST.md: all 10 real sub-parts confirmed already toggle-gated (0 gaps) — module names/toggles read from the real committed files (pole_top.scad/leg_socket.scad/PR-01-assembly-v31.scad), not guessed.
+PR-01-base/PART_MANIFEST.md and VM-01/PART_MANIFEST.md both wired into knowledge.map FILE LOCATIONS. WORKFLOW_SKILL.md/chat_rules.md untouched per DO NOT TOUCH (Janis updating directly). rules-dimensions.md untouched (unrelated to this prompt).
+
 ### 2026-07-05 | VM-01-frame-window-rebuild-v44 | DONE — 6 real-render QA findings fixed, angle-sweep re-test ALL CLEAR
 
 Files: VM-01-base-v44.scad (new, source v43), rules-dimensions.md(v16→v17), knowledge.map(v33→v34), cc_chat_log.md, prompts/archive/.

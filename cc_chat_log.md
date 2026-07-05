@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-05 | VM-01-partition-depth-door-collision-fix | DONE — v47, 2 confirmed problems fixed, both re-verified clear
+
+Files: VM-01-base-v47.scad (new, source v46), rules-dimensions.md(v18→v19), knowledge.map(v36→v37), cc_chat_log.md, prompts/archive/.
+PROBLEM 1 (partition overlapped frame, static/door-independent): tray_compartment_partition()'s front edge moved from skin_t(2mm) to tray_start_d+(tray_d-motor_d-2)=526mm — the SAME expression spring_coil() already uses for its own rearward extent, not a new number. Functional reason: keeps the spring's operative drop-length (world Y 138-526) open so items don't land stuck on the partition. Rear edge (598mm) unchanged. Gap to tray_zone_frame() (world_arc_cy=21mm): 505mm, confirmed empty. exit_compartment_wall() no longer touches the partition directly — flagged, not silently claimed unchanged; it still fully blocks the reach-through on its own.
+PROBLEM 2 (guard poked through closed door, root cause Janis-confirmed via render): BOTH of Janis's suggested fixes (frame-face-minus-thickness, flat 10mm) were checked against live geometry and found INSUFFICIENT — 10mm pullback still left 7.6mm² overlap at door_open_deg=0, since the hinge-side guard sits near the door's curved flange (reaches world Y=21mm there). Fixed: guard front-most Y raised to world_arc_cy+e=21.01mm (existing constant, same as frame/door). Rear edge (140.01mm) unchanged.
+Full pairwise re-sweep: partition-vs-frame trivially empty (505mm gap, no angle dependency). door-vs-guards 9 angles (0/20/25/30/35/40/45/70/100) = ALL EMPTY, fine 0.5° sweep worst-case area = 0.0. tray_zone_frame()/hinge geometry/shell hinge recess confirmed UNTOUCHED.
+
 ### 2026-07-05 | VM-01-tray-access-acrylic-split-flange | DONE — saved as v46 (not v45, name taken), 9-angle sweep ALL CLEAR
 
 Files: VM-01-base-v46.scad (new, source v45), rules-dimensions.md(v17→v18), knowledge.map(v35→v36), PART_MANIFEST.md(VM-01, 1.0→1.1), cc_chat_log.md, prompts/archive/.

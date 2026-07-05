@@ -1,5 +1,16 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v18 — 2026-07-05
+# Version: v19 — 2026-07-05
+# Changes: VM-01-partition-depth-door-collision-fix (v47) — 2 confirmed
+# manifold problems fixed. tray_compartment_partition()'s front edge
+# corrected from skin_t (2mm, overlapped tray_zone_frame()) to 526mm
+# (spring's own rearward extent, spring_coil()'s translate expression) so
+# dropped items keep falling through instead of landing on the partition.
+# drop_zone_guards()'s front-most Y corrected from skin_t+e (2.01mm, poked
+# through the closed door) to world_arc_cy+e (21.01mm) after both of
+# Janis's suggested references were checked against live geometry and
+# found insufficient. Both re-verified clear (partition-frame trivially,
+# door-guards via 9-angle + fine sweep).
+# Previous: v18 — 2026-07-05
 # Changes: VM-01-tray-access-acrylic-split-flange (v46) — tray stack
 # shifted +100mm (TRAY_SHIFT_UP), new Tray Compartment Access Gap section
 # (tray_compartment_partition()/exit_compartment_wall()); door acrylic
@@ -237,7 +248,7 @@ scope). Whether the "upper display" zone label should be redefined given
 the trays' new position is a separate documentation question for Claude
 Web/Janis, not resolved here.
 
-## VM-01 Base — Tray Compartment Access Gap (NEW 2026-07-05, v46)
+## VM-01 Base — Tray Compartment Access Gap (NEW 2026-07-05, v46; partition depth corrected v47)
 
 A customer's hand could reach under the lowest spring tray into the tray
 compartment from the exit zone — no wall/floor blocked it. Fixed with two
@@ -245,8 +256,8 @@ new parts working together:
 
 | Part | Value | Notes |
 |---|---|---|
-| `tray_compartment_partition()` | Full compartment width x depth, world Z 270-275mm | Fixed/welded (not removable), 5mm thick (`tray_floor_t` convention). Positioned at the pre-shift `tray_0_z` (270mm) — the anchor the trays moved away from, NOT the post-shift position |
-| `exit_compartment_wall()` | Full compartment width, world Y=138mm (`drop_zone_d`), Z 50-275mm | NEW module — no existing v45 module literally matched "vertical partition/side bracket that holds the flap stopper" (`drop_zone_guards()` are 2 thin side panels that don't block front-to-back reach past Y=drop_zone_d; `flap_stopper_rod()` has no bracket geometry). Rear-facing wall sealing the Y-direction reach-through, floor to the partition, confirmed ZERO gap (e-overlap into the partition's own thickness) |
+| `tray_compartment_partition()` | Full compartment width, world Y 526-598mm, Z 270-275mm | Fixed/welded (not removable), 5mm thick (`tray_floor_t` convention). Z positioned at the pre-shift `tray_0_z` (270mm) — the anchor the trays moved away from. **CORRECTED 2026-07-05 (v47)**: Y (front) edge moved from `skin_t` (2mm, SUPERSEDED) to `tray_start_d + (tray_d-motor_d-2)` = 526mm — the panel was reaching all the way to the front and physically overlapping `tray_zone_frame()` (confirmed by Janis). Functional requirement: a dropped item must keep falling through the spring's own operative/product-drop length (world Y 138-526mm), not land on the partition and get stuck. New front edge reuses `spring_coil()`'s own rearward-extent expression (`tray_d-motor_d-2`, effectively `spring_l-2`) — not a new magic number. Gap to `tray_zone_frame()`'s furthest reach (`world_arc_cy`=21mm): 505mm |
+| `exit_compartment_wall()` | Full compartment width, world Y=138mm (`drop_zone_d`), Z 50-275mm | NEW module — no existing v45 module literally matched "vertical partition/side bracket that holds the flap stopper" (`drop_zone_guards()` are 2 thin side panels that don't block front-to-back reach past Y=drop_zone_d; `flap_stopper_rod()` has no bracket geometry). Rear-facing wall sealing the Y-direction reach-through, UNCHANGED by v47 (position already correct). NOTE (v47): since the partition's Y-range moved to 526-598mm, this wall no longer spatially overlaps the partition directly — this does NOT reopen the gap, since the wall alone already fully blocks all Y-direction movement at Y=138mm for Z 50-275mm regardless of what's further back. "Zero gap to the partition" is no longer a meaningful check under the corrected geometry, flagged explicitly rather than silently asserted |
 
 ## VM-01 Base — Tray Rack (fixed to machine)
 
@@ -346,7 +357,7 @@ a stop that swings with the thing it's stopping isn't a stop).
 | Exit flap max open angle | 55 deg | CONFIRMED 2026-07-03 |
 | Stopper rod | spans left-to-right interior panels, position derived from flap_open_deg, FIXED to cabinet (own module, `flap_stopper_rod()`) | CONFIRMED 2026-07-03, fixed-vs-door_open behavior corrected 2026-07-05 (v42) — no switch yet, deferred |
 | Acrylic border overlap | 5mm | CONFIRMED 2026-07-03, formula unchanged by v42/v43 (the v41 framing asymmetry was caused by the flange/panel gap above, not the acrylic formula) |
-| Drop zone side guards | 2 solid skin_t-thick panels, X clear of hinge/flange footprint (left) | CHANGED 2026-07-05 (v43) — `drop_zone_visual()` (single translucent box, 3 of 6 faces blocking the actual product drop path) replaced by `drop_zone_guards()`: top/bottom/front/back ghost faces removed, left/right side faces (genuine hand-access safety guard) kept and rebuilt solid |
+| Drop zone side guards | 2 solid skin_t-thick panels, X clear of hinge/flange footprint (left), world Y 21.01-140.01mm | CHANGED 2026-07-05 (v43) — `drop_zone_visual()` (single translucent box, 3 of 6 faces blocking the actual product drop path) replaced by `drop_zone_guards()`: top/bottom/front/back ghost faces removed, left/right side faces (genuine hand-access safety guard) kept and rebuilt solid. **CORRECTED 2026-07-05 (v47)**: front-most Y edge raised from `skin_t+e` (2.01mm, SUPERSEDED) to `world_arc_cy+e` (21.01mm) — the old edge poked through the door's own surface plane at `door_open_deg=0` (closed), confirmed by Janis via direct visual render inspection. Both of Janis's suggested references (frame-face-minus-thickness formula, flat 10mm fallback) were checked against live geometry and found insufficient — the hinge-side guard sits close to the door's curved flange, which reaches up to world Y=21mm there, not just to the frame's own 7mm front face. Fixed value reuses `world_arc_cy` (`skin_t+(corner_r-1)`), the SAME shell-interior-corner-curve constant already used identically by `left_zone_door()` and `tray_zone_frame()` — not a new invented number. Rear edge (140.01mm) unchanged. Re-verified: 9-angle sweep + fine 0.5° sweep, ZERO overlap at every `door_open_deg` |
 | Hinge hardware spec (barrel/boss/cavity) | NOT YET SPECIFIED | OPEN ITEM 2026-07-03 — concept only, needs hinge-supplier input before manufacturing |
 
 ⚑ FLAG (side effect, not a v42 task target): moving `tray_0_z` (and thus

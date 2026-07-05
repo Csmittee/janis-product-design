@@ -4,6 +4,15 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-05 | VM-01-tray-access-acrylic-split-flange | DONE — saved as v46 (not v45, name taken), 9-angle sweep ALL CLEAR
+
+Files: VM-01-base-v46.scad (new, source v45), rules-dimensions.md(v17→v18), knowledge.map(v35→v36), PART_MANIFEST.md(VM-01, 1.0→1.1), cc_chat_log.md, prompts/archive/.
+NAMING FLAG: prompt said save as v45; VM-01-base-v45.scad already existed (governance batch shipped it first, merged before this prompt uploaded) — built on the real v45, saved as v46 per "never overwrite."
+TASK 1: tray stack shifted UP 100mm — old lowest-tray-floor Z (tray_0_z, UNCHANGED anchor) = 270mm, new (tray_stack_z0) = 370mm, delta = 100mm exactly. Only tray_count=2 exists (no 3-row/"3x5" variant). New tray_compartment_partition() (full compartment width/depth, fixed/welded, at the OLD 270mm) + new exit_compartment_wall() (NEW module — no existing part matched "bracket holding the flap stopper", flagged) seal the gap, zero-gap confirmed via e-overlap. Top-tray clearance: ceiling=612mm, vs door_top_z(698)=+86mm, vs roofline(700)=+88mm, POSITIVE. FLAG: vs the UNCHANGED DATUM_TRAY_TOP(512, tautological, not a real ceiling) = -100mm — not a 3D collision, flagged as a documentation question, not silently resolved.
+TASK 2: acrylic split into upper (unchanged top) + lower plain metal, meeting at split_z_local = live reference to tray_stack_z0 (world 370mm) — not a duplicated number. Same show_acrylic gate, v44 fix not reintroduced.
+TASK 3: H-frame gets 10mm top(683-693)/bottom(55-65) weld flanges, reusing the crossbar's already-safe cross-section, within the existing Z range.
+TASK 4 — MANDATORY 9-angle CGAL-equivalent re-sweep (Python/shapely): door_open_deg 0/20/25/30/35/40/45/70/100 = ALL EMPTY; fine 0.5° sweep worst-case area = 0.0.
+
 ### 2026-07-05 | VM-01-governance-batch-post-v44 | DONE — toggle-wiring + docs only, zero geometry change (diffed)
 
 Files: VM-01-base-v45.scad (new, source v44, toggle-only), vending-machine/VM-01-base/PART_MANIFEST.md (new), pilates-reformer/PR-01-base/PART_MANIFEST.md (new), cc_rules.md(v7→v8), knowledge.map(v34→v35), cc_chat_log.md, prompts/archive/.

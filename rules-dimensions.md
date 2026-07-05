@@ -1,5 +1,12 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v17 — 2026-07-05
+# Version: v18 — 2026-07-05
+# Changes: VM-01-tray-access-acrylic-split-flange (v46) — tray stack
+# shifted +100mm (TRAY_SHIFT_UP), new Tray Compartment Access Gap section
+# (tray_compartment_partition()/exit_compartment_wall()); door acrylic
+# split into upper acrylic + lower metal panel at a live tray_stack_z0
+# reference; Tray Zone Frame section gets 10mm top/bottom weld flanges.
+# 9-angle collision sweep re-verified all-clear.
+# Previous: v17 — 2026-07-05
 # Changes: VM-01-frame-window-rebuild-v44 — sensor_strip() fabricated
 # center beam finding documented (removed, show_sensor toggle added);
 # Tray Zone Frame section fully rebuilt (H-frame, correct interior-wall
@@ -194,12 +201,52 @@ Derived zone stack:
 
 ## VM-01 Base — Tray Z Position Formula
 
+### SUPERSEDED — DO NOT USE (kept for history only, pre-dates the v42 DATUM_* system)
 ```
 z = leg_h + exit_door_h + (tray_num * tray_h)
 Tray 0 bottom = 50 + 250 = 300mm
 Tray 1 bottom = 300 + 121 = 421mm
 ```
-LOCKED — do not change without Claude Web instruction.
+
+### CURRENT (2026-07-05, v46 — VM-01-tray-access-acrylic-split-flange)
+```
+z = tray_stack_z0 + (tray_num * tray_h)
+tray_stack_z0 = tray_0_z + TRAY_SHIFT_UP = 270 + 100 = 370mm
+Tray 0 bottom = 370mm
+Tray 1 bottom = 370 + 121 = 491mm
+Tray 1 (top tray) ceiling = 491 + 121 = 612mm
+```
+Entire tray stack shifted UP 100mm (`TRAY_SHIFT_UP`) from `tray_0_z` (270mm,
+kept UNCHANGED as the fixed pre-shift anchor — see "Tray Compartment
+Access Gap" below) to close a hand-access gap under the lowest tray. Only
+`tray_count=2` exists in source — no 3-row/"3x5" variant to shift
+separately (confirmed via grep, not guessed).
+
+**Mandatory clearance check** (top tray vs the physical roofline/door
+boundary): clearance vs `door_top_z` (698mm) = **86mm**, vs
+`DATUM_ROOFLINE`/`total_h` (700mm) = **88mm** — both POSITIVE, confirmed.
+⚑ FLAG: vs the UNCHANGED `DATUM_TRAY_TOP` (512mm, the shell/right-
+compartment zone-stack datum — tautologically defined as
+`DATUM_TRAY_BOT + tray_zone_h`, i.e. it only ever meant "wherever the
+unshifted stack's own top happens to be," never an independent physical
+ceiling) the shifted stack is nominally "-100mm over" — this is NOT a 3D
+collision (nothing else physically occupies world Z 512-612mm on the left
+side; the shell's own front-wall cutout scheme and the right-compartment
+acrylic zone were deliberately left untouched, out of this prompt's
+scope). Whether the "upper display" zone label should be redefined given
+the trays' new position is a separate documentation question for Claude
+Web/Janis, not resolved here.
+
+## VM-01 Base — Tray Compartment Access Gap (NEW 2026-07-05, v46)
+
+A customer's hand could reach under the lowest spring tray into the tray
+compartment from the exit zone — no wall/floor blocked it. Fixed with two
+new parts working together:
+
+| Part | Value | Notes |
+|---|---|---|
+| `tray_compartment_partition()` | Full compartment width x depth, world Z 270-275mm | Fixed/welded (not removable), 5mm thick (`tray_floor_t` convention). Positioned at the pre-shift `tray_0_z` (270mm) — the anchor the trays moved away from, NOT the post-shift position |
+| `exit_compartment_wall()` | Full compartment width, world Y=138mm (`drop_zone_d`), Z 50-275mm | NEW module — no existing v45 module literally matched "vertical partition/side bracket that holds the flap stopper" (`drop_zone_guards()` are 2 thin side panels that don't block front-to-back reach past Y=drop_zone_d; `flap_stopper_rod()` has no bracket geometry). Rear-facing wall sealing the Y-direction reach-through, floor to the partition, confirmed ZERO gap (e-overlap into the partition's own thickness) |
 
 ## VM-01 Base — Tray Rack (fixed to machine)
 
@@ -292,7 +339,8 @@ a stop that swings with the thing it's stopping isn't a stop).
 | Hinge center, world coords | X=0-(hinge_od/2)=-6mm, Y=HINGE_Y_OFFSET=25mm, Z=FOOT_BASE_H+0=50mm | CHANGED 2026-07-05 (v43) — was `hinge_y=corner_r+5` (a Cousin reference to the cosmetic corner_r tuning parameter); `HINGE_Y_OFFSET` is now a fixed, independent 25mm constant measured from the shell's theoretical SHARP corner (front-plane × left-plane extended, NOT the corner_r fillet's own center) — numerically unchanged (still 25mm), only decoupled so retuning `corner_r` later is a separate clearance check, not an input. Barrel X moved from flush-with-interior (X=2mm) to proud of the exterior wall (X=-6mm, exterior, door opens outward) — this point is now THE datum for the entire door assembly; `left_zone_door()`'s local origin and the shell's recess-pocket cutout each independently re-derive it from shared named constants (`HINGE_Y_OFFSET`/`hinge_od`/`FOOT_BASE_H`), never by reading each other's variables. |
 | Return flange depth | 23mm | CONFIRMED 2026-07-03, unchanged by v43 (`HINGE_Y_OFFSET - skin_t`) |
 | Curved flange (flange/trim corner) | 12-segment arc, center (skin_t+(corner_r-1), skin_t+(corner_r-1)), radius corner_r-1 | CHANGED 2026-07-05 (v43) — was a hard 90° polygon bend; now follows the shell's actual rounded interior corner, sampled live from `corner_r`/`skin_t` |
-| Viewing window (world) | X 27–389mm, Z 55–693mm (362 x 638mm) | CHANGED 2026-07-05 (v44) — resized to match the new H-frame's inner clear opening (see "VM-01 Base — Tray Zone Frame" below), giving a full view of the entire compartment (springs, trays, everything), not just the old tray-zone slice. Local constants (door's own origin): `window_x0=25`/`window_z0=5`/`window_w=362`/`window_h=638`. SUPERSEDES v43: `window_x0=38`/`window_z0=220`/`window_w=336`/`window_h=242` (world Z 270-512mm, the old tray-zone-only slice). Acrylic pane resized to match automatically (same `acrylic_border`=5mm overlap convention, unchanged formula) — world Z 50-698mm (exactly the door's own full Z range), world X 22-394mm. Note: the exit-flap cutout (world Z 80-230mm) now falls entirely within this window's Z range — harmless nesting (redundant but non-conflicting cutout), not a defect; the flap itself is unchanged, still a separate hinged opaque panel. |
+| Viewing window (world) | X 27–389mm, Z 55–693mm (362 x 638mm) | CHANGED 2026-07-05 (v44) — resized to match the new H-frame's inner clear opening (see "VM-01 Base — Tray Zone Frame" below), giving a full view of the entire compartment (springs, trays, everything), not just the old tray-zone slice. Local constants (door's own origin): `window_x0=25`/`window_z0=5`/`window_w=362`/`window_h=638`. SUPERSEDES v43: `window_x0=38`/`window_z0=220`/`window_w=336`/`window_h=242` (world Z 270-512mm, the old tray-zone-only slice). The DOOR CUTOUT itself is unchanged by v46 (still one continuous opening) — only the FILL material is now split, see next row. |
+| Acrylic/metal split (v46) | Acrylic world Z 370-698mm; metal panel world Z 50-370mm (both X 22-394mm) | CHANGED 2026-07-05 (v46) — the single acrylic fill split into an upper ACRYLIC portion (unchanged top boundary, world Z 698mm) and a lower plain METAL sheet (no vents/cutouts/branding, same border/mounting convention). Split point is a LIVE reference to `tray_stack_z0` (370mm, the post-shift lowest-tray-floor Z) — not a duplicated magic number; if `TRAY_SHIFT_UP` changes again this boundary moves with it. Both pieces share the same `show_acrylic` gate fixed in v44 (Finding B) — not reintroduced as a render_mode bug. SUPERSEDES v44: single acrylic pane, world Z 50-698mm (whole door height). |
 | Exit flap dimensions | 300mm W x 150mm H | CONFIRMED 2026-07-03 — supersedes old flap_w=250/flap_h=100 |
 | Exit flap hinge | top, swings inward | CONFIRMED 2026-07-03 |
 | Exit flap max open angle | 55 deg | CONFIRMED 2026-07-03 |
@@ -309,7 +357,7 @@ is untouched, but its effective world position shifts ~30mm as a
 consequence of the shared datum. Flagged for Janis's awareness, not
 independently resolved.
 
-## VM-01 Base — Tray Zone Frame (REBUILT 2026-07-05, v44 — full H-frame, was wrong reference point)
+## VM-01 Base — Tray Zone Frame (REBUILT 2026-07-05, v44 — full H-frame, was wrong reference point; flanges added v46)
 
 Janis-confirmed 2026-07-05 (real-render QA, CGAL boolean intersection
 testing): the pre-v44 frame anchored every bar at world X=0/Y=0 — the
@@ -336,6 +384,7 @@ entirely):
 | Left vertical bar curve | Center (21,21)mm, radius (corner_r-1)-5 = 14mm | Outer edge curved to match the door's own flange arc (same center/radius formula) but pulled back by the SAME 5mm border inset already used for the frame's X/Z insets — clears the door's hinge/flange swept volume at every angle |
 | Frame depth (Y) | 2mm | `skin_t` convention, flat bars (crossbar + right vertical) at world Y 7-9mm; left vertical's curved region spans world Y 7-21mm (a "return" shape matching the corner, analogous to the door's own return flange) |
 | Collision clearance | ZERO overlap, `door_open_deg` 0-100° | Re-verified (Python/shapely, mirrors the CGAL `intersection()` test) at all 9 mandated angles + a 0.5°-resolution fine sweep across the full 0-100° range — see `cc_chat_log.md` for the full result table |
+| Top/bottom weld flanges (v46) | 10mm each (Z), world Z 55-65mm (bottom) and 683-693mm (top) | NEW 2026-07-05 (v46) — for spot-welding the frame to the shell. Built from the SAME 2D cross-section as the crossbar (already proven clear of the door leaf at every angle), placed WITHIN the frame's existing, already-verified Z range (55-693mm) — no new Z-boundary risk. Re-verified: 9-angle sweep + fine sweep, ZERO overlap, same result as above |
 
 SUPERSEDED — DO NOT USE: `Frame bar width=20mm (all four sides)` /
 `Frame Z range=300-542mm` (pre-v44 values, wrong reference point + door

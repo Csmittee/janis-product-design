@@ -1,5 +1,12 @@
 # Janis Product Design — OpenSCAD Coding Rules
-> Version 1.13 — 2026-07-05
+> Version 1.14 — 2026-07-05
+> Changes: VM-01-door-datum-rebuild-v43 — added `FOOT_BASE_H` to the VM-01
+> Z-datums block (explicit foot/leg-height term, no longer folded into
+> DATUM_LEG_TOP's label) and documented the hinge-center datum
+> (HINGE_Y_OFFSET/hinge_od/FOOT_BASE_H shared constants, independently
+> re-derived by left_zone_door() and the shell's recess-pocket cutout) —
+> a Janis-approved, door-scoped EXCEPTION to the grandfather clause below.
+> Previous: 1.13 — 2026-07-05
 > Changes: Added pointer to .claude/SKILL_product_design_skeleton.md — the
 > FIRST file read for any NEW product line (not VM-01/PR-01). Formalizes
 > "Datum Rules" below into a full Skeleton/DRF/Parent-Child design
@@ -226,10 +233,16 @@ changed, and produced a visible mismatch between the window/acrylic frame
 and the actual tray rack. Fixed in v42 via an explicit DATUMS block — see
 VM-01-base-v42.scad header.
 
-**Current VM-01 Z datums (v42, supersedes the zone-stack table above):**
+**Current VM-01 Z datums (v42, `FOOT_BASE_H` term added v43 §2.1 — supersedes the zone-stack table above):**
 ```
+FOOT_BASE_H      = leg_h                          // 50 -- explicit foot/leg-height term (v43): was silently
+                                                   // folded into DATUM_LEG_TOP = leg_h directly; any part
+                                                   // built on DATUM_LEG_TOP looked "floor-referenced" but was
+                                                   // one hidden addition away from true ground. Every
+                                                   // ground-referenced Z-stack must now show this as an
+                                                   // explicit added term, e.g. `FOOT_BASE_H + 0`.
 DATUM_FLOOR      = 0
-DATUM_LEG_TOP    = leg_h                          // 50
+DATUM_LEG_TOP    = FOOT_BASE_H                    // 50
 DATUM_FLAP_TOP   = DATUM_LEG_TOP + 30 + exit_h    // 230 -- exit flap hinge line
 DATUM_TRAY_BOT   = DATUM_FLAP_TOP + window_flap_gap // 270 -- tray zone starts here
 DATUM_TRAY_TOP   = DATUM_TRAY_BOT + tray_zone_h   // 512 -- 242mm of trays
@@ -240,6 +253,20 @@ zone's absolute position is not independently locked — the real
 constraint is that the door/flap stay close enough to the floor for a
 customer to reach in, which the flap's own datum chain already guarantees.
 Supersedes the old fixed "Tray 0: 300-421mm" position.
+
+**v43 door-scoped addition — hinge center as a shared-constant datum, not a
+cross-module variable read.** `left_zone_door()`'s local origin (§2.2 of
+VM-01-door-datum-rebuild-v43) is the hinge center, world coords
+`X = 0-(hinge_od/2)`, `Y = HINGE_Y_OFFSET` (25mm, independent constant —
+was `corner_r+5`, a Cousin reference to a cosmetic tuning parameter),
+`Z = FOOT_BASE_H + 0`. The shell's recess-pocket cutout
+(`outer_shell()`/`outer_shell_debug()`) independently re-derives this SAME
+point from its own sharp-corner datum chain (never reading
+`left_zone_door()`'s local variables) — both modules share the named
+constants `HINGE_Y_OFFSET`/`hinge_od`/`FOOT_BASE_H`, which is the correct
+pattern (shared named constant, not one module reaching into another's
+variable). This is a Janis-approved, door-scoped EXCEPTION to VM-01's
+grandfather clause below — applied to the front door assembly only.
 
 **Rule: Reference point first — read `.claude/SKILL_reference_point_first.md`
 before designing any new part's geometry.** Each part gets one clean local

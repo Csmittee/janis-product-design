@@ -1,5 +1,10 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v15 — 2026-07-05
+# Version: v16 — 2026-07-05
+# Changes: VM-01-door-datum-rebuild-v43 — Left-Zone Front Door section
+# updated for the hinge-center datum rebuild (HINGE_Y_OFFSET now an
+# independent constant, not corner_r+5; hinge barrel moved proud of the
+# exterior wall), curved flange, and drop_zone_guards(). Door-scoped
+# Skeleton exception noted explicitly. Previous: v15 — 2026-07-05
 # All units: MM
 
 ---
@@ -243,7 +248,13 @@ LOCKED — do not change without Claude Web instruction.
 |---|---|---|
 | Door Z range | 50–300mm, EXIT ZONE ONLY | v41 (VM-01-front-door-redesign-v41): `left_zone_door()` replaces `front_door()`+`flap_door()`+`spring_zone_panel()` entirely, full left-zone height — see "VM-01 Base — Left-Zone Front Door" below |
 
-## VM-01 Base — Left-Zone Front Door (CONFIRMED 2026-07-03, v41; geometry rebuilt + window resynced 2026-07-05, v42)
+## VM-01 Base — Left-Zone Front Door (CONFIRMED 2026-07-03, v41; geometry rebuilt + window resynced 2026-07-05, v42; datum rebuild 2026-07-05, v43)
+
+**v43 door-scoped Skeleton exception:** `.claude/SKILL_product_design_skeleton.md`
+grandfathers VM-01 out of the Skeleton/Datum-Reference-Frame system —
+v43 is a Janis-approved, door-scoped EXCEPTION applied to `left_zone_door()`,
+its shell recess pocket, and `drop_zone_visual()`→`drop_zone_guards()` only.
+No other VM-01 module's coordinate system was touched.
 
 Root cause of the exit-flap feature's prior failures (38 SCAD versions, 6+
 sessions): `front_door()` was a single uncut solid panel with no
@@ -268,16 +279,18 @@ a stop that swings with the thing it's stopping isn't a stop).
 
 | Dimension | Value | Notes |
 |---|---|---|
-| Door Z range (full height) | 50–698mm | CONFIRMED 2026-07-03, unchanged by v42 |
+| Door Z range (full height) | 50–698mm | CONFIRMED 2026-07-03, unchanged by v42/v43 |
 | Door X range (left zone only) | 2–414mm | CONFIRMED 2026-07-03 — product_w zone only, NOT total_w |
-| Hinge line offset from corner | 25mm (corner_r + 5) | CONFIRMED 2026-07-03 |
-| Return flange depth | 23mm | CONFIRMED 2026-07-03 |
-| Viewing window Z range | 270–512mm | CHANGED 2026-07-05 (v42) — was an independently-derived 270-683mm (413mm tall, floating ~170mm above the actual trays); now = DATUM_TRAY_BOT to DATUM_TRAY_TOP exactly, so the window/acrylic frame bounds the real 2-tray zone (242mm), not empty space above it |
+| Hinge center, world coords | X=0-(hinge_od/2)=-6mm, Y=HINGE_Y_OFFSET=25mm, Z=FOOT_BASE_H+0=50mm | CHANGED 2026-07-05 (v43) — was `hinge_y=corner_r+5` (a Cousin reference to the cosmetic corner_r tuning parameter); `HINGE_Y_OFFSET` is now a fixed, independent 25mm constant measured from the shell's theoretical SHARP corner (front-plane × left-plane extended, NOT the corner_r fillet's own center) — numerically unchanged (still 25mm), only decoupled so retuning `corner_r` later is a separate clearance check, not an input. Barrel X moved from flush-with-interior (X=2mm) to proud of the exterior wall (X=-6mm, exterior, door opens outward) — this point is now THE datum for the entire door assembly; `left_zone_door()`'s local origin and the shell's recess-pocket cutout each independently re-derive it from shared named constants (`HINGE_Y_OFFSET`/`hinge_od`/`FOOT_BASE_H`), never by reading each other's variables. |
+| Return flange depth | 23mm | CONFIRMED 2026-07-03, unchanged by v43 (`HINGE_Y_OFFSET - skin_t`) |
+| Curved flange (flange/trim corner) | 12-segment arc, center (skin_t+(corner_r-1), skin_t+(corner_r-1)), radius corner_r-1 | CHANGED 2026-07-05 (v43) — was a hard 90° polygon bend; now follows the shell's actual rounded interior corner, sampled live from `corner_r`/`skin_t` |
+| Viewing window Z range | 270–512mm | CHANGED 2026-07-05 (v42) — was an independently-derived 270-683mm (413mm tall, floating ~170mm above the actual trays); now = DATUM_TRAY_BOT to DATUM_TRAY_TOP exactly, so the window/acrylic frame bounds the real 2-tray zone (242mm), not empty space above it. v43: numbers unchanged, frozen as the door's own local constants (`window_x0=38`/`window_z0=220`/`window_w=336`/`window_h=242`) rather than DATUM_TRAY_*-derived — window is the door's own feature, not a Cousin reference to the tray zone |
 | Exit flap dimensions | 300mm W x 150mm H | CONFIRMED 2026-07-03 — supersedes old flap_w=250/flap_h=100 |
 | Exit flap hinge | top, swings inward | CONFIRMED 2026-07-03 |
 | Exit flap max open angle | 55 deg | CONFIRMED 2026-07-03 |
 | Stopper rod | spans left-to-right interior panels, position derived from flap_open_deg, FIXED to cabinet (own module, `flap_stopper_rod()`) | CONFIRMED 2026-07-03, fixed-vs-door_open behavior corrected 2026-07-05 (v42) — no switch yet, deferred |
-| Acrylic border overlap | 5mm | CONFIRMED 2026-07-03, formula unchanged by v42 (the v41 framing asymmetry was caused by the flange/panel gap above, not the acrylic formula) |
+| Acrylic border overlap | 5mm | CONFIRMED 2026-07-03, formula unchanged by v42/v43 (the v41 framing asymmetry was caused by the flange/panel gap above, not the acrylic formula) |
+| Drop zone side guards | 2 solid skin_t-thick panels, X clear of hinge/flange footprint (left) | CHANGED 2026-07-05 (v43) — `drop_zone_visual()` (single translucent box, 3 of 6 faces blocking the actual product drop path) replaced by `drop_zone_guards()`: top/bottom/front/back ghost faces removed, left/right side faces (genuine hand-access safety guard) kept and rebuilt solid |
 | Hinge hardware spec (barrel/boss/cavity) | NOT YET SPECIFIED | OPEN ITEM 2026-07-03 — concept only, needs hinge-supplier input before manufacturing |
 
 ⚑ FLAG (side effect, not a v42 task target): moving `tray_0_z` (and thus

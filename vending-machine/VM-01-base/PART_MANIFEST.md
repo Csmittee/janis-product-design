@@ -4,8 +4,8 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.0 — 2026-07-05
-# Source: vending-machine/VM-01-base/VM-01-base-v45.scad ASSEMBLY block
+# Version: 1.1 — 2026-07-05
+# Source: vending-machine/VM-01-base/VM-01-base-v46.scad ASSEMBLY block
 #   (reconciled against the real file — several rows corrected vs. the
 #   VM-01-governance-batch-post-v44 prompt's pre-v44 draft, see notes below)
 #
@@ -29,24 +29,30 @@
 | `tray_zone_frame()` | structural H-frame reinforcement (2 verticals + 1 crossbar), NOT viewable/acrylic | the acrylic viewing pane — that lives INSIDE `left_zone_door()` instead. Root cause of the v43/v44 QA confusion this manifest exists to prevent | `show_frame` (added v45 — v44 shipped this module's full rebuild with ZERO toggle, which is exactly why its wrong reference point went unnoticed for ~10 versions) |
 | `drop_zone_guards()` | solid hand-safety side guards at the exit/drop zone | the old ghost/visual placeholder faces (`drop_zone_visual()`, removed in v43) | (none — always on, safety-critical) |
 | `sensor_strip()` | 2 independent left/right sensor strips capturing product fall | a connecting center beam — that never existed in the real design, deleted in v44 | `show_sensor` (internal toggle inside the module, gates both strips) |
+| `tray_compartment_partition()` | NEW (v46) — fixed/welded horizontal panel sealing the space vacated by the tray-stack shift, full compartment width x depth | a removable/access panel — it's structural, not user-facing | (none — always on, safety-critical — blocks hand access from below) |
+| `exit_compartment_wall()` | NEW (v46) — fixed/welded rear-facing wall sealing front-to-back reach at the drop-zone/tray-compartment boundary | `drop_zone_guards()` — those are 2 thin SIDE panels within the drop zone's own depth; this is a full-width wall at the drop zone's REAR boundary, a different function | (none — always on, safety-critical — blocks hand access from the front) |
 | `dashboard()` | ATM screen + QR + card reader + speaker | | GAP — no toggle |
 | `rear_service_door()` | rear access panel | | GAP — no toggle |
 
-## Toggle-completeness count (2026-07-05, v45)
+## Toggle-completeness count (2026-07-05, v46)
 
-13 modules called in ASSEMBLY. 3 have a real `show_*` isolation toggle
-(`left_zone_door`→`show_door`, `tray_zone_frame`→`show_frame`,
-`sensor_strip`→`show_sensor`). 1 is a named safety-critical exception
-(`drop_zone_guards`). That's **4 of 13 compliant** with the
-Toggle-Completeness Rule. The remaining **9 are gaps**: `legs`,
-`outer_shell_debug` (partial panel toggles only, no master),
-`compartment_divider`, `tray_rack`, `spring_tray`, `acrylic_display`
-(render_mode-gated, not `show_*`), `flap_stopper_rod`, `dashboard`,
-`rear_service_door`.
+15 modules called in ASSEMBLY (13 from v45 + 2 new safety-critical parts
+this round). 3 have a real `show_*` isolation toggle (`left_zone_door`→
+`show_door`, `tray_zone_frame`→`show_frame`, `sensor_strip`→
+`show_sensor`). 3 are named safety-critical exceptions (`drop_zone_guards`,
+`tray_compartment_partition`, `exit_compartment_wall`). That's **6 of 15
+compliant** with the Toggle-Completeness Rule. The remaining **9 are
+gaps** (unchanged from v45, not touched this round — out of this prompt's
+scope): `legs`, `outer_shell_debug` (partial panel toggles only, no
+master), `compartment_divider`, `tray_rack`, `spring_tray`,
+`acrylic_display` (render_mode-gated, not `show_*`), `flap_stopper_rod`,
+`dashboard`, `rear_service_door`.
 
 **Not fixed in this pass** — the VM-01-governance-batch-post-v44 prompt's
 explicit scope was TASK 3 (`show_frame` only) plus documentation; it did
-not authorize retroactively adding toggles to the other 9. Flagged here
-and in cc_chat_log for Claude Web/Janis to decide whether/which of these
-warrant a toggle in a future prompt, rather than silently expanding scope
-or silently letting the rule look satisfied when it isn't.
+not authorize retroactively adding toggles to the other 9, and
+VM-01-tray-access-acrylic-split-flange's scope was the 3 specific fixes
+listed in its own tasks, not a general toggle sweep. Flagged here and in
+cc_chat_log for Claude Web/Janis to decide whether/which of these warrant
+a toggle in a future prompt, rather than silently expanding scope or
+silently letting the rule look satisfied when it isn't.

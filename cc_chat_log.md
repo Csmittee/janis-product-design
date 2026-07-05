@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-05 | VM-01-door-datum-rebuild-v43 | DONE — door-scoped Skeleton exception, Janis F6 + CGAL manifold check required
+
+Files: VM-01-base-v43.scad (new, source v42), rules-dimensions.md(v15→v16), rules-codes.md(1.13→1.14), knowledge.map(v32→v33), cc_chat_log.md, prompts/archive/.
+Scope: front door assembly ONLY (left_zone_door, its shell recess pocket, drop_zone_visual) — explicit Janis-approved EXCEPTION to `.claude/SKILL_product_design_skeleton.md`'s VM-01 grandfather clause, no other BOM item touched.
+`FOOT_BASE_H` (§2.1) made explicit (was folded into `DATUM_LEG_TOP=leg_h`). Hinge center (§2.2) is now THE door datum, world coords Z=`FOOT_BASE_H+0`=50, Y=`HINGE_Y_OFFSET`=25 (now independent, was `corner_r+5`), X=`0-(hinge_od/2)`=-6 (barrel proud of exterior). Door (`left_zone_door()`) and shell (`outer_shell()`/`outer_shell_debug()` recess cutout) independently re-derive this same point from shared constants — Python-verified: DOOR (-6,25,50) == SHELL (-6,25,50). Window/acrylic frozen as door's own local constants (§2.3, numbers unchanged from v42). Flange corner replaced with a 12-seg arc matching the shell's actual curve (§2.4, tangency Python-verified). Epsilon fixes on left_zone_door() front face, sensor_strip() (§2.5). `drop_zone_visual()` → `drop_zone_guards()` (§2.6): ghost faces removed, 2 solid side guards kept, left guard X-clearance vs. the hinge/flange footprint Python-verified (no intersection).
+DEFERRED (Janis): partition + back door for spare storage under trays — TODO comment only, zero geometry, near `spring_tray()`.
+No OpenSCAD binary in this sandbox — full Python arithmetic self-check instead (hinge-center match, world-position preservation vs v42, arc tangency, guard/flange non-collision, brace/paren/bracket balance 32/32,481/481,146/146). Janis F6 + CGAL manifold render required.
+
 ### 2026-07-05 | new-product-design-skeleton-skill | DONE — governance only, zero .scad files touched, direct Janis chat request (no /prompts/ file)
 
 Files: .claude/SKILL_product_design_skeleton.md (new), .claude/SKILL_reference_point_first.md (marked superseded, kept), cc_rules.md(v6→v7), rules-codes.md(1.12→1.13), rules-dimensions.md(v14→v15), chat_rules.md(v3.7→v3.8), WORKFLOW_SKILL.md(3.8→3.9), knowledge.map(v31→v32), cc_chat_log.md.

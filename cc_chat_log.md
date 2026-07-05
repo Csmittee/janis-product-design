@@ -4,6 +4,15 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-05 | VM-01-frame-window-rebuild-v44 | DONE — 6 real-render QA findings fixed, angle-sweep re-test ALL CLEAR
+
+Files: VM-01-base-v44.scad (new, source v43), rules-dimensions.md(v16→v17), knowledge.map(v33→v34), cc_chat_log.md, prompts/archive/.
+Finding A: sensor_strip()'s fabricated red center-beam cube (never part of the real design, Janis-confirmed) DELETED entirely; new show_sensor toggle. Finding B: door acrylic gate fixed render_mode=="full"&&show_acrylic → show_acrylic alone (was unreachable at default render_mode).
+Finding C (major): tray_zone_frame() rebuilt as full H-frame — was anchored at world X=0/Y=0 (shell's sharp EXTERIOR corner, wrong) AND confirmed via CGAL to physically clip the door 0-30°. New frame: full-height envelope (door_bot_z-door_top_z), 5mm inset all sides, 2 verticals+1 crossbar (tray_0_z), repositioned off shell's REAL interior corner (skin_t+(corner_r-1) formula, same as left_zone_door()'s arc), left vertical curved (same center, radius-5mm inset=14mm) to clear the door's swept volume.
+MANDATORY angle-sweep re-test (Python/shapely, mirrors CGAL intersection()) — door_open_deg: 0=EMPTY, 20=EMPTY, 25=EMPTY, 30=EMPTY, 35=EMPTY, 40=EMPTY, 45=EMPTY, 70=EMPTY, 100=EMPTY (all 9 angles, zero overlap area at each; fine 0.5° sweep across full 0-100° range also confirms zero, worst-case area=0.0).
+Window/acrylic (Task 4) resized to the new frame's inner opening: window_x0=25/window_z0=5/window_w=362/window_h=638 (world X 27-389, Z 55-693, was v43's tray-zone-only slice); acrylic auto-resizes via unchanged acrylic_border formula.
+No OpenSCAD binary in this sandbox — full Python/shapely computational-geometry self-check instead of live CGAL. Janis F6 preview + full CGAL render still required.
+
 ### 2026-07-05 | VM-01-door-datum-rebuild-v43 | DONE — door-scoped Skeleton exception, Janis F6 + CGAL manifold check required
 
 Files: VM-01-base-v43.scad (new, source v42), rules-dimensions.md(v15→v16), rules-codes.md(1.13→1.14), knowledge.map(v32→v33), cc_chat_log.md, prompts/archive/.

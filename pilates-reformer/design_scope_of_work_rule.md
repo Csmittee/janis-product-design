@@ -2,6 +2,18 @@
 # Last updated: 2026-07-06 — updated whenever a NEW feature/goal is confirmed
 # by the owner in any session, same session it's confirmed, not deferred.
 #
+# CORE FILTER (owner's own words, 2026-07-06 — governs every future edit
+# to this file, VM-01 and PR-01 alike): "The focus of this file contain
+# mainly feature that customer recognize or marketing headline that we
+# need to stick to. No one care if i spot or weld, no one care how long
+# sensor i use, thats more on the bom rule, dim rule, and other technical
+# rule that i have." This file holds ONLY features/facts a customer would
+# recognize or that could appear as a marketing headline. It NEVER holds
+# construction/assembly method (weld vs. bolt, etc.), exact component
+# specs (part lengths, sensor models, etc.), BOM, or dimensional/technical
+# rules — those live in rules-dimensions.md, rules-codes.md,
+# rules-materials.md, or BOM files, never here.
+#
 # EXTRACTION NOTE: built from rules-dimensions.md (all PR-01 sections),
 # PART_MANIFEST.md, CURRENT_STATE.md, cc_chat_log.md, and a representative
 # sample of archived PR-01 prompts (not a literal line-by-line read of all

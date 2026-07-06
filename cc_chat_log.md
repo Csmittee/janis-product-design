@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-06 | vm01-design-scope-update-owner-answers | DONE — 5 owner answers applied, docs only, zero .scad touched
+
+Files: vending-machine/design_scope_of_work_rule.md, pilates-reformer/design_scope_of_work_rule.md, cc_chat_log.md, prompts/archive/.
+Resolved/added/removed: (1) Envelope Targets reframed as target-guidance-only, not a fixed requirement — "gap" framing removed; FLAGGED a tension the task didn't ask me to resolve: `total_h` is OWNER-LOCKED in rules-dimensions.md, which reads stricter than "adjustable as needed." (2) Added door safety/smoothness + separate-lock features (Functional Features 3/4), explicitly NOT conflated with the still-open shell trim/joggle defect. (3) Appearance section: added corner/frame smooth-uniform-modern requirement, cross-referenced to (2). (4) Sensor description corrected: facing pair side-to-side, full-width single detection zone, 120mm spec, not per-lane — old wrong assumption + its Open Question both removed. (5) Weld-vs-bolt Open Question deleted entirely per owner instruction (technical/BOM matter, not customer-facing) — not relocated.
+Core filter statement (owner's own words) added to BOTH files' headers, confirmed.
+FLAG (left untouched, DO NOT TOUCH scope): Appearance section still has a separate stainless-steel bullet mentioning L-brackets/welding — same category the owner just said doesn't belong here, not touched since it wasn't a named task; and the "Corner/frame/shell-width redesign" Open Question still says "NOT executed yet" even though v50 (PR #94) has since landed — left as-is per explicit DO NOT TOUCH on that item's completion status.
+
 ### 2026-07-06 | VM-01-corner-frame-redesign | DONE — v50, built on real v49 (naming note), 1 real constraint flagged not forced
 
 Files: VM-01-base-v50.scad (new, source v49), rules-dimensions.md(v21→v22), knowledge.map(v40→v41), cc_chat_log.md, prompts/archive/. Every check below is a real OpenSCAD/CGAL render.

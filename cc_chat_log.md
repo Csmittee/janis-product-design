@@ -4,6 +4,12 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-06 | wire-design-scope-into-workflow | DONE — WORKFLOW_SKILL.md v3.9→v3.10, docs only
+
+Files: WORKFLOW_SKILL.md, cc_chat_log.md, prompts/archive/. No .scad touched.
+New **Step 4** added to the CLAUDE WEB SESSION OPENING — MANDATORY SEQUENCE (and its duplicate copy inside the CHAT HANDOFF TEMPLATE block): read the relevant project's `design_scope_of_work_rule.md` in full, same mandatory "not found → STOP" tier as Steps 2/3.5 — positioned right after Step 3.5 (CURRENT_STATE.md) and before Step 5/6, so it's read before any QA discussion or prompt drafting. If CURRENT_STATE.md doesn't disambiguate which project, both copies must be read, not one picked silently — stated explicitly, not left implicit. Closing line ("all 6 steps confirmed") updated to list all 7 labeled steps (1/2/3/3.5/4/5/6).
+TASK 2 confirmed: cc_rules.md has ZERO existing automatic-read-list entry for design_scope_of_work_rule.md (grepped, not assumed) — this prompt did not add one; cc's read of that file stays prompt-triggered only, unchanged.
+
 ### 2026-07-06 | design-scope-of-work-prompt | DONE — 2 new files, PARTIAL extraction (session hit usage limit mid-run)
 
 Files: vending-machine/design_scope_of_work_rule.md (new), pilates-reformer/design_scope_of_work_rule.md (new), knowledge.map, cc_chat_log.md, prompts/archive/.

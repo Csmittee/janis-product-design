@@ -4,6 +4,15 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-06 | VM-01-left-door-v47-fixes | DONE — v48, 3/4 fixed + re-verified, TASK 4 flagged not guessed
+
+Files: VM-01-base-v48.scad (new, source v47), rules-dimensions.md(v19→v20), knowledge.map(v37→v38), cc_chat_log.md, prompts/archive/. OpenSCAD/CGAL binary WAS available this session — every check below is a real render, not a Python estimate.
+T1 sensor_strip: world_arc_cy+e(21.01, v47's drop_zone_guards fix) checked live and found insufficient for the hinge-side strip (X overlaps the flange's hinge-line face, up to HINGE_Y_OFFSET=25) — fixed to HINGE_Y_OFFSET+e=25.01mm, rear 140mm unchanged. 9-angle+fine sweep ZERO overlap, both strips, CGAL-confirmed empty.
+T2 partition: front edge restored 526mm→drop_zone_d(138mm), real 2mm contact w/ exit_compartment_wall (CGAL non-empty, 8 verts), 117mm clear of tray_zone_frame's real footprint (CGAL empty).
+T3: door_acrylic_t=5mm (acrylic only); top pulled 698→682.99mm (=door_top_z-frame_inset-FLANGE_T-e, frame_inset/FLANGE_T promoted to globals) clearing the top weld flange, new metal cap fills 682.99-698; flap swept 0-55° notched from metal panel (was solid, CGAL-confirmed full block → now empty); flap plane confirmed already flush, no change. FLAG: fill-vs-frame CGAL volume 17412mm³(v47, pre-existing edge overlap)→22091mm³(v48, +4679 from 3a's depth) — not fixed, needs acrylic_border redesign.
+T4: searched shell in full, no sub-feature matches "top+bottom sub-piece" distinct from tray_zone_frame's own flanges (which Janis says isn't the cause) — NO toggle added, flagged in a TODO comment near outer_shell_debug(), needs a screenshot pointing at the exact edge.
+Same single pre-existing 2-manifold warning as v47 (CGAL-confirmed identical), no new warnings.
+
 ### 2026-07-05 | VM-01-partition-depth-door-collision-fix | DONE — v47, 2 confirmed problems fixed, both re-verified clear
 
 Files: VM-01-base-v47.scad (new, source v46), rules-dimensions.md(v18→v19), knowledge.map(v36→v37), cc_chat_log.md, prompts/archive/.

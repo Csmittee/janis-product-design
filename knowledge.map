@@ -1,6 +1,16 @@
 # knowledge.map
 # Janis Product Design — Master File Index
-# Version: v39 | 2026-07-06
+# Version: v40 | 2026-07-06
+# Changes: design-scope-of-work-prompt — 2 new files:
+# vending-machine/design_scope_of_work_rule.md and
+# pilates-reformer/design_scope_of_work_rule.md — owner-facing product
+# concept documents (envelope targets, compartment/section map, functional
+# features, appearance/do-not features, open questions), extracted from
+# each project's own governance files, chat logs, and archived prompts.
+# PARTIAL extraction — session hit a usage limit before an exhaustive
+# per-file archive read could complete; both new files flag this in their
+# own header + Open Questions section. See FILE LOCATIONS below.
+# Previous: v39 | 2026-07-06
 # Changes: VM-01-door-flap-acrylic-fix — new ACTIVE VM-01-base version
 # (v49, standalone, ran against the live v48 frame — the separate corner/
 # frame/shell-width redesign has explicitly NOT landed as of this
@@ -148,6 +158,8 @@
 | CURRENT_STATE.md | / (repo root) | Where-we-left-off resumption memo, one entry per product, includes open/unresolved items. Updates ONLY on Janis-confirmed pause. Read by Claude Web AND cc. |
 | vending-machine/VM-01-base/PART_MANIFEST.md | vending-machine/VM-01-base/ | cc — Plain-language part identity registry for VM-01 — what each ASSEMBLY-called module actually is/is not, and its Toggle-Completeness Rule status. Updated in the same prompt as any module add/rename/remove. Read by Claude Web + cc before QA sessions. Added 2026-07-05 (VM-01-governance-batch-post-v44). |
 | pilates-reformer/PR-01-base/PART_MANIFEST.md | pilates-reformer/PR-01-base/ | cc — Same format, PR-01's modules. Added 2026-07-05 (VM-01-governance-batch-post-v44). |
+| vending-machine/design_scope_of_work_rule.md | vending-machine/ | cc — Owner-facing product concept (envelope targets, compartment map, functional features, appearance/do-nots, open questions), plain language, no implementation detail. Must be updated the SAME session any new feature/goal is confirmed with Janis. Added 2026-07-06 (design-scope-of-work-prompt) — PARTIAL extraction, see file header. |
+| pilates-reformer/design_scope_of_work_rule.md | pilates-reformer/ | cc — Same format, PR-01's own product concept, built independently from VM-01's. Added 2026-07-06 (design-scope-of-work-prompt) — PARTIAL extraction, see file header. |
 | pilates-reformer/PR-01-base/PR-01-assembly-v31.scad | pilates-reformer/PR-01-base/ | cc — top-level PR-01 assembly, versioned |
 | pilates-reformer/PR-01-base/pole_top.scad | pilates-reformer/PR-01-base/ | cc — NOT individually versioned, see Task A note (PR-01-multifile-split-v25). Flattened out of modules/ (PR-01-flatten-modules-v26) — no subfolder, per corrected MULTI-FILE MODULE CONVENTION. |
 | pilates-reformer/PR-01-base/leg_socket.scad | pilates-reformer/PR-01-base/ | cc — NOT individually versioned, same flat-file exception as pole_top.scad. New 2026-07-02 (pole-base-bell-collar-socket-build). |

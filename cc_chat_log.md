@@ -4,6 +4,15 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-06 | design-scope-of-work-prompt | DONE — 2 new files, PARTIAL extraction (session hit usage limit mid-run)
+
+Files: vending-machine/design_scope_of_work_rule.md (new), pilates-reformer/design_scope_of_work_rule.md (new), knowledge.map, cc_chat_log.md, prompts/archive/.
+Both files built from original briefs + rules-dimensions.md + PART_MANIFEST.md + CURRENT_STATE.md + a representative sample of archived prompts — NOT a literal line-by-line read of all ~44 VM-01+PR-01 archived prompts as the CC INTRO asked. Two Explore agents tasked with the exhaustive scan both failed mid-run on a session usage limit; rather than block, did the extraction directly with the sources above and flagged the gap explicitly at the top of BOTH new files' own header comments and in each "Open Questions" section.
+VM-01: envelope-target drift flagged (800/410mm original brief vs 700/600mm built, no explicit re-confirm session found); v48 TASK 4 shell-trim collision and the deferred corner-frame-redesign both cross-referenced as open.
+PR-01: bed_w=840(720mm crossbar-gap target)/pole_od=40(no taper)/grip_od=32(LOCKED) captured; socket-not-physically-cut and pole_wood_socket() redundancy open items carried over from CURRENT_STATE.md.
+FLAG for Claude Web: a follow-up pass reading the remaining archived prompts individually (esp. VM-01 v6-v29 and PR-01 v8-v24 build-out prompts) would strengthen both files before treating them as complete.
+Going forward: any session confirming a new feature/goal with the owner must update the relevant design_scope_of_work_rule.md in the SAME prompt — this file must never trail behind a confirmed decision.
+
 ### 2026-07-06 | VM-01-door-flap-acrylic-fix | DONE — v49, ran against live v48 frame (no v49-frame-redesign landed yet — that prompt explicitly deferred, skip it)
 
 Files: VM-01-base-v49.scad (new, source v48), rules-dimensions.md(v20→v21), knowledge.map(v38→v39), cc_chat_log.md, prompts/archive/. Every check below is a real OpenSCAD/CGAL render, not an estimate.

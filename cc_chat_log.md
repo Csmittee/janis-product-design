@@ -4,6 +4,15 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-06 | VM-01-corner-frame-redesign | DONE — v50, built on real v49 (naming note), 1 real constraint flagged not forced
+
+Files: VM-01-base-v50.scad (new, source v49), rules-dimensions.md(v21→v22), knowledge.map(v40→v41), cc_chat_log.md, prompts/archive/. Every check below is a real OpenSCAD/CGAL render.
+T1: pole = shell's own front-left curved corner wall (never cut by existing openings) — removed via new cutout (X/Y -1..22, full door height) in both shell modules. CGAL-confirmed: real mid-height collision gone across full 0-100° sweep (distinct from an unrelated, already-known Z50-52/698 coincident-face artifact). FLAG: opens a ~5mm gap at Z50-55/693-698 (outside the frame's own range) with no material there — unresolved, needs Janis input.
+T2: frame_bar 20→8mm. RIGHT vertical touches compartment_divider() (product_w+e) — achieved, CGAL-clear vs door+lane4. LEFT vertical: tried growing to touch the shell (r=19.01) — CGAL bisection proved this ALWAYS recollides the door (its flange uses the identical center/radius by design) — reverted to the old proven-safe r=14, flagged as a real constraint, not forced. Caught+fixed a self-intersecting polygon bug (narrower frame_bar made the old Y-only curve-stop rule fold back on itself — "mesh not closed" CGAL error).
+T3: widening total_w/product_w does NOTHING (confirmed algebraically+live) for either the spring lanes or the tray box's own walls vs the frame — 0mm widening. Real fix: new tray_x_inset(17mm, was hardcoded "10") + tray_w_global(389.01mm, was product_w-20) — a first attempt (14mm) passed a lanes-only check but missed the tray BOX's own walls also colliding; re-derived, CGAL-confirmed zero overlap across the full tray_out_pct sweep (0-1.0), both trays.
+T4: new hinge-pivot reinforcement cylinder (d=hinge_od) at the door's rotation axis — angle-invariant, CGAL-clear vs shell+frame at 0/50/100°.
+Carried forward, untouched: acrylic/frame fill overlap (re-measured, same as v49), new partition-weld protrusion (not investigated, out of scope).
+
 ### 2026-07-06 | wire-design-scope-into-workflow | DONE — WORKFLOW_SKILL.md v3.9→v3.10, docs only
 
 Files: WORKFLOW_SKILL.md, cc_chat_log.md, prompts/archive/. No .scad touched.

@@ -1,5 +1,31 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v21 — 2026-07-06
+# Version: v22 — 2026-07-06
+# Changes: VM-01-corner-frame-redesign (v50) — left-front-corner rebuild.
+# Removed the shell's front-left corner "pole" (solid curved wall material
+# never actually cut by the door/window cutouts, confirmed colliding with
+# the door once tray_zone_frame() is hidden) via a new cutout in both
+# outer_shell()/outer_shell_debug(), full door height. tray_zone_frame():
+# frame_bar 20mm->8mm; RIGHT vertical extended to real contact with
+# compartment_divider() (world X=product_w+e); LEFT vertical's radius
+# LIVE-tested and found it CANNOT grow to touch the shell without
+# recolliding the door (the door's own return-flange arc uses the
+# identical center/radius, by design, for a snug closed fit) -- stays at
+# its prior value (14mm), flagged as a real, non-negotiable constraint
+# rather than forced. Spring-tray clearance: confirmed live that widening
+# total_w/product_w has ZERO effect on either the spring lanes' or the
+# tray box's own wall positions relative to the frame (none of them
+# depend on those globals) -- fixed instead via `tray_x_inset` (was
+# hardcoded "10", now 17mm) and a new `tray_w_global` (was fixed
+# `product_w-20`), both derived from a real 2mm clearance to the rebuilt
+# verticals. New hinge-pivot reinforcement cylinder (diameter=hinge_od,
+# reused) added to left_zone_door(), replacing the removed pole's
+# structural role from the door's own side. Verified via an ACTUAL
+# OpenSCAD/CGAL render (binary installed) for every check: door sweep
+# (0-100, 9-angle+fine), frame-vs-door sweep, frame-vs-spring-lane sweep
+# across the full tray_out_pct range (0-1.0), hinge-pole checks at
+# 0/50/100 degrees -- all confirmed clear except the SAME pre-existing,
+# already-flagged acrylic-cap-vs-top-flange residual (unchanged from v49).
+# Previous: v21 — 2026-07-06
 # Changes: VM-01-door-flap-acrylic-fix (v49, standalone, ran against the
 # live v48 frame — the separate corner/frame/shell-width redesign has NOT
 # landed as of this version, explicitly deferred). The lower flap-zone
@@ -427,13 +453,39 @@ entirely):
 | Border inset | 5mm | From the door's own edges, all 4 sides (top/bottom/left/right) — was flush with X=0/product_w/roofline before |
 | Frame X range (world) | 7–409mm | door_left_x+5 to door_right_x-5 |
 | Frame Z range (world) | 55–693mm | door_bot_z+5 to door_top_z-5 (638mm tall) |
-| Vertical bar width | 20mm | `frame_bar`, unchanged value — both verticals |
-| Crossbar | 10mm thick (Z), world Z 270–280mm | Spans left-to-right between the two verticals (world X 27-389mm) at `tray_0_z` (270mm) — the natural exit/tray-zone boundary. Single structural bar, does NOT split the window into two cutouts |
+| Vertical bar width | 8mm (was 20mm) | `frame_bar` — CHANGED 2026-07-06 (v50, VM-01-corner-frame-redesign): narrowed so each vertical extends by real CONTACT/touch with the housing instead of floating at a fixed inset — see below |
+| Crossbar | 10mm thick (Z), world Z 270–280mm, world X 15-408.01mm (was 27-389mm) | Spans left-to-right between the two verticals at `tray_0_z` (270mm). X range widened to match the verticals' new inner edges (v50). Single structural bar, does NOT split the window into two cutouts |
 | Reference point | World (skin_t+(corner_r-1), skin_t+(corner_r-1)) = (21,21)mm | SAME formula as `left_zone_door()`'s `arc_cx`/`arc_cy` (shell's real interior corner curve center), reused independently — this module has no hinge-relative local origin, so no further offset needed |
-| Left vertical bar curve | Center (21,21)mm, radius (corner_r-1)-5 = 14mm | Outer edge curved to match the door's own flange arc (same center/radius formula) but pulled back by the SAME 5mm border inset already used for the frame's X/Z insets — clears the door's hinge/flange swept volume at every angle |
+| Left vertical bar curve | Center (21,21)mm, radius (corner_r-1)-5 = 14mm — UNCHANGED value, confirmed maximum (v50) | v50 attempted to grow this to `(corner_r-1)+e`=19.01mm (touch the shell's interior wall directly, replacing the removed corner "pole," see below) — LIVE CGAL bisection found this is NOT ACHIEVABLE: the door's own return-flange arc uses the IDENTICAL center and an outer radius of the SAME value (corner_r-1=19mm, by design, for a snug closed fit), so any frame radius above ~15.96mm re-collides the door (confirmed empirically at door_open_deg=0, the tightest case) — there is no radius that both touches the shell and clears the door. Reverted to the prior, already-proven-safe 14mm. The curve's own angle range is no longer hardcoded to the full 180-270° sweep — it now stops at whichever of two conditions (reaching `frame_y0` or reaching `left_bar_inner_x`) binds first, since narrowing `frame_bar` to 8mm made the OLD Y-only stopping rule self-intersect the polygon (caught via a live "mesh not closed" CGAL error, fixed) |
+| Right vertical bar | World X 408.01–416.01mm (was 389-409mm) | CHANGED 2026-07-06 (v50) — extended to REAL CONTACT with `compartment_divider()` (starts at world X=`product_w`), touching at `product_w+e`=416.01mm — ACHIEVED (unlike the left side): confirmed via live CGAL render ZERO overlap with both the door (full 0-100° sweep) and spring lane 4's swept footprint (full `tray_out_pct` sweep, see "Tray Rack" below) |
 | Frame depth (Y) | 2mm | `skin_t` convention, flat bars (crossbar + right vertical) at world Y 7-9mm; left vertical's curved region spans world Y 7-21mm (a "return" shape matching the corner, analogous to the door's own return flange) |
-| Collision clearance | ZERO overlap, `door_open_deg` 0-100° | Re-verified (Python/shapely, mirrors the CGAL `intersection()` test) at all 9 mandated angles + a 0.5°-resolution fine sweep across the full 0-100° range — see `cc_chat_log.md` for the full result table |
-| Top/bottom weld flanges (v46) | 10mm each (Z), world Z 55-65mm (bottom) and 683-693mm (top) | NEW 2026-07-05 (v46) — for spot-welding the frame to the shell. Built from the SAME 2D cross-section as the crossbar (already proven clear of the door leaf at every angle), placed WITHIN the frame's existing, already-verified Z range (55-693mm) — no new Z-boundary risk. Re-verified: 9-angle sweep + fine sweep, ZERO overlap, same result as above. **v48**: this top flange (683-693mm) is the frame material `left_zone_door()`'s acrylic/metal split (see "Left-Zone Front Door" above) now clears explicitly — `frame_inset`(5mm)/`FLANGE_T`(10mm) promoted from this module's local scope to shared PARAMETERS so both modules read the same source. |
+| Collision clearance | ZERO overlap vs door leaf, `door_open_deg` 0-100° (9-angle + fine 0.5° sweep); ZERO overlap vs spring lanes 0/4 across the full `tray_out_pct` (0-1.0) sweep | Re-verified 2026-07-06 (v50) via an ACTUAL OpenSCAD/CGAL render (binary installed this session, not Python estimate) at the NEW dimensions above — the old proof did not carry over automatically. The only residual overlap found is the SAME pre-existing, already-flagged acrylic-cap-vs-top-flange issue (unchanged magnitude from v49), not a new collision |
+| Top/bottom weld flanges (v46) | 10mm each (Z), world Z 55-65mm (bottom) and 683-693mm (top), world X 15-408.01mm (was 27-389mm) | For spot-welding the frame to the shell. Built from the SAME 2D cross-section as the crossbar, X range widened to match (v50). **v48**: this top flange is the frame material `left_zone_door()`'s acrylic/metal split now clears explicitly — `frame_inset`(5mm)/`FLANGE_T`(10mm) promoted from this module's local scope to shared PARAMETERS so both modules read the same source. |
+
+## VM-01 Base — Left-Front-Corner "Pole" Removal (NEW 2026-07-06, v50)
+
+Janis confirmed via direct visual isolation (removing `tray_zone_frame()` from her render) that a thin vertical "pole" of shell material remained at the left-front corner, colliding with the closed door. Root cause: the shell's own curved corner wall (between the outer rounded-corner surface and the inner hollow, world X/Y roughly 0-21/0-21) was never actually cut by either the front-face door opening (assumes a flat wall from `X=skin_t`) or the v43 left-side-wall hinge recess (only slots the flat LEFT face) — the CURVED transition between the two was always solid, and the door's own return-flange arc occupies almost the identical space when closing.
+
+| Part | Value | Notes |
+|---|---|---|
+| Cutout (both `outer_shell()`/`outer_shell_debug()`) | World X/Y -1..22mm, Z `door_bot_z`..`door_top_z` (50-698mm, full door height) | Removed entirely — not inset/notched, "not practical in real sheet-metal forming to inset an already-formed rounded corner" (Janis). Confirmed via live CGAL render: the real, substantial mid-height collision (distinct from a separately-known thin coincident-face artifact at world Z 50-52/698, which is unrelated and unchanged) is gone across the full door_open_deg 0-100° sweep; shell remains a valid solid (same single pre-existing manifold warning as v49, no new warning) |
+| FLAG — not resolved | ~5mm gap at world Z 50-55 and 693-698 (outside `tray_zone_frame()`'s own 55-693 envelope) where NEITHER shell nor frame now has material at this corner | Discovered, not fixed — needs Janis's input on how the corner should physically close up there. Not a 2-manifold break (same aperture-class as the door/window/chute cutouts, closed by the door leaf, not meant to be watertight alone), but a real open structural question |
+
+## VM-01 Base — Hinge-Pivot Reinforcement (NEW 2026-07-06, v50)
+
+Replaces the removed corner "pole"'s structural role from the DOOR's own side (the pole was fixed to the shell; this member rotates WITH the door instead).
+
+| Parameter | Value | Notes |
+|---|---|---|
+| Shape/position | Cylinder, diameter=`hinge_od`=12mm (reused, not a new number), full `door_h` height, at the door's own LOCAL origin (0,0) — the rotation axis itself | Inside `left_zone_door()`'s existing translate/rotate block. Sitting exactly on the rotation axis makes it ANGLE-INVARIANT in world space — confirmed clear at one angle means clear at all angles; verified via live CGAL render at 0/50/100° against both the shell and `tray_zone_frame()` |
+
+## VM-01 Base — Tray X-Inset / Width (CHANGED 2026-07-06, v50)
+
+| Parameter | Value | Notes |
+|---|---|---|
+| `tray_x_inset` | 17mm (was a bare hardcoded "10" in both `spring_tray()` and `tray_rack()`) | Janis's instruction was to widen `total_w`/`product_w` for spring-tray clearance — LIVE geometry check found this has ZERO effect: neither the spring lanes' absolute X position (derived from `spring_od`/`spring_gap`/`tray_wall_t` + this inset only) nor the tray box's own wall positions relative to `tray_zone_frame()`'s new touch-points depend on `total_w`/`product_w` at all (confirmed algebraically and via live render). 17mm gives the box's LEFT wall (and spring lane 0) a real 2mm clearance from the left vertical's max reach (15mm) |
+| `tray_w_global` | `(product_w + e - frame_bar - 2) - tray_x_inset` = 389.01mm (was fixed `product_w-20`=396mm) | Gives the box's RIGHT wall (and spring lane 4) the SAME real 2mm clearance from the right vertical's own touch point (`product_w+e-frame_bar`), which now scales with the SAME parameters the old `product_w-20` formula assumed a fixed 10mm margin against — that assumption no longer holds once the right vertical touches the divider. Confirmed via a full `tray_out_pct` (0-1.0) sweep: ZERO overlap, both walls and both outermost lanes |
+| Total width increase | 0mm — `total_w`/`product_w` UNCHANGED | Stated explicitly per the finding above, rather than forcing an ineffective widening to satisfy the prompt's literal instruction |
 
 SUPERSEDED — DO NOT USE: `Frame bar width=20mm (all four sides)` /
 `Frame Z range=300-542mm` (pre-v44 values, wrong reference point + door

@@ -1,8 +1,17 @@
 # WORKFLOW_SKILL.md
 # Janis Product Design — How We Work
-# Version: 3.9 — 2026-07-05
-# Changes: Added TRIGGER → ACTION → VALIDATOR row for new product design requests (points to new .claude/SKILL_product_design_skeleton.md — FIRST file read for any product line that is not VM-01/PR-01); added that file to FILE STRUCTURE — REPO's .claude/ block.
-# Previous: v3.8 — 2026-07-03
+# Version: 3.10 — 2026-07-06
+# Changes: Added new Step 4 to the CLAUDE WEB SESSION OPENING — MANDATORY
+# SEQUENCE (and its duplicate copy in the CHAT HANDOFF TEMPLATE) — read the
+# relevant project's design_scope_of_work_rule.md in full, same mandatory
+# ("not found → STOP") tier as chat_rules.md/CURRENT_STATE.md, positioned
+# right after CURRENT_STATE.md (Step 3.5) so the active-project context is
+# already known, and before Step 5/6 (handoff open items, "Today's goal?")
+# so it lands before any QA discussion or prompt drafting can begin. cc's
+# own read behavior is UNCHANGED — design_scope_of_work_rule.md stays
+# prompt-triggered only for cc, not added to any automatic cc read step
+# (confirmed: cc_rules.md has no automatic read list entry for it).
+# Previous: v3.9 — 2026-07-05
 
 ---
 
@@ -92,11 +101,25 @@ or sessions where Janis explicitly says no new geometry is being attempted.
   (it's short, unlike cc_chat_log). This is synced from repo root, same as
   cc_chat_log. Not found → tell Janis sync is broken, same as Step 3.
 
+**Step 4:** Read `design_scope_of_work_rule.md` in FULL for the project(s)
+  this session concerns — `vending-machine/design_scope_of_work_rule.md`
+  and/or `pilates-reformer/design_scope_of_work_rule.md`. This holds the
+  owner's actual product concept (envelope targets, compartment map,
+  functional/appearance features) — read it BEFORE any QA discussion or
+  prompt drafting begins, same mandatory tier as Steps 2/3.5. If Step 3.5's
+  CURRENT_STATE.md read doesn't make it unambiguous which project this
+  session will touch, read BOTH copies rather than picking one silently.
+  Not found → tell Janis to confirm the file exists on main (repo root
+  design_scope_of_work_rule.md files are not yet mirrored into project
+  knowledge as of this writing — search project knowledge first per the
+  usual pattern, and if absent there, ask Janis to paste/upload it rather
+  than proceeding without it). STOP.
+
 **Step 5:** Read CHAT_HANDOFF open items. State "Memory installed."
 
 **Step 6:** Ask "Today's goal?" — even if handoff already states it.
 
-Do not respond to any task until all 6 steps confirmed.
+Do not respond to any task until all steps confirmed (1, 2, 3, 3.5, 4, 5, 6).
 
 ---
 
@@ -313,6 +336,7 @@ Fix before delivering. Never ask Janis to remind.
 > Step 2: Load chat_rules (project knowledge → STOP if missing)
 > Step 3: Read cc_chat_log first 3 entries (newest at top) (project knowledge sync from repo → STOP if missing)
 > Step 3.5: Read CURRENT_STATE.md in full (project knowledge sync from repo → STOP if missing)
+> Step 4: Read design_scope_of_work_rule.md in full for the relevant project(s) — STOP if missing
 > Step 5: Read open items below → state "Memory installed"
 > Step 6: Ask "Today's goal?"
 

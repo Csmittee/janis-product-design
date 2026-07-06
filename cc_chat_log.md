@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-06 | VM-01-door-flap-acrylic-fix | DONE — v49, ran against live v48 frame (no v49-frame-redesign landed yet — that prompt explicitly deferred, skip it)
+
+Files: VM-01-base-v49.scad (new, source v48), rules-dimensions.md(v20→v21), knowledge.map(v38→v39), cc_chat_log.md, prompts/archive/. Every check below is a real OpenSCAD/CGAL render, not an estimate.
+T1: lower flap-zone's separately-mounted metal panel (door_t+door_t=6mm stacked w/ leaf) DELETED — window hole now only cuts split_z_local..win_z1 (acrylic zone); below that is just the leaf's own continuous door_t skin, flap opening cut directly in. Thickness 6mm→3mm. Re-verification caught a side effect: flap's cutout needed extending to flap_top_z+flap_t+e (183.01 local, was 180) so its full 0-55° sweep still clears the now-solid leaf (CGAL empty at every 1° step; un-extended version showed a real collision, confirming the test).
+T2: acrylic's left/right mounting overshoot (into tray_zone_frame()'s verticals — the whole source of v48's flagged regression) pulled in by the project's existing 2mm clearance convention (win_x0+2+e..win_x1-2-e). Caught a coincident-face bug in my own first attempt (border strip touching both the frame AND the acrylic at exact planes, zero-volume CGAL intersection) — fixed w/ e-nudges both sides. Top boundary (682.99mm) reconfirmed unchanged. Window opening (window_x0/z0/w/h) confirmed distinct from acrylic's own border, no flag needed. Metal top cap (v48) left untouched, out of scope.
+Result: fill-vs-frame CGAL volume 22091mm³(v48)→3757mm³(v49), remainder is entirely the unchanged top cap's already-flagged residual.
+NOTE: corner-frame-redesign prompt intentionally NOT run this session (per Janis, save for fresh-context session) — do not build on v49 assuming that frame change is included.
+
 ### 2026-07-06 | VM-01-left-door-v47-fixes | DONE — v48, 3/4 fixed + re-verified, TASK 4 flagged not guessed
 
 Files: VM-01-base-v48.scad (new, source v47), rules-dimensions.md(v19→v20), knowledge.map(v37→v38), cc_chat_log.md, prompts/archive/. OpenSCAD/CGAL binary WAS available this session — every check below is a real render, not a Python estimate.

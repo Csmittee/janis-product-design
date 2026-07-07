@@ -1,5 +1,24 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v25 — 2026-07-07
+# Version: v26 — 2026-07-07
+# Changes: vm01-v55-door-floor-datum-fix (v55, direct user question, no
+# prompt file). User asked why the door-closed-only manifold warning had
+# persisted across v50-v54. Re-verified the two previously-suspected
+# "exact tangency" causes (door-top-vs-roof, hinge-cylinder-vs-wall) with
+# a real 9-angle CGAL sweep — both are CLEAN, the earlier attribution was
+# wrong. Root-caused instead: door_bot_z (and 3 independently-re-derived
+# copies: shell_hinge_z x2, hinge_z) used FOOT_BASE_H+0 (legs level)
+# instead of FOOT_BASE_H+skin_t (true interior floor) — a real ~2mm
+# collision between the door leaf and the floor slab, confirmed via CGAL
+# facet extraction. Fixed by moving the shared Z-datum (not just the
+# leaf's own extrusion) to FOOT_BASE_H+skin_t-e for all 4 copies, plus
+# leg() extended +e to stay flush. Bonus: this also closed the older
+# unresolved "bottom-left-corner floor hole" (same stale datum). NOT
+# fixed this round: compartment_divider() has its own separate touch
+# with the shell (7 facets + warning), confirmed X-Y not Z (no change at
+# 1mm overlap) — flagged, not guessed at. Full-assembly door-closed
+# warning is still present, now solely attributable to that one isolated
+# cause.
+# Previous: v25 — 2026-07-07
 # Changes: vm01-v54-sensor-bracket-fix (v54). Sensor strip Z corrected
 # 280mm(stale tray_0_z-20)→350mm(tray_stack_z0-20) — real CGAL-confirmed
 # 12-facet collision with exit_compartment_wall() at the old value,
@@ -287,7 +306,7 @@ Derived zone stack:
 
 | Dimension | Value | Notes |
 |---|---|---|
-| Leg height | 50mm | |
+| Leg height | 50mm | Rendered cylinder height is 50mm+e (v55, vm01-v55-door-floor-datum-fix) — real CGAL-confirmed the leg's own top face sat EXACTLY flush with the shell's floor skin's own bottom (both at world Z=leg_h=50), a degenerate touch contributing to the door-closed manifold warning. Extended by e for a real, non-degenerate shared volume (Rule M-1) — the STATED leg height (50mm, what the part actually measures) is unchanged, only its solid model's own bottom-boundary reach into the floor changed. |
 | Leg OD | 25mm | |
 | Leg inset | 40mm | From corner |
 
@@ -449,10 +468,12 @@ a stop that swings with the thing it's stopping isn't a stop).
 
 | Dimension | Value | Notes |
 |---|---|---|
-| Door Z range (full height) | 50–698mm | CONFIRMED 2026-07-03, unchanged by v42/v43 |
-| ISOLATION FINDING (v52, vm01-v52-acrylic-fix-side-shell-collision-isolation, DIAGNOSIS ONLY — not fixed) | `door_top_z` (698mm world) lands EXACTLY on the shell's own interior ceiling (bottom face of the top skin, also 698mm world — arithmetic-confirmed zero gap) | The paired TOP finding from isolating Janis's refined door-closed manifold-warning condition (clears only when `show_shell_top=false` AND `show_shell_left=false` together — see "Hinge-Pivot Reinforcement" section above for the paired LEFT finding). An exact, zero-clearance touching plane with NO epsilon buffer, unlike nearly every other touching-face condition in this file. Responsible sub-feature: `door_top_z`'s own definition vs. `outer_shell_debug()`'s top-skin Z-range — not `tray_zone_frame()` (already ruled out by Janis's own testing), not the door leaf's shape. Not patched this round. |
+| Door Z range (full height) | 51.99–698mm | CONFIRMED 2026-07-03 as 50-698mm, unchanged by v42/v43. CORRECTED 2026-07-07 (v55, vm01-v55-door-floor-datum-fix): bottom raised from 50mm to `FOOT_BASE_H+skin_t-e`=51.99mm — see MANIFOLD ROOT CAUSE row below. |
+| ISOLATION FINDING (v52, vm01-v52-acrylic-fix-side-shell-collision-isolation) — RULED OUT 2026-07-07 (v55) | `door_top_z` (698mm world) lands EXACTLY on the shell's own interior ceiling — arithmetic-confirmed zero gap, but a real 9-angle CGAL sweep (v55, against the full assembly, not just an isolated slice at one angle) found this EMPTY/clean at every angle 0-100°, not the door-closed trigger it was assumed to be in v52/v53. Kept here for history, superseded — see MANIFOLD ROOT CAUSE row below for the actual cause. |
+| MANIFOLD ROOT CAUSE, DOOR-VS-FLOOR (v55, vm01-v55-door-floor-datum-fix, FIXED) | `door_bot_z` was `FOOT_BASE_H+0` (50mm, the shell's ABSOLUTE base) instead of `FOOT_BASE_H+skin_t` (52mm, the interior floor SURFACE) — buried the door's bottom ~2mm inside the shell's own floor slab across nearly its full width | Real CGAL confirmed this was a substantial (12-facet, non-degenerate) collision, present since at least v53, angle-dependent exactly as Janis reported (present at 0°, mostly gone by 20°, clear by 25°+) — the ACTUAL door-closed manifold trigger, not the two v52/v53 exact-tangency findings (both ruled out this round, see rows above/below). Fixed to `FOOT_BASE_H+skin_t-e` (51.99mm) — real Rule M-1 shared volume with the floor, not a bare touch. Re-verified: full door-vs-shell `Simple: yes`, no warning. SIDE EFFECT: the v50 corner-pole cutout reads this same constant — raising it also closed the previously-isolated (not fixed) bottom-left-corner floor hole, confirmed via direct before/after render comparison. |
+| MANIFOLD, REMAINING — `compartment_divider()` vs shell (v55, ISOLATED, NOT FIXED) | Real CGAL confirms `compartment_divider()` and the shell have their own separate exact-tangency touch (7 facets + manifold warning), independent of the door | Given the SAME `leg_h`-flush-with-floor treatment as `leg()` (which fixed cleanly) — did NOT resolve this one, even at 1mm of Z-overlap (proving it's not a clearance-magnitude issue). Most likely an X-Y edge alignment (the same class of problem `drop_zone_guards()` had in v54, fixed by moving to a different reference point entirely, not just adding clearance) — NOT diagnosed further this round, flagged explicitly rather than force-fitting a guess. This is now the ONLY confirmed remaining contributor to the door-closed manifold warning — door and legs are both confirmed clean. |
 | Door X range (left zone only) | 2–414mm | CONFIRMED 2026-07-03 — product_w zone only, NOT total_w |
-| Hinge center, world coords | X=0-(hinge_od/2)=-6mm, Y=HINGE_Y_OFFSET=25mm, Z=FOOT_BASE_H+0=50mm | CHANGED 2026-07-05 (v43) — was `hinge_y=corner_r+5` (a Cousin reference to the cosmetic corner_r tuning parameter); `HINGE_Y_OFFSET` is now a fixed, independent 25mm constant measured from the shell's theoretical SHARP corner (front-plane × left-plane extended, NOT the corner_r fillet's own center) — numerically unchanged (still 25mm), only decoupled so retuning `corner_r` later is a separate clearance check, not an input. Barrel X moved from flush-with-interior (X=2mm) to proud of the exterior wall (X=-6mm, exterior, door opens outward) — this point is now THE datum for the entire door assembly; `left_zone_door()`'s local origin and the shell's recess-pocket cutout each independently re-derive it from shared named constants (`HINGE_Y_OFFSET`/`hinge_od`/`FOOT_BASE_H`), never by reading each other's variables. |
+| Hinge center, world coords | X=0-(hinge_od/2)=-6mm, Y=HINGE_Y_OFFSET=25mm, Z=FOOT_BASE_H+skin_t-e=51.99mm | CHANGED 2026-07-05 (v43) — was `hinge_y=corner_r+5` (a Cousin reference to the cosmetic corner_r tuning parameter); `HINGE_Y_OFFSET` is now a fixed, independent 25mm constant measured from the shell's theoretical SHARP corner (front-plane × left-plane extended, NOT the corner_r fillet's own center) — numerically unchanged (still 25mm), only decoupled so retuning `corner_r` later is a separate clearance check, not an input. Barrel X moved from flush-with-interior (X=2mm) to proud of the exterior wall (X=-6mm, exterior, door opens outward) — this point is now THE datum for the entire door assembly; `left_zone_door()`'s local origin and the shell's recess-pocket cutout each independently re-derive it from shared named constants (`HINGE_Y_OFFSET`/`hinge_od`/`FOOT_BASE_H`), never by reading each other's variables. Z CORRECTED 2026-07-07 (v55) — was `FOOT_BASE_H+0`=50mm, see MANIFOLD ROOT CAUSE row above. |
 | Return flange depth | 23mm | CONFIRMED 2026-07-03, unchanged by v43 (`HINGE_Y_OFFSET - skin_t`) |
 | Curved flange (flange/trim corner) | 12-segment arc, center (skin_t+(corner_r-1), skin_t+(corner_r-1)), radius corner_r-1 | CHANGED 2026-07-05 (v43) — was a hard 90° polygon bend; now follows the shell's actual rounded interior corner, sampled live from `corner_r`/`skin_t` |
 | Viewing window (world) | X 27–389mm, Z 55–693mm (362 x 638mm) | CHANGED 2026-07-05 (v44) — resized to match the new H-frame's inner clear opening (see "VM-01 Base — Tray Zone Frame" below), giving a full view of the entire compartment (springs, trays, everything), not just the old tray-zone slice. Local constants (door's own origin): `window_x0=25`/`window_z0=5`/`window_w=362`/`window_h=638`. SUPERSEDES v43: `window_x0=38`/`window_z0=220`/`window_w=336`/`window_h=242` (world Z 270-512mm, the old tray-zone-only slice). The DOOR CUTOUT itself is unchanged by v46 (still one continuous opening) — only the FILL material is now split, see next row. |
@@ -525,7 +546,7 @@ Replaces the removed corner "pole"'s structural role from the DOOR's own side (t
 | Parameter | Value | Notes |
 |---|---|---|
 | Shape/position | Cylinder, diameter=`hinge_od`=12mm (reused, not a new number), full `door_h` height, at the door's own LOCAL origin (0,0) — the rotation axis itself | Inside `left_zone_door()`'s existing translate/rotate block. Sitting exactly on the rotation axis makes it ANGLE-INVARIANT in world space — confirmed clear at one angle means clear at all angles; verified via live CGAL render at 0/50/100° against both the shell and `tray_zone_frame()` |
-| ISOLATION FINDING (v52, vm01-v52-acrylic-fix-side-shell-collision-isolation, DIAGNOSIS ONLY — not fixed) | This cylinder's tangent edge (world X=0, at Y=25 i.e. past `corner_r`=20's curve) is EXACTLY coincident with the shell's own flat exterior-wall plane there (arithmetic-confirmed zero gap) | This is one of TWO independent exact-zero-clearance touching-face conditions found while isolating Janis's refined door-closed manifold-warning finding (error clears ONLY when `show_shell_top=false` AND `show_shell_left=false` together). The left-wall recess pocket and the v50 corner-pole cutout were independently checked and confirmed to ALREADY fully/correctly clear the door's return-flange footprint with zero gap (Y -1..25 continuous coverage) — this hinge-pivot cylinder's own tangent point against the exterior wall is the actual responsible sub-feature, not the recess pocket or corner-pole cutout. See "Left-Zone Front Door" table below for the paired TOP finding (`door_top_z` vs. the roof skin) — same underlying pattern (an exact-alignment value with no epsilon buffer), two different features, not one. Not patched this round. |
+| RULED OUT 2026-07-07 (v55) — was "ISOLATION FINDING (v52...)" | This cylinder's tangent edge (world X=0, at Y=25) was arithmetic-suspected (not CGAL-confirmed) to be exactly coincident with the shell's exterior-wall plane there | v55 re-tested this with a REAL 9-angle CGAL sweep (0-100°) using live STL facet extraction, not arithmetic — CLEAN at every angle, no touch, no warning contribution. The earlier v52 arithmetic estimate was wrong; the actual root cause of the persistent door-closed manifold warning (present v50-v54) was a completely different bug — see "MANIFOLD ROOT CAUSE, DOOR-VS-FLOOR (v55...)" in the Left-Zone Front Door section above, a Z-datum error (`FOOT_BASE_H+0` vs `FOOT_BASE_H+skin_t`) affecting `door_bot_z`, this cylinder's own `hinge_z`, `shell_hinge_z` (x2), and `leg()` — all 4 fixed in v55. |
 
 ## VM-01 Base — Tray X-Inset / Width (CHANGED 2026-07-06, v50)
 

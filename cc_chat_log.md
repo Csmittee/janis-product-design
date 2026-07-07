@@ -4,6 +4,12 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-07 | vm01-v52-acrylic-fix-side-shell-collision-isolation | DONE — v52, 1 real fix (not the hypothesized bug), 2 collisions isolated (not fixed)
+
+Files: VM-01-base-v52.scad (new, source v51), rules-dimensions.md(v23→v24), cc_chat_log.md, prompts/archive/. No OpenSCAD binary this session — arithmetic self-check only.
+T1: checked the actual v51 code before assuming Janis's "double-layer" hypothesis — found NO duplicate/sibling acrylic object (only one `#ADD8E6` piece inside `left_zone_door()`; `left_front_acrylic()` confirmed dead code). What WAS wrong: v51's cutout landed at EXACTLY `acrylic_top_limit_z` (682.99mm world), same as the acrylic's own top, with no epsilon — the deleted cap always used `acrylic_top_limit_z - e` for a real shared volume (Rule M-1); v51 dropped that nudge. Fixed by restoring it — likely explains the reported visual artifact even though no literal duplicate object existed.
+T2 (isolation only): Janis's refined finding (error clears only when top+left shell removed TOGETHER) traced to TWO independent exact-zero-clearance touching planes — `door_top_z` vs. the shell's own roof-skin boundary (both 698mm world), and the v50 hinge-pivot cylinder's tangent edge vs. the shell's flat exterior wall (both X=0mm world). Same underlying pattern (no epsilon buffer on an exact-alignment value), two different features — stated explicitly, not merged. Left-wall recess pocket + corner-pole cutout confirmed already fully clear the door's flange (no gap). Right side confirmed clean. Not patched — isolation/reporting only, per prompt scope.
+
 ### 2026-07-07 | governance-cc-intro-knowledge-map-rules-refresh | DONE — docs only, zero .scad touched
 
 Files: WORKFLOW_SKILL.md(3.10→3.11), knowledge.map(v42→v43, full rebuild), RULES.md(1.0→2.0), cc_chat_log.md, prompts/archive/.

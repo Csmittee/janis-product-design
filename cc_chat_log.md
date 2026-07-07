@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-07 | wire-kickoff-chain-scope-to-skeleton | DONE — docs only, zero .scad/dimension files touched
+
+Files: .claude/SKILL_product_design_skeleton.md(2.0→2.1), chat_rules.md(v3.9→v3.10), WORKFLOW_SKILL.md(3.12→3.13), knowledge.map(v45→v46), cc_chat_log.md, prompts/archive/.
+Added a PREREQUISITE section to the skeleton skill (before TRIGGER PHRASES) pointing to `design_scope_of_work_rule.md` — that file didn't exist when the skeleton skill was written (2026-07-05, one day before the scope file convention), so its own SCOPE never referenced it; a future session could complete the worksheets with no scope file at all, or in the wrong order.
+`chat_rules.md`'s "New Product Design Discipline" REWRITTEN (not appended) as one explicit 5-step sequence: customer interview → scope file (own confirmation gate) → skeleton's 3 worksheets in order (separate confirmation gate) → first cc prompt/coding loop → cc_chat_log/CURRENT_STATE feedback. Grandfather clause preserved, integrated into the rewrite.
+`WORKFLOW_SKILL.md`'s TRIGGER row updated to name the full chain and require TWO separate Janis confirmation points (post-scope-file, post-worksheets), not one collapsed gate. `knowledge.map`'s GOVERNANCE section unified into one connected chain description. All 4 files bumped X.Y (sequencing/detail, not new structural content, per this prompt's own explicit framing). No .scad/dimension files touched.
+
 ### 2026-07-07 | skeleton-skill-bom-tree-kinetic-convention | DONE — docs only, zero .scad/dimension files touched
 
 Files: .claude/SKILL_product_design_skeleton.md(1.0→2.0), cc_rules.md(v8→v9), chat_rules.md(v3.8→v3.9), WORKFLOW_SKILL.md(3.11→3.12), knowledge.map(v44→v45), cc_chat_log.md, prompts/archive/.

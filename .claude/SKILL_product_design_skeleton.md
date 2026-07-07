@@ -1,6 +1,14 @@
 # SKILL_product_design_skeleton.md
 # Claude Web + cc — Top-Down Skeleton & Datum Reference Frame Design Logic
-# Version: 2.0 — 2026-07-07
+# Version: 2.1 — 2026-07-07
+# Changes: Added a PREREQUISITE section (before TRIGGER PHRASES) pointing
+# to design_scope_of_work_rule.md — this skill's worksheets did not
+# previously state that a scope file must exist/be read FIRST, so a
+# future session could complete the worksheets without one ever being
+# created, or in the wrong order. Detail/sequencing addition (a pointer
+# to an existing artifact, not a new procedure of its own) — X.Y bump,
+# not X.0, per wire-kickoff-chain-scope-to-skeleton's explicit framing.
+# Previous: 2.0 — 2026-07-07
 # Changes: Added two new mandatory procedures, same day-one timing as the
 # Skeleton Definition Worksheet — BOM Subassembly Tree (parts hierarchy,
 # a DIFFERENT artifact from the Datum Skeleton, seeds that product's
@@ -30,6 +38,23 @@ This skill applies to **new product lines only**, starting 2026-07-05.
 grandfathered — do NOT retrofit either product to this system.**
 Janis's direct instruction: "we do not want to redo entirely the vending
 machine and my pilates, we apply this new system to later project only."
+
+---
+
+## PREREQUISITE — Read This Before the Worksheets Below
+
+This skill's worksheets (Skeleton, BOM Tree, Kinetic Table) all consume
+a `design_scope_of_work_rule.md` for this product — create that file
+FIRST if it doesn't already exist for this product, using the customer-
+requirement interview with Janis (owner-vocabulary features, envelope
+target, appearance/UX — see the file's own filter: customer-recognizable/
+marketing-headline content only, never implementation detail). Do not
+begin the Skeleton Definition Worksheet until the scope file exists and
+Janis has confirmed it. If a scope file already exists for this product
+(e.g., a later design phase for an already-scoped product), read it in
+full before starting the worksheets — every worksheet answer should
+trace back to something the scope file actually says, not be invented
+independently of it.
 
 ---
 

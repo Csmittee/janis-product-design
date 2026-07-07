@@ -1,5 +1,11 @@
 # knowledge.map
-# Version: v45 — 2026-07-07
+# Version: v46 — 2026-07-07
+# Changes: wire-kickoff-chain-scope-to-skeleton — GOVERNANCE section
+# unified into ONE connected kickoff chain description (was 3 disconnected
+# bullet points): design_scope_of_work_rule.md created FIRST → skeleton
+# skill's 3 worksheets (consuming the scope file, own separate
+# confirmation gate) → first cc prompt.
+# Previous: v45 — 2026-07-07
 # Changes: skeleton-skill-bom-tree-kinetic-convention — GOVERNANCE section
 # updated: SKILL_product_design_skeleton.md now requires 3 confirmed
 # artifacts before first cc prompt (Skeleton Worksheet + BOM Subassembly
@@ -129,21 +135,31 @@ the log).
 
 ## GOVERNANCE — NEW PRODUCT DESIGN CONVENTION
 
-`.claude/SKILL_product_design_skeleton.md` is the **FIRST file read** for
-any new product line, before rules-dimensions.md, before any
-component-sizing conversation, before the first cc prompt. It requires
-THREE artifacts completed and confirmed with Janis, same mandatory
-timing, before any component is sized:
-1. **Skeleton Definition Worksheet** — Top-Down Skeleton Layout + Datum
-   Reference Frame (Primary/Secondary/Tertiary) + Parent-Child design
-   discipline (coordinate reference — "where is everything, geometrically")
-2. **BOM Subassembly Tree** (added 2026-07-07) — parts/subassembly
-   hierarchy, a DIFFERENT artifact from the Skeleton, seeds that product's
-   `PART_MANIFEST.md`
-3. **Kinetic Dual-View table** (added 2026-07-07) — every moving part from
-   the BOM tree gets BOTH end states (open/closed, in/out, etc.)
-   established as explicit toggles from its first committed version, not
-   added later
+Any new product line (not a VM-01/PR-01 continuation) follows one
+connected kickoff chain, each step consuming the one before it:
+
+1. **`design_scope_of_work_rule.md`** created for that product FIRST —
+   owner-vocabulary features, envelope target, appearance/UX, from a
+   customer-requirement interview with Janis. Confirmed with Janis before
+   step 2 begins — a separate confirmation gate from step 2's own.
+2. **`.claude/SKILL_product_design_skeleton.md`** — the FIRST skill file
+   read after the scope file exists (before rules-dimensions.md, before
+   any component-sizing conversation, before the first cc prompt; its own
+   PREREQUISITE section points back to step 1). Its 3 worksheets are
+   completed IN ORDER, all consuming the scope file's content directly,
+   and confirmed with Janis together as one gate, separate from step 1's:
+   a. **Skeleton Definition Worksheet** — Top-Down Skeleton Layout + Datum
+      Reference Frame (Primary/Secondary/Tertiary) + Parent-Child design
+      discipline (coordinate reference — "where is everything,
+      geometrically")
+   b. **BOM Subassembly Tree** (added 2026-07-07) — parts/subassembly
+      hierarchy, a DIFFERENT artifact from the Skeleton, seeds that
+      product's `PART_MANIFEST.md`
+   c. **Kinetic Dual-View table** (added 2026-07-07) — every moving part
+      from the BOM tree gets BOTH end states (open/closed, in/out, etc.)
+      established as explicit toggles from its first committed version,
+      not added later
+3. First cc prompt written, standard coding/debug loop begins.
 
 **Grandfather clause, Janis-directed, explicit: VM-01 and PR-01 are NOT
 retrofitted to this system.** Both continue under the existing

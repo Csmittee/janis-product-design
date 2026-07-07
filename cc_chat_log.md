@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-07 | vm01-v56-sensor-bracket-frame-joint-fix | DONE — v56, direct response to Janis's QA screenshots on the merged v55 PR, no prompt file
+
+Files: VM-01-base-v56.scad (new, source v55), rules-dimensions.md(v26→v27), cc_chat_log.md. Real OpenSCAD renders + CGAL used throughout, not estimates.
+FIX 1 — sensor "lifted out of bracket": real side effect of v54's sensor Z-fix (moved up to clear a real collision, per that session), which stranded it 50mm above `drop_zone_guards()`'s old top (never tied to the sensor at all). Fixed the BRACKET per Janis's instruction: hoisted the sensor's Z to a shared datum, grew the guard's height to enclose it. Re-verified: guard-vs-sensor real overlap now (12 facets); guard-vs-door 9-angle sweep still zero overlap.
+FIX 2 — frame "bad joint": real, CGAL/render-confirmed kink where a v50 fix truncated the left vertical bar's curve early. Rebuilt as a concentric double-arc band, the SAME construction `left_zone_door()` already uses — kink eliminated, zero side effects on frame_bar/tray width. Re-verified: frame-vs-door sweep zero overlap, frame-alone CGAL clean, visually confirmed via real render.
+FLAGGED not fixed: acrylic "double sheet" re-checked with a real render this time (v52's fix was arithmetic-only, never render-confirmed) — traced to the acrylic's deliberate recessed-pane design, not a duplicate object. Design question for Janis, not guessed at.
+
 ### 2026-07-07 | vm01-v55-door-floor-datum-fix | DONE — v55, direct user question ("manifold issue ongoing for several versions, how to fix?"), no prompt file
 
 Files: VM-01-base-v55.scad (new, source v54), rules-dimensions.md(v25→v26), cc_chat_log.md. Real OpenSCAD/CGAL used throughout (STL export + facet-coordinate extraction), not estimates.

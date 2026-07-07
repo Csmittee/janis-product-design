@@ -1,375 +1,137 @@
 # knowledge.map
-# Janis Product Design — Master File Index
-# Version: v42 | 2026-07-07
-# Changes: vm01-shell-toggle-fix-and-hole-isolation — new ACTIVE VM-01-base
-# version (v51). TASK 1: show_shell_top root-caused (was wired to a real
-# cutout, but the cutout referenced the wrong Z-frame — total_h instead of
-# the module's own local shell_h — fixed). TASK 2: new `show_shell_bottom`
-# toggle added, same convention, gated in outer_shell_debug() — see
-# PART_MANIFEST.md. TASK 3 (diagnosis only, not fixed): bottom-left-corner
-# hole traced to the v50 corner-pole cutout also punching through the
-# shell's own bottom skin at that corner (arithmetic-confirmed) — present
-# in both door states, unrelated to the door-closed manifold warning. TASK
-# 4 (real fix): door's top acrylic-zone "metal cap" deleted (confirmed
-# dependent on show_acrylic, a cosmetic patch) — leaf's own shell material
-# now fills that space directly, also resolving the fill-vs-frame overlap
-# flagged since v49. rules-dimensions.md (v22->v23).
-# Previous: v41 | 2026-07-06
-# Changes: VM-01-corner-frame-redesign — new ACTIVE VM-01-base version
-# (v50). Removed the shell's front-left corner "pole" (real, live-CGAL-
-# confirmed collision with the door once tray_zone_frame() is hidden) via
-# a new cutout in both outer_shell()/outer_shell_debug(). Rebuilt
-# tray_zone_frame(): frame_bar 20mm->8mm; RIGHT vertical extended to real
-# contact with compartment_divider(); LEFT vertical's radius LIVE-tested
-# and found it CANNOT grow to touch the shell without recolliding the
-# door (identical center/radius as the door's own flange arc, by design)
-# -- stays at 14mm, flagged rather than forced. Spring-tray clearance
-# fixed via new tray_x_inset(17mm)/tray_w_global constants (confirmed
-# live that widening total_w/product_w has zero effect, on two separate
-# counts -- neither the spring lanes nor the tray box's own walls depend
-# on those globals). New hinge-pivot reinforcement cylinder added to
-# left_zone_door(), replacing the pole's structural role from the door's
-# side. Verified via an ACTUAL OpenSCAD/CGAL render for every check this
-# session (door sweep, frame-vs-door sweep, frame-vs-spring-lane sweep
-# across the full tray_out_pct range, hinge-pole checks) -- all clear
-# except the same pre-existing acrylic-cap-vs-flange residual (unchanged).
-# rules-dimensions.md (v21->v22).
-# Previous: v40 | 2026-07-06
-# Changes: design-scope-of-work-prompt — 2 new files:
-# vending-machine/design_scope_of_work_rule.md and
-# pilates-reformer/design_scope_of_work_rule.md — owner-facing product
-# concept documents (envelope targets, compartment/section map, functional
-# features, appearance/do-not features, open questions), extracted from
-# each project's own governance files, chat logs, and archived prompts.
-# PARTIAL extraction — session hit a usage limit before an exhaustive
-# per-file archive read could complete; both new files flag this in their
-# own header + Open Questions section. See FILE LOCATIONS below.
-# Previous: v39 | 2026-07-06
-# Changes: VM-01-door-flap-acrylic-fix — new ACTIVE VM-01-base version
-# (v49, standalone, ran against the live v48 frame — the separate corner/
-# frame/shell-width redesign has explicitly NOT landed as of this
-# version, deferred to a later session). The lower flap-zone's
-# separately-mounted metal panel (stacking door_t+door_t=6mm with the
-# leaf) deleted — that zone is now the leaf's own continuous door_t=3mm
-# skin, flap opening cut directly in (extended to cover its full 0-55°
-# swept volume, a side effect the rebuild required and CGAL-verified).
-# Acrylic's left/right mounting overshoot (into tray_zone_frame()'s
-# verticals — the whole source of v48's flagged fill-vs-frame regression)
-# pulled in by the project's existing 2mm clearance convention; 2 new
-# visible metal border strips fill the gap. Verified via an actual
-# OpenSCAD/CGAL render — fill-vs-frame overlap volume 22091mm³(v48) →
-# 3757mm³(v49, all from the unchanged, already-flagged top metal cap).
-# rules-dimensions.md (v20→v21).
-# Previous: v38 | 2026-07-06
-# Changes: VM-01-left-door-v47-fixes — new ACTIVE VM-01-base version (v48).
-# 4 confirmed QA findings, all LEFT door assembly: sensor_strip() front-Y
-# edge fixed to HINGE_Y_OFFSET+e (25.01mm) after the first attempt
-# (world_arc_cy+e, matching v47's drop_zone_guards() fix) was checked
-# against live geometry and found insufficient for the hinge-side strip;
-# tray_compartment_partition() front edge restored to drop_zone_d (138mm)
-# so the vacated tray-0 compartment is fully sealed again (v47 had pulled
-# it back to 526mm, leaving a gap); left_zone_door()'s acrylic/metal split
-# gets a real door_acrylic_t=5mm constant, its top boundary pulled down to
-# clear tray_zone_frame()'s top weld flange (new metal-only cap fills the
-# gap), and a difference() notch so the exit flap can actually open
-# (previously blocked by the metal fill). A 4th finding (shell trim/
-# joggle collision) could not be root-caused to any real existing
-# sub-feature — flagged, not force-fitted, no toggle added. Verified via
-# an actual OpenSCAD/CGAL render this session (binary installed) — same
-# single pre-existing 2-manifold warning as v47, no new warnings.
-# rules-dimensions.md (v19→v20).
-# Previous: v37 | 2026-07-05
-# Changes: VM-01-partition-depth-door-collision-fix — new ACTIVE VM-01-base
-# version (v47). 2 confirmed manifold problems fixed: tray_compartment_
-# partition() no longer overlaps tray_zone_frame() (front edge moved to
-# the spring's own rearward extent, 526mm); drop_zone_guards() no longer
-# pokes through the closed door (front edge raised to world_arc_cy+e,
-# 21.01mm, after Janis's suggested references were checked and found
-# insufficient). Both re-verified clear. rules-dimensions.md (v18→v19).
-# Previous: v36 | 2026-07-05
-# Changes: VM-01-tray-access-acrylic-split-flange — new ACTIVE VM-01-base
-# version (v46, NOT v45 as the source prompt assumed — that name was
-# already taken by the just-merged governance batch, flagged explicitly).
-# Tray stack shifted +100mm, new tray_compartment_partition()/
-# exit_compartment_wall() safety parts sealing a hand-access gap, door
-# acrylic split into acrylic+metal at a live tray-position reference,
-# H-frame gets 10mm top/bottom weld flanges. 9-angle collision sweep
-# re-verified all-clear. rules-dimensions.md (v17→v18), PART_MANIFEST.md
-# (VM-01, 1.0→1.1) updated.
-# Previous: v35 | 2026-07-05
-# Changes: VM-01-governance-batch-post-v44 — new ACTIVE VM-01-base version
-# (v45, toggle-wiring only, zero geometry change): added show_frame toggle
-# to tray_zone_frame(), the exact gap that let it go wrong-referenced for
-# ~10 versions unnoticed. New Toggle-Completeness Rule (cc_rules.md
-# v7→v8). New PART_MANIFEST.md files (VM-01 + PR-01) — plain-language part
-# identity registries, added to FILE LOCATIONS below.
-# Previous: v34 | 2026-07-05
-# Changes: VM-01-frame-window-rebuild-v44 — new ACTIVE VM-01-base version
-# (v44). Real-render QA (Janis + Claude Web, CGAL boolean intersection
-# testing) fixed: fabricated sensor_strip() center beam (deleted), acrylic
-# toggle gating inconsistency (Finding B), tray_zone_frame() full H-frame
-# rebuild off the shell's real interior wall with a CGAL-verified
-# zero-collision curved left bar (Finding C), door window/acrylic resized
-# to the new frame's inner opening. rules-dimensions.md (v16→v17) updated.
-# Previous: v33 | 2026-07-05
-# Changes: VM-01-door-datum-rebuild-v43 — new ACTIVE VM-01-base version (v43),
-# front-door-scoped hinge-center datum rebuild (FOOT_BASE_H, HINGE_Y_OFFSET,
-# curved flange, drop_zone_guards()). Janis-approved, door-scoped EXCEPTION to
-# the SKILL_product_design_skeleton.md VM-01 grandfather clause — no other
-# BOM item touched. rules-dimensions.md (v15→v16), .claude/rules-codes.md
-# (1.13→1.14) updated.
-# Previous: v32 | 2026-07-05
-# Changes: New governance skill, Janis-directed — .claude/SKILL_product_design_skeleton.md,
-# the FIRST file read for any NEW product line (Top-Down Skeleton Layout + Datum
-# Reference Frame + Parent-Child design discipline, established BEFORE any component
-# sizing). Supersedes SKILL_reference_point_first.md (kept for history, still relevant
-# to VM-01/PR-01). VM-01 and PR-01 explicitly grandfathered — NOT retrofitted. Wired
-# into cc_rules.md (v6→v7), rules-codes.md (1.12→1.13), chat_rules.md, WORKFLOW_SKILL.md,
-# rules-dimensions.md (v14→v15).
-# Previous: v31 | 2026-07-05
+# Version: v43 — 2026-07-07
+# Changes: Full rebuild (governance-cc-intro-knowledge-map-rules-refresh).
+# Stripped the embedded per-version changelog that had accumulated here
+# since v31 (the VM-01-base/PR-01-base SCAD VERSION INDEX tables, this
+# file's own header changelog, and the stale VIEWER STL-upload-status
+# table) — that history is preserved in git log and cc_chat_log.md
+# already, not lost. This file is now current-state-only: WHAT exists and
+# WHERE, never WHAT HAPPENED (cc_chat_log.md) or WHAT STATE WE PAUSED IN
+# (CURRENT_STATE.md). Added a complete, individually-enumerated /.claude/
+# index (was a partial sample before). Restored as cc's mandatory 2nd
+# session read (was silently dropped from WORKFLOW_SKILL.md's own CC
+# PROMPT TEMPLATE — see that file's v3.10→v3.11 change, same session).
+# This bump is the conceptual equivalent of an "X.0 structural rebuild"
+# per WORKFLOW_SKILL.md's Document Versioning Rule — knowledge.map's own
+# history has always used plain sequential v-numbers (v31...v42), not
+# decimal X.Y, so v43 continues that existing convention rather than
+# introducing a new one unannounced.
+# Previous: v42 — 2026-07-07 (VM-01-base v51 changelog entry — full text
+# preserved in git history and cc_chat_log.md, not carried forward here)
 # Maintained by: cc
 #
-# cc reads this at EVERY session start (step 2 after cc_rules.md)
-# to know exactly what else to load and where everything lives.
+# cc reads this at EVERY session start (step 2, after cc_rules.md) to know
+# exactly what else exists and where. This file answers WHAT and WHERE —
+# never WHAT HAPPENED (cc_chat_log.md) and never WHAT STATE WE PAUSED IN
+# (CURRENT_STATE.md).
 
 ---
 
 ## WHO READS WHAT
 
-### Claude Web reads (via Janis downloading to Project Knowledge — NOT repo)
-- chat_rules.md           — every Claude Web session, auto via project knowledge
-- workflow_skill.md       — every Claude Web session, auto via project knowledge
+### Claude Web reads (via Janis's Project Knowledge sync — NOT repo)
+- chat_rules.md
+- WORKFLOW_SKILL.md
 
-### Claude Web NEVER reads directly from repo.
-### cc NEVER reads chat_rules.md or workflow_skill.md.
+Claude Web NEVER reads directly from repo. cc NEVER reads chat_rules.md
+or WORKFLOW_SKILL.md.
+
+### cc reads — EVERY session start (in this order, unless CONTINUATION per
+### the CC INTRO self-check in WORKFLOW_SKILL.md's CC PROMPT TEMPLATE)
+1. cc_rules.md
+2. knowledge.map (this file)
+3. cc_chat_log.md (first 3 entries)
+4. The task prompt file named in this session
+
+### cc reads — ONLY when the task requires (named explicitly per prompt)
+- rules-dimensions.md — any SCAD task
+- RULES.md — any SCAD task (numbered R-XXX durable lessons)
+- rules-pr.md — PR-01 tasks only
+- CURRENT_STATE.md — session resumption / mid-session product switch
+- PART_MANIFEST.md (per-project — vending-machine/VM-01-base/,
+  pilates-reformer/PR-01-base/) — before any QA session, before adding any
+  new ASSEMBLY-called module
+- design_scope_of_work_rule.md (per-project) — read whenever a session
+  confirms a new owner feature/goal, per its own standing rule; NOT on
+  cc's automatic session-start list otherwise (confirmed via grep of
+  cc_rules.md, VM-01-governance-batch-post-v44 session)
+- Every file under /.claude/ — see FILE SYSTEM MAP (/.claude/) below, one
+  row each, not summarized as a group
 
 ---
 
-### cc reads — EVERY session start (in this exact order)
-1. cc_rules.md            — process and coding rules, non-negotiable
-2. knowledge.map          — this file
-3. cc_chat_log.md         — Claude Web flags and last session status
-4. /prompts/[task].md     — today's specific task file (filename given by Janis in chat)
+## FILE SYSTEM MAP (root)
 
-### cc reads — ONLY when task requires
-- .claude/rules-codes.md     — any SCAD task
-- rules-dimensions.md        — any SCAD task (in repo root)
-- .claude/rules-materials.md — any SCAD task
-- .claude/rules-vm.md        — VM tasks only
-- rules-pr.md                — PR tasks only (create when needed)
-- .claude/SKILL_problem_solving_kt.md — R-111 trigger
-- .claude/SKILL_joint_construction.md — any T-junction or mismatched cross-section transition fix/build
-- .claude/SKILL_product_design_skeleton.md — READ FIRST (before this whole list) for any NEW product line that is not VM-01 or PR-01. Grandfather clause: VM-01/PR-01 are explicitly exempt, never retrofitted.
-- latest .scad file          — active model only (filename in cc_chat_log.md)
-
----
-
-## FILE LOCATIONS
-
-| File | Location | Maintained by |
+| File | Maintained by | Purpose |
 |---|---|---|
-| knowledge.map | repo root / | cc |
-| cc_rules.md | repo root / | cc |
-| cc_chat_log.md | repo root / | cc |
-| chat_rules.md | repo root / + Project Knowledge | cc |
-| workflow_skill.md | repo root / + Project Knowledge | cc |
-| RULES.md | repo root / | cc — numbered rules R-xxx. Claude Web during diagnosis. Replaces rules.md. |
-| rules-dimensions.md | repo root / | cc |
-| rules-pr.md | repo root / | cc (create when needed) |
-| .claude/rules-codes.md | .claude/ | cc — SCAD tasks |
-| .claude/rules-materials.md | .claude/ | cc — SCAD tasks |
-| .claude/rules-vm.md | .claude/ | cc — VM tasks |
-| .claude/SKILL_problem_solving_kt.md | .claude/ | Claude Web + cc — R-111 trigger |
-| .claude/SKILL_joint_construction.md | .claude/ | cc — joint/T-junction/cross-section transition construction rules (R-111 reference for repeated joint QA failures) |
-| .claude/SKILL_manifold_triage.md | .claude/ | Claude Web only — manifold triage fast-path. cc does NOT read this file. |
-| .claude/SKILL_local_render.md | .claude/ | Claude Web only — mandatory local OpenSCAD render protocol before any cc geometry prompt. Installed 2026-07-01. cc does NOT read this file. |
-| .claude/SKILL_customizer_profile.md | .claude/ | Claude Web only — Customizer-first workflow for aesthetic/artistic geometry decisions. cc does NOT read this file. |
-| .claude/SKILL_option_b_unified_loft.md | .claude/ | Claude Web + cc — Option B unified loft spec. Read before pole_top seam work. Pushed by Janis 2026-07-01. |
-| .claude/SKILL_reference_point_first.md | .claude/ | Claude Web + cc — SUPERSEDED 2026-07-05 by SKILL_product_design_skeleton.md, kept for history/still relevant for ongoing VM-01/PR-01 work specifically. Local-datum-origin design habit (ask "what is this measured FROM" before dimensioning any new part; local origin per part, one translate() to its world DATUM_*). Added 2026-07-05 after the v41→v42 tray/window desync bug. |
-| .claude/SKILL_product_design_skeleton.md | .claude/ | Claude Web + cc — **FIRST skill read for any NEW product line** (not VM-01/PR-01 — those are explicitly grandfathered, never retrofitted). Formalizes SKILL_reference_point_first.md into a full Top-Down Skeleton Layout + Datum Reference Frame (Primary/Secondary/Tertiary) + Parent-Child design discipline: every part's coordinate is Parent's origin + offset, never a raw world number, never referencing a Cousin (sibling part) or Stranger (unrelated global edge) — the "football field" rule (car's wheels move with the chassis, not the field boundary). Skeleton/datums are established with Janis BEFORE any component sizing, via a Skeleton Definition Worksheet (master origin + Primary/Secondary/Tertiary datums + major sub-assemblies with declared Parents), not retrofitted after the fact the way VM-01's v42 DATUMS block was. Added 2026-07-05, Janis-directed. |
-| .claude/SKILL_viewer_update.md | .claude/ | Claude Web only — viewer PROJECTS-entry update procedure (first-time wiring or version bump). Triggered by "update the viewer" / "new design released". cc does NOT read this file. Installed 2026-07-03. |
-| .claude/rules-waivers.md | .claude/ | Known/accepted issues registry — check FIRST before flagging something as new. Read by Claude Web AND cc. |
-| CURRENT_STATE.md | / (repo root) | Where-we-left-off resumption memo, one entry per product, includes open/unresolved items. Updates ONLY on Janis-confirmed pause. Read by Claude Web AND cc. |
-| vending-machine/VM-01-base/PART_MANIFEST.md | vending-machine/VM-01-base/ | cc — Plain-language part identity registry for VM-01 — what each ASSEMBLY-called module actually is/is not, and its Toggle-Completeness Rule status. Updated in the same prompt as any module add/rename/remove. Read by Claude Web + cc before QA sessions. Added 2026-07-05 (VM-01-governance-batch-post-v44). |
-| pilates-reformer/PR-01-base/PART_MANIFEST.md | pilates-reformer/PR-01-base/ | cc — Same format, PR-01's modules. Added 2026-07-05 (VM-01-governance-batch-post-v44). |
-| vending-machine/design_scope_of_work_rule.md | vending-machine/ | cc — Owner-facing product concept (envelope targets, compartment map, functional features, appearance/do-nots, open questions), plain language, no implementation detail. Must be updated the SAME session any new feature/goal is confirmed with Janis. Added 2026-07-06 (design-scope-of-work-prompt) — PARTIAL extraction, see file header. |
-| pilates-reformer/design_scope_of_work_rule.md | pilates-reformer/ | cc — Same format, PR-01's own product concept, built independently from VM-01's. Added 2026-07-06 (design-scope-of-work-prompt) — PARTIAL extraction, see file header. |
-| pilates-reformer/PR-01-base/PR-01-assembly-v31.scad | pilates-reformer/PR-01-base/ | cc — top-level PR-01 assembly, versioned |
-| pilates-reformer/PR-01-base/pole_top.scad | pilates-reformer/PR-01-base/ | cc — NOT individually versioned, see Task A note (PR-01-multifile-split-v25). Flattened out of modules/ (PR-01-flatten-modules-v26) — no subfolder, per corrected MULTI-FILE MODULE CONVENTION. |
-| pilates-reformer/PR-01-base/leg_socket.scad | pilates-reformer/PR-01-base/ | cc — NOT individually versioned, same flat-file exception as pole_top.scad. New 2026-07-02 (pole-base-bell-collar-socket-build). |
-| /prompts/[task].md | repo /prompts/ | Claude Web writes, Janis saves |
-| SCAD files | /vending-machine/[model]/ | cc |
-| SCAD files | /pilates-reformer/[model]/ | cc |
-| STL exports | /exports/for-supplier/ | cc |
-| DXF exports | /exports/for-cnc/ | cc |
-| Screenshots | /renders/ | Janis saves |
+| cc_rules.md | cc | Process + coding rules for cc, read every session, step 1 |
+| knowledge.map | cc | This file — file-system index, read every session, step 2 |
+| cc_chat_log.md | cc | Session-by-session log, newest entry at top, cc's only channel back to Claude Web, read every session (first 3 entries), step 3 |
+| chat_rules.md | Claude Web | Claude Web's own rules — cc never reads this |
+| WORKFLOW_SKILL.md | Claude Web | How-we-work process doc (also root + Project Knowledge) — cc never reads this |
+| RULES.md | cc (numbered rules) / Claude Web (diagnosis) | Numbered durable lessons (R-XXX), read before any SCAD task |
+| rules-dimensions.md | cc | Authoritative dimensions, single source of truth, read before any SCAD task |
+| rules-pr.md | cc | PR-01-specific rules/config, read before any PR-01 SCAD task |
+| CURRENT_STATE.md | cc / Claude Web (on Janis-confirmed pause only) | Where-we-left-off resumption memo, one entry per product line, includes open/unresolved items — NOT a session log (that's cc_chat_log.md) |
+| README.md | — | Repo overview, stack, folder structure |
+| .gitignore / .gitkeep | — | Git housekeeping only, not read by cc or Claude Web |
 
----
+## FILE SYSTEM MAP (/.claude/)
 
-## cc SESSION START PROCEDURE
-
-```
-1. git fetch --all
-2. git merge origin/main          ← prompts always pushed to main by Janis
-3. Read cc_rules.md
-4. Read knowledge.map (this file)
-5. Read cc_chat_log.md            ← see what Claude Web flagged last session
-6. Read /prompts/[task].md        ← filename told by Janis in chat message
-7. Read latest .scad for active model (see cc_chat_log.md for filename)
-8. Read rules-dimensions.md + .claude/rules-materials.md (for SCAD tasks)
-9. Read .claude/rules-codes.md (for SCAD tasks)
-10. Read product-specific rules if prompt specifies
-```
-
----
-
-## COMMUNICATION FLOW
-
-```
-Janis + Claude Web → agree on goal
-Claude Web → writes /prompts/[task-name].md
-Janis → saves file to repo /prompts/ → git push to main
-Janis → tells cc: "read prompts/[task-name].md and execute"
-cc → git fetch + merge → reads prompt → executes → commits
-cc → updates cc_chat_log.md with results and flags
-Janis → screenshots → pastes to Claude Web
-Claude Web → QA pass/fail → writes next prompt if needed
-```
-
----
-
-## PROMPT DELIVERY RULE (LOCKED)
-- Claude Web ALWAYS delivers work as a file: /prompts/[task-name].md
-- Janis saves file to repo and pushes to main branch
-- cc reads file from repo — NEVER from chat text paste
-- This ensures every instruction is version controlled
-
----
-
-## NEVER DUPLICATE RULES FILES
-- rules-dimensions.md: root only (authoritative)
-- .claude/ files: .claude/ only — no root copies
-- If a file exists in both places, root wins for root files, .claude/ wins for .claude/ files
-
----
-
-## VM-01-base SCAD VERSION INDEX
-
-| Version | File | Status |
+| File | Purpose | cc reads when |
 |---|---|---|
-| v13 | vending-machine/VM-01-base/VM-01-base-v13.scad | Superseded |
-| v14 | vending-machine/VM-01-base/VM-01-base-v14.scad | Superseded |
-| v15 | vending-machine/VM-01-base/VM-01-base-v15.scad | Superseded |
-| v16 | vending-machine/VM-01-base/VM-01-base-v16.scad | Superseded |
-| v17 | vending-machine/VM-01-base/VM-01-base-v17.scad | Superseded |
-| v18 | vending-machine/VM-01-base/VM-01-base-v18.scad | Superseded |
-| v19 | vending-machine/VM-01-base/VM-01-base-v19.scad | Superseded |
-| v20 | vending-machine/VM-01-base/VM-01-base-v20.scad | Superseded |
-| v21 | vending-machine/VM-01-base/VM-01-base-v21.scad | Superseded |
-| v22 | vending-machine/VM-01-base/VM-01-base-v22.scad | Superseded |
-| v23 | vending-machine/VM-01-base/VM-01-base-v23.scad | Superseded |
-| v24 | vending-machine/VM-01-base/VM-01-base-v24.scad | Superseded |
-| v25 | vending-machine/VM-01-base/VM-01-base-v25.scad | Superseded |
-| v26 | vending-machine/VM-01-base/VM-01-base-v26.scad | Superseded |
-| v27 | vending-machine/VM-01-base/VM-01-base-v27.scad | Superseded |
-| v28 | vending-machine/VM-01-base/VM-01-base-v28.scad | Superseded |
-| v29 | vending-machine/VM-01-base/VM-01-base-v29.scad | Superseded |
-| v30 | vending-machine/VM-01-base/VM-01-base-v30.scad | Superseded |
-| v31 | vending-machine/VM-01-base/VM-01-base-v31.scad | Superseded |
-| v32 | vending-machine/VM-01-base/VM-01-base-v32.scad | Superseded |
-| v33 | vending-machine/VM-01-base/VM-01-base-v33.scad | Superseded |
-| v34 | vending-machine/VM-01-base/VM-01-base-v34.scad | Superseded |
-| v35 | vending-machine/VM-01-base/VM-01-base-v35.scad | Superseded |
-| v36 | vending-machine/VM-01-base/VM-01-base-v36.scad | Superseded |
-| v37 | vending-machine/VM-01-base/VM-01-base-v37.scad | Superseded |
-| v38 | vending-machine/VM-01-base/VM-01-base-v38.scad | Superseded — acrylic_display() right-side panel used a flat cube assuming a square corner, protruding 7.28mm past the shell's actual 20mm-radius rounded corner (corner_r) at the front-right (and rear-right) corner. Fixed in v39. |
-| v39 | vending-machine/VM-01-base/VM-01-base-v39.scad | Superseded — VM-01-acrylic-corner-fix (2026-07-03). TASK 1 (in-place block replacement, `acrylic_display()`): right-side panel's Y-range changed from `skin_t` to `total_d-skin_t` (636mm X, flat cube) to `corner_r` to `total_d-corner_r` (still 636mm X, same width/depth) — recesses the panel to start/end exactly where the shell wall goes flat, staying entirely clear of both rounded-corner regions (front and rear). Root cause confirmed by calculation: at Y=skin_t(2mm), the shell's actual curved wall (circle r=corner_r=20 centered at X=total_w-corner_r=620,Y=corner_r=20) sits at X≈628.7mm, while the old flat panel sat at X=636mm — a 7.28mm protrusion. Verified against the live v38 file's actual parameter values (total_w=640, not rules-dimensions.md's stale 620mm entry) before editing. Front panel (right edge X=618mm) and top panel (same width) confirmed unaffected — both fall inside the flat-wall region, outside the corner's effective arc (sub-0.1mm margin), no change made to either. Diffed against v38: only header/version-comment lines + the one panel `translate()`/`cube()` line changed. Brace/paren/bracket balance: 288/288, 33/33, 122/122. No OpenSCAD binary in this sandbox — diff + arithmetic verification only, not yet rendered. Superseded by v40, which fixes a separate pre-existing `outer_shell_debug()` height bug that was making the roofline float 50mm too high — that mismatch, not this fix, is what read as the acrylic "not matching the corner" near the top. |
-| v40 | vending-machine/VM-01-base/VM-01-base-v40.scad | Superseded — VM-01-shell-height-fix-v40 (2026-07-03). TASK 1 (in-place edit, `outer_shell_debug()` only — the module actually called in ASSEMBLY via `translate([0,0,leg_h]) outer_shell_debug();`): added local `shell_h = total_h - leg_h;` and changed both `rounded_box()` calls (outer shape + hollow-interior subtract) from `total_h`/`total_h-(skin_t*2)` to `shell_h`/`shell_h-(skin_t*2)`. Root cause: the module was extruding its own full `total_h`(700) AND being externally translated by `+leg_h`(50) in ASSEMBLY — double-counting leg height, so the shell's real world Z range was 50-750, not the documented 50-700 (rules-dimensions.md `total_h`=700, LOCKED). This is what was actually causing the acrylic-vs-corner mismatch Janis saw near the top-right — NOT a flaw in v39's Y-recess fix (PR #80), which addressed a separate X/Y-plane issue and remains correct/untouched. `outer_shell()` (non-debug twin, unused in ASSEMBLY) confirmed untouched, out of scope per prompt. Diffed against v39: only header/version-comment lines + the one new local-var line + the two `rounded_box()` calls changed — the 4 zone-cutout `translate()`s (product-zone-front, exit-chute, upper-display, right-compartment-opening) already used the correct `world_Z - leg_h` local convention and are unaffected by the height fix, confirmed unchanged. Brace/paren/bracket balance: 296/296, 33/33, 122/122. No OpenSCAD binary in this sandbox — arithmetic verification only (shell_h=650; local Z 0-650 + external +leg_h(50) translate = world Z 50-700 ✓), not yet rendered; the QA checklist's STL-bounding-box measurement step could not be performed. ⚑ FLAG (discovered, NOT fixed — outside this prompt's explicit "only these two lines" scope): the `show_shell_top=false` C2-mode debug cutout (`translate([0,0,total_h-skin_t-1]) cube([total_w,total_d,skin_t+2]);`) still targets local Z 697-701, which no longer overlaps the solid's new local top at Z=650 — toggling `show_shell_top=false` in v40 will silently fail to remove the top panel (regression side-effect of this fix, not present pre-fix since the old bugged solid's local top actually was at Z=700). `show_shell_back/left/right` cutouts confirmed still correct (their cutout height already fully overshoots the new, shorter solid, which is harmless). Needs a follow-up one-line fix (`shell_h-skin_t-1` in place of `total_h-skin_t-1`) — flagged for Claude Web to prompt separately, not resolved here. |
-| v41 | vending-machine/VM-01-base/VM-01-base-v41.scad | Superseded — VM-01-front-door-redesign-v41 (2026-07-03). TASK 1: `front_door()`, `flap_door()`, `spring_zone_panel()` deleted entirely, replaced by one new module `left_zone_door()` — full left-zone height (world Z 50-698, X 2-414, product_w zone only). Built from the prompt's exact parameter block (17 new named globals, e.g. `hinge_y=corner_r+5=25mm`, `return_depth=23mm`, `exit_x=69.5mm` centered in the door). Construction order per prompt's 8 steps: (1) return flange wraps the rounded front-left corner, joining the front panel to a concealed hinge line on the flat left-side wall; (2/4/6) main panel with a `difference()`-cut top viewing window + exit-flap opening; (3) 3 flush hinge-seam marks (concept placeholder only, no protruding barrel — actual hinge hardware spec flagged as an open item, not yet resolved with a supplier); (5) inset acrylic pane, gated on `render_mode=="full"` (judgment call: mirrors the pre-existing acrylic_display()/old spring_zone_panel() convention — the door leaf itself, hinge marks, flap, and stopper rod remain always-visible/structural like the old front_door()/flap_door(), only the acrylic insert is render-mode-gated); (7) exit flap hinged at its TOP, rotates about the X-axis at the flap's own top Z, swings inward (+Y) — direction/axis verified algebraically (rotation-matrix derivation, not assumed) to move the free edge toward +Y and +Z as it opens; (8) static stopper rod, position derived via `sin(flap_open_deg)`/`cos(flap_open_deg)` trig from the flap's own rotation formula (cross-checked to land exactly where the flap's free edge reaches at 55° — confirms both derivations agree). TASK 2: `door_open`/`flap_open`/`tray_out_pct` toggles added next to `show_shell_*`; `door_open` pivots the entire leaf (flange+panel+marks+acrylic+flap+stopper as one rigid body) about the hinge line via rotate-about-arbitrary-pivot (translate/rotate/translate stack, verified algebraically to swing the door OUTWARD/away from the machine — direction not specified by the prompt for the door specifically, this is a judgment call, flagging it); `flap_open` is nested inside that so it works independently or combined; `tray_out_pct` wired into `spring_tray()`'s own Y-translate only (not `tray_rack()`'s, which stays fixed to the machine) via a new local `tray_y = tray_start_d - tray_d*tray_out_pct`. TASK 3: `rules-dimensions.md` v12→v13 — old "Door Z range 50-300mm" row marked SUPERSEDED (kept, not deleted, matching the bell-collar convention) + new "VM-01 Base — Left-Zone Front Door" section added with all 10 confirmed entries verbatim per prompt, including the hinge-hardware-spec OPEN ITEM. JUDGMENT CALLS flagged (not silently made): (a) window's right-side margin mirrors `window_margin_side` from `door_right_x` (prompt said "matching margin," no separate right-margin parameter given); (b) acrylic pane / new flap reuse existing `door_t`/`flap_t` globals for thickness (no new thickness parameter was specified); (c) `hinge_od` reused for the stopper-rod diameter (no rod-diameter parameter given); (d) `flap_w`/`flap_h`/`hinge_h` globals deleted as fully dead code (superseded 1:1 by `exit_w`/`exit_h`, `hinge_h` had zero remaining callers) rather than kept-but-unused, to avoid this project's recurring "dormant global" bug class — `flap_t`/`hinge_od` kept since reused. NOT touched, confirmed out of scope per DO NOT TOUCH: `outer_shell_debug()` (v40's fix untouched), `acrylic_display()` (untouched). ⚑ FLAG (discovered, not fixed): `tray_zone_frame()`'s comment still says "matches spring_zone_panel() Z 300-700" — that module no longer exists; `tray_zone_frame()` itself (code) was not in TASK 1's removal list so left entirely unmodified, comment now stale — flagging for a follow-up doc-only cleanup. The pre-existing v38-era stale STL filenames in the RENDER MODE comment block (top of file, references `VM-01-v38-*.stl`) also confirmed still present, unrelated to this prompt's scope, not fixed. The v40 `show_shell_top` regression (flagged in the v40 entry above) also remains unfixed — out of scope here too. Brace/paren/bracket balance: 340/340, 31/31, 135/135. No OpenSCAD binary in this sandbox — full arithmetic self-check performed instead (Python: all X/Z ranges verified non-overlapping and within bounds; door-rotation and flap-rotation transforms independently verified via rotation-matrix algebra; stopper-rod position cross-checked against the flap's own rotation formula) — not yet rendered. Janis F6 render across all toggle combinations required per QA checklist. Janis's actual v41 QA (SketchUp/OpenSCAD) found 6 real issues — see v42 entry below: disconnected flange/panel (20mm gap, confirmed a spec error not a build error), no shell left-wall recess, stopper rod incorrectly rotating with door_open, window floating ~170mm above the trays (tray_0_z/window_z0/z1 independently derived), 2-manifold warning. Exit flap itself confirmed working, no change needed. |
-| v42 | vending-machine/VM-01-base/VM-01-base-v42.scad | Superseded — VM-01-door-fixes-v42 (2026-07-05), 6-issue fix + new datum/local-origin convention. TASK 1: `left_zone_door()`'s return flange + main panel (2 disconnected cubes in v41, 20mm gap) rebuilt as ONE `linear_extrude()` of a bent L-shaped polygon (6 points, hinge line → front-right corner → back) — true single-piece manifold solid. Module also given its own LOCAL ORIGIN (hinge line, at floor level = `door_bot_z`) per new `.claude/SKILL_reference_point_first.md` — `door_open` is now a plain `rotate()` about that same origin (no translate-to-pivot-and-back needed), and every sub-part (window, flap, acrylic, hinge marks) is dimensioned relative to it, not world coordinates. Hinge-seam marks pulled strictly inside the flange body (not touching its Y=0 face) to kill a second T-junction contact. TASK 2: stopper rod split into its own static module `flap_stopper_rod()`, called separately in ASSEMBLY, positioned in world coordinates matching the door's closed-state geometry — no longer swings with `door_open`. Cross-checked algebraically: the rod's world position converts exactly to the flap's own local open-position formula (both derivations agree to floating-point precision). TASK 3: new left-side-wall recess cutout added to both `outer_shell_debug()` (live) and `outer_shell()` (unused twin, for consistency) — Y range exactly `skin_t` to `hinge_y` (matches `return_depth`), X-depth reuses the existing `skin_t+2` through-cut idiom, no new unexplained number. TASK 4: `show_door`/`show_acrylic`/`show_flap` toggles added — `show_door` wraps the `left_zone_door()` call in ASSEMBLY, `show_acrylic` combined with (not replacing) the `render_mode=="full"` gate, `show_flap` wraps just the flap sub-geometry. TASK 5 (issue #5): confirmed NOT a separate acrylic-sizing bug — the v41 asymmetry (15mm left margin vs 38mm right) was entirely a side effect of TASK 1's gap; acrylic formula untouched, symmetric framing (~35mm/~38mm) falls out automatically once the panel's true edge is contiguous. TASK 5a/6: new DATUMS block (`DATUM_FLOOR/LEG_TOP/FLAP_TOP/TRAY_BOT/TRAY_TOP/ROOFLINE`) — `tray_0_z`, the door's `window_z0`/`window_z1`, and `door_bot_z` now all reference a named datum directly instead of independent formula chains; window height shrinks from a floating 413mm to exactly `tray_zone_h`=242mm (now bounds the real tray rack, not empty space above it). EXTRA fix beyond the prompt's literal 5-value list, required for TASK 5 to actually take effect: `spring_tray()`/`tray_rack()` were re-deriving `leg_h+exit_door_h` locally instead of referencing `tray_0_z` — the same bug class the datum block exists to prevent; fixed to reference `tray_0_z` directly, otherwise changing the global's formula would have been a no-op on the actual rendered tray position. Janis-approved 2026-07-05 (this chat thread) that tray position isn't independently locked — real constraint is floor clearance for customer access, which `DATUM_FLAP_TOP`'s chain already guarantees; this authorizes moving `tray_0_z` off the `rules-dimensions.md`/`rules-codes.md` "Zone Stack — LOCKED" table's old fixed 300mm value (both docs updated, old table marked SUPERSEDED not deleted). ⚑ FLAG (side effect, not independently resolved): `tray_zone_top_z` moving also shifts `acrylic_bot_z` and the right-zone dashboard/`acrylic_display()` shell-opening height ~30mm, since both already derived from `tray_zone_top_z` pre-v42 — that module's own code is untouched, only its effective world position ripples through the shared datum; flagged for Janis's awareness in rules-dimensions.md. Also carried a NEW governance file this session: `.claude/SKILL_reference_point_first.md` (ask "what is this measured FROM" before dimensioning any new part; local origin per part, one `translate()` to its world datum) — added to `cc_rules.md` (v5→v6) and `.claude/rules-codes.md` (1.11→1.12, new "Datum Rules" section, old hardcoded zone-stack table there also marked superseded). Brace/paren/bracket balance: 388/388, 32/32, 141/141. No OpenSCAD binary in this sandbox — full arithmetic self-check via Python instead: all local polygon/window/flap-opening coordinates verified non-overlapping and in-bounds; the door's local rotation formula and the stopper rod's independent world-space formula cross-checked to agree exactly (both place the flap's fully-open free edge at the identical point) — not yet rendered. Janis F6 render required per QA checklist (single-piece door confirmed visually, isolation toggles, tray/window alignment, 2-manifold status via SKILL_manifold_triage.md isolation method). |
-| v43 | vending-machine/VM-01-base/VM-01-base-v43.scad | Superseded — VM-01-door-datum-rebuild-v43 (2026-07-05), FRONT DOOR ASSEMBLY ONLY (left_zone_door, its shell recess pocket, drop_zone_visual) — a Janis-approved, door-scoped EXCEPTION to `.claude/SKILL_product_design_skeleton.md`'s VM-01 grandfather clause; no other BOM item touched. TASK 1 (§2.1): `FOOT_BASE_H` added as its own explicit named constant (was silently folded into `DATUM_LEG_TOP = leg_h`) — door's Z-stack now shows it as an explicit added term (`door_bot_z = FOOT_BASE_H + 0`). TASK 2 (§2.2): hinge center is now THE datum for the entire door assembly — world coords Z=`FOOT_BASE_H+0`=50mm, Y=`HINGE_Y_OFFSET`=25mm (NEW fixed independent constant, was `corner_r+5` — a Cousin reference to a cosmetic tuning parameter; numerically unchanged, decoupled so retuning `corner_r` later is a separate clearance check not a formula input), X=`0-(hinge_od/2)`=-6mm (barrel now proud of the shell's exterior wall, door opens outward — was flush with the interior at X=2mm). Both `left_zone_door()` and `outer_shell()`/`outer_shell_debug()`'s recess-pocket cutout independently re-derive this SAME point from shared named constants (`HINGE_Y_OFFSET`/`hinge_od`/`FOOT_BASE_H`) — neither reads the other's local variables. Python-verified side-by-side: DOOR hinge center (-6, 25, 50) == SHELL hinge center (-6, 25, 50). A new `door_x_offset` local (=`door_left_x - hinge_x`=8mm) re-expresses every old local-X measurement (polygon, window, exit flap, hinge marks) relative to the new origin — Python-verified the door's WORLD-SPACE geometry (flange, panel, window at X 40-376mm) is byte-identical to v42, only the reference chain changed. TASK 3 (§2.3): window/acrylic frozen as the door's own local constants (`window_x0=38`/`window_z0=220`/`window_w=336`/`window_h=242`) — numerically identical to v42's DATUM_TRAY_BOT/TOP-derived values, Cousin reference to the tray zone's naming removed (window is the door's own feature). TASK 4 (§2.4): flange/trim polygon's hard 90° bend replaced with a 12-segment arc (`arc_pts()` helper function) following the shell's actual rounded interior corner — same center/radius as the shell's own `rounded_box(..., corner_r-1)` curve (center `(skin_t+(corner_r-1), skin_t+(corner_r-1))`, radius `corner_r-1`), derived live from `corner_r`/`skin_t`. Python-verified: outer arc (r=19) exactly tangent to both the hinge-line and front-face planes; inner arc (r=16, concentric) tangent to the door_t-offset lines — constant 3mm wall thickness maintained around the curve. TASK 5 (§2.5): epsilon fixes on 3 confirmed flush-coplanar-face root causes — `left_zone_door()` front face (`front_y` nudged +e off world Y=skin_t), `sensor_strip()` both strips (nudged e inward off X=skin_t / X=product_w-skin_t), `drop_zone_guards()` (new module, epsilon built into both side panels). TASK 6 (§2.6): `drop_zone_visual()` (single translucent box, 3 of 6 faces blocking the actual product drop path) replaced by `drop_zone_guards()` — top/bottom/front/back ghost faces removed entirely, left/right side faces (genuine hand-access safety guard, preventing reach toward the mechanism above) kept and rebuilt as solid opaque skin_t-thick panels. Left guard's X placement verified (Python) clear of the door's return-flange footprint (world X 2-5mm) — placed at X=5.01mm (skin_t+door_t+e), no intersection; right guard (no hinge on this side) at X=411.99mm, symmetric to the old box's right face. DEFERRED (Janis, explicit DO NOT BUILD): partition + back door for spare storage under the trays — one-line `// TODO(Janis, deferred): partition + back door for spare storage under trays` comment added above `spring_tray()`, zero geometry added, `DATUM_TRAY_BOT/TOP` themselves untouched (only the door's *reference to* the tray zone's naming was removed, not the tray datums). NOT touched, confirmed out of scope: `flap_stopper_rod()`, `tray_zone_frame()` (manifold-clean, no change — `flap_stopper_rod()` confirmed to not reference any removed global), tray/console/dashboard/rear-service-door/stopper-rod modules untouched. Brace/paren/bracket balance: 32/32, 481/481, 146/146. No OpenSCAD binary in this sandbox — full arithmetic self-check via Python instead (hinge-center match, world-position preservation, arc tangency, drop-zone-guard/flange non-collision, full Z-stack non-overlap — all confirmed, see commit message). Janis F6 render + CGAL manifold check required per QA checklist; `rules-dimensions.md` (v15→v16) and `.claude/rules-codes.md` (1.13→1.14) updated with the new hinge-center datum and door-scoped exception note. |
-| v44 | vending-machine/VM-01-base/VM-01-base-v44.scad | Superseded — VM-01-frame-window-rebuild-v44 (2026-07-05), real-render QA session (Janis + Claude Web, local OpenSCAD + CGAL boolean intersection testing) surfaced 6 findings, all fixed. Finding A: `sensor_strip()` had a fabricated red 2x2mm center-beam cube spanning the gap between its 2 real strips — Janis-confirmed this was never part of the actual design (2 independent side pieces only) — deleted entirely, not toggled; new `show_sensor` isolation toggle gates the 2 real strips. Finding B: `left_zone_door()`'s acrylic pane was gated on `render_mode=="full" && show_acrylic`, inconsistent with `show_door`/`show_flap` (not render_mode-gated) — since `render_mode` defaults to `"standard"`, the acrylic could never render regardless of the toggle; fixed to gate on `show_acrylic` alone. `acrylic_display()` (right compartment, unrelated part) confirmed untouched. Finding C (major): `tray_zone_frame()` anchored every bar at world X=0/Y=0 (the shell's theoretical SHARP EXTERIOR corner), never accounting for `skin_t`/`corner_r` — visually sat at/outside the shell's real interior wall; SEPARATELY confirmed via CGAL `intersection(){tray_zone_frame();left_zone_door();}` (9-angle sweep 0/20/25/30/35/40/45/70/100°) that the old frame's top/bottom/right bars physically clipped the door leaf for `door_open_deg` 0-30° — two distinct bugs, both fixed. Full H-frame rebuild per Janis's spec: full-height envelope (`door_bot_z`=50 to `door_top_z`=698), 5mm border inset on all 4 sides (world X 7-409mm, Z 55-693mm), 2 full-height verticals (`frame_bar`=20mm) + 1 crossbar (10mm thick, world Z 270-280mm at `tray_0_z`) replacing the old top+bottom+short-side-bar layout entirely. Repositioned off the shell's REAL interior corner curve (world center `(skin_t+(corner_r-1), skin_t+(corner_r-1))`=(21,21)mm — SAME formula as `left_zone_door()`'s `arc_cx`/`arc_cy`, reused independently since this module has no hinge-relative local origin). Left vertical bar's outer edge curved to match the door's own flange arc (same center/radius formula, radius pulled back by the SAME 5mm inset already used for the border → `(corner_r-1)-5`=14mm) so it clears the door's hinge/flange swept volume at every angle — Python/shapely-verified (mirrors the CGAL `intersection()` test): ZERO overlap at all 9 mandated angles PLUS a 0.5°-resolution fine sweep across the full 0-100° range (see cc_chat_log.md for the full result table). Window/acrylic (Janis spec, TASK 4): resized to match the new frame's inner clear opening — `window_x0`=25/`window_z0`=5/`window_w`=362/`window_h`=638 (world X 27-389mm, Z 55-693mm), superseding v43's tray-zone-only frozen slice (world Z 270-512mm); acrylic pane resizes automatically via the unchanged `acrylic_border`=5mm formula (world Z 50-698mm, exactly the door's own full height). Noted, not a defect: the exit-flap cutout (world Z 80-230mm) now nests entirely within the new window's Z range — redundant but harmless, flap itself unchanged. Dead-code cleanup (same precedent as v41's flap_w/flap_h/hinge_h removal): `panel_zone_top_z`/`panel_zone_h` deleted — both were only ever consumed by the old `tray_zone_frame()`. `flap_stopper_rod()` and `drop_zone_guards()` confirmed correct this session, zero code change (screenshot-only QA note); hinge datum logic (`HINGE_Y_OFFSET`/`FOOT_BASE_H`/hinge_x/y/z) confirmed correct, zero change. Brace/paren/bracket balance: 33/33, 538/538, 152/152. No OpenSCAD binary in this sandbox — full Python/shapely arithmetic + computational-geometry self-check instead of a live CGAL render (hinge/hardware unchanged-value checks, door-polygon rotation-and-intersection modeling for the mandatory 9-angle collision re-test, window/acrylic world-position derivation). Janis F6 preview + full CGAL render required per QA checklist. `rules-dimensions.md` (v16→v17) updated — Sensors, Left-Zone Front Door, and Tray Zone Frame sections. |
-| v45 | vending-machine/VM-01-base/VM-01-base-v45.scad | Superseded — VM-01-governance-batch-post-v44 (2026-07-05), TASK 3 only, toggle-wiring, ZERO geometry change (diffed against v44 to confirm). `tray_zone_frame()` shipped in v44 with no isolation toggle at all — the exact gap that let its wrong reference point go unnoticed for ~10 versions. Added `show_frame` (default true), gating the `tray_zone_frame()` call in ASSEMBLY, same pattern as `show_door`/`show_sensor`. New `.claude/rules-codes.md`-adjacent "Toggle-Completeness Rule" (cc_rules.md v7→v8) motivated this; full toggle-completeness audit of all 13 VM-01 ASSEMBLY-called modules recorded in the new `PART_MANIFEST.md` (see FILE LOCATIONS) — 4 of 13 compliant (`show_door`/`show_frame`/`show_sensor` + `drop_zone_guards()`'s named safety-critical exception), 9 flagged as pre-existing gaps NOT fixed by this prompt (out of its explicit toggle-wiring-only scope): `legs()`, `outer_shell_debug()` (partial panel toggles only), `compartment_divider()`, `tray_rack()`, `spring_tray()`, `acrylic_display()` (render_mode-gated, not show_*), `flap_stopper_rod()`, `dashboard()`, `rear_service_door()`. |
-| v46 | vending-machine/VM-01-base/VM-01-base-v46.scad | Superseded — VM-01-tray-access-acrylic-split-flange (2026-07-05). NAMING NOTE: source prompt said "save as v45" but that name was already taken (governance-batch shipped it first) — built on the real v45, saved as v46, flagged explicitly. TASK 1: entire spring tray stack shifted UP 100mm (`TRAY_SHIFT_UP`) via new `tray_stack_z0 = tray_0_z + TRAY_SHIFT_UP` (270→370mm) — `tray_0_z` itself kept UNCHANGED as the fixed pre-shift anchor. New `tray_compartment_partition()` (fixed/welded, full compartment width x depth, at the OLD tray_0_z=270mm) + new `exit_compartment_wall()` (NEW module — no existing part literally matched "vertical partition/side bracket that holds the flap stopper", flagged explicitly) seal the reach-through gap under the lowest tray, zero gap confirmed (e-overlap). Only `tray_count=2` exists in source, no 3-row variant to shift separately. Clearance check: top tray ceiling (612mm) vs `door_top_z`/roofline (698/700mm) = +86/+88mm POSITIVE; vs the UNCHANGED `DATUM_TRAY_TOP` (512mm, tautologically defined, not an independent ceiling) = -100mm, flagged as a documentation question not a 3D collision. TASK 2: door's single acrylic pane split into upper acrylic (unchanged top) + lower plain metal panel, meeting at a LIVE reference to `tray_stack_z0` (not a duplicated number); both share the existing `show_acrylic` gate (v44 Finding B fix untouched). TASK 3: `tray_zone_frame()` gets 10mm top+bottom weld flanges, built from the SAME already-verified crossbar cross-section, placed WITHIN the frame's existing Z range (no new boundary risk). TASK 4: full 9-angle CGAL-equivalent collision sweep (Python/shapely) re-run — ALL EMPTY, plus a fine 0.5° sweep, worst-case area 0.0. Two new safety-critical parts added to `PART_MANIFEST.md` (v1.0→v1.1) as named "always on" exceptions, consistent with the Toggle-Completeness Rule. `rules-dimensions.md` (v17→v18) updated. |
-| v47 | vending-machine/VM-01-base/VM-01-base-v47.scad | Superseded — VM-01-partition-depth-door-collision-fix (2026-07-05). Janis's manual isolation testing on v46 found 2 INDEPENDENT confirmed manifold problems (diagnosed and fixed separately, not conflated). PROBLEM 1: `tray_compartment_partition()` reached the full compartment depth (front edge at skin_t=2mm), physically overlapping `tray_zone_frame()` — present regardless of door state (2 fixed parts). Functional fix, not just clearance: front edge moved to `tray_start_d + (tray_d-motor_d-2)` = 526mm (the SAME expression `spring_coil()` already uses for its own rearward extent) so a dropped item keeps falling through the spring's own operative/product-drop length (world Y 138-526mm) instead of landing on the partition and getting stuck. Rear edge (598mm) unchanged. Gap to `tray_zone_frame()`'s furthest reach: 505mm, confirmed empty. `exit_compartment_wall()`'s comment updated to note it no longer spatially overlaps the (now further-back) partition, but still independently and fully blocks the Y-direction reach-through on its own — flagged explicitly, not silently asserted as "unchanged." PROBLEM 2: `drop_zone_guards()` poked through the door's own surface at `door_open_deg=0` (closed) — Janis root-caused via direct visual render inspection. Both of Janis's suggested references (frame-face-minus-thickness, flat 10mm fallback) checked against live geometry (Python/shapely) and found INSUFFICIENT — a 10mm pullback still left 7.6mm² overlap, since the hinge-side guard sits close to the door's curved flange (reaching to world Y=21mm there, not just the frame's 7mm front face). Fixed: guard front-most Y raised to `world_arc_cy+e` (21.01mm) — the SAME shell-interior-corner-curve constant already used identically by `left_zone_door()` and `tray_zone_frame()`. Rear edge (140.01mm) unchanged. `tray_zone_frame()`, hinge geometry, and the shell's hinge recess cutout confirmed UNTOUCHED (not the cause of either problem). Re-verified (Python/shapely, mirrors CGAL): partition-frame trivially empty (505mm gap, no door_open_deg dependency); door-guards 9-angle sweep (0/20/25/30/35/40/45/70/100) + fine 0.5° sweep — ALL EMPTY at every angle, worst-case area 0.0. `rules-dimensions.md` (v18→v19) updated. Superseded by v48 — `sensor_strip()`'s front-Y fix here (implied by `drop_zone_guards()`'s value) was never actually applied to `sensor_strip()` itself, and `tray_compartment_partition()`'s Y=526mm pullback here turned out to reopen a hand-access gap, both fixed next round. |
-| v48 | vending-machine/VM-01-base/VM-01-base-v48.scad | Superseded — VM-01-left-door-v47-fixes (2026-07-06). 4 QA findings from Janis's own F5/F6 pass on v47, all LEFT door assembly (known 2-manifold warning explicitly DEFERRED by Janis, untouched). TASK 1: `sensor_strip()`'s front (Y) edge was never updated when `drop_zone_guards()` got its v47 fix — still poked through the closed door. First attempt reusing that exact fix (`world_arc_cy+e`=21.01mm) checked via live geometry and found INSUFFICIENT for the LEFT strip (its X range overlaps the door's hinge-line flange face, reaching up to `HINGE_Y_OFFSET`=25mm there, unlike `drop_zone_guards()`'s own left guard which sits clear of that X range). Fixed: `HINGE_Y_OFFSET+e` (25.01mm, an existing constant) — the door polygon's global max Y at any X. TASK 2: `tray_compartment_partition()`'s v47 pullback to 526mm left the vacated tray-0 compartment (world Y 21-526mm) with no floor — Janis confirmed via render this must be fully sealed. Front edge restored to `drop_zone_d` (138mm, real contact with `exit_compartment_wall()`), confirmed 117mm clear of `tray_zone_frame()`'s real footprint (crossbar+verticals, computed live). TASK 3 (`left_zone_door()` acrylic/metal split): 3a new `door_acrylic_t`=5mm constant (real acrylic thickness, acrylic piece only); 3b acrylic's top boundary pulled from 698mm (door's own top edge, zero clearance) to 682.99mm to clear `tray_zone_frame()`'s top weld flange (real 5mm acrylic confirmed to overlap it by 3.01mm at the old boundary) — new metal-only cap fills 682.99-698mm instead (FLAG: isolating the fill assembly and intersecting with the frame measures 17412mm³ overlap on v47, PRE-EXISTING mounting-edge condition, vs 22091mm³ on v48, +4679mm³ from 3a's extra depth — not fixed, would need an `acrylic_border` redesign); 3c exit flap's full swept volume (0-55°) notched out of the metal panel (was solid, CGAL-confirmed to fully block the flap); 3d flap's own plane confirmed already flush with the door's structural panel, no change needed. TASK 4: second door-closed collision (shell trim/joggle, right body edge) NOT root-caused — searched `outer_shell_debug()`/`outer_shell()` in full, no sub-feature matches "top+bottom sub-piece" distinct from `tray_zone_frame()`'s own (already `show_frame`-toggled) weld flanges, which Janis says isn't the cause — flagged, no toggle guessed/added. `frame_inset`/`FLANGE_T` promoted from `tray_zone_frame()`'s local scope to shared PARAMETERS (needed for TASK 3b's cross-module reference). Verified this session via an ACTUAL OpenSCAD/CGAL render (binary installed, not just Python estimate) for every check above, plus a real STL-volume comparison for the fill-vs-frame regression — same single pre-existing 2-manifold warning as v47, confirmed no NEW warnings. `rules-dimensions.md` (v19→v20) updated. |
-| v49 | vending-machine/VM-01-base/VM-01-base-v49.scad | Superseded — VM-01-door-flap-acrylic-fix (2026-07-06), standalone, ran against the live v48 frame geometry (the separate corner/frame/shell-width redesign, VM-01-corner-frame-redesign.md, has explicitly NOT landed as of this version — deferred to a later session with fresh context, per Janis). TASK 1: the lower flap-zone metal was a SEPARATELY-MOUNTED sheet behind the leaf (same pattern as the acrylic) — stacking door_t+door_t=6mm with the leaf's own skin, the real cause of the door's excess lower-zone thickness Janis identified via screenshots (not a clearance/border tuning problem). Fixed: that panel DELETED entirely — the window hole cut into the leaf now only spans the acrylic zone (`split_z_local`..`win_z1`, not `win_z0`); everything below is simply the leaf's own continuous `door_t` skin, with the flap's own opening cut directly into it (unchanged cutout, independent of the window hole). Before/after thickness: 6mm → 3mm. Re-verification caught a side effect: the flap's own cutout had never needed to cover the flap's full swept volume before (the bigger window hole masked it) — extended to `flap_top_z+flap_t+e` (183.01mm local, was 180mm) so the flap still opens 0-55° with zero collision against the newly-solid leaf material above its old, closed-position-only hole (CGAL-confirmed empty at every 1° step; the un-extended cutout showed a real collision, confirming the test methodology). TASK 2: acrylic's mounting overshoot on LEFT/RIGHT (`win_x0-acrylic_border`..`win_x1+acrylic_border`, reaching directly into `tray_zone_frame()`'s left/right verticals — the entire source of v48's flagged fill-vs-frame volume regression) pulled in to `win_x0+2+e`..`win_x1-2-e` — reuses the project's own existing 2mm Global Clearance Tolerance convention, not a new number. CAUGHT during verification: a naive border-strip fill touched the frame's verticals AND the acrylic at exactly coincident planes (a zero-volume degenerate CGAL intersection) — fixed with the same e-nudge convention used throughout this file (real gap from the frame, real shared volume with the acrylic). TOP boundary (682.99mm, v48) re-verified against the same live frame, unchanged. Window opening itself (`window_x0/z0/w/h`) confirmed UNCHANGED and confirmed DISTINCT from the acrylic's own mounting border in the live code — no flag needed on that specific DO-NOT-TOUCH ambiguity. Metal top cap (v48 TASK 3b) and its own already-flagged ~1.01mm residual flange overlap UNCHANGED, out of this prompt's "the acrylic" scope. RESULT (CGAL-measured): fill-vs-frame overlap volume 22091mm³(v48) → 3757mm³(v49) — the remainder is entirely the unchanged top cap. Verified via an actual OpenSCAD/CGAL render this session for every check above. `rules-dimensions.md` (v20→v21) updated. |
-| v50 | vending-machine/VM-01-base/VM-01-base-v50.scad | **ACTIVE** — VM-01-corner-frame-redesign (2026-07-06). NAMING NOTE: prompt said "save as v49" -- already taken (VM-01-door-flap-acrylic-fix shipped it first, merged before this prompt ran) -- built on the REAL v49, saved as v50, flagged explicitly. TASK 1: identified the "pole" -- the shell's own front-left ROUNDED CORNER wall (the curved wedge between the outer/inner rounded_box curves, world X/Y ~0-21) was never actually cut by either existing cutout (front-face opening assumes a flat wall from X=skin_t; v43 left-wall recess only slots the flat LEFT face) -- confirmed colliding with the door's own return-flange arc (which occupies nearly the identical space) once tray_zone_frame() is hidden. Removed via a new square cutout (X/Y -1..corner_r+2, full door height) in BOTH outer_shell()/outer_shell_debug() -- confirmed via live CGAL render: the real mid-height collision (distinct from a SEPARATE, already-known thin coincident-face artifact at world Z 50-52/698) is gone across the full 0-100° sweep; shell remains valid (same single pre-existing manifold warning, no new one). FLAG: this also opens a genuine ~5mm gap at world Z 50-55/693-698 (outside tray_zone_frame()'s own 55-693 envelope) where neither shell nor frame has material -- noted, not resolved, needs Janis's input. TASK 2: tray_zone_frame() rebuilt -- frame_bar 20mm->8mm both verticals. RIGHT vertical extended to REAL CONTACT with compartment_divider() (world X=product_w+e=416.01mm) -- ACHIEVED, confirmed clear of both the door (full sweep) and spring lane 4 (full tray_out_pct sweep). LEFT vertical: attempted the SAME "grow to touch the shell" treatment (radius (corner_r-1)+e=19.01mm) -- LIVE CGAL bisection found this is NOT ACHIEVABLE, the door's own flange arc uses the IDENTICAL center/radius by design (snug closed fit), so any radius above ~15.96mm recollides the door -- reverted to the prior proven-safe 14mm, flagged as a genuine constraint rather than forced. A related bug caught via a live "mesh not closed" CGAL error: narrowing frame_bar to 8mm made the curve's OLD Y-only stopping rule self-intersect the polygon (inner edge X=15mm fell inside the curve's own reach to X=21mm) -- fixed by stopping the sweep at whichever of two conditions (reaching frame_y0 OR reaching left_bar_inner_x) binds first. TASK 3: Janis's instruction was to widen total_w/product_w for spring-tray clearance -- LIVE geometry check found this WOULD NOT WORK on two separate counts (neither the spring lanes' absolute X position nor the tray box's own wall positions relative to the frame's new touch-points depend on total_w/product_w at all, confirmed algebraically and via render) -- total_w/product_w UNCHANGED (0mm increase), stated explicitly rather than forcing an ineffective change. Actual fix: promoted the tray's hardcoded "10" offset to tray_x_inset=17mm and replaced the fixed tray_w=product_w-20 formula with tray_w_global (389.01mm), both derived from a real 2mm clearance to the rebuilt verticals -- a first attempt (offset=14, tray_w unchanged) passed a lanes-only check but was caught by a wider check (the tray BOX's own walls, not just springs) still colliding -- re-derived properly, confirmed via a full tray_out_pct (0-1.0) sweep, ZERO overlap. TASK 4: new hinge-pivot reinforcement cylinder (diameter=hinge_od=12mm, reused) at the door's own local origin (the rotation axis itself), full door_h height, inside left_zone_door()'s rotate block -- angle-invariant in world space, confirmed clear vs shell and frame at 0/50/100°. Two v49-flagged open items (acrylic/frame fill overlap, new partition-weld protrusion) carried forward untouched, restated for the record. Verified via an ACTUAL OpenSCAD/CGAL render this session for every check above. `rules-dimensions.md` (v21→v22) updated. |
+| rules-codes.md | OpenSCAD coding rules (datum rules, coordinate conventions, versioned changelog of code-pattern decisions) | Any SCAD task |
+| rules-materials.md | Material specs (skin/structure/finish per product) | Any SCAD task |
+| rules-vm.md | VM-01-specific rules (active file pointer, etc.) | VM tasks only |
+| rules-waivers.md | Known/accepted issues registry — check FIRST before flagging something as new; cap 200 lines, closed waivers move to rules-waivers-archive.md | Whenever something looks broken or produces a warning, before flagging as new |
+| SKILL_problem_solving_kt.md | Kepner-Tregoe problem solving, R-111 trigger (2+ failed fix loops) | R-111 triggered |
+| SKILL_joint_construction.md | Joint/T-junction/cross-section-transition construction rules | Any joint/seam/mismatched-cross-section fix or build |
+| SKILL_manifold_triage.md | Manifold-warning triage fast-path | Claude Web only — cc does NOT read this |
+| SKILL_local_render.md | Mandatory local OpenSCAD render verification protocol before any new-shape geometry prompt | Claude Web only — cc does NOT read this |
+| SKILL_customizer_profile.md | Customizer-first workflow for aesthetic/artistic (non-dimensional) geometry decisions | Claude Web only — cc does NOT read this |
+| SKILL_option_b_unified_loft.md | Option B unified neck+collar loft spec for pole_top — DEFERRED, approved architecture not yet built | Before any pole_top seam/joint/T-junction work resumes |
+| SKILL_reference_point_first.md | Local-datum-origin habit (ask "measured FROM what" before dimensioning) — SUPERSEDED by SKILL_product_design_skeleton.md but still the live convention for VM-01/PR-01 specifically | Before designing any new module's geometry within VM-01 or PR-01 |
+| SKILL_product_design_skeleton.md | Full Top-Down Skeleton Layout + Datum Reference Frame + Parent-Child design discipline — FIRST file for any NEW product line | Before any component sizing on a product line that is NOT VM-01/PR-01 (both explicitly grandfathered, never retrofitted) |
+| SKILL_viewer_update.md | Viewer PROJECTS-entry update procedure (first-time wiring or version bump) | Claude Web only — cc does NOT read this — triggered by "update the viewer" / "new design released" |
 
 ---
 
-## PR-01-base SCAD VERSION INDEX
+## PROJECT FOLDERS
 
-| Version | File | Status |
-|---|---|---|
-| v1 | pilates-reformer/PR-01-base/PR-01-base-v1.scad | Superseded |
-| v2 | pilates-reformer/PR-01-base/PR-01-base-v2.scad | Superseded |
-| v3 | pilates-reformer/PR-01-base/PR-01-base-v3.scad | Superseded |
-| v4 | pilates-reformer/PR-01-base/PR-01-base-v4.scad | Superseded |
-| v5 | pilates-reformer/PR-01-base/PR-01-base-v5.scad | Superseded |
-| v6 | pilates-reformer/PR-01-base/PR-01-base-v6.scad | Superseded — rejected by Janis, one-piece continuous pole concept wrong direction |
-| v7 | pilates-reformer/PR-01-base/PR-01-base-v7.scad | Superseded — Janis QA FAIL: crossbar floated above pole_top() and overshot pole centers |
-| v8 | pilates-reformer/PR-01-base/PR-01-base-v8.scad | Superseded — crossbar fix carried into v9 |
-| v9 | pilates-reformer/PR-01-base/PR-01-base-v9.scad | Superseded — pole_body() full-height uniform 50mm D-profile, pole_base_collar() split-clamp sleeve. |
-| v10 | pilates-reformer/PR-01-base/PR-01-base-v10.scad | Superseded — pole_top() head elongated along the wrong axis (Z instead of X), fixed in v11. |
-| v11 | pilates-reformer/PR-01-base/PR-01-base-v11.scad | Superseded — orientation confirmed correct by Janis; v12 only refines silhouette (height + smoothness). |
-| v12 | pilates-reformer/PR-01-base/PR-01-base-v12.scad | Superseded — Janis supplied new hand sketch; v13 replaces the asymmetric foot/helmet silhouette concept entirely. |
-| v13 | pilates-reformer/PR-01-base/PR-01-base-v13.scad | Superseded — bore axis defaulted to Z (rotate_extrude's native axis) instead of the required X, bell sat vertically like a chimney cap instead of forming a T-junction with the crossbar. Fixed in v14. |
-| v14 | pilates-reformer/PR-01-base/PR-01-base-v14.scad | Superseded — fixed bore orientation correctly (confirmed by Janis's real render screenshots) but left two real proportion problems visible in those renders: ~24mm vertical gap between neck and bell (positioned independently), and neck OD (built around old 50mm pole_od) visually overpowering the bell's narrow waist. Fixed in v15. |
-| v15 | pilates-reformer/PR-01-base/PR-01-base-v15.scad | Superseded — fixed the v14 neck/bell gap and reduced pole_od/neck_od, but the v15 render revealed 2 new problems: neck appeared off-axis from the bell, and the neck unioned far enough into the bell to plug the bore opening (would block the 32mm bar). Fixed in v16. |
-| v16 | pilates-reformer/PR-01-base/PR-01-base-v16.scad | Superseded — fixes 2 problems Janis flagged from the v15 render. Root-cause check on the "offset" issue: neck and bell were already both anchored at the same (cx,cy) — coordinate math confirms no true misalignment; the visual offset is explained entirely by the bore-plugging issue below, not a separate coordinate bug. Bore-plug fix: neck_top repositioned from v15's xbar_z+0.2 (which put ~16.7mm of neck material inside the bore's void) to xbar_z - top_bore_d/2 - neck_bore_clearance(2mm) — verified via Python this lands inside the bell's solid wall band directly under the bore, giving 5mm solid union overlap with 2mm clearance from the bore void; M6 bolt holes (still neck_h*0.3/0.7 below neck_top) land well clear of the bore automatically. DEFENSIVE GUARANTEE added: an explicit bore-envelope cylinder is now also subtracted from the neck (not just the bell), making bore clearance code-provable rather than position-tuning-dependent. pole_body() height formula updated to match the new (lower) neck_top anchor — still no visible gap there. Janis QA via F5/F6: FAIL — visible offset between neck centerline and bell bore axis still read, and the neck-bell joint read as a hard seam (two assembled components, not one casting); bolt holes also sat too close to both neck edges after v16 shortened the effective span. Fixed in v17. |
-| v17 | pilates-reformer/PR-01-base/PR-01-base-v17.scad | Superseded — re-derived bell/neck axis coincidence (confirmed) and added pole_top_transition() seam blend; Janis flagged 2 ROOT-CAUSE problems from the render (bell edge-anchored not centered; D-profile not carried into neck). Fixed in v18. |
-| v18 | pilates-reformer/PR-01-base/PR-01-base-v18.scad | Superseded — PROBLEM 1 fix: pole_top_bell() re-anchored from its small face to its BORE MIDPOINT (translate([cx-dir*head_h/2,cy,xbar_z])) so the bore's own center lands on the neck's centerline (x=cx) — a true T-junction, not edge-mounted; pole_top_transition()'s bell-side anchor updated to match the bell's now-shifted small face. PROBLEM 2 fix: pole_top_neck() carries pole_body()'s exact flat_x=dir*0.7*pole_r cut plane down through a new fully-D zone (d_zone_h=neck_h-neck_round_taper_h=55mm) for flush (coplanar) seating against pole_body()'s flat face, then hull()-tapers back to round over the top neck_round_taper_h=15mm (NEW global) so it still meets the round transition/bell unchanged. Bolt change: 2x M6 holes rotated from rotate([90,0,0]) (round wall) to rotate([0,90,0]) (flat D-face), Z-positions kept at neck_top-25/neck_top-50, both inside the fully-D zone and clearing bolt_edge_clearance_min (15mm TBD). Unchanged: bore diameter (33mm), bell wine-glass profile, pole_od=40mm/neck_od=47mm, pole_base_collar(), pole_wood_socket(), crossbar, latch/cam/lever mechanism (Stage 2, deferred). Brace/paren balance: 35/35, 485/485. No OpenSCAD binary in this sandbox — code-review + coordinate-math verification only. Janis F5/F6 render confirmed correct (per v19 prompt context) — both root-cause issues fixed. |
-| v19 | pilates-reformer/PR-01-base/PR-01-base-v19.scad | Superseded — ITEM A: pole_top_transition() coordinate dump ONLY (diagnostic per SKILL_joint_construction.md isolation-test discipline) — module byte-identical to v18, NO geometry change. Numbers (see cc_chat_log.md): neck top cross-section round/47mm axis-Z at (cx,cy,2001.5); bell small-face round/47mm axis-X at (cx∓45,cy,2020) — same shape/size, but 90° axis-orientation mismatch + 48.65mm 3D center offset across a single hull() — this (not shape/size) is the likely facet-crease cause, flagged for Claude Web's Rule 1/2 review before the next (separate) fix prompt. ITEM B: pole_top_bell() p2 control point changed from [head_large_r*0.60,head_h*0.70] to [head_large_r*0.80,head_h*0.65] — mirrors p1's existing small-end logic, makes the large (pipe-entry) face concave/wine-glass instead of convex horn flare (Python Bezier-verified: curve_r < chord_r at all interior t). head_large_r reduced 46mm→40mm (Janis's -6mm request), still 16.5mm above head_small_r (23.5mm). Bore (33mm,X), pole_top_transition(), pole_top_neck(), bolts, neck_od all unchanged. Min wall at new large face = 23.5mm, clears 2mm project minimum. Brace/paren balance: 35/35, 512/512. No OpenSCAD binary in this sandbox — code-review + coordinate/Bezier-math verification only. Janis F5/F6 render confirmed Item B correct; transition crease flagged for v20 fix. |
-| v20 | pilates-reformer/PR-01-base/PR-01-base-v20.scad | Superseded — replaced by v21 (mudguard/camber housing concept10) |
-| v21 | pilates-reformer/PR-01-base/PR-01-base-v21.scad | Superseded — profile_pts() orientation wrong (camber dome sideways), fixed in v22 |
-| v22 | pilates-reformer/PR-01-base/PR-01-base-v22.scad | Superseded — produced by an out-of-band rapid-fire session that applied only the profile_pts() sin(a)->cos(a) condition fix, no other v21 F5 QA fail issues addressed. Superseded entirely by v23 (see prompts/archive/PR-01-base-v22-housing-fix.md, which names this rapid-fire as superseded and directs sourcing from v22 → save as v23). |
-| v23 | pilates-reformer/PR-01-base/PR-01-base-v23.scad | Superseded — v21 F5 QA FAIL, 3 fixes applied together, sourced from v22: (1) profile_pts() cos(a)>=0 condition. (2) housing_peak_t 0.40→0.60 — fat face inward. (3) pole_top_neck_blend() module closes neck/housing gap. DEBUG crossbar extension added. Fixed further in v24 (profile_pts() diamond end-face + side gap, one root cause). |
-| v24 | pilates-reformer/PR-01-base/PR-01-base-v24.scad | Superseded (structure only — geometry is still the reference until Option B changes it) — smooth cosine blend profile_pts() fix (root cause of v23's diamond end-face + side gap in one fix); pole_top_neck_blend() removed (redundant + was causing double-ring z-fighting). Structurally split into PR-01-assembly-v25.scad + modules/pole_top.scad by PR-01-multifile-split-v25 — v24 itself kept in repo unchanged as historical record, not deleted. |
-| v25 | pilates-reformer/PR-01-base/PR-01-assembly-v25.scad | Superseded — pure file-reorg split of v24 (PR-01-multifile-split-v25, 2026-07-01). Zero geometry/dimension/module-logic change — same final render as v24. Include path used a modules/ subfolder (`include <modules/pole_top.scad>`), which turned out to break on Janis's actual local workflow (files downloaded individually, no git clone — subfolder not reconstructed). Superseded by v26, which flattens the folder structure; kept in repo unchanged as historical record. |
-| v26 | pilates-reformer/PR-01-base/PR-01-assembly-v26.scad | Superseded — flattens module folder structure (PR-01-flatten-modules-v26, 2026-07-01), fixing v25's Janis-confirmed include-path failure. Janis's local OpenSCAD render of the real committed v26 files then surfaced a new bug: `pole_top.scad`'s `$is_assembly = is_undef($is_assembly) ? false : $is_assembly;` self-reassignment always evaluated false once flattened into the assembly's scope via `include`, so the ghost-context stand-ins leaked into every full-assembly render regardless of `show_*` toggles. Superseded by v27, which fixes this (in-place edit to pole_top.scad, not a new assembly file) and relocates the debug toggle block; kept in repo unchanged as historical record. |
-| v27 | pilates-reformer/PR-01-base/PR-01-assembly-v27.scad | Superseded — PR-01-fix-ghost-leak-toggle-relocate-v27 (2026-07-02), 2 fixes. TASK 1 (in-place edit to pole_top.scad, no new file per the modules-file unversioned exception): replaced the self-reassigning `$is_assembly = is_undef($is_assembly) ? false : $is_assembly;` with a read-only `function ghost_mode() = is_undef($is_assembly) || !$is_assembly;`, and the sole `if (!$is_assembly)` usage with `if (ghost_mode())` — root cause was `include` flattening pole_top.scad's `$is_assembly` assignment into the same scope as the assembly file's `$is_assembly = true`, so OpenSCAD collapsed both assignments to the module file's (always-false) one; a function that only reads the variable can't be collapsed this way. Note: the prompt described two `!$is_assembly` usages to replace (one in "the standalone-defaults guard block near the top"); only one actually exists in the committed file (the ghost-context stanza) — the standalone-defaults block added in v26 uses per-variable `is_undef(x)` guards unrelated to `$is_assembly`, so there was nothing to change there. Flagging this discrepancy explicitly, not silently reconciling it. TASK 2 (new file, PR-01-assembly-v27.scad): the 6 `show_*` debug toggles moved from the PARAMETERS block down to immediately before the final `pr01_assembly();` call — same names/values, diffed against v26 to confirm only the toggle-block location changed (plus header comments). Zero geometry/dimension/module-logic change. Brace/paren/bracket balance verified via Python across both files combined (33/33, 204/204, 74/74). No OpenSCAD binary in this sandbox — code-review + diff verification only, not yet rendered. Janis F5/F6 render required: confirm full-assembly shows zero ghost stand-ins for any pole (incl. pole 0), and standalone open of pole_top.scad still shows real part + gray ghosts. The ~23 "assigned...but overwritten" warnings from the v26 standalone-defaults block remain a known, separately-tracked open item — explicitly OUT of scope here, not fixed by this prompt. |
-| v28 | pilates-reformer/PR-01-base/PR-01-assembly-v28.scad | Superseded — bed-width-720-crossbar-gap (2026-07-02), single dimensional fix. `bed_w` 670mm→840mm — Janis-confirmed, sets crossbar gap (xbar_y_rear - xbar_y_front) = 720mm with `leg_t`=120mm unchanged (formula: bed_w = 720 + leg_t). Verified: xbar_y_front = leg_t/2 = 60mm, xbar_y_rear = bed_w - leg_t/2 = 780mm, gap = 720mm ✓. Diffed against v27: only the version-bump header and the `bed_w` line changed — no other value touched. Brace/paren/bracket balance: 33/33, 0/0, 4/4. No OpenSCAD binary in this sandbox — diff + arithmetic verification only, not yet rendered. Janis F5/F6 render required. UPDATE 2026-07-02 (fix-pole-cx-cy-override-bug, in-place edit to pole_top.scad, still v28 — no new assembly file): Janis's v28 render showed bed surface resized but legs/poles frozen at old ~670mm-based positions. Root cause: same bug class as v27's `$is_assembly` ghost-leak — `pole_top.scad`'s `pole_cx = is_undef(pole_cx) ? [90,2210,90,2210] : pole_cx;` / `pole_cy = is_undef(pole_cy) ? [60,60,610,610] : pole_cy;` self-reassignment always collapsed to the hardcoded fallback under `include` scope-flattening, never the assembly's real computed array. `pole_cx`'s fallback happened to numerically match (dormant); `pole_cy`'s fallback was the OLD bed_w=670 value (diverged, the visible bug). Fix: removed both reassignments entirely — `pole_cx`/`pole_cy` are no longer touched in `pole_top.scad`, so the assembly's real assignment (before the `include`) is the only assignment, nothing left to collide against. The one standalone-mode use (ghost-context stanza) now computes its own `ghost_cx`/`ghost_cy` locals with an `is_undef()` fallback that can't collapse against the real globals. Verified: `pole_cx`=[90,2210,90,2210], `pole_cy`=[60,60,780,780] with bed_w=840/leg_t=120/leg_w=180/bed_l=2300. TASK 2 audit (all ~21 other standalone-defaults globals: e, bed_l, bed_h, pole_d, pole_r, neck_h, neck_id, neck_od, neck_bolt_d, top_bore_d, all housing_*, xbar_z, grip_od): all currently dormant (fallback = current assembly value) — none diverged, none fixed this prompt, same latent-bug pattern flagged for Janis as a standing risk. Brace/paren/bracket balance: 290/290, 33/33, 76/76. Janis F6 required: confirm legs/poles now sit at 60mm/780mm from bed edges. |
-| v29 | pilates-reformer/PR-01-base/PR-01-assembly-v29.scad | Superseded — pole-base-bell-collar-socket-build (2026-07-02), FIRST production geometry pass on pole holder/socket. TASK 1 (in-place edit, pole_top.scad): new `bell_lock_collar()` — foot ring/dome(`bell_dome()`, rotate_extrude solid-of-revolution, curve_power exponent)/washer reveal/thread(`bell_thread()`, helical linear_extrude twist)/bayonet(`bell_bayonet()`, 3 lug bumps)/knurled cap(`bell_cap()`), single central bore (pole_d+1) subtracted once per Rule M-1. REVISED dome values (r_top 29→25, curve_power 1.4→2.2, cap_h 10→12, washer_overhang 1→4) per 2nd Customizer screenshot — supersedes the 2026-07-02 CONCEPT CONFIRMED table in rules-dimensions.md. Lock mechanism (thread/bayonet) is ENGINEER-PROPOSED — simplified representative geometry (visual helix/lug bumps, not a literal mating female thread/slot), verbatim disclaimer comment present, NOT physically validated. Old split-clamp collar (`pole_base_collar()` — prompt named it `pole_top_collar()`, no such module exists; flagged the name discrepancy) call site in `pole_assembly()` commented out with a note, module kept for history, not deleted. TASK 2 (new file, leg_socket.scad): `leg_socket()` — wood leg(0..leg_h=600mm)+foot pad+embedded pass-through socket sleeve(leg_socket_depth=400mm, open at leg top, 200mm solid wood remains below). Renamed socket params to `leg_socket_od`/`leg_socket_wall_t`/`leg_socket_depth` to avoid colliding with the assembly's existing `socket_od`(60)/`socket_depth`(20) globals (still used by `pole_wood_socket()`, NOT retired by this prompt — flagged as a likely redundancy, unresolved). `ghost_mode()` pattern mirrored exactly from the current (post-fix) `pole_top.scad`, NOT the original self-reassigning `$is_assembly` pattern. Standalone-defaults use the same is_undef() self-guard convention as pole_top.scad's existing (dormant, flagged) block — NOT the pole_cx/pole_cy-style local-fallback pattern, since none of this file's own params have actually diverged; ghost_cx/ghost_cy themselves DO use the safe local-fallback pattern, mirroring pole_top.scad exactly. INTERPRETATION FLAG: leg_h=600mm was never reconciled against bed_h(500mm)/existing bed_frame() leg height(470mm) in the prompt — leg extends ~100mm above bed_h so bell_lock_collar() sits flush at this leg's own top face; documented as a deliberate interpretation, not a confirmed decision. TASK 3 (PR-01-assembly-v29.scad): new globals for bell collar/lock mechanism/leg-socket (all new names, zero collisions except the deliberately-avoided socket_od/socket_depth case above); `include <leg_socket.scad>` added; 2 new debug toggles (`show_bell_collars`, `show_leg_sockets`); both modules instantiated in a 4-pole loop directly in the assembly file (not inside pole_top.scad's `pole_assembly()`, since leg_socket() lives in a separate included file) — kept as pure top-level includer per TASK 3's scope. Verified unchanged (diffed): `bed_w`=840, `leg_t`=120, `xbar_y_front`=60, `xbar_y_rear`=780. Derived: `leg_socket_id`=41mm, radial clearance vs `pole_d`(40mm)=0.5mm — tight tolerance, flagged. Brace/paren/bracket balance across all 3 files combined: 495/495, 46/46, 120/120. No OpenSCAD binary in this sandbox — code-review + arithmetic verification only, not yet rendered. Janis F5/F6 render required. First-render QA surfaced 3 defects, fixed in v30 (bed-height-pad-cutaway-fix): bed read as sunk below the new 600mm leg, unexpected foot pad, no way to inspect embedded leg-socket bore standalone. |
-| v30 | pilates-reformer/PR-01-base/PR-01-assembly-v30.scad | Superseded — bed-height-pad-cutaway-fix (2026-07-02), 3 fixes from Janis's first render of v29, all prototyped/verified in Claude Web's local OpenSCAD sandbox before this prompt. TASK 1a (in-place edit, pole_top.scad): removed a dormant `bed_h = is_undef(bed_h) ? 500 : bed_h;` self-reassignment (line 68) — same bug class as the already-fixed pole_cx/pole_cy ghost-leak; `include` scope-flattening collapsed `bed_h` to the hardcoded 500 fallback regardless of the assembly's real value, invisible only because 500 happened to equal both. Local render proved dormancy (bed_h=600 in assembly rendered byte-identical to bed_h=500 until the line was removed). Ghost-context stanza given its own `ghost_bed_h = is_undef(bed_h) ? 500 : bed_h;` local instead. TASK 1b (new file, PR-01-assembly-v30.scad, source v29): `bed_h` 500→600, reconciled to leg_socket.scad's `leg_h`(600mm) so the bed surface sits flush atop the new leg instead of sunk below it. Verified derived values: `xbar_z` 2065→2165mm, `collar_z0` 440→540mm, `bed_frame()` per-corner leg height (`bed_h-surface_t`) 470→570mm — all changed as expected, confirming TASK 1a's fix took effect. `pole_body()`'s `body_h` (1476mm) did NOT change — verified this is mathematically inherent (body_h = pole_h - 2×housing_r_circ - housing_camber_rise - neck_h algebraically cancels out bed_h entirely, since xbar_z's +bed_h term and body_h's -bed_h term offset), not a sign the fix failed; the 3 bed_h-dependent values above independently confirm the fix works. TASK 2 (in-place edit, leg_socket.scad): foot pad cube call commented out (not deleted) — Janis-confirmed, never part of the intended design. TASK 3 (in-place edit, leg_socket.scad): ghost-context-only cutaway (`difference()` slicing the leg_w-wide vertical half away) added so the embedded socket bore is visible when opening leg_socket.scad standalone — verified via CSG-tree diff that this cutaway does NOT appear anywhere in the full-assembly render path (leg_socket() calls from PR-01-assembly-v30.scad's per-pole loop render as plain solid cubes, byte-identical geometry to v29 aside from the bed_h-driven Z shift). FLAG (no action): `bed_frame()`'s per-corner leg cube (Z 0→570) and `leg_socket()`'s leg cube (Z 0→600) now confirmed via CSG dump to be two overlapping solids at each of the 4 corners (same footprint, same cx/cy) — not resolved by this prompt. OpenSCAD 2021.01 installed and used this session (unlike prior sessions) — real renders performed, not just code-review: pole_top.scad and leg_socket.scad both render standalone with zero undefined-variable warnings; the ~28 pre-existing "assigned...but overwritten" global warnings (TASK 2 audit backlog) are unchanged in count/content from v29, `bed_h` specifically dropped off that list (proof TASK 1a fix took); pre-existing 2-manifold warning on pole_top.scad standalone confirmed present in the ORIGINAL (pre-fix) file too — not introduced by this prompt. Brace/paren/bracket balance: pole_top.scad 41/41,363/363,102/102; leg_socket.scad 5/5,75/75,11/11; PR-01-assembly-v30.scad 1/1,77/77,9/9. First full child-file review by Janis (before an extended project pause) caught a file-organization deviation: `bell_lock_collar()` was misplaced in pole_top.scad instead of leg_socket.scad (per the original PR-01-multifile-split-v25 plan), leaving it with zero standalone preview anywhere. Fixed in v31 (base-file-consolidation). |
-| v31 | pilates-reformer/PR-01-base/PR-01-assembly-v31.scad | **ACTIVE** — base-file-consolidation (2026-07-03), pure file-organization fix, zero visual/dimensional change. TASK 1 (in-place edit, pole_top.scad): removed the entire BELL LOCK COLLAR bundle (`bell_dome_pts`, `bell_dome`, `bell_thread`, `bell_bayonet`, `bell_cap`, `bell_lock_collar`) — replaced with a pointer comment. `pole_base_collar()`'s retirement comment (references `bell_lock_collar()` by name) left untouched, still accurate. TASK 2 (in-place edit, leg_socket.scad): the same bundle inserted immediately after `module leg_socket(cx,cy)`'s closing brace, byte-identical module bodies (diffed against what was removed), new section header documenting the move. TASK 3 (in-place edit, leg_socket.scad): 16 new standalone-default `is_undef()` lines added for the bell-collar/lock-mechanism globals — these previously had NO standalone fallback anywhere (module was never reachable from any ghost stanza). TASK 4 (in-place edit, leg_socket.scad): ghost-context stanza now also calls `bell_lock_collar(ghost_cx, ghost_cy)` directly (solid, not cut) — first standalone visibility this module has ever had. TASK 5 (flag only): **44 dormant-override warnings confirmed via actual OpenSCAD compile** (not estimated) — 20 in pole_top.scad (pre-existing), 8 in leg_socket.scad (pre-existing), 16 newly added to leg_socket.scad by TASK 3 (the bell-collar set) — roughly double the ~23 previously tracked in the PENDING "TASK 2 audit" item; not fixed here, per prompt, flagged as higher-priority input to that audit given Janis is pausing the project for an extended period. VERIFICATION (real renders, OpenSCAD 2021.01): `pole_top.scad` and `leg_socket.scad` both render standalone with zero undefined-variable warnings. Full-assembly CSG-tree dump is **md5sum-identical** between v30 and v31 — proves byte-identical geometry calls, zero leakage from the file move. `leg_socket.scad` standalone now also shows the pre-existing 2-manifold warning; isolated-module test confirmed this originates from `bell_lock_collar()`'s own thread/bayonet geometry (ENGINEER-PROPOSED, already-documented, not physically validated) — pre-existing to the module, not introduced by relocating it. Brace/paren/bracket balance: pole_top.scad 33/33,303/303,76/76; leg_socket.scad 13/13,156/156,37/37; PR-01-assembly-v31.scad 1/1,82/82,9/9. rules-dimensions.md: confirmed no change needed (file location only, zero dimension change). |
+| Folder | Contents |
+|---|---|
+| vending-machine/VM-01-base/ | VM-01 .scad versions + PART_MANIFEST.md |
+| vending-machine/design_scope_of_work_rule.md | VM-01 owner-facing product concept doc |
+| pilates-reformer/PR-01-base/ | PR-01 multi-file source (PR-01-assembly-vNN.scad + pole_top.scad + leg_socket.scad, NOT individually versioned — see those files' own headers) + PART_MANIFEST.md |
+| pilates-reformer/design_scope_of_work_rule.md | PR-01 owner-facing product concept doc |
+| viewer/janis-product-viewer.html | Browser 3D viewer — self-contained HTML (Three.js), loads STL exports from api.janishammer.com/models/. Governed by .claude/SKILL_viewer_update.md (Claude Web only) |
+| /prompts/ (active) and /prompts/archive/ (completed, named "[task] ✅ COMPLETE — [date].md") | cc prompt files |
+| /exports/for-supplier/, /exports/for-cnc/ | STL / DXF exports |
+| /renders/ | Janis's screenshot QA evidence |
+
+For which .scad version is currently ACTIVE per product, and STL
+export/upload status, see cc_chat_log.md's most recent entry for that
+product — NOT tracked here (this file indexes locations, not
+per-version/per-export status, which changes every session and belongs to
+the log).
 
 ---
 
-## GOVERNANCE — NEW PRODUCT DESIGN CONVENTION (2026-07-05)
+## GOVERNANCE — NEW PRODUCT DESIGN CONVENTION
 
-`.claude/SKILL_product_design_skeleton.md` is now the **FIRST file read**
-for any new product line — Top-Down Skeleton Layout + Datum Reference
-Frame (Primary/Secondary/Tertiary) + Parent-Child design discipline,
-established with Janis BEFORE any component is sized.
+`.claude/SKILL_product_design_skeleton.md` is the **FIRST file read** for
+any new product line — Top-Down Skeleton Layout + Datum Reference Frame
+(Primary/Secondary/Tertiary) + Parent-Child design discipline, established
+with Janis BEFORE any component is sized.
 
 **Grandfather clause, Janis-directed, explicit: VM-01 and PR-01 are NOT
 retrofitted to this system.** Both continue under the existing
-DATUM_*/`SKILL_reference_point_first.md` convention (VM-01-base-v42) or
-their current state (PR-01, unstarted dimensioning). This applies to
-later/new products only.
+DATUM_*/`.claude/SKILL_reference_point_first.md` convention. This applies
+to later/new products only.
 
 ---
 
 ## ACTIVE PROJECT STATUS
-See: cc_chat_log.md (updated by cc after every commit)
-
----
-
-## VIEWER
-
-| File | Description |
-|---|---|
-| viewer/janis-product-viewer.html | Browser 3D viewer — self-contained HTML. Three.js + OrbitControls + STLLoader. Gold/dark Satu theme. Loads STL from api.janishammer.com/models/. VM-01: 3-way cycle, Standard (open window, default) → Full Exterior → C2 Open Shell. PR-01: single-mode (`stl` key only, no toggle equivalent — no `show_*` render-mode/view toggle exists in the assembly, only per-component debug visibility toggles). v1.3: adds [⏺ Record Turntable] (360° camera orbit, `renderer.domElement.captureStream()` + `MediaRecorder`, downloads a `.webm`) and [📏 Measure] (raycaster point-to-point mm distance, single active measurement, resets on project switch). Deploy to Satu public/ → api.janishammer.com/janis-product-viewer |
-
-**STL files (Satu public/models/):**
-| File | View |
-|---|---|
-| VM-01-v42-std.stl | Standard — shell intact, acrylic removed (open window). **NOT YET UPLOADED** — Janis must export from VM-01-base-v42.scad and push to this filename; viewer/PROJECTS entry still points at v38 filenames until re-wired (separate SKILL_viewer_update.md task, not done this session). |
-| VM-01-v42-full.stl | Full Exterior — all components, fully opaque. **NOT YET UPLOADED**, see above. |
-| VM-01-v42-C2.stl | C2 Open Shell — top + left panels removed, interior inspection. **NOT YET UPLOADED**, see above. Note: `show_shell_top=false` toggle still has the flagged bug from v40 (unfixed, out of scope for v41/v42 too — see VM-01-base SCAD VERSION INDEX v40 entry) — top panel will not actually be removed until a follow-up fix lands. |
-| VM-01-v42-door-open.stl | Suggested QA-only export name, `door_open=true` (100° swing), all else default. Same naming caveat as v41 (cc's own suggestion, not Janis-confirmed). **NOT YET EXPORTED/UPLOADED**. |
-| VM-01-v42-flap-open.stl | Suggested QA-only export name, `flap_open=true` (55° swing), all else default. Same naming caveat. **NOT YET EXPORTED/UPLOADED**. |
-| VM-01-v42-tray-out.stl | Suggested QA-only export name, `tray_out_pct=0.3`, all else default. Same naming caveat. **NOT YET EXPORTED/UPLOADED**. |
-| VM-01-v42-show-door-false.stl | Suggested QA-only export name, `show_door=false` (new v42 toggle, per QA checklist — inspect the shell's left-wall recess with the door hidden). Same naming caveat. **NOT YET EXPORTED/UPLOADED**. |
-| PR-01-v31.stl | Single mode — full assembly (bed+poles+crossbars+bell collars+leg sockets), all `show_*` debug toggles left at their `true` defaults. **NOT YET UPLOADED** — Janis must export from PR-01-assembly-v31.scad and push to this filename; 404 in the viewer until then is expected. |
+See cc_chat_log.md (most recent entry per product) for what's currently
+active, and CURRENT_STATE.md for open/unresolved items on any paused
+product line.

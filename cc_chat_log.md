@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-07 | governance-cc-intro-knowledge-map-rules-refresh | DONE — docs only, zero .scad touched
+
+Files: WORKFLOW_SKILL.md(3.10→3.11), knowledge.map(v42→v43, full rebuild), RULES.md(1.0→2.0), cc_chat_log.md, prompts/archive/.
+T1: CC PROMPT TEMPLATE Section 1 replaced with continuation/fresh self-check + Claude Web override slot + named task-specific-reads slot (exact structure per prompt); knowledge.map restored to the mandatory 2nd read (had silently narrowed out, no recorded decision — real drift, not intentional).
+T2: knowledge.map rebuilt — stripped the embedded VM-01/PR-01 SCAD version-index changelogs + this file's own header changelog + the stale (v42-era) viewer STL-upload-status table (all preserved in git history/cc_chat_log.md, not lost); added a complete, individually-confirmed /.claude/ file index (was partial); kept WHO READS WHAT, FILE SYSTEM MAP, GOVERNANCE, PROJECT FOLDERS as current-state-only. FLAG: README.md still points to "RULES.md section 4" for session protocol, which doesn't exist (real protocol lives in WORKFLOW_SKILL.md) — out of this prompt's scope, not fixed.
+T3: 3/3 candidate rules confirmed against actual traced events (not forced) — R-005 render-mode/toggle compound-gating trap (v44 Finding B), R-006 shared-center/radius arc constraint (v50 left-vertical/door-flange), R-007 patch-vs-real-material pattern (this session's own v51 steel-bar fix). No additional confirmed candidates found beyond these 3 in the 2026-07-05-onward archive scan.
+
 ### 2026-07-07 | vm01-shell-toggle-fix-and-hole-isolation | DONE — v51, 2 toggles fixed, 1 hole isolated (not fixed), 1 real fix
 
 Files: VM-01-base-v51.scad (new, source v50), rules-dimensions.md(v22→v23), knowledge.map(v41→v42), PART_MANIFEST.md, cc_chat_log.md, prompts/archive/. No OpenSCAD binary this session — arithmetic self-check only, not live CGAL; Janis F6/CGAL re-check still required.

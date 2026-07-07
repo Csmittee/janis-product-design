@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-07 | vm01-v55-door-floor-datum-fix | DONE — v55, direct user question ("manifold issue ongoing for several versions, how to fix?"), no prompt file
+
+Files: VM-01-base-v55.scad (new, source v54), rules-dimensions.md(v25→v26), cc_chat_log.md. Real OpenSCAD/CGAL used throughout (STL export + facet-coordinate extraction), not estimates.
+Re-tested the two previously-suspected "exact tangency" causes (door-top-vs-roof v52, hinge-cylinder-vs-wall v52) with a real 9-angle CGAL sweep — BOTH CLEAN. Prior sessions' attribution was arithmetic, never CGAL-confirmed; correcting that here. Both rows in rules-dimensions.md marked RULED OUT.
+Real root cause found instead: `door_bot_z` (+ 3 independently-re-derived copies: `shell_hinge_z`x2, `hinge_z`) used `FOOT_BASE_H+0` (legs level) instead of `FOOT_BASE_H+skin_t` (true interior floor) — a genuine ~2mm SOLID collision between the door leaf and the floor slab, present since ≥v53. FIXED: all 4 moved to the shared datum `FOOT_BASE_H+skin_t-e`; `leg()` extended `+e` to stay flush. Confirmed clean via CGAL. Bonus: this also closed the older unresolved "bottom-left-corner floor hole."
+NOT fixed: `compartment_divider()` has its own separate touch with the shell (7 facets + warning, confirmed X-Y issue not Z — no change at 1mm overlap tested explicitly). Flagged in both files, not guessed at. Door-closed manifold warning still present, now solely attributable to this one isolated, unresolved cause.
+
 ### 2026-07-07 | vm01-v54-sensor-bracket-fix | DONE — v54, both prompt diagnoses re-derived from live geometry, real root causes differ from what was assumed
 
 Files: VM-01-base-v54.scad (new, source v53), rules-dimensions.md(v24→v25), cc_chat_log.md, prompts/archive/. OpenSCAD binary available and used for every check — real CGAL, not estimates.

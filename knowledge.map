@@ -1,5 +1,9 @@
 # knowledge.map
-# Version: v43 — 2026-07-07
+# Version: v44 — 2026-07-07
+# Changes: vm01-clearance-zone-map-skill-and-application — new
+# .claude/SKILL_clearance_zone_map.md added (targeted clearance color-map
+# diagnostic, on-demand, see FILE SYSTEM MAP (/.claude/) below).
+# Previous: v43 — 2026-07-07
 # Changes: Full rebuild (governance-cc-intro-knowledge-map-rules-refresh).
 # Stripped the embedded per-version changelog that had accumulated here
 # since v31 (the VM-01-base/PR-01-base SCAD VERSION INDEX tables, this
@@ -93,6 +97,7 @@ or WORKFLOW_SKILL.md.
 | SKILL_reference_point_first.md | Local-datum-origin habit (ask "measured FROM what" before dimensioning) — SUPERSEDED by SKILL_product_design_skeleton.md but still the live convention for VM-01/PR-01 specifically | Before designing any new module's geometry within VM-01 or PR-01 |
 | SKILL_product_design_skeleton.md | Full Top-Down Skeleton Layout + Datum Reference Frame + Parent-Child design discipline — FIRST file for any NEW product line | Before any component sizing on a product line that is NOT VM-01/PR-01 (both explicitly grandfathered, never retrofitted) |
 | SKILL_viewer_update.md | Viewer PROJECTS-entry update procedure (first-time wiring or version bump) | Claude Web only — cc does NOT read this — triggered by "update the viewer" / "new design released" |
+| SKILL_clearance_zone_map.md | Targeted clearance color-map diagnostic (minkowski()+intersection() at discrete offset bands) for a named suspect pair — NEW 2026-07-07 | R-111, a KT Phase 4 spy test needing exact closeness (not just pass/fail), or Claude Web explicitly names a suspect pair. Never a permanent toggle — the reusable `clearance_zone_map()` module lives in VM-01-base's own .scad file (see PROJECT FOLDERS), invoked only via a scratch include during active diagnosis |
 
 ---
 

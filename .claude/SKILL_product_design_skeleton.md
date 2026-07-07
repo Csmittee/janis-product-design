@@ -1,6 +1,28 @@
 # SKILL_product_design_skeleton.md
 # Claude Web + cc — Top-Down Skeleton & Datum Reference Frame Design Logic
-# Version: 1.0 — 2026-07-05
+# Version: 2.1 — 2026-07-07
+# Changes: Added a PREREQUISITE section (before TRIGGER PHRASES) pointing
+# to design_scope_of_work_rule.md — this skill's worksheets did not
+# previously state that a scope file must exist/be read FIRST, so a
+# future session could complete the worksheets without one ever being
+# created, or in the wrong order. Detail/sequencing addition (a pointer
+# to an existing artifact, not a new procedure of its own) — X.Y bump,
+# not X.0, per wire-kickoff-chain-scope-to-skeleton's explicit framing.
+# Previous: 2.0 — 2026-07-07
+# Changes: Added two new mandatory procedures, same day-one timing as the
+# Skeleton Definition Worksheet — BOM Subassembly Tree (parts hierarchy,
+# a DIFFERENT artifact from the Datum Skeleton, seeds that product's
+# PART_MANIFEST.md) and Kinetic Dual-View Convention (every moving part
+# from the BOM tree gets BOTH end states as explicit toggles from its
+# FIRST committed version, rationale: VM-01's show_shell_top toggle
+# existed in name but was never wired to the geometry it was meant to
+# control, undiagnosed for several sessions — the exact failure mode this
+# convention prevents). New sections, not detail edits — X.0 bump per the
+# Document Versioning Rule. SCOPE section confirmed to already cover both
+# additions without wording change (it's a blanket "this skill applies to
+# new product lines only" statement, not tied to specific named
+# procedures) — VM-01/PR-01 grandfather clause unchanged.
+# Previous: 1.0 — 2026-07-05
 # Owner: FIRST skill read for any NEW product design. See SCOPE below.
 # Supersedes: .claude/SKILL_reference_point_first.md (kept for history —
 # this file absorbs and formalizes its "ask the reference point first"
@@ -16,6 +38,23 @@ This skill applies to **new product lines only**, starting 2026-07-05.
 grandfathered — do NOT retrofit either product to this system.**
 Janis's direct instruction: "we do not want to redo entirely the vending
 machine and my pilates, we apply this new system to later project only."
+
+---
+
+## PREREQUISITE — Read This Before the Worksheets Below
+
+This skill's worksheets (Skeleton, BOM Tree, Kinetic Table) all consume
+a `design_scope_of_work_rule.md` for this product — create that file
+FIRST if it doesn't already exist for this product, using the customer-
+requirement interview with Janis (owner-vocabulary features, envelope
+target, appearance/UX — see the file's own filter: customer-recognizable/
+marketing-headline content only, never implementation detail). Do not
+begin the Skeleton Definition Worksheet until the scope file exists and
+Janis has confirmed it. If a scope file already exists for this product
+(e.g., a later design phase for an already-scoped product), read it in
+full before starting the worksheets — every worksheet answer should
+trace back to something the scope file actually says, not be invented
+independently of it.
 
 ---
 
@@ -139,6 +178,80 @@ TASKS section introduces a new shared reference point, ask — does this
 belong in the Skeleton (2+ parts need it), or is it a true local
 Parent-Child offset (only one part needs it, measured from its actual
 Parent)? Never let a "just this once" absolute number back in.
+
+---
+
+## PROCEDURE — CLAUDE WEB (BOM Subassembly Tree)
+
+Before writing the FIRST cc prompt for a new product, complete this
+alongside the Skeleton Definition Worksheet — same timing, same
+mandatory status. This is a DIFFERENT artifact from the Datum Skeleton:
+the Skeleton answers "where is everything, geometrically, relative to
+each other" — the BOM tree answers "what parts and subassemblies exist,
+and how do they nest." Do not conflate the two, and do not skip one
+because the other is done.
+
+Build the tree to at least the subassembly level (not necessarily every
+fastener, but every distinct part or grouped subassembly a supplier or
+Janis would refer to by name):
+
+```
+[PRODUCT NAME] (top assembly)
+├── [Major subassembly 1]
+│   ├── [Part/sub-subassembly]
+│   └── [Part/sub-subassembly]
+├── [Major subassembly 2]
+│   └── ...
+└── [Major subassembly N]
+```
+
+State the completed tree back to Janis explicitly and get confirmation
+before any component sizing or the first cc prompt is written — same
+Validator discipline as the Skeleton Worksheet.
+
+This tree becomes the seed for that product's `PART_MANIFEST.md` (plain-
+language part identity registry, same convention already used for
+VM-01/PR-01) — create it at this stage, not retrofitted later.
+
+---
+
+## PROCEDURE — CLAUDE WEB + CC (Kinetic Dual-View Convention)
+
+For every part identified in the BOM tree above that moves in any way —
+opens/closes, slides in/out, rotates, extends/retracts, or otherwise
+articulates — BOTH end states must be established as explicit toggle
+variables from that part's FIRST committed version, not added after the
+fact:
+
+- A tray or drawer: both fully-in AND fully-out (a percentage/travel
+  variable is acceptable if the geometry genuinely needs a continuous
+  range, but the confirmed-working end states are mandatory at minimum)
+- A door, flap, or lid: both fully-closed AND fully-open
+- A slide, rail, or telescoping part: both retracted AND extended
+
+Claude Web's job before the first cc prompt: identify every kinetic part
+from the BOM tree and list it in a simple table, confirmed with Janis:
+
+```
+KINETIC PART           | STATE A       | STATE B        | Notes
+[part name]             [in/closed/…]   [out/open/…]     [range or discrete?]
+```
+
+cc's job, every time a kinetic part's geometry is authored or changed:
+render/verify BOTH states before considering that part done — a part
+that only demonstrably works in its default (usually closed/in) state is
+NOT complete, regardless of how clean that single render looks. State
+explicitly in cc_chat_log which states were actually verified, not just
+which one was rendered by default.
+
+**Why this is mandatory, not optional:** a toggle that exists in name but
+was never wired to the actual geometry controlling it (or wired to the
+wrong render-mode branch) produces a state that LOOKS like it works from
+the default view and silently doesn't in the other — this already
+happened once in VM-01 (`show_shell_top`, several sessions undiagnosed)
+and is the exact failure mode this convention prevents by requiring both
+states be checked from a part's very first version, not discovered as a
+bug months later.
 
 ---
 

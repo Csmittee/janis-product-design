@@ -4,6 +4,27 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-07 | vm01-v54-sensor-bracket-fix | DONE — v54, both prompt diagnoses re-derived from live geometry, real root causes differ from what was assumed
+
+Files: VM-01-base-v54.scad (new, source v53), rules-dimensions.md(v24→v25), cc_chat_log.md, prompts/archive/. OpenSCAD binary available and used for every check — real CGAL, not estimates.
+T1 sensor: prompt said "facing wrong way." Real cause found instead: `strip_z` still referenced `tray_0_z` (stale PRE-v46 tray anchor, kept only for `tray_compartment_partition()`) instead of `tray_stack_z0` (the v46 live-position datum every other tray-dependent module already uses) — CGAL-confirmed a genuine 12-facet SOLID collision with `exit_compartment_wall()` at the stale Z. Fixed; re-verified ZERO overlap. The "visible from outside" symptom is real (confirmed via render) but traces to the already-flagged, out-of-scope v50 corner-pole gap, not this strip's coordinates — stated explicitly, not claimed fixed.
+T2 guard: prompt's "already known oversized, prior session, no harm" claim NOT found anywhere in cc_chat_log.md/rules-dimensions.md after a full search — not acted on. Real CGAL found the v47 value is an exact zero-clearance tangent (1-facet degenerate touch) against the door — first fix attempt (23mm) still touched a different door surface (inner hinge-line segment); final fix (`HINGE_Y_OFFSET+skin_t`=27mm, was 21.01mm) re-verified ZERO overlap, real 9-angle sweep.
+T3: door-open still clean; door-closed warning still present after both fixes — consistent with the two SEPARATE, already-known, out-of-scope exact-tangency findings (door-top vs roof, hinge-cylinder vs wall) from v52/v53, neither touched this round.
+
+### 2026-07-07 | wire-kickoff-chain-scope-to-skeleton | DONE — docs only, zero .scad/dimension files touched
+
+Files: .claude/SKILL_product_design_skeleton.md(2.0→2.1), chat_rules.md(v3.9→v3.10), WORKFLOW_SKILL.md(3.12→3.13), knowledge.map(v45→v46), cc_chat_log.md, prompts/archive/.
+Added a PREREQUISITE section to the skeleton skill (before TRIGGER PHRASES) pointing to `design_scope_of_work_rule.md` — that file didn't exist when the skeleton skill was written (2026-07-05, one day before the scope file convention), so its own SCOPE never referenced it; a future session could complete the worksheets with no scope file at all, or in the wrong order.
+`chat_rules.md`'s "New Product Design Discipline" REWRITTEN (not appended) as one explicit 5-step sequence: customer interview → scope file (own confirmation gate) → skeleton's 3 worksheets in order (separate confirmation gate) → first cc prompt/coding loop → cc_chat_log/CURRENT_STATE feedback. Grandfather clause preserved, integrated into the rewrite.
+`WORKFLOW_SKILL.md`'s TRIGGER row updated to name the full chain and require TWO separate Janis confirmation points (post-scope-file, post-worksheets), not one collapsed gate. `knowledge.map`'s GOVERNANCE section unified into one connected chain description. All 4 files bumped X.Y (sequencing/detail, not new structural content, per this prompt's own explicit framing). No .scad/dimension files touched.
+
+### 2026-07-07 | skeleton-skill-bom-tree-kinetic-convention | DONE — docs only, zero .scad/dimension files touched
+
+Files: .claude/SKILL_product_design_skeleton.md(1.0→2.0), cc_rules.md(v8→v9), chat_rules.md(v3.8→v3.9), WORKFLOW_SKILL.md(3.11→3.12), knowledge.map(v44→v45), cc_chat_log.md, prompts/archive/.
+Added "PROCEDURE — CLAUDE WEB (BOM Subassembly Tree)" and "PROCEDURE — CLAUDE WEB + CC (Kinetic Dual-View Convention)" sections to the skeleton skill, positioned alongside (not replacing) the Skeleton Worksheet — explicitly distinguished as a different artifact (parts hierarchy vs. coordinate reference). Kinetic convention cites VM-01's show_shell_top incident as the concrete rationale, per the prompt's own instruction, not an abstract justification.
+Version bump reasoning stated explicitly: skeleton skill itself gets X.0 (1.0→2.0, genuinely NEW sections/structure); the 4 wiring files (cc_rules/chat_rules/WORKFLOW_SKILL/knowledge.map) get X.Y-equivalent detail bumps (one-line pointers/cross-references to an already-established concept, no new structure of their own).
+SCOPE/grandfather clause confirmed to already cover both new sections without wording change (file-wide "new product lines only" statement, not tied to named procedures) — not touched. No .scad or rules-dimensions.md files touched, confirmed.
+
 ### 2026-07-07 | vm01-clearance-zone-map-skill-and-application | DONE — v53, new diagnostic skill, both v52 findings CGAL-confirmed with precise numbers
 
 Files: VM-01-base-v53.scad (new, source v52, diagnostic module only), .claude/SKILL_clearance_zone_map.md (new), knowledge.map(v43→v44), cc_chat_log.md, prompts/archive/. OpenSCAD binary WAS available this session (installed fresh) — every result below is a real CGAL minkowski()+intersection() render, not an estimate.

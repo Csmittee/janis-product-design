@@ -1,5 +1,12 @@
 # Claude Code (cc) Rules
-# Version: v8 — 2026-07-05
+# Version: v9 — 2026-07-07
+# Changes: One-line addition to the existing NEW product line gate — the
+# same read-and-confirm requirement now also covers
+# SKILL_product_design_skeleton.md's BOM Subassembly Tree and Kinetic
+# Dual-View table (added to that skill file 2026-07-07), not just the
+# Skeleton Worksheet. Detail addition (X.Y-equivalent, this file's own
+# plain-integer convention), not a new section here.
+# Previous: v8 — 2026-07-05
 # Changes: Added Toggle-Completeness Rule (every ASSEMBLY-called module
 # needs a show_* toggle or a named safety-critical exception in that
 # product's PART_MANIFEST.md) — root cause fix for tray_zone_frame() going
@@ -51,7 +58,10 @@ step 8 below, before rules-dimensions.md, before writing a single
 parameter. Confirm the Skeleton Layout + Datum Reference Frame was
 established with Janis (per that file's Claude Web procedure) before
 proceeding — if the prompt doesn't show evidence of this, flag it in
-cc_chat_log rather than silently inventing datums.
+cc_chat_log rather than silently inventing datums. Same gate now also
+covers that skill file's BOM Subassembly Tree and Kinetic Dual-View
+table (added 2026-07-07) — confirm evidence of those too, not just the
+Skeleton Worksheet, before proceeding.
 
 ---
 

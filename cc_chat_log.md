@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-07 | vm01-shell-toggle-fix-and-hole-isolation | DONE — v51, 2 toggles fixed, 1 hole isolated (not fixed), 1 real fix
+
+Files: VM-01-base-v51.scad (new, source v50), rules-dimensions.md(v22→v23), knowledge.map(v41→v42), PART_MANIFEST.md, cc_chat_log.md, prompts/archive/. No OpenSCAD binary this session — arithmetic self-check only, not live CGAL; Janis F6/CGAL re-check still required.
+T1 `show_shell_top`: NOT orphaned — was wired to a real cutout, but referenced `total_h`(700) instead of the module's own local `shell_h`(650), landing the cut entirely above the actual shell (arithmetic-confirmed: 697 local vs. 0-650 local range) — fixed to reference `shell_h`.
+T2 `show_shell_bottom`: added, same convention, gated in `outer_shell_debug()`, mirrors left/right panels' construction.
+T3 (isolation only, NOT fixed): bottom-left hole = the SAME v50 corner-pole cutout — its Z-range starts at local 0, exactly the shell's own bottom-skin range, so it punches a real hole through the FLOOR there; its top end lands exactly at the top-skin's own start (coincident, zero overlap) — roof untouched. That's why it's a real hole from below but only a "cut edge" from above. Present in BOTH door states — NOT the door-closed manifold warning. No independent record of an earlier "strange cut" finding found in this repo; treated as same defect class by geometry, not by matching a prior record.
+T4 (real fix): door's top metal "cap" confirmed dependent on `show_acrylic` (Janis-predicted, confirmed) — deleted; leaf's window cutout shrunk to `acrylic_top_limit_z` so the door's own shell skin fills the space instead (mirrors flap-zone pattern). This resolves the ENTIRE fill-vs-frame overlap flagged since v49 (was 100% the cap) — same bar Janis suspected caused that specific door-close collision, CONFIRMED resolved; the separate unrelated right-edge trim collision (v48 TODO) is NOT claimed resolved.
+
 ### 2026-07-06 | vm01-design-scope-update-owner-answers | DONE — 5 owner answers applied, docs only, zero .scad touched
 
 Files: vending-machine/design_scope_of_work_rule.md, pilates-reformer/design_scope_of_work_rule.md, cc_chat_log.md, prompts/archive/.

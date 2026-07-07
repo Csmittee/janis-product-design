@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-07 | skeleton-skill-bom-tree-kinetic-convention | DONE — docs only, zero .scad/dimension files touched
+
+Files: .claude/SKILL_product_design_skeleton.md(1.0→2.0), cc_rules.md(v8→v9), chat_rules.md(v3.8→v3.9), WORKFLOW_SKILL.md(3.11→3.12), knowledge.map(v44→v45), cc_chat_log.md, prompts/archive/.
+Added "PROCEDURE — CLAUDE WEB (BOM Subassembly Tree)" and "PROCEDURE — CLAUDE WEB + CC (Kinetic Dual-View Convention)" sections to the skeleton skill, positioned alongside (not replacing) the Skeleton Worksheet — explicitly distinguished as a different artifact (parts hierarchy vs. coordinate reference). Kinetic convention cites VM-01's show_shell_top incident as the concrete rationale, per the prompt's own instruction, not an abstract justification.
+Version bump reasoning stated explicitly: skeleton skill itself gets X.0 (1.0→2.0, genuinely NEW sections/structure); the 4 wiring files (cc_rules/chat_rules/WORKFLOW_SKILL/knowledge.map) get X.Y-equivalent detail bumps (one-line pointers/cross-references to an already-established concept, no new structure of their own).
+SCOPE/grandfather clause confirmed to already cover both new sections without wording change (file-wide "new product lines only" statement, not tied to named procedures) — not touched. No .scad or rules-dimensions.md files touched, confirmed.
+
 ### 2026-07-07 | vm01-clearance-zone-map-skill-and-application | DONE — v53, new diagnostic skill, both v52 findings CGAL-confirmed with precise numbers
 
 Files: VM-01-base-v53.scad (new, source v52, diagnostic module only), .claude/SKILL_clearance_zone_map.md (new), knowledge.map(v43→v44), cc_chat_log.md, prompts/archive/. OpenSCAD binary WAS available this session (installed fresh) — every result below is a real CGAL minkowski()+intersection() render, not an estimate.

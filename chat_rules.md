@@ -1,5 +1,12 @@
 # Claude Web — Chat Rules
-# Version: v3.8 — 2026-07-05
+# Version: v3.9 — 2026-07-07
+# Changes: Extended "New Product Design Discipline" section — the same
+# mandatory pre-first-prompt gate now covers 3 artifacts, not 1 (Skeleton
+# Worksheet + BOM Subassembly Tree + Kinetic Dual-View table, all added to
+# SKILL_product_design_skeleton.md 2026-07-07). Detail addition to an
+# existing section, not new structure — X.Y bump. Grandfather clause
+# unchanged.
+# Previous: v3.8 — 2026-07-05
 # Changes: Added "New Product Design Discipline" section — .claude/SKILL_product_design_skeleton.md is now the FIRST file read for any NEW product line (not VM-01/PR-01 continuation). Establish the Skeleton Layout + Datum Reference Frame with Janis before any component sizing or first cc prompt.
 # Previous: v3.7 — 2026-07-03
 # Owner: Claude Web reads this at Step 2 of every session open. CC never reads this.
@@ -24,17 +31,27 @@
 
 ---
 
-## New Product Design Discipline (added 2026-07-05)
+## New Product Design Discipline (added 2026-07-05, extended 2026-07-07)
 
 - Trigger: Janis requests a new product design, new model line, or any
   physical assembly that is NOT a continuation of VM-01 or PR-01.
 - Read `.claude/SKILL_product_design_skeleton.md` FIRST — before
   rules-dimensions.md, before any component-sizing conversation, before
   the first cc prompt.
-- Complete the Skeleton Definition Worksheet with Janis in chat: master
-  origin, Primary/Secondary/Tertiary datums, and each major sub-assembly's
-  declared Parent + offset. State it back to Janis for explicit
-  confirmation before writing the first cc prompt.
+- Complete THREE things with Janis in chat, same mandatory timing, before
+  any component sizing or the first cc prompt is written:
+  1. Skeleton Definition Worksheet: master origin, Primary/Secondary/
+     Tertiary datums, and each major sub-assembly's declared Parent +
+     offset.
+  2. BOM Subassembly Tree: parts/subassembly hierarchy — a DIFFERENT
+     artifact from the Skeleton (parts hierarchy, not coordinate
+     reference), seeds that product's `PART_MANIFEST.md`.
+  3. Kinetic Dual-View table: every moving part identified in the BOM
+     tree (opens/closes, slides, rotates, extends/retracts) gets BOTH end
+     states listed and confirmed — not just its default state.
+  State all three back to Janis explicitly and get confirmation before
+  writing the first cc prompt — do not skip any one because another is
+  done, they are different content.
 - Never let a build prompt introduce a new shared reference point without
   checking whether it belongs in the Skeleton (2+ parts need it) or is a
   true local Parent-Child offset (one part, measured from its actual

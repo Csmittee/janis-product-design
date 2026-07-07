@@ -1,6 +1,13 @@
 # WORKFLOW_SKILL.md
 # Janis Product Design — How We Work
-# Version: 3.11 — 2026-07-07
+# Version: 3.12 — 2026-07-07
+# Changes: TRIGGER → ACTION → VALIDATOR row for new product design updated
+# — ACTION/VALIDATOR now name all 3 artifacts (Skeleton Worksheet + BOM
+# Subassembly Tree + Kinetic Dual-View table, all added to
+# SKILL_product_design_skeleton.md this same day), not just the Skeleton
+# Worksheet alone. Detail addition to an existing row, not new structure —
+# X.Y bump.
+# Previous: 3.11 — 2026-07-07
 # Changes: CC PROMPT TEMPLATE Section 1 (CC INTRO) rewritten — was a fixed
 # git-fetch + 4-file re-read on every single prompt, with no way to skip
 # re-reading governance files already loaded earlier in an active session.
@@ -202,7 +209,7 @@ Janis describes goal
 | pole_top seam/T-junction work resumes (Option B) | Read .claude/SKILL_option_b_unified_loft.md in full before any prompt — STATUS block must be updated first | Claude Web states file was read + confirms STATUS block matches current repo state |
 | Aesthetic/artistic geometry ambiguous in words (curve character, stylistic proportion) | Claude Web builds OpenSCAD Customizer-enabled prototype (.claude/SKILL_customizer_profile.md), Janis tunes sliders live, reports final values | Janis explicitly confirms final parameter values in chat before any cc prompt is written |
 | Janis says "update the viewer" / "new design released" | Read `.claude/SKILL_viewer_update.md`, follow its procedure before writing any cc prompt | Claude Web states which project/version this targets before drafting the prompt |
-| New product design requested (not VM-01/PR-01 continuation) | Read `.claude/SKILL_product_design_skeleton.md` FIRST; establish Skeleton Layout + Datum Reference Frame (Primary/Secondary/Tertiary) with Janis via the Skeleton Definition Worksheet BEFORE any component sizing or the first cc prompt | Claude Web states the completed worksheet (master origin + 3 datums + sub-assembly Parents) back to Janis for explicit confirmation before writing the first cc prompt |
+| New product design requested (not VM-01/PR-01 continuation) | Read `.claude/SKILL_product_design_skeleton.md` FIRST; establish Skeleton Layout + Datum Reference Frame (Primary/Secondary/Tertiary), BOM Subassembly Tree, AND Kinetic Dual-View table with Janis (same skill file, added 2026-07-07) BEFORE any component sizing or the first cc prompt | Claude Web states all three back to Janis for explicit confirmation before writing the first cc prompt: (1) the completed Skeleton Worksheet (master origin + 3 datums + sub-assembly Parents), (2) the BOM Subassembly Tree, (3) the Kinetic Dual-View table for every moving part |
 
 ---
 

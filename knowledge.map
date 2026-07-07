@@ -1,5 +1,10 @@
 # knowledge.map
-# Version: v44 — 2026-07-07
+# Version: v45 — 2026-07-07
+# Changes: skeleton-skill-bom-tree-kinetic-convention — GOVERNANCE section
+# updated: SKILL_product_design_skeleton.md now requires 3 confirmed
+# artifacts before first cc prompt (Skeleton Worksheet + BOM Subassembly
+# Tree + Kinetic Dual-View table), not just the Skeleton Worksheet alone.
+# Previous: v44 — 2026-07-07
 # Changes: vm01-clearance-zone-map-skill-and-application — new
 # .claude/SKILL_clearance_zone_map.md added (targeted clearance color-map
 # diagnostic, on-demand, see FILE SYSTEM MAP (/.claude/) below).
@@ -125,9 +130,20 @@ the log).
 ## GOVERNANCE — NEW PRODUCT DESIGN CONVENTION
 
 `.claude/SKILL_product_design_skeleton.md` is the **FIRST file read** for
-any new product line — Top-Down Skeleton Layout + Datum Reference Frame
-(Primary/Secondary/Tertiary) + Parent-Child design discipline, established
-with Janis BEFORE any component is sized.
+any new product line, before rules-dimensions.md, before any
+component-sizing conversation, before the first cc prompt. It requires
+THREE artifacts completed and confirmed with Janis, same mandatory
+timing, before any component is sized:
+1. **Skeleton Definition Worksheet** — Top-Down Skeleton Layout + Datum
+   Reference Frame (Primary/Secondary/Tertiary) + Parent-Child design
+   discipline (coordinate reference — "where is everything, geometrically")
+2. **BOM Subassembly Tree** (added 2026-07-07) — parts/subassembly
+   hierarchy, a DIFFERENT artifact from the Skeleton, seeds that product's
+   `PART_MANIFEST.md`
+3. **Kinetic Dual-View table** (added 2026-07-07) — every moving part from
+   the BOM tree gets BOTH end states (open/closed, in/out, etc.)
+   established as explicit toggles from its first committed version, not
+   added later
 
 **Grandfather clause, Janis-directed, explicit: VM-01 and PR-01 are NOT
 retrofitted to this system.** Both continue under the existing

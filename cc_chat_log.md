@@ -4,6 +4,14 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-07 | vm01-clearance-zone-map-skill-and-application | DONE — v53, new diagnostic skill, both v52 findings CGAL-confirmed with precise numbers
+
+Files: VM-01-base-v53.scad (new, source v52, diagnostic module only), .claude/SKILL_clearance_zone_map.md (new), knowledge.map(v43→v44), cc_chat_log.md, prompts/archive/. OpenSCAD binary WAS available this session (installed fresh) — every result below is a real CGAL minkowski()+intersection() render, not an estimate.
+Skill adapted the prompt's pseudocode to real OpenSCAD: modules can't be passed as parameters, so `clearance_zone_map()` uses `children(0)`/`children(1)` instead of `part_a()`/`part_b()` — documented explicitly in the skill file.
+Finding 1 (door_top_z vs. shell roof, isolated to the top-left corner specifically — mid-door-width tested separately and confirmed clean): 0mm band EMPTY, but 0.02mm already shows substantial stable overlap (~175-205 facets, robust across 2 different bounding boxes) — the CGAL signature of an EXACT tangent touch, not a small real gap. Real clearance: 0.000mm exactly, CGAL-confirmed (v52 only had this as an arithmetic estimate).
+Finding 2 (hinge-pivot cylinder vs. shell wall, tested 2 independent ways — sliced from the real door AND reconstructed from its own constants, both agree): same exact-tangency signature, real clearance 0.000mm exactly, CGAL-confirmed.
+Both diagnostic test scripts lived in scratchpad only, never in the committed file; only the reusable `clearance_zone_map()` module persists in v53, no calls. No dimension changed — rules-dimensions.md untouched per prompt's explicit instruction. Neither finding fixed — isolation-only, unchanged from v52's scope.
+
 ### 2026-07-07 | vm01-v52-acrylic-fix-side-shell-collision-isolation | DONE — v52, 1 real fix (not the hypothesized bug), 2 collisions isolated (not fixed)
 
 Files: VM-01-base-v52.scad (new, source v51), rules-dimensions.md(v23→v24), cc_chat_log.md, prompts/archive/. No OpenSCAD binary this session — arithmetic self-check only.

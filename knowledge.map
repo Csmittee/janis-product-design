@@ -1,6 +1,20 @@
 # knowledge.map
 # Janis Product Design — Master File Index
-# Version: v41 | 2026-07-06
+# Version: v42 | 2026-07-07
+# Changes: vm01-shell-toggle-fix-and-hole-isolation — new ACTIVE VM-01-base
+# version (v51). TASK 1: show_shell_top root-caused (was wired to a real
+# cutout, but the cutout referenced the wrong Z-frame — total_h instead of
+# the module's own local shell_h — fixed). TASK 2: new `show_shell_bottom`
+# toggle added, same convention, gated in outer_shell_debug() — see
+# PART_MANIFEST.md. TASK 3 (diagnosis only, not fixed): bottom-left-corner
+# hole traced to the v50 corner-pole cutout also punching through the
+# shell's own bottom skin at that corner (arithmetic-confirmed) — present
+# in both door states, unrelated to the door-closed manifold warning. TASK
+# 4 (real fix): door's top acrylic-zone "metal cap" deleted (confirmed
+# dependent on show_acrylic, a cosmetic patch) — leaf's own shell material
+# now fills that space directly, also resolving the fill-vs-frame overlap
+# flagged since v49. rules-dimensions.md (v22->v23).
+# Previous: v41 | 2026-07-06
 # Changes: VM-01-corner-frame-redesign — new ACTIVE VM-01-base version
 # (v50). Removed the shell's front-left corner "pole" (real, live-CGAL-
 # confirmed collision with the door once tray_zone_frame() is hidden) via

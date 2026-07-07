@@ -19,7 +19,7 @@
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
 | `legs()` | 4 support legs | | GAP — no toggle |
-| `outer_shell_debug()` | main cabinet shell (called via `translate([0,0,leg_h])`) | | Partial — `show_shell_top`/`show_shell_left`/`show_shell_back`/`show_shell_right` remove individual panels; no single master toggle for the whole module |
+| `outer_shell_debug()` | main cabinet shell (called via `translate([0,0,leg_h])`) | | Partial — `show_shell_top`/`show_shell_bottom`/`show_shell_left`/`show_shell_back`/`show_shell_right` remove individual panels (`show_shell_bottom` added v51, vm01-shell-toggle-fix-and-hole-isolation); no single master toggle for the whole module |
 | `compartment_divider()` | wall between product zone and system/dashboard zone | | GAP — no toggle |
 | `tray_rack()` | fixed rails + latch pins holding trays | | GAP — no toggle |
 | `spring_tray()` x2 | removable trays holding springs/product | | GAP — no toggle |

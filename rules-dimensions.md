@@ -1,5 +1,18 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v24 — 2026-07-07
+# Version: v25 — 2026-07-07
+# Changes: vm01-v54-sensor-bracket-fix (v54). Sensor strip Z corrected
+# 280mm(stale tray_0_z-20)→350mm(tray_stack_z0-20) — real CGAL-confirmed
+# 12-facet collision with exit_compartment_wall() at the old value,
+# resolved. Drop zone side guards front edge corrected AGAIN, 21.01mm→
+# 27mm — the v47 value was itself an exact-tangent touch against the
+# door (not caught by that round's Python-approximated sweep), fixed with
+# HINGE_Y_OFFSET+skin_t (real clearance, already-established reference
+# point). Both diagnoses independently re-derived from live geometry this
+# session — the source prompt's own claims (sensor "facing wrong way";
+# guard "already known oversized, prior session, no harm") did not match
+# what real CGAL/repo-history checks confirmed, stated explicitly rather
+# than silently accepted.
+# Previous: v24 — 2026-07-07
 # Changes: vm01-v52-acrylic-fix-side-shell-collision-isolation (v52).
 # TASK 1: investigated the double-layer-acrylic report — no duplicate
 # object found in v51's code; found instead that v51's leaf-cutout fix
@@ -380,7 +393,7 @@ new parts working together:
 | Dimension | Value | Notes |
 |---|---|---|
 | Sensor type | Parallel IR strip pair | Left + right walls, 2 INDEPENDENT pieces — no connecting element between them, Janis-confirmed 2026-07-05 |
-| Sensor strip Z | 280mm | Just below tray 0 floor (tray_0_z - 20) |
+| Sensor strip Z | 350mm | CORRECTED 2026-07-07 (v54, vm01-v54-sensor-bracket-fix) — was 280mm/`tray_0_z-20`, but that referenced the PRE-v46 tray anchor (`tray_0_z`=270, kept unchanged since v46 only for `tray_compartment_partition()`'s own sealing purpose, NOT the trays' live position). Every other module needing the trays' actual position (`spring_tray()`, `tray_rack()`) was updated to `tray_stack_z0` in v46 — this one was missed. Root-caused via real CGAL this session: at the stale Z, the strip had a genuine 12-facet SOLID overlap with `exit_compartment_wall()` (a fixed safety-critical part), not a degenerate touch. Fixed to `tray_stack_z0-20` = 350mm, restoring "just below the ACTUAL tray 0 floor" (370mm) as intended. Re-verified: ZERO overlap vs `exit_compartment_wall()`. |
 | Strip thickness | 5mm | |
 | Strip height | 8mm | |
 | Center connecting beam | REMOVED 2026-07-05 (v44) | `sensor_strip()` had a fabricated red 2x2mm cube bridging the full gap between the two strips — Janis-confirmed this was never part of the actual design, never merely a "ghost rod" — deleted entirely, not toggled. New `show_sensor` isolation toggle gates the 2 real strips. |
@@ -453,7 +466,8 @@ a stop that swings with the thing it's stopping isn't a stop).
 | Exit flap max open angle | 55 deg | CONFIRMED 2026-07-03 |
 | Stopper rod | spans left-to-right interior panels, position derived from flap_open_deg, FIXED to cabinet (own module, `flap_stopper_rod()`) | CONFIRMED 2026-07-03, fixed-vs-door_open behavior corrected 2026-07-05 (v42) — no switch yet, deferred |
 | Acrylic border overlap | 5mm | CONFIRMED 2026-07-03, formula unchanged by v42/v43 (the v41 framing asymmetry was caused by the flange/panel gap above, not the acrylic formula) |
-| Drop zone side guards | 2 solid skin_t-thick panels, X clear of hinge/flange footprint (left), world Y 21.01-140.01mm | CHANGED 2026-07-05 (v43) — `drop_zone_visual()` (single translucent box, 3 of 6 faces blocking the actual product drop path) replaced by `drop_zone_guards()`: top/bottom/front/back ghost faces removed, left/right side faces (genuine hand-access safety guard) kept and rebuilt solid. **CORRECTED 2026-07-05 (v47)**: front-most Y edge raised from `skin_t+e` (2.01mm, SUPERSEDED) to `world_arc_cy+e` (21.01mm) — the old edge poked through the door's own surface plane at `door_open_deg=0` (closed), confirmed by Janis via direct visual render inspection. Both of Janis's suggested references (frame-face-minus-thickness formula, flat 10mm fallback) were checked against live geometry and found insufficient — the hinge-side guard sits close to the door's curved flange, which reaches up to world Y=21mm there, not just to the frame's own 7mm front face. Fixed value reuses `world_arc_cy` (`skin_t+(corner_r-1)`), the SAME shell-interior-corner-curve constant already used identically by `left_zone_door()` and `tray_zone_frame()` — not a new invented number. Rear edge (140.01mm) unchanged. Re-verified: 9-angle sweep + fine 0.5° sweep, ZERO overlap at every `door_open_deg` |
+| Drop zone side guards | 2 solid skin_t-thick panels, X clear of hinge/flange footprint (left), world Y 27-140.01mm | CHANGED 2026-07-05 (v43) — `drop_zone_visual()` (single translucent box, 3 of 6 faces blocking the actual product drop path) replaced by `drop_zone_guards()`: top/bottom/front/back ghost faces removed, left/right side faces (genuine hand-access safety guard) kept and rebuilt solid. **CORRECTED 2026-07-05 (v47)**: front-most Y edge raised from `skin_t+e` (2.01mm, SUPERSEDED) to `world_arc_cy+e` (21.01mm) — the old edge poked through the door's own surface plane at `door_open_deg=0` (closed), confirmed by Janis via direct visual render inspection. Both of Janis's suggested references (frame-face-minus-thickness formula, flat 10mm fallback) were checked against live geometry and found insufficient — the hinge-side guard sits close to the door's curved flange, which reaches up to world Y=21mm there, not just to the frame's own 7mm front face. Fixed value reuses `world_arc_cy` (`skin_t+(corner_r-1)`), the SAME shell-interior-corner-curve constant already used identically by `left_zone_door()` and `tray_zone_frame()` — not a new invented number. Rear edge (140.01mm) unchanged. Re-verified: 9-angle sweep + fine 0.5° sweep, ZERO overlap at every `door_open_deg` |
+| Drop zone side guards — front edge CORRECTED AGAIN (v54, vm01-v54-sensor-bracket-fix) | Front-most Y raised again, 21.01mm → 27mm | The v47 value (`world_arc_cy+e`=21.01mm) was itself an EXACT zero-clearance tangent against the door's return-flange arc — a 1-facet degenerate touch, not caught by v47's own Python/shapely-approximated sweep (only a real CGAL boolean catches an exact floating-point coincidence like this). A first correction attempt (`world_arc_cy+skin_t`=23mm) was checked via real CGAL and found INSUFFICIENT — a SEPARATE 1-facet touch remained against the door's INNER hinge-line straight segment (world X=5, Y=21-25 — a different door surface than the arc). Fixed instead: `HINGE_Y_OFFSET+skin_t` (27mm) — reuses the SAME reference point `sensor_strip()` already uses and confirms clears the door's global max Y at any X, plus this file's own "structural part to shell face: 2mm" convention for real clearance instead of bare epsilon. Re-verified: real CGAL 9-angle sweep (0/20/25/30/35/40/45/70/100), ZERO overlap at every angle. The prompt's own claim that this guard was "already known, oversized toward the front and in Z, prior session, deprioritized as no harm" could NOT be confirmed anywhere in this file or cc_chat_log.md — not acted on without a traceable source; Z-range (leg_h to +exit_door_h) left UNCHANGED. |
 | Hinge hardware spec (barrel/boss/cavity) | NOT YET SPECIFIED | OPEN ITEM 2026-07-03 — concept only, needs hinge-supplier input before manufacturing |
 
 ⚑ FLAG (side effect, not a v42 task target): moving `tray_0_z` (and thus

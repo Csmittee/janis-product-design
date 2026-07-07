@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-07 | vm01-v54-sensor-bracket-fix | DONE — v54, both prompt diagnoses re-derived from live geometry, real root causes differ from what was assumed
+
+Files: VM-01-base-v54.scad (new, source v53), rules-dimensions.md(v24→v25), cc_chat_log.md, prompts/archive/. OpenSCAD binary available and used for every check — real CGAL, not estimates.
+T1 sensor: prompt said "facing wrong way." Real cause found instead: `strip_z` still referenced `tray_0_z` (stale PRE-v46 tray anchor, kept only for `tray_compartment_partition()`) instead of `tray_stack_z0` (the v46 live-position datum every other tray-dependent module already uses) — CGAL-confirmed a genuine 12-facet SOLID collision with `exit_compartment_wall()` at the stale Z. Fixed; re-verified ZERO overlap. The "visible from outside" symptom is real (confirmed via render) but traces to the already-flagged, out-of-scope v50 corner-pole gap, not this strip's coordinates — stated explicitly, not claimed fixed.
+T2 guard: prompt's "already known oversized, prior session, no harm" claim NOT found anywhere in cc_chat_log.md/rules-dimensions.md after a full search — not acted on. Real CGAL found the v47 value is an exact zero-clearance tangent (1-facet degenerate touch) against the door — first fix attempt (23mm) still touched a different door surface (inner hinge-line segment); final fix (`HINGE_Y_OFFSET+skin_t`=27mm, was 21.01mm) re-verified ZERO overlap, real 9-angle sweep.
+T3: door-open still clean; door-closed warning still present after both fixes — consistent with the two SEPARATE, already-known, out-of-scope exact-tangency findings (door-top vs roof, hinge-cylinder vs wall) from v52/v53, neither touched this round.
+
 ### 2026-07-07 | wire-kickoff-chain-scope-to-skeleton | DONE — docs only, zero .scad/dimension files touched
 
 Files: .claude/SKILL_product_design_skeleton.md(2.0→2.1), chat_rules.md(v3.9→v3.10), WORKFLOW_SKILL.md(3.12→3.13), knowledge.map(v45→v46), cc_chat_log.md, prompts/archive/.

@@ -143,6 +143,21 @@ Both remain isolation-only per the prior prompt's scope. This prompt adds
 precision to the existing findings — it does not change the plan to fix
 them in a follow-up once both are fully characterized.
 
+### TASK 5 — Remove diagnostic calls before final commit
+
+After Tasks 2-3 produce their reported clearance numbers, REMOVE the
+`clearance_zone_map()` calls from the file entirely before committing —
+do not leave them present-but-commented-out either; delete them clean.
+The skill file (`SKILL_clearance_zone_map.md`) and the `clearance_zone_map()`
+module definition itself stay in the codebase for reuse next time, but
+the two specific diagnostic CALLS made for this session's two findings
+do not persist in the committed `.scad` file. The permanent record of
+what was found is the clearance numbers in `cc_chat_log.md`, not a
+permanent diagnostic render sitting in the file. Confirm in cc_chat_log
+that the file's line count / structure is otherwise unchanged from v52
+plus only the new reusable module definition — not v52 plus two
+permanent diagnostic calls.
+
 ## 5. DO NOT TOUCH
 
 - Any other part of `VM-01-base-v52.scad` — this is a diagnostic-only
@@ -162,6 +177,9 @@ them in a follow-up once both are fully characterized.
 - [ ] Applied to Finding 2 (hinge-cylinder vs. wall) — bands reported,
       real clearance number stated
 - [ ] Diagnostic render confirmed NOT wired into the normal ASSEMBLY block
+- [ ] Diagnostic calls for both findings REMOVED before commit — not
+      commented out, deleted — only the reusable `clearance_zone_map()`
+      module definition itself persists
 - [ ] No fix attempted on either finding — confirmed
 - [ ] Version incremented v52 → v53 (diagnostic addition only, geometry
       unchanged), v52 untouched
@@ -169,7 +187,8 @@ them in a follow-up once both are fully characterized.
 ## 7. MANDATORY CLOSING
 
 1. Prepend `cc_chat_log.md` — newest entry at TOP, under 10 lines: new
-   skill created, both findings' exact clearance values reported
+   skill created, both findings' exact clearance values reported,
+   confirmation diagnostic calls were removed before commit
 2. Archive this prompt → `/prompts/archive/` ✅ COMPLETE — 2026-07-07
 3. Update `knowledge.map` with the new skill file
 4. No dimension changes — confirm explicitly

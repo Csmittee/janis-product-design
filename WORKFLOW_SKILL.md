@@ -1,17 +1,21 @@
 # WORKFLOW_SKILL.md
 # Janis Product Design — How We Work
-# Version: 3.10 — 2026-07-06
-# Changes: Added new Step 4 to the CLAUDE WEB SESSION OPENING — MANDATORY
-# SEQUENCE (and its duplicate copy in the CHAT HANDOFF TEMPLATE) — read the
-# relevant project's design_scope_of_work_rule.md in full, same mandatory
-# ("not found → STOP") tier as chat_rules.md/CURRENT_STATE.md, positioned
-# right after CURRENT_STATE.md (Step 3.5) so the active-project context is
-# already known, and before Step 5/6 (handoff open items, "Today's goal?")
-# so it lands before any QA discussion or prompt drafting can begin. cc's
-# own read behavior is UNCHANGED — design_scope_of_work_rule.md stays
-# prompt-triggered only for cc, not added to any automatic cc read step
-# (confirmed: cc_rules.md has no automatic read list entry for it).
-# Previous: v3.9 — 2026-07-05
+# Version: 3.11 — 2026-07-07
+# Changes: CC PROMPT TEMPLATE Section 1 (CC INTRO) rewritten — was a fixed
+# git-fetch + 4-file re-read on every single prompt, with no way to skip
+# re-reading governance files already loaded earlier in an active session.
+# Replaced with a continuation/fresh self-check (cc determines whether
+# cc_rules.md/knowledge.map/cc_chat_log.md are already current from this
+# session) + an explicit Claude Web override slot (default "none") + a
+# named task-specific-reads slot. Also restores knowledge.map to the
+# read list — it had silently narrowed to
+# cc_rules.md→cc_chat_log.md→rules-dimensions.md→[source], dropping
+# knowledge.map (cc's own file-system index) with no recorded decision to
+# do so; knowledge.map's own "WHO READS WHAT" section was never changed to
+# match, so this was a real drift, not an intentional narrowing. This is a
+# detail change to an existing template section, not a new section —
+# X.Y bump per the Document Versioning Rule.
+# Previous: v3.10 — 2026-07-06
 
 ---
 
@@ -280,10 +284,33 @@ KT minimum in-session (if file unavailable):
 
 ```
 ## 1. CC INTRO
-git fetch --all && git checkout main && git pull origin main
-Read in order: cc_rules.md → cc_chat_log.md (last 3) → rules-dimensions.md → [source .scad]
-State every file read before writing a single line.
 
+Session continuity check (cc self-determines):
+Are cc_rules.md, knowledge.map, and cc_chat_log.md already loaded in your
+active context from earlier in THIS session, with no git pull/merge to
+main since?
+→ YES: CONTINUATION. Skip re-reading those three. State "Continuation —
+  governance already current" and go straight to TASKS.
+→ NO (new session/chat, first prompt of the day, or main changed since):
+  FRESH. git fetch --all && git checkout main && git pull origin main.
+  Read cc_rules.md → knowledge.map → cc_chat_log.md (first 3 entries).
+  State every file read before writing a line.
+
+Claude Web override (only if set below, follow it regardless of your own
+self-check): [none | FORCE FULL RE-READ — reason: ...]
+
+Task-specific reads (read these regardless of continuation/fresh, ONLY if
+listed below — per knowledge.map's "read only when task requires"):
+[named explicitly per prompt — e.g. rules-dimensions.md, RULES.md,
+PART_MANIFEST.md, specific source .scad file]
+```
+
+Default Claude Web override is "none" — only set FORCE FULL RE-READ when
+there's a specific reason (e.g., the prior session ran near its context
+limit, or this prompt itself rewrites a governance file the self-check
+depends on).
+
+```
 ## 2. CONTEXT
 Why this prompt exists. What problem it solves.
 

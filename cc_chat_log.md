@@ -4,6 +4,19 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-07 | vm01-v52-acrylic-fix-side-shell-collision-isolation | DONE — v52, 1 real fix (not the hypothesized bug), 2 collisions isolated (not fixed)
+
+Files: VM-01-base-v52.scad (new, source v51), rules-dimensions.md(v23→v24), cc_chat_log.md, prompts/archive/. No OpenSCAD binary this session — arithmetic self-check only.
+T1: checked the actual v51 code before assuming Janis's "double-layer" hypothesis — found NO duplicate/sibling acrylic object (only one `#ADD8E6` piece inside `left_zone_door()`; `left_front_acrylic()` confirmed dead code). What WAS wrong: v51's cutout landed at EXACTLY `acrylic_top_limit_z` (682.99mm world), same as the acrylic's own top, with no epsilon — the deleted cap always used `acrylic_top_limit_z - e` for a real shared volume (Rule M-1); v51 dropped that nudge. Fixed by restoring it — likely explains the reported visual artifact even though no literal duplicate object existed.
+T2 (isolation only): Janis's refined finding (error clears only when top+left shell removed TOGETHER) traced to TWO independent exact-zero-clearance touching planes — `door_top_z` vs. the shell's own roof-skin boundary (both 698mm world), and the v50 hinge-pivot cylinder's tangent edge vs. the shell's flat exterior wall (both X=0mm world). Same underlying pattern (no epsilon buffer on an exact-alignment value), two different features — stated explicitly, not merged. Left-wall recess pocket + corner-pole cutout confirmed already fully clear the door's flange (no gap). Right side confirmed clean. Not patched — isolation/reporting only, per prompt scope.
+
+### 2026-07-07 | governance-cc-intro-knowledge-map-rules-refresh | DONE — docs only, zero .scad touched
+
+Files: WORKFLOW_SKILL.md(3.10→3.11), knowledge.map(v42→v43, full rebuild), RULES.md(1.0→2.0), cc_chat_log.md, prompts/archive/.
+T1: CC PROMPT TEMPLATE Section 1 replaced with continuation/fresh self-check + Claude Web override slot + named task-specific-reads slot (exact structure per prompt); knowledge.map restored to the mandatory 2nd read (had silently narrowed out, no recorded decision — real drift, not intentional).
+T2: knowledge.map rebuilt — stripped the embedded VM-01/PR-01 SCAD version-index changelogs + this file's own header changelog + the stale (v42-era) viewer STL-upload-status table (all preserved in git history/cc_chat_log.md, not lost); added a complete, individually-confirmed /.claude/ file index (was partial); kept WHO READS WHAT, FILE SYSTEM MAP, GOVERNANCE, PROJECT FOLDERS as current-state-only. FLAG: README.md still points to "RULES.md section 4" for session protocol, which doesn't exist (real protocol lives in WORKFLOW_SKILL.md) — out of this prompt's scope, not fixed.
+T3: 3/3 candidate rules confirmed against actual traced events (not forced) — R-005 render-mode/toggle compound-gating trap (v44 Finding B), R-006 shared-center/radius arc constraint (v50 left-vertical/door-flange), R-007 patch-vs-real-material pattern (this session's own v51 steel-bar fix). No additional confirmed candidates found beyond these 3 in the 2026-07-05-onward archive scan.
+
 ### 2026-07-07 | vm01-shell-toggle-fix-and-hole-isolation | DONE — v51, 2 toggles fixed, 1 hole isolated (not fixed), 1 real fix
 
 Files: VM-01-base-v51.scad (new, source v50), rules-dimensions.md(v22→v23), knowledge.map(v41→v42), PART_MANIFEST.md, cc_chat_log.md, prompts/archive/. No OpenSCAD binary this session — arithmetic self-check only, not live CGAL; Janis F6/CGAL re-check still required.

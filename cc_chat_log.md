@@ -4,6 +4,12 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-07 | vm01-v56-sensor-bracket-frame-joint-fix (TASK 3 follow-up) | DONE — manifold warning FULLY resolved, acrylic theory corrected, no prompt file
+
+Files: VM-01-base-v56.scad (same file, extended), rules-dimensions.md(v27→v28), cc_chat_log.md. Janis live-tested the FIX 1/FIX 2 changes below (confirmed working) then reported 2 new findings via her own toggle testing.
+BIG FIX: Janis's toggle testing (show_door=false / show_shell_left=false clear the door-closed manifold warning, show_shell_top=false does not) proved the warning's real trigger was NEVER `compartment_divider()` (v55's conclusion, now downgraded). Root cause: `outer_shell()` AND `outer_shell_debug()` each independently duplicate the corner-pole cutout — both had a real X-Y gap vs. the recess-pocket cutout next to it, leaving an uncut sliver the door's own flange clips into (real 6-facet CGAL overlap, confirmed). Editing only one duplicate copy first and re-testing caught the second (same "duplicated datum" bug class as v55). Fixed: extended both cutouts' Y-reach. RESULT: full-assembly manifold warning is COMPLETELY GONE at every angle — first time ever in this file's history.
+CORRECTED: this round's own earlier "acrylic recess" theory for the "double sheet" note was WRONG — Janis disproved it by testing with show_acrylic=false (line still there). Re-diagnosed by elimination: door leaf alone (no frame/acrylic/shell) still shows it — it's just the door's own 3mm material thickness rendering as 2 edges at a grazing angle, not a bug. Corrected in both files.
+
 ### 2026-07-07 | vm01-v56-sensor-bracket-frame-joint-fix | DONE — v56, direct response to Janis's QA screenshots on the merged v55 PR, no prompt file
 
 Files: VM-01-base-v56.scad (new, source v55), rules-dimensions.md(v26→v27), cc_chat_log.md. Real OpenSCAD renders + CGAL used throughout, not estimates.

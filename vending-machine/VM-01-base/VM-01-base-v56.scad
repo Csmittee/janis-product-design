@@ -49,14 +49,60 @@
 //     here was arithmetic-only, "Janis F6 recheck required", never
 //     actually confirmed via a live render until now). Confirmed: no
 //     duplicate #ADD8E6 object exists (left_front_acrylic() is still dead
-//     code, not called in ASSEMBLY -- same finding as v52). What IS real:
-//     the acrylic pane is deliberately recessed door_t(3mm) behind the
-//     metal skin's own front face (a window-with-inset-pane pattern,
-//     documented since v48/v49) -- from a top-down view this recess
-//     reads as two parallel lines/bands, which is what's being seen. This
-//     is a design-intent question (should the pane sit flush instead of
-//     recessed?), not a provable geometry bug -- not guessed at, flagged
-//     for Janis's input same as this file's other open design questions.
+//     code, not called in ASSEMBLY -- same finding as v52). Initial
+//     hypothesis (acrylic's own door_t recess reading as 2 lines) was
+//     WRONG -- Janis re-tested with show_acrylic=false and the double
+//     line was STILL there, ruling the acrylic out entirely. See TASK 3
+//     below for the corrected finding.
+//
+// TASK 3 (same v56 round, added after Janis tested the above and reported
+// back): 2 more findings from her live toggle testing on the fixes above.
+//   MANIFOLD WARNING NOW FULLY RESOLVED: Janis's own toggle testing
+//     (show_door=false clears it, show_shell_left=false clears it,
+//     show_shell_top=false does NOT) pointed at a real door-vs-left-corner
+//     touch, not the compartment_divider() issue v55 had flagged as the
+//     sole remaining cause. Root-caused via a real CGAL intersection():
+//     BOTH outer_shell()'s and outer_shell_debug()'s independently-
+//     duplicated corner-pole cutout (v50 TASK 1) had a real X-Y coverage
+//     gap with the left-side-wall recess cutout next to it -- the recess
+//     only reached X<=3mm, the corner-pole cutout only reached Y<=21mm,
+//     leaving a real (2mm x 4mm) sliver of the shell's floor-skin material
+//     at world X3-5/Y21-25 that neither one removed. The door's own
+//     return-flange footprint clips into exactly that sliver in the
+//     floor-skin's own thin Z-band (51.99-52mm) -- confirmed via CGAL:
+//     `Simple: yes`, a real non-degenerate 6-facet volume, an actual (if
+//     tiny) physical interference, not a manifold-warning-class degenerate
+//     touch. First fix attempt (nudging the cutout's Z-start by -e,
+//     matching this file's usual Rule M-1 pattern) had ZERO effect,
+//     confirmed via CGAL -- proved this was an X-Y gap, not a Z-boundary
+//     coincidence. Fixed properly: BOTH cutouts' Y-reach extended from
+//     `corner_r+2`(22) to `shell_hinge_y+2`(27), closing the gap (only
+//     editing outer_shell()'s copy first and re-testing showed ZERO
+//     change -- caught the SECOND independently-duplicated copy in
+//     outer_shell_debug(), the one actually used in ASSEMBLY, same class
+//     of bug as the v55 door-floor datum fix). RESULT: full assembly
+//     manifold warning is COMPLETELY GONE at every angle (0-100 deg,
+//     10-angle sweep, zero warnings) -- the first time in this file's
+//     history the door-closed warning has been fully eliminated, not just
+//     narrowed. The compartment_divider()-vs-shell touch flagged in v55
+//     still exists in ISOLATION (re-confirmed, 7 facets + warning when
+//     tested alone) but does NOT propagate into the full-assembly warning
+//     -- left as-is, downgraded from "the sole remaining cause" to "an
+//     isolated finding with no observed full-assembly impact."
+//   ACRYLIC "DOUBLE SHEET" -- RE-DIAGNOSED (still flagged, not a bug):
+//     Janis's own show_acrylic=false test disproved the recess theory
+//     above. Re-checked with a clean isolation render: left_zone_door()
+//     ALONE (no frame, no acrylic, no shell) still shows the same double
+//     line at a grazing viewing angle. This is the door leaf's own
+//     material thickness (door_t=3mm) -- any finite-thickness edge shows
+//     2 parallel lines (front face boundary + back face boundary) when
+//     viewed near edge-on, in ANY solid modeling viewer, for ANY single
+//     part -- not a duplicate object, not a frame/acrylic interaction.
+//     Confirmed by elimination, not guessed: reproduced with the door as
+//     the ONLY object in the scene. If this doesn't match what Janis is
+//     seeing (e.g. the 2nd line is a visibly different color/material),
+//     needs a fresh screenshot with show_frame=false/show_acrylic=false
+//     both set to confirm which specific surfaces she's looking at.
 //
 // Changes from v54 (vm01-v55-door-floor-datum-fix — Janis asked directly
 // for a fix to the door-closed manifold warning that had persisted across
@@ -1372,8 +1418,34 @@ module outer_shell() {
         // -- closed by the door leaf's own return flange (already modeled)
         // plus the new hinge-pivot reinforcement (v50 TASK 4), not meant to
         // be watertight on its own.
+        // v56 FIX (vm01-v56-sensor-bracket-frame-joint-fix, TASK 3): Janis's
+        // own toggle testing on the merged v55 PR found the door-closed
+        // manifold warning clears when EITHER show_door=false OR
+        // show_shell_left=false, but NOT show_shell_top=false -- pointing
+        // at a real door-vs-left-corner touch, not the compartment_divider()
+        // issue v55 had flagged as the sole remaining cause. Root-caused via
+        // a real CGAL intersection(): this cutout's own Y-reach (-1..21,
+        // `corner_r+2`) and the recess pocket's above (Y 2..25) leave a
+        // real X-Y GAP neither one covers -- X 3..21 (past the recess
+        // pocket's X=3 limit) crossed with Y 21..25 (past THIS cutout's
+        // Y=21 limit). A first fix attempt (nudging this cutout's Z-start
+        // by -e, matching the file's usual Rule M-1 pattern) had ZERO
+        // effect, confirmed via CGAL -- proving this is an X-Y coverage
+        // gap, not a Z-boundary coincidence. The door's own return-flange
+        // footprint clips into exactly that gap (world X3-5/Y21-25, but
+        // only in the floor-skin's own Z-band 51.99-52mm, since above
+        // Z=52 the interior-hollow cut already voids this X-Y spot
+        // independently) -- confirmed via CGAL: `Simple: yes`, a real
+        // non-degenerate 6-facet volume, not a manifold-warning-class
+        // degenerate touch, an actual (if tiny, 2x4x0.01mm) physical
+        // interference. Fixed: this cutout's Y-reach extended from
+        // `corner_r+2`(22, i.e. -1..21) to `shell_hinge_y+2`(27, i.e.
+        // -1..26) -- reuses the recess pocket's own Y-limit reference
+        // (`shell_hinge_y`=`HINGE_Y_OFFSET`=25mm) with a +1 margin, not a
+        // new invented number -- closing the gap with real overlap instead
+        // of an exact shared boundary.
         translate([-1, -1, door_bot_z - leg_h])
-            cube([corner_r + 2, corner_r + 2, door_h]);
+            cube([corner_r + 2, shell_hinge_y + 2, door_h]);
     }
 }
 
@@ -1438,8 +1510,14 @@ module outer_shell_debug() {
         // v50 TASK 1: front-left corner "pole" removal -- see outer_shell()
         // above for the full explanation (same fix, both modules kept in
         // sync per this file's established parallel-maintenance convention).
+        // v56 FIX (vm01-v56-sensor-bracket-frame-joint-fix, TASK 3): Y-reach
+        // extended `corner_r+2`(22)->`shell_hinge_y+2`(27) -- SAME real
+        // X-Y-gap fix as outer_shell()'s copy above (this module is the one
+        // actually used in ASSEMBLY -- editing only outer_shell() first and
+        // re-testing showed ZERO change, which is what caught this second,
+        // independently-duplicated copy having been missed).
         translate([-1, -1, door_bot_z - leg_h])
-            cube([corner_r + 2, corner_r + 2, door_h]);
+            cube([corner_r + 2, shell_hinge_y + 2, door_h]);
 
         // Back panel — removed when show_shell_back = false
         if (!show_shell_back)

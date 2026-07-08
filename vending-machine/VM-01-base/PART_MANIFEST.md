@@ -19,7 +19,7 @@
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
 | `legs()` | 4 support legs | | GAP — no toggle |
-| `outer_shell_debug()` | main cabinet shell (called via `translate([0,0,leg_h])`) | | Partial — `show_shell_top`/`show_shell_bottom`/`show_shell_left`/`show_shell_back`/`show_shell_right` remove individual panels (`show_shell_bottom` added v51, vm01-shell-toggle-fix-and-hole-isolation); no single master toggle for the whole module |
+| `outer_shell()` | main cabinet shell (called via `translate([0,0,leg_h])`) — renamed from `outer_shell_debug()` (v58 cleanup pass, merged with the dead `outer_shell()` twin, see cc_chat_log) | | Partial — `show_shell_top`/`show_shell_bottom`/`show_shell_left`/`show_shell_back`/`show_shell_right` remove individual panels; no single master toggle for the whole module |
 | `compartment_divider()` | wall between product zone and system/dashboard zone | | GAP — no toggle |
 | `tray_rack()` | fixed rails + latch pins holding trays | | GAP — no toggle |
 | `spring_tray()` x2 | removable trays holding springs/product | | GAP — no toggle |
@@ -43,7 +43,7 @@ this round). 3 have a real `show_*` isolation toggle (`left_zone_door`→
 `tray_compartment_partition`, `exit_compartment_wall`). That's **6 of 15
 compliant** with the Toggle-Completeness Rule. The remaining **9 are
 gaps** (unchanged from v45, not touched this round — out of this prompt's
-scope): `legs`, `outer_shell_debug` (partial panel toggles only, no
+scope): `legs`, `outer_shell` (partial panel toggles only, no
 master), `compartment_divider`, `tray_rack`, `spring_tray`,
 `acrylic_display` (render_mode-gated, not `show_*`), `flap_stopper_rod`,
 `dashboard`, `rear_service_door`.

@@ -4,6 +4,15 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-09 | vm01-file-cleanup-pass | DONE — v58, zero-geometry-change (real CGAL confirmed identical facet/vertex/volume counts before/after, all angles)
+
+Files: VM-01-base-v58.scad (new, source v57), PART_MANIFEST.md, cc_chat_log.md, prompts/archive/. rules-dimensions.md untouched (no dimension values changed, per prompt).
+T1: removed confirmed-dead code — left_front_acrylic() (whole module, 0 callers), win_z0/win_z1 (0 consumers since v49/v51), spring_clearance/acrylic_r/acrylic_t (0 consumers). All show_*/render_mode toggles confirmed actively used, kept; clearance_zone_map() confirmed intentional permanent tool, kept. Bonus: fixed a naming collision my own prior session introduced (local acrylic_top_z shadowing a pre-existing top-level global) — renamed to acrylic_pane_top_z.
+T2: dashboard()/acrylic_display() searched in full for experimental code — none found, stated plainly.
+T3: header changelog truncated ~850 lines (v3-v56 narrative → pointer to git/chat log); per-module inline comments condensed to current rationale only.
+T4 (highest-value): outer_shell()/outer_shell_debug() merged — outer_shell() was 100% dead code (0 callers), outer_shell_debug() renamed to outer_shell(). Real CGAL 11-angle sweep post-merge: Simple:yes throughout, byte-identical to pre-merge.
+RESULT: 2592→1214 lines (53% reduction). Render time unchanged (~8.5s, expected). No file split attempted — not warranted at this size.
+
 ### 2026-07-09 | vm01-acrylic-curve-hinge-lock-fix | DONE — v57, fresh session (prior direct-chat session hung on cloud container resume, abandoned, treated as new)
 
 Files: VM-01-base-v57.scad (new, source v56), rules-dimensions.md(v28→v29), cc_chat_log.md, prompts/archive/. Real OpenSCAD/CGAL binary installed + used throughout (renders, STL cross-section extraction, a real parametrized collision-bisection sweep) — not estimates.

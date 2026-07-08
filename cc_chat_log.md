@@ -4,6 +4,15 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-09 | vm01-acrylic-curve-hinge-lock-fix | DONE — v57, fresh session (prior direct-chat session hung on cloud container resume, abandoned, treated as new)
+
+Files: VM-01-base-v57.scad (new, source v56), rules-dimensions.md(v28→v29), cc_chat_log.md, prompts/archive/. Real OpenSCAD/CGAL binary installed + used throughout (renders, STL cross-section extraction, a real parametrized collision-bisection sweep) — not estimates.
+T1 acrylic "double sheet" (TOP edge, FIXED): v56's "leaf thickness" theory was WRONG (Janis's show_acrylic=false disproved it). Real cause via CGAL cross-section: acrylic's own top edge and the window-hole's top edge land within 0.01mm of the same Z but different Y-depths — reads as 2 lines. Fixed with a new 2mm top border (mirrors the already-working left/right border), acrylic pane's own top pulled down to match.
+T2 door curve vs. shell wall (INVESTIGATED, no code change): real top-down CGAL renders confirm the door's flange curve is ALREADY tangent to the shell (identical center/radius) — visible artifact traces to T1 + the frame gap, not the door. Real bisection sweep re-confirms frame_arc_r's 14mm cap is unmovable via hinge_x/hinge_y (closed-door state is mathematically hinge-invariant) — stated plainly, not forced.
+T3 hinge rod: REMOVED entirely (not toggled). Pivot point preserved as pure rotation math, now a LOCKED reference in rules-dimensions.md. Full knuckle-hinge hardware still deferred.
+T4 lock system: PROVISIONED — conservative placeholder recess (door leaf + compartment_divider() strike), dimensions/position flagged as needing Janis's input (no prior spec found anywhere in repo).
+Full-assembly 11-angle CGAL sweep (0-100°): Simple:yes throughout, zero new warnings.
+
 ### 2026-07-07 | vm01-v56-sensor-bracket-frame-joint-fix (TASK 3 follow-up) | DONE — manifold warning FULLY resolved, acrylic theory corrected, no prompt file
 
 Files: VM-01-base-v56.scad (same file, extended), rules-dimensions.md(v27→v28), cc_chat_log.md. Janis live-tested the FIX 1/FIX 2 changes below (confirmed working) then reported 2 new findings via her own toggle testing.

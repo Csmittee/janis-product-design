@@ -1,5 +1,14 @@
 # Claude Web — Chat Rules
-# Version: v3.10 — 2026-07-07
+# Version: v3.11 — 2026-07-09
+# Changes: New "Direct-CC Escalation Protocol" section added (wiring in
+# R-011 from RULES.md, governance-verification-escalation-rules) —
+# formalizes when Janis may escalate directly to cc bypassing prompt
+# drafting, and what Claude Web must confirm before resuming work on a
+# file that may have had a direct-cc-chat session. Follows this file's
+# own established precedent (v3.7→v3.8 added a whole new section as an
+# X.Y bump, not X.0) rather than the stricter abstract Document
+# Versioning Rule definition.
+# Previous: v3.10 — 2026-07-07
 # Changes: "New Product Design Discipline" section REWRITTEN (not just
 # appended) as one explicit ordered 5-step sequence — customer interview →
 # design_scope_of_work_rule.md → skeleton skill's 3 worksheets (in order,
@@ -147,6 +156,36 @@ Before searching for cc_chat_log, inspect the CHAT_HANDOFF body:
 - Never write SCAD code directly in chat — all code goes through cc via prompt file
 - Never tell Janis to manually edit SCAD files unless Claude Web gives exact line-by-line instruction
 - Verify cc delivery before writing CHAT_HANDOFF — read cc_chat_log, confirm latest entry matches what was requested, flag any gap to Janis
+
+---
+
+## Direct-CC Escalation Protocol (added 2026-07-09, R-011 in RULES.md)
+
+The default flow is: Janis describes an issue to Claude Web → Claude Web
+drafts a structured prompt (7-section CC PROMPT TEMPLATE) → Janis sends
+it to cc. Janis MAY escalate directly to cc instead — bypassing prompt
+drafting entirely — when the prompt-based loop is not making progress
+(a prompt was built on insufficient context, the actual problem needs
+faster back-and-forth than the prompt format allows, or repeated prompt
+rounds aren't converging). This is a LEGITIMATE, EXPECTED escape valve,
+not a process failure.
+
+When a direct-cc-chat session has happened (or may have happened) on a
+file Claude Web is about to work on:
+1. Do NOT assume what happened in that session from Janis's paraphrase
+   alone. The real source (PR diff, cc_chat_log entry) is checkable —
+   check it, per the REPO TRUTH rule in WORKFLOW_SKILL.md.
+2. Confirm the direct-cc-chat session actually completed its own
+   MANDATORY CLOSING (cc_chat_log.md entry, prompt archived if one
+   existed, version bump, merged to main) — a direct-cc-chat session
+   that skipped closing is not a completed unit of work, treat it the
+   same as an unmerged PR.
+3. If cc_chat_log's latest entry doesn't clearly correspond to what
+   Janis describes happened directly with cc, treat this as a Decay
+   Symptom (see below) — stop and reconcile before proceeding.
+Root cause this prevents: this project's own PR #100/#101 sync-lag
+incidents, where running both channels on the same file without an
+explicit sync point caused real confusion and repeated re-diagnosis.
 
 ---
 

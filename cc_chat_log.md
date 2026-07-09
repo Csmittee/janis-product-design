@@ -4,6 +4,12 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-09 | governance-verification-escalation-rules | DONE — docs only, zero .scad touched
+
+Files: RULES.md(2.0→3.0), WORKFLOW_SKILL.md(3.13→3.14), chat_rules.md(v3.10→v3.11), cc_chat_log.md, prompts/archive/.
+Added 4 new numbered rules (highest was R-007, confirmed from live file, not assumed): R-008 Verification Discipline (no CONFIRMED/RULED OUT without a real check + its SCOPE stated — refined the prompt's own v52/v53/v55 example: v53's finding WAS real CGAL, just narrowly-scoped and over-generalized, not "arithmetic-only" as drafted). R-009 Duplication Check (search all copies before fixing) — wired a mandatory line into WORKFLOW_SKILL's CC INTRO template. R-010 Repeat-Touch Escalation (3+ strikes → question the design) — corrected the hinge-rod touch history: v50/v52/v53/v55 (4 sessions, verified via cc_chat_log grep), NOT v56 as the prompt's draft claimed (v56 never touched it). R-011 Direct-CC Escalation Protocol — added to both RULES.md and a new chat_rules.md section.
+No existing rule content removed/renumbered. Zero .scad files touched, confirmed via git status.
+
 ### 2026-07-09 | vm01-file-cleanup-pass | DONE — v58, zero-geometry-change (real CGAL confirmed identical facet/vertex/volume counts before/after, all angles)
 
 Files: VM-01-base-v58.scad (new, source v57), PART_MANIFEST.md, cc_chat_log.md, prompts/archive/. rules-dimensions.md untouched (no dimension values changed, per prompt).

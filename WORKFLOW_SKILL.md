@@ -1,6 +1,13 @@
 # WORKFLOW_SKILL.md
 # Janis Product Design — How We Work
-# Version: 3.13 — 2026-07-07
+# Version: 3.14 — 2026-07-09
+# Changes: CC PROMPT TEMPLATE Section 1 (CC INTRO) gets a new mandatory
+# duplication-check line (governance-verification-escalation-rules,
+# wiring in R-009 from RULES.md) — before writing any fix, cc must state
+# explicitly whether the value/logic being changed exists in more than
+# one place. Detail addition to an existing template section, not new
+# structure — X.Y bump.
+# Previous: 3.13 — 2026-07-07
 # Changes: TRIGGER → ACTION → VALIDATOR row for new product design updated
 # again — ACTION now names the FULL chain (scope file → skeleton's 3
 # worksheets, in that order → first cc prompt), not the skeleton skill
@@ -310,6 +317,13 @@ main since?
   FRESH. git fetch --all && git checkout main && git pull origin main.
   Read cc_rules.md → knowledge.map → cc_chat_log.md (first 3 entries).
   State every file read before writing a line.
+
+Before writing any fix (per R-009, RULES.md): confirm whether the
+value/logic being changed exists in more than one place in the file (or
+in any other file in the same part's module group) — state this check
+explicitly in cc_chat_log, even if the answer is "no duplicates found."
+If a duplicate is found, the fix must be applied to ALL copies in the
+same pass, not just the one that triggered the bug report.
 
 Claude Web override (only if set below, follow it regardless of your own
 self-check): [none | FORCE FULL RE-READ — reason: ...]

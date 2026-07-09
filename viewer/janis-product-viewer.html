@@ -702,8 +702,9 @@
 const PROJECTS = {
   'VM-01': {
     label: 'VM-01 Vending Machine',
-    version: 'v36',
+    version: 'v58',
     status: 'Manifold clean',
+    modelsFolder: 'VM-01',
     params: [
       { id: 'total_w',      label: 'Width (mm)',      value: 640, min: 500, max: 800, step: 10, locked: false },
       { id: 'total_h',      label: 'Height (mm)',     value: 700, min: 600, max: 900, step: 10, locked: true  },
@@ -1415,6 +1416,57 @@ function updateAxisIndicator() {
 }
 
 // ─────────────────────────────
+// DYNAMIC MODEL FOLDER (GitHub Contents API discovery)
+// ─────────────────────────────
+// Lets Janis drop any freely-named .stl into public/models/<folder>/ on
+// the Satu backend repo and have it show up here with zero code change —
+// the listing is fetched fresh every call, never hardcoded. The GitHub
+// API is used ONLY to discover what filenames currently exist; the
+// actual mesh data always loads from the already-working
+// api.janishammer.com Cloudflare path, never from GitHub directly.
+
+const SATU_BACKEND_REPO = 'Csmittee/Satu-vending-backend';
+
+function prettifyFilename(filename) {
+  return filename
+    .replace(/\.stl$/i, '')
+    .replace(/[-_]/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+// Returns [{filename, label, url}] for every .stl in
+// public/models/<folderName>/ — throws with a clear message on 404
+// (folder doesn't exist yet), 403 (unauthenticated rate limit, 60/hr per
+// IP), or any other network/HTTP failure, so callers can show the error
+// in the UI instead of failing silently.
+async function fetchModelFolder(folderName) {
+  const apiUrl = `https://api.github.com/repos/${SATU_BACKEND_REPO}/contents/public/models/${folderName}`;
+  let resp;
+  try {
+    resp = await fetch(apiUrl);
+  } catch (err) {
+    throw new Error(`Network error reaching GitHub API: ${err.message}`);
+  }
+  if (!resp.ok) {
+    if (resp.status === 404) {
+      throw new Error(`Folder not found — public/models/${folderName}/ doesn't exist yet in ${SATU_BACKEND_REPO}`);
+    }
+    if (resp.status === 403) {
+      throw new Error('GitHub API rate limit reached (60 unauthenticated requests/hour per IP) — try again later');
+    }
+    throw new Error(`GitHub API error ${resp.status} fetching public/models/${folderName}/`);
+  }
+  const entries = await resp.json();
+  return entries
+    .filter(e => e.type === 'file' && /\.stl$/i.test(e.name))
+    .map(e => ({
+      filename: e.name,
+      label: prettifyFilename(e.name),
+      url: `https://api.janishammer.com/models/${folderName}/${e.name}`
+    }));
+}
+
+// ─────────────────────────────
 // PROJECT UI
 // ─────────────────────────────
 
@@ -1473,7 +1525,14 @@ function switchProject(id) {
   buildVisibilityPanel();
   buildComponentsPanel();
 
-  if (proj.stlOpen) {
+  // modelsFolder projects: buildVisibilityPanel() -> buildModelFolderPicker()
+  // already owns loading the first discovered file, asynchronously, once
+  // the GitHub API listing resolves. Skip this fallback chain entirely for
+  // those projects — firing loadSTL(proj.stlOpen) here too would race the
+  // folder-picker's own async load (whichever resolves last silently wins).
+  if (proj.modelsFolder) {
+    // no-op — buildModelFolderPicker() (called above) owns loading
+  } else if (proj.stlOpen) {
     loadSTL(proj.stlOpen);  // default to standard view (shell + open window)
   } else if (proj.stl) {
     loadSTL(proj.stl);
@@ -1543,6 +1602,18 @@ function buildVisibilityPanel() {
   const panel = document.getElementById('visibility-panel');
   panel.innerHTML = '';
 
+  // Dynamic model-folder mode: freely-named STL files discovered live via
+  // the GitHub Contents API, per-project public/models/<folder>/ listing.
+  // Takes priority over the legacy fixed stl/stlOpen/stlC2 cycle button
+  // below — a project keeps both configured during migration (see
+  // PROJECTS['VM-01']), modelsFolder wins when present. Checked FIRST,
+  // before the proj.stl branch, per the same "STL-mode project with no
+  // toggles must still reach its own branch" reasoning as that check.
+  if (proj.modelsFolder) {
+    buildModelFolderPicker(panel, proj);
+    return;
+  }
+
   // STL mode: replace individual toggles with a single Open/Close Shell button.
   // Checked before the toggles.length guard below — an STL-mode project with
   // an empty toggles[] (single-mode STL, no WASM shell-toggle equivalent) must
@@ -1601,6 +1672,58 @@ function buildVisibilityPanel() {
       scheduleAutoRender();
     });
     panel.appendChild(btn);
+  });
+}
+
+// Dynamic replacement for the fixed 2-3-way cycle button: fetches
+// whatever .stl files currently exist in the project's modelsFolder and
+// renders them as a dropdown, each entry labeled from its own filename.
+// No manifest to maintain — add/remove/rename a file in the repo folder
+// and it appears/disappears here on next load, no code change needed.
+function buildModelFolderPicker(panel, proj) {
+  panel.style.gridTemplateColumns = '1fr';
+  const loading = document.createElement('div');
+  loading.style.cssText = 'color:var(--text-dim);font-size:10px;margin-bottom:6px;line-height:1.5';
+  loading.textContent = 'Loading available views…';
+  panel.appendChild(loading);
+
+  fetchModelFolder(proj.modelsFolder).then(files => {
+    panel.innerHTML = '';
+
+    if (!files.length) {
+      const empty = document.createElement('div');
+      empty.style.cssText = 'color:var(--text-dim);font-size:11px;line-height:1.5';
+      empty.textContent = `No .stl files found yet in public/models/${proj.modelsFolder}/.`;
+      panel.appendChild(empty);
+      return;
+    }
+
+    const note = document.createElement('div');
+    note.style.cssText = 'color:var(--text-dim);font-size:10px;margin-bottom:6px;line-height:1.5';
+    note.textContent = `${files.length} view${files.length === 1 ? '' : 's'} — public/models/${proj.modelsFolder}/`;
+    panel.appendChild(note);
+
+    const sel = document.createElement('select');
+    sel.className = 'project-select';
+    sel.id = 'model-folder-select';
+    files.forEach(f => {
+      const opt = document.createElement('option');
+      opt.value = f.url;
+      opt.textContent = f.label;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener('change', () => loadSTL(sel.value));
+    panel.appendChild(sel);
+
+    loadSTL(files[0].url);
+  }).catch(err => {
+    panel.innerHTML = '';
+    const errEl = document.createElement('div');
+    errEl.style.cssText = 'color:var(--red);font-size:11px;line-height:1.5';
+    errEl.textContent = `⚠ Could not load model list: ${err.message}`;
+    panel.appendChild(errEl);
+    log(`Model folder fetch failed: ${err.message}`, 'err');
+    setStatus('❌ Model folder fetch failed — see log', 'error');
   });
 }
 
@@ -2214,6 +2337,16 @@ function wireEvents() {
 
   // Actions
   document.getElementById('btn-reload-stl').addEventListener('click', () => {
+    // Reload whatever is currently displayed. currentSTLUrl covers both
+    // modes correctly (modelsFolder's dynamic picker sets it via loadSTL()
+    // same as the legacy cycle button) — using the legacy stlViewMode/
+    // stl/stlOpen/stlC2 fallback here would silently reload the WRONG
+    // (stale legacy) file for a modelsFolder project that still keeps
+    // those keys configured as its own fallback (e.g. VM-01).
+    if (currentSTLUrl) {
+      loadSTL(currentSTLUrl);
+      return;
+    }
     const proj = PROJECTS[activeProject];
     const url = stlViewMode === 'full' ? proj.stl : stlViewMode === 'c2' ? proj.stlC2 : proj.stlOpen;
     if (url) loadSTL(url);

@@ -4,6 +4,15 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-09 | vm01-viewer-dynamic-folder-picker | DONE — viewer only, zero .scad touched
+
+Files: viewer/janis-product-viewer.html, .claude/SKILL_viewer_update.md(1.1→1.2), knowledge.map(v46→v47), cc_chat_log.md, prompts/archive/. Satu backend repo confirmed from Janis directly (not guessable from source): Csmittee/Satu-vending-backend — added to session, cloned, verified real folder structure + real GitHub Contents API response shape before writing any code.
+T1 fetchModelFolder(): implemented, logic-verified against the REAL captured API response (public/models/ listing) plus 4 mocked cases (success/404/403/network-error). Live unauthenticated fetch() from THIS sandbox is blocked by its own proxy (unrelated to real browsers) — flagged for Janis's post-deploy check.
+T2: VM-01 got modelsFolder:'VM-01' (kept stl/stlOpen/stlC2 as fallback per spec) + version bumped to v58. PR-01 untouched.
+T3: dynamic dropdown replaces the cycle button when modelsFolder is set. Found+fixed 2 real race/regression risks while wiring it in: switchProject()'s own STL auto-load would race the picker's async load (now skipped for modelsFolder projects), and the "Reload STL" button read stale legacy keys (now reloads currentSTLUrl). Verified via a REAL headless Chromium run (Playwright, THREE.js stubbed — only the CDN load is blocked in this sandbox, not my code) — VM-01 dropdown renders + STL loads, PR-01's legacy button is completely unaffected, 404 (today's real VM-01/ folder state) shows a clear UI error instead of a blank viewer.
+T4: SKILL_viewer_update.md rewritten with a NEW simplified procedure + LEGACY kept, clearly labeled.
+Janis: create public/models/VM-01/ in Satu-vending-backend and upload STLs there going forward (any filename) — confirmed empty via live repo check, not assumed.
+
 ### 2026-07-09 | vm01-file-cleanup-pass | DONE — v58, zero-geometry-change (real CGAL confirmed identical facet/vertex/volume counts before/after, all angles)
 
 Files: VM-01-base-v58.scad (new, source v57), PART_MANIFEST.md, cc_chat_log.md, prompts/archive/. rules-dimensions.md untouched (no dimension values changed, per prompt).

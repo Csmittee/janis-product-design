@@ -1,5 +1,11 @@
 # knowledge.map
-# Version: v46 — 2026-07-07
+# Version: v47 — 2026-07-09
+# Changes: vm01-viewer-dynamic-folder-picker — viewer/janis-product-
+# viewer.html's FILE SYSTEM MAP entry updated to describe the new
+# modelsFolder discovery mechanism (GitHub Contents API against
+# Csmittee/Satu-vending-backend) alongside the existing fixed-key STL
+# loading, now that VM-01 uses the former and PR-01 still uses the latter.
+# Previous: v46 — 2026-07-07
 # Changes: wire-kickoff-chain-scope-to-skeleton — GOVERNANCE section
 # unified into ONE connected kickoff chain description (was 3 disconnected
 # bullet points): design_scope_of_work_rule.md created FIRST → skeleton
@@ -120,7 +126,7 @@ or WORKFLOW_SKILL.md.
 | vending-machine/design_scope_of_work_rule.md | VM-01 owner-facing product concept doc |
 | pilates-reformer/PR-01-base/ | PR-01 multi-file source (PR-01-assembly-vNN.scad + pole_top.scad + leg_socket.scad, NOT individually versioned — see those files' own headers) + PART_MANIFEST.md |
 | pilates-reformer/design_scope_of_work_rule.md | PR-01 owner-facing product concept doc |
-| viewer/janis-product-viewer.html | Browser 3D viewer — self-contained HTML (Three.js), loads STL exports from api.janishammer.com/models/. Governed by .claude/SKILL_viewer_update.md (Claude Web only) |
+| viewer/janis-product-viewer.html | Browser 3D viewer — self-contained HTML (Three.js). STL mesh data always loads from api.janishammer.com/models/. Projects with a `modelsFolder` key (VM-01, since 2026-07-09) discover which files exist live via the GitHub Contents API on the Satu backend repo (`Csmittee/Satu-vending-backend`, public/models/<PROJECT-ID>/) instead of a fixed cc-maintained filename list; legacy projects (PR-01) keep the fixed `stl`/`stlOpen`/`stlC2` keys. Governed by .claude/SKILL_viewer_update.md (Claude Web only) |
 | /prompts/ (active) and /prompts/archive/ (completed, named "[task] ✅ COMPLETE — [date].md") | cc prompt files |
 | /exports/for-supplier/, /exports/for-cnc/ | STL / DXF exports |
 | /renders/ | Janis's screenshot QA evidence |

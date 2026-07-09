@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-09 | viewer-cache-folder-listing + grid-floor-fix | DONE — viewer only, zero .scad touched
+
+Files: viewer/janis-product-viewer.html, cc_chat_log.md, prompts/archive/.
+T1-T3 (prompt): getModelFolder() wraps fetchModelFolder() with a 5-min in-memory cache (per project folder). buildModelFolderPicker() now uses it, shows "(cached)" when serving stale data. 403 AND 429 both now caught (GitHub uses either depending on which limit is hit) with a clear message; a "↻ Refresh models" button force-bypasses the cache. On a failed refresh, the last known-good list stays visible with a warning instead of clearing — never a blank list on transient rate-limiting.
+Extra (direct chat request, same file, same session): grid was passing through the model body — root cause was loadSTL()'s `geometry.center()` re-centering the whole bounding box at Y=0. Replaced with X/Z-only centering + floor (bbox.min.y) pinned to Y=0, matching OpenSCAD's floor convention (object sits ON the grid). Added a "Show grid" toggle in the View panel (gridHelper.visible).
+Verified via real headless Chromium (Playwright, THREE.js stubbed — CDN blocked in this sandbox only): cache reuses across project-switch within TTL (1 fetch, not repeated), Refresh button forces a 2nd fetch, simulated 429 preserves the cached dropdown + shows warning, grid toggle flips gridHelper.visible correctly, PR-01 legacy system fully unaffected. Geometry translate math reviewed by hand (stub can't do real vector math) — flagged for Janis's visual confirm post-deploy.
+
 ### 2026-07-09 | governance-verification-escalation-rules | DONE — docs only, zero .scad touched
 
 Files: RULES.md(2.0→3.0), WORKFLOW_SKILL.md(3.13→3.14), chat_rules.md(v3.10→v3.11), cc_chat_log.md, prompts/archive/.

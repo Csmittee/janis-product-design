@@ -1,5 +1,17 @@
 # knowledge.map
-# Version: v49 — 2026-07-10
+# Version: v50 — 2026-07-10
+# Changes: vm02-viewer-wiring — VM-02 wired into viewer/janis-product-
+# viewer.html's PROJECTS object for the first time (modelsFolder:'VM-02',
+# same dynamic-picker system VM-01 uses), all values read live from
+# VM-02-base-v2.scad + PART_MANIFEST.md. Empty/missing modelsFolder case
+# (public/models/VM-02/ doesn't exist yet) now resolves to a graceful "no
+# models uploaded yet" state instead of an ambiguous error — the fix
+# treats a 404 the same as a 200-with-zero-files response (git can't track
+# an empty directory, so they're the same real-world state), and clears
+# any stale previous-project model from the 3D canvas when it fires. VM-01
+# unaffected — see cc_chat_log.md for full detail + real headless-Chromium
+# verification.
+# Previous: v49 — 2026-07-10
 # Changes: vm02-lower-shell-fill-and-retro-governance — VM-02-base-v2.scad
 # added (Part 1: lower right-compartment metal panel + dashboard mounting
 # cutouts, a real confirmed design gap since VM-01-base-v6, fixed for
@@ -153,7 +165,7 @@ or WORKFLOW_SKILL.md.
 | vending-machine/design_scope_of_work_rule.md | VM-01 owner-facing product concept doc — VM-02 has its OWN separate file now, at vending-machine/VM-02-base/design_scope_of_work_rule.md (see row above) |
 | pilates-reformer/PR-01-base/ | PR-01 multi-file source (PR-01-assembly-vNN.scad + pole_top.scad + leg_socket.scad, NOT individually versioned — see those files' own headers) + PART_MANIFEST.md |
 | pilates-reformer/design_scope_of_work_rule.md | PR-01 owner-facing product concept doc |
-| viewer/janis-product-viewer.html | Browser 3D viewer — self-contained HTML (Three.js). STL mesh data always loads from api.janishammer.com/models/. Projects with a `modelsFolder` key (VM-01, since 2026-07-09) discover which files exist live via the GitHub Contents API on the Satu backend repo (`Csmittee/Satu-vending-backend`, public/models/<PROJECT-ID>/) instead of a fixed cc-maintained filename list; legacy projects (PR-01) keep the fixed `stl`/`stlOpen`/`stlC2` keys. Governed by .claude/SKILL_viewer_update.md (Claude Web only) |
+| viewer/janis-product-viewer.html | Browser 3D viewer — self-contained HTML (Three.js). STL mesh data always loads from api.janishammer.com/models/. Projects with a `modelsFolder` key (VM-01 since 2026-07-09, VM-02 since 2026-07-10) discover which files exist live via the GitHub Contents API on the Satu backend repo (`Csmittee/Satu-vending-backend`, public/models/<PROJECT-ID>/) instead of a fixed cc-maintained filename list; legacy projects (PR-01) keep the fixed `stl`/`stlOpen`/`stlC2` keys. A missing/empty modelsFolder (VM-02's real state until Janis's first upload) shows a graceful empty state, not an error. Governed by .claude/SKILL_viewer_update.md (Claude Web only) |
 | /prompts/ (active) and /prompts/archive/ (completed, named "[task] ✅ COMPLETE — [date].md") | cc prompt files |
 | /exports/for-supplier/, /exports/for-cnc/ | STL / DXF exports |
 | /renders/ | Janis's screenshot QA evidence |

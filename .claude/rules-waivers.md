@@ -1,6 +1,9 @@
 # rules-waivers.md
 # Janis Product Design — Accepted/Waived Issues Registry
-# Version: 1.1 — 2026-07-10
+# Version: 1.2 — 2026-07-10
+# Changes: W-002 marked PARTIALLY RESOLVED — vm02-viewer-wiring added the
+# `PROJECTS['VM-02']` entry; STL-export half still open (see W-002 below).
+# Previous: 1.1 — 2026-07-10
 # Changes: Added W-002 (VM-02 web-viewer/STL-export gap, Janis-accepted).
 # Previous: 1.0 — 2026-07-03
 # Location: .claude/rules-waivers.md
@@ -58,7 +61,11 @@ Product: VM-02 (Vending Machine)
 Date accepted: 2026-07-10
 Accepted by: Janis (direct-chat session, vm02-derivation-from-vm01-v58 +
 2 follow-up rounds, all same day — see cc_chat_log.md)
-Status: OPEN — accepted as sufficient for now, not fixed
+Status: PARTIALLY RESOLVED 2026-07-10 (vm02-viewer-wiring) — the `PROJECTS`
+entry now exists (`modelsFolder: 'VM-02'`, real params/toggles/components
+read live from VM-02-base-v2.scad); STILL OPEN on the STL-export half —
+`public/models/VM-02/` has no files uploaded yet, viewer shows a graceful
+empty state until Janis uploads her first export there.
 
 What: viewer/janis-product-viewer.html's `PROJECTS` object has no `'VM-02'`
 entry (VM-01 is the only project wired there), and no STL files have been

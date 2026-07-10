@@ -49,9 +49,10 @@
 //   tray_out_pct is now a length-5 Customizer vector (per-tray
 //   independent slide) — spring_tray(tray_num) indexes tray_out_pct
 //   [tray_num] directly, confirmed independent via a mixed-value render
-//   (tray0=0%, tray1=15%, tray2=25% — NOT the prompt's own "0/50/100%"
-//   example, see "REAL TRAY-TRAVEL LIMIT FOUND" note below for why — one
-//   render, see cc_chat_log).
+//   matching the prompt's own literal example (tray0=0%, tray1=50%,
+//   tray2=100%, door_open=true — see "TRAY/FRAME CLEARANCE" note below:
+//   the full 0-1 range needed a real width fix before this example was
+//   actually achievable, not just the ~27%-safe values cc tried first).
 //   TWO REAL MANIFOLD BUGS FOUND AND FIXED during the mandatory
 //   tray_out_pct sweep (Section 7), both confirmed via real CGAL, neither
 //   guessed: (1) at tray_out_pct=1.0 EXACTLY, a sliding tray's rear edge
@@ -65,35 +66,54 @@
 //   face), but becomes a real T-junction once either tray slides (a
 //   partial, staggered overlap) — fixed with a genuine TRAY_TOP_CLEARANCE
 //   vertical gap between tray slots, see spring_tray()'s own comment.
-//   REAL TRAY-TRAVEL LIMIT FOUND (flagged for Janis, NOT fixed this
-//   session — see below): once both manifold bugs above were fixed, a
-//   THIRD, more fundamental issue surfaced via the same sweep — the fixed
-//   tray_zone_frame()'s left vertical has a flat radial closing face that
-//   reaches world X=21mm near its own front end (world Y 7-15mm), 4mm
-//   PAST the tray box's own left wall (world X=17mm=tray_x_inset, sized
-//   assuming only the frame's flat crossbar/flange reference at X=15mm,
-//   never checked against this curve's own closing-face extent). This is
-//   a real, physical collision confirmed via CGAL bisection at ANY
-//   tray_out_pct above ~0.27 (safe up to 0.27, confirmed non-manifold at
-//   0.28+, both real CGAL renders, not estimated) — meaning trays can
-//   physically extend to only ~27% of the Customizer slider's full 0-1
-//   range before hitting this fixed structural member, regardless of
-//   whether the door is open. CONFIRMED identical in the LOCKED VM-01 v58
-//   file (same frame/tray_x_inset construction, same limit) — a genuine
-//   pre-existing design gap in the shared architecture, not introduced by
-//   VM-02, and not something this prompt's Task A.3 scope (the per-tray
-//   ARRAY mechanism) asked cc to redesign. tray_zone_frame()'s own
-//   clearance geometry is already a delicate, non-negotiable balance
-//   against the door leaf (frame_arc_r capped at 14mm specifically
-//   because growing it re-collides the door, per VM-01 v50/v57's own
-//   bisection findings) -- widening tray clearance further needs its own
-//   dedicated investigation, not a same-session side-fix. FLAGGED
-//   EXPLICITLY for Janis: the tray_out_pct Customizer range stays [0:1]
-//   per this prompt's literal instruction, but values above ~0.27 are not
-//   physically achievable without hitting the fixed frame — confirm
-//   whether a future session should narrow the slider's practical range,
-//   redesign the frame's clearance, or leave this as a documented
-//   limitation.
+//   TRAY/FRAME CLEARANCE — ROOT-CAUSED THEN FIXED (2 direct-chat follow-
+//   ups, both 2026-07-10, in response to Janis's questions): once both
+//   manifold bugs above were fixed, a THIRD, more fundamental issue
+//   surfaced via the same sweep — tray_zone_frame()'s left vertical has a
+//   flat radial closing face reaching world X=21mm near its own front end
+//   (world Y 7-15mm), 4mm past the tray box's own left wall (was world
+//   X=17mm=tray_x_inset). Confirmed via CGAL bisection this was a real
+//   physical collision at ANY tray_out_pct above ~0.27.
+//   ROOT CAUSE (1st follow-up, in response to Janis's "did you fix?" /
+//   "we fixed that on width before, wasn't it?"): NOT a height/ceiling
+//   issue — a horizontal (X-axis) clearance issue, unrelated to total_h/
+//   roofline. Janis's memory of "fixed on width before" was CORRECT —
+//   VM-01 v50 (VM-01-corner-frame-redesign) set tray_x_inset=17mm for a
+//   real 2mm clearance from the frame's left vertical, verified against
+//   that vertical's OWN construction AT THE TIME (confirmed by reading
+//   the archived VM-01-base-v55.scad directly: its curve swept only
+//   until X=left_bar_inner_x=15mm, explicitly capped). VM-01 v56 (a
+//   LATER, separate session, vm01-v56-sensor-bracket-frame-joint-fix)
+//   rebuilt this SAME curve to fix a visible kink, sweeping it all the
+//   way to y_stop_angle=270° instead (confirmed by reading VM-01-base-
+//   v56.scad directly) — at exactly 270°, the closing point's X-component
+//   reduces to the arc center's own X (21mm) regardless of radius, 4mm
+//   past the v50-verified 15mm limit. v56's own scope/testing was door-
+//   vs-frame collision ONLY, never re-checked tray clearance — this
+//   regression went undetected for 2 versions until THIS session's
+//   tray_out_pct sweep. A first attempted fix (widening tray_x_inset
+//   alone) was NOT viable: with product_w(416mm) unchanged, the 5-lane
+//   spring layout (OWNER-LOCKED spring_od/spring_gap) needs ~388mm
+//   minimum, but only ~383mm would remain — a genuine ~5mm shortfall.
+//   FIXED (2nd follow-up, Janis's own proposed direction): widen the
+//   compartment instead of touching the frame or the tray's own width.
+//   product_w 416mm->422mm (+6mm) and tray_x_inset 17mm->23mm (+6mm, the
+//   SAME shift) — tray_w_global's formula evaluates to the exact same
+//   389.01mm as before (both terms shift by the same amount, cancels
+//   out), so the tray's own width/spring-lane layout is UNCHANGED, only
+//   its POSITION shifts right within the wider compartment. This works
+//   because tray_zone_frame()'s LEFT vertical is anchored to the shell's
+//   fixed front-left corner (independent of product_w, doesn't move),
+//   while its RIGHT vertical (anchored to product_w+e) shifts by the same
+//   +6mm as the tray's own right wall — preserving the pre-existing 2mm
+//   right-side clearance automatically. Confirmed via a full CGAL sweep,
+//   tray_out_pct 0 through 1.0 (door_open=true, the physically valid
+//   state for a fully-extended tray — a tray at 100% still legitimately
+//   collides with a CLOSED door, an unrelated, unavoidable physical fact,
+//   not a bug), Simple:yes throughout — no longer capped at ~27%.
+//   total_w now 584mm accordingly (422+19+143). CONFIRMED this same
+//   frame/tray_x_inset gap still exists, UNFIXED, in the LOCKED VM-01 v58
+//   file (out of scope to touch there).
 //   New sensor_hole_d=3mm floor-mounted (vertical, Z-axis) hole per lane
 //   per tray (5 lanes x tray_count), centered at each lane's existing
 //   centerline X (same formula as the spring lanes, reused verbatim, not
@@ -127,43 +147,56 @@
 //   used) now consistently re-center in X via that one existing formula —
 //   confirmed fitting under the new narrower dash_w via live render, not
 //   hardcoded.
-//   system_w RECOMPUTED — NOT the prompt's suggested 120mm. The prompt's
-//   "10mm border + 100mm mounted + 10mm border = 120mm" framing did not
-//   account for the EXISTING dash_w formula (system_w - divider_t -
-//   skin_t*2), already live in v58 and reused here verbatim per this
-//   file's own "reuse this exact formula" instruction elsewhere. At
-//   system_w=120mm, dash_w computes to 97mm — but the portrait screen's
-//   own BEZEL footprint (screen_mount_w + bezel_t*2 = 100+6 = 106mm, same
-//   bezel construction already in v58, unchanged) is already wider than
-//   that 97mm: a real, confirmed collision, not a matter of preference,
-//   before any clearance margin is even considered. Re-derived system_w
-//   from the SAME 2mm Global Clearance Tolerance convention already
-//   established in rules-dimensions.md (not a new invented number):
-//   target dash_w = bezel footprint (106mm) + 2mm clearance each side =
-//   110mm; system_w = 110 + divider_t(19) + skin_t*2(4) = 133mm — still
-//   "well under the old 204mm ceiling" (the prompt's own only stated hard
-//   constraint on this value). total_w is now a DERIVED formula (product_w
-//   + divider_t + system_w = 416+19+133 = 568mm), not a literal — this
-//   also closes a real, pre-existing ~1mm arithmetic drift in VM-01's own
-//   total_w literal (v58: total_w=640 but product_w+divider_t+system_w=
-//   639 — out of scope to fix in the locked VM-01 file, but VM-02 avoids
-//   this entire bug class by never hardcoding the sum). Rear service door
-//   width (system_w-10) recomputed to 123mm accordingly.
-//   FLAGGED EXPLICITLY FOR JANIS: this changes the prompt's suggested
-//   120mm/555mm/~110mm figures to 133mm/568mm/123mm — confirm or override
-//   (see cc_chat_log.md).
-//   acrylic_display() REMOVED entirely (judgment call, per the prompt's
-//   own Cross-Cutting Warning instruction to evaluate rather than blindly
-//   keep or delete): in the old 204mm-wide compartment this 3-face
-//   viewing window showcased a spacious ATM-style bay; in VM-02's 133mm
-//   compartment, the portrait dashboard's own bezel already runs within
-//   2mm of both interior walls (full width, effectively) and the
-//   compartment additionally requires full floor-to-ceiling rear service
-//   access (below) — there is no remaining width/volume for a distinct
-//   "display" function separate from just seeing the mounted dashboard
-//   itself through the existing front cutout. Reasoning flagged in
-//   cc_chat_log.md for Janis to confirm/override, not silently decided.
-//   This ALSO resolves the prompt's own Cross-Cutting Warning about
+//   system_w RECOMPUTED, TWICE — final value 143mm, Janis-confirmed
+//   2026-07-10. First pass (cc): the prompt's own "10mm border + 100mm
+//   mounted + 10mm border = 120mm" framing didn't account for the
+//   EXISTING dash_w formula (system_w - divider_t - skin_t*2), already
+//   live in v58 and reused here verbatim — at system_w=120mm, dash_w
+//   computes to 97mm, but the portrait screen's own BEZEL footprint
+//   (screen_mount_w + bezel_t*2 = 100+6 = 106mm) is already wider than
+//   that, a real collision. cc's first correction used the project's 2mm
+//   Global Clearance Tolerance convention (system_w=133mm). Janis's own
+//   follow-up correction (2026-07-10): the border is a real 10mm EACH
+//   SIDE of the panel's own mounted width, matching the prompt's own
+//   literal arithmetic (dash_w target = 10+100+10 = 120mm, not cc's own
+//   106+2+2=110mm figure) — system_w = 120 + divider_t(19) + skin_t*2(4)
+//   = 143mm, still "well under the old 204mm ceiling." total_w is a
+//   DERIVED formula (product_w + divider_t + system_w — see "TRAY/FRAME
+//   CLEARANCE — FIXED" below for why product_w itself is 422mm, not
+//   416mm: 422+19+143 = 584mm), not a literal — this also closes a real,
+//   pre-existing ~1mm arithmetic drift in VM-01's own total_w literal
+//   (v58: total_w=640 but product_w+divider_t+system_w=639 — out of scope
+//   to fix in the locked VM-01 file, but VM-02 avoids this entire bug
+//   class by never hardcoding the sum). Rear service door width
+//   (system_w-10) recomputed
+//   to 133mm accordingly.
+//   acrylic_display() RESTORED — PERMANENT, Janis-confirmed 2026-07-10
+//   ("we need acrylic window"): cc's first draft had removed this module
+//   as a judgment call (compartment too narrow/full for a separate
+//   display function) — reversed here per Janis's explicit instruction.
+//   Rebuilt (not just re-added) for VM-02's own narrower/portrait
+//   compartment and now-variable total_h: front panel width now dash_w's
+//   own interior-width formula (was hardcoded to the old system_w
+//   proportions); Z-zone re-anchored to a new shared screen_top_z-based
+//   datum (above the dashboard's own screen assembly, up to the
+//   roofline) instead of the removed tray-stack-derived datum. Three
+//   REAL manifold issues found and fixed while restoring/resizing this
+//   module (all confirmed via live CGAL, none guessed): (1) the right
+//   panel's own edge landed exactly on the shell's interior wall surface
+//   (inherited unchanged from VM-01's own formula, never previously
+//   flagged); (2) the top panel's edge landed on BOTH the shell's roof
+//   AND rear_service_door()'s front face simultaneously (a NEW doubly-
+//   coincident corner from combining this session's OWN two changes —
+//   acrylic restored + rear door now full-height) — fixed by treating
+//   each face independently (real overlap into the roof, a real small
+//   gap from the door/back wall); (3) the front panel's own width
+//   (dash_w) is ALGEBRAICALLY IDENTICAL to the shell's own right-
+//   compartment cutout end for ANY system_w value (confirmed by
+//   expanding both formulas) — a structural coincidence that did NOT
+//   reproduce in isolated pairwise CGAL tests against the shell alone
+//   (a known CGAL robustness quirk), only surfacing once the full
+//   assembly was actually rendered — fixed with a real 1mm clearance
+//   margin. This restoration ALSO resolves the prompt's own Cross-Cutting Warning about
 //   DATUM_TRAY_TOP/tray_zone_top_z becoming a live dependency once
 //   tray_count varies: that entire datum chain (DATUM_TRAY_TOP/
 //   tray_zone_top_z/upper_display_h/acrylic_bot_z/acrylic_top_z/
@@ -218,8 +251,14 @@
 // stopper rod, flap) confirmed still defined relative to product_w/
 // skin_t, not total_w (spot-checked every module: tray_zone_frame(),
 // drop_zone_guards(), sensor_strip(), compartment_divider() all key off
-// product_w directly, never total_w) — none of it moves when total_w
-// shrinks, confirmed via real render, not just inspection.
+// product_w directly, never total_w) — none of it moves when total_w/
+// system_w change independently, confirmed via real render, not just
+// inspection. product_w ITSELF does change this session (416->422mm, see
+// "TRAY/FRAME CLEARANCE" note above) — a deliberate, separate decision,
+// and everything anchored to product_w (door width, frame's right
+// vertical, compartment_divider() position, drop_zone_guards()'s right
+// guard, sensor_strip()'s right strip, exit_x centering) cascades with
+// it automatically and correctly, confirmed via the full render sweep.
 //
 // Full task-by-task detail, manifold sweep results (Simple:yes at every
 // combination tested), and open flags for Janis: see cc_chat_log.md
@@ -260,15 +299,24 @@ leg_inset = 40;   // UNCHANGED — confirmed clear at the new leg_od, see header
 FOOT_BASE_H = leg_h;   // 50mm
 
 // Compartments
-product_w = 416;    // UNCHANGED per Janis's decision — freed portrait-dashboard width comes off TOTAL MACHINE WIDTH, not the product/tray zone
-system_w = 133;     // VM-02 Task B.4/B.5 RECOMPUTED (prompt suggested 120mm) — see header changelog "system_w RECOMPUTED" for the full re-derivation (110mm real dash_w target + divider_t + skin_t*2)
+// product_w CHANGED 416->422mm, Janis-confirmed 2026-07-10 (2nd follow-up):
+// widens the tray/product compartment by 6mm specifically to resolve the
+// tray_zone_frame() left-vertical clearance gap (see tray_x_inset's own
+// comment below and the header changelog "TRAY/FRAME CLEARANCE — FIXED")
+// -- NOT the original prompt's "product_w stays 416mm unchanged" decision
+// (superseded by this direct instruction, same session). The freed
+// portrait-dashboard width still comes off TOTAL MACHINE WIDTH (system_w
+// unaffected by this change) -- this is a SEPARATE, additional 6mm on top
+// of that, specifically for tray clearance.
+product_w = 422;
+system_w = 143;     // VM-02 Task B.4/B.5 RECOMPUTED, Janis-confirmed 2026-07-10: real 10mm border EACH SIDE of the panel's own mounted width (10+100+10=120mm dash_w target, matching the prompt's own literal arithmetic), not the 2mm Global Clearance Tolerance figure cc first tried — see header changelog "system_w RECOMPUTED" for the full re-derivation (120 + divider_t + skin_t*2)
 divider_t = 19;     // UNCHANGED
 
 // total_w is now DERIVED (VM-02 Task B.5), not a literal — was a literal
 // in v58 (640, which itself had a real, un-flagged ~1mm arithmetic drift
 // vs. product_w+divider_t+system_w=639 there). Deriving it here closes
 // that entire bug class permanently for VM-02.
-total_w = product_w + divider_t + system_w;   // 416+19+133 = 568mm
+total_w = product_w + divider_t + system_w;   // 422+19+143 = 584mm
 
 // Spring / Tray
 spring_od = 66;
@@ -399,7 +447,7 @@ exit_bot_z = door_bot_z + 30;
 
 // Dashboard
 dash_x = product_w + divider_t + skin_t;
-dash_w = system_w - divider_t - (skin_t * 2);  // 133-19-4 = 110mm -- see header changelog "system_w RECOMPUTED"
+dash_w = system_w - divider_t - (skin_t * 2);  // 143-19-4 = 120mm (10+100+10 border, Janis-confirmed) -- see header changelog "system_w RECOMPUTED"
 screen_w = 165;    // physical panel LONG edge -- UNCHANGED per Task B.1, do not change this number
 screen_h = 100;    // physical panel SHORT edge -- UNCHANGED per Task B.1, do not change this number
 screen_protrude = 30;   // screen protrudes this far forward of front face
@@ -416,11 +464,63 @@ speaker_w = 60;
 speaker_h = 20;
 speaker_slots = 5;
 
-// Tray's own X-inset / width -- unchanged formulas from v58 (product_w
-// itself unchanged, so these are unaffected by the total_w/system_w
-// changes above; confirmed via render, see header changelog).
-tray_x_inset = 17;
-tray_w_global = (product_w + e - frame_bar - 2) - tray_x_inset;  // 389.01mm
+// Task B.2: top-of-screen anchored total_h-400 (replaces the old fixed
+// screen_center_z=280 -- screen center now DERIVED from this rule).
+// CLAMPED: the mandatory tray_count=1/3/5 sweep found the literal
+// total_h-400 rule alone pushes the QR/card/speaker stack BELOW THE
+// FLOOR at tray_count 1-2 (total_h 579-700mm) -- a real, confirmed
+// conflict between Task A's now-live total_h range and Task B's fixed
+// offset. DASH_STACK_H is the exact vertical span from screen_top_z down
+// to the speaker's own bottom edge (same chained offsets dashboard()
+// uses below: screen_w(=screen_mount_h, portrait) + 50+qr_h + 30+card_h +
+// 20+speaker_h). DASH_MIN_Z is the minimum world Z allowed for the
+// speaker's own bottom edge (leg_h+10, a real 10mm clearance above the
+// true floor). max() means: use the 400mm-from-top rule whenever the
+// machine is tall enough for it to clear the floor; otherwise push the
+// whole stack up just enough to stay valid. PROMOTED to a shared
+// top-level DATUM (was module-local inside dashboard() only) so
+// acrylic_display() can anchor its own lower zone boundary to the SAME
+// value, not an independently re-derived copy (Datum Rules,
+// .claude/rules-codes.md).
+DASH_STACK_H = screen_w + 50+qr_h + 30+card_h + 20+speaker_h;  // 165+50+30+30+8+20+20 = 323mm
+DASH_MIN_Z = leg_h + 10;   // 60mm
+screen_top_z = max(total_h - 400, DASH_MIN_Z + DASH_STACK_H);   // 421mm @ default tray_count=3 (unclamped); clamps to 383mm at tray_count 1-2
+
+// Acrylic display zone (upper right compartment) -- RESTORED 2026-07-10,
+// Janis-confirmed: "we need acrylic window", the acrylic viewing feature
+// stays PERMANENT, not removed (VM-02's first draft had dropped it as a
+// judgment call -- reversed here). Resized for VM-02's narrower/portrait
+// compartment and now-variable total_h: sits ABOVE the dashboard's own
+// screen assembly (screen_top_z + a real clearance margin) up to the
+// roofline, same "upper display, above the functional controls" concept
+// VM-01's own acrylic_display() used (there: fixed Z 542-698, above
+// tray_zone_top_z) -- just re-anchored to the live screen_top_z datum
+// instead of the removed tray-stack-derived datum.
+ACRYLIC_ZONE_MARGIN = 50;   // clearance above the screen assembly's own top edge before the acrylic zone starts
+acrylic_zone_bot_z = screen_top_z + ACRYLIC_ZONE_MARGIN;
+acrylic_zone_top_z = total_h - skin_t;
+acrylic_zone_h = acrylic_zone_top_z - acrylic_zone_bot_z;   // 348mm @ default tray_count=3; 144mm @ tray_count=1 (both confirmed positive across the full 1-5 range, see cc_chat_log)
+
+// Tray's own X-inset / width -- CHANGED 2026-07-10 (2nd Janis follow-up):
+// tray_x_inset 17mm->23mm, the SAME +6mm shift as product_w's own change
+// above, so tray_w_global's formula below (product_w+e-frame_bar-2-
+// tray_x_inset) evaluates to EXACTLY the same 389.01mm as before -- tray
+// width/spring-lane layout is UNCHANGED, per Janis's own instruction
+// ("keep the tray width"), only the tray's POSITION shifts right within
+// the now-wider compartment. This is the real fix for the tray_zone_
+// frame() left-vertical clearance gap (see header changelog "TRAY/FRAME
+// CLEARANCE — FIXED"): the frame's LEFT vertical is anchored to the
+// shell's own fixed front-left corner (independent of product_w) and
+// doesn't move: shifting the tray's own left wall from X=17mm to X=23mm
+// gives it a real 2mm clearance from the curve's actual 21mm reach
+// (confirmed via CGAL, not assumed). The frame's RIGHT vertical (anchored
+// to product_w+e) shifts by the same +6mm as the tray's own right wall,
+// so the pre-existing 2mm right-side clearance is preserved automatically
+// -- confirmed via a full tray_out_pct=0-1 CGAL sweep (door_open=true,
+// the physically valid state for a fully-extended tray), Simple:yes
+// throughout, not just the old ~27% range.
+tray_x_inset = 23;
+tray_w_global = (product_w + e - frame_bar - 2) - tray_x_inset;  // 389.01mm -- UNCHANGED numeric value (both terms shifted +6mm, cancels out)
 
 // ─────────────────────────────
 // MODULES
@@ -900,7 +1000,7 @@ module tray_zone_frame() {
     left_outer_arc = arc_pts(world_arc_cx, world_arc_cy, frame_arc_r, 180, y_stop_angle, arc_segs);
     left_inner_arc = arc_pts(world_arc_cx, world_arc_cy, inner_r, y_stop_angle, 180, arc_segs);
 
-    divider_touch_x  = product_w + e;                    // 416.01mm -- unchanged, product_w unchanged
+    divider_touch_x  = product_w + e;                    // 422.01mm -- shifts +6mm with product_w's own 2026-07-10 change, preserving the tray's own right-side clearance automatically (see tray_x_inset's comment)
     right_bar_inner_x = divider_touch_x - frame_bar;
 
     color("#AAAAAA")
@@ -962,24 +1062,9 @@ module dashboard() {
     screen_mount_w = screen_h;   // 100mm -- short physical edge, now the X extent
     screen_mount_h = screen_w;   // 165mm -- long physical edge, now the Z extent
 
-    // Task B.2: top-of-screen anchored total_h-400 (replaces the old
-    // fixed screen_center_z=280 -- screen center now DERIVED from this
-    // rule). CLAMPED: the mandatory tray_count=1/3/5 sweep found the
-    // literal total_h-400 rule alone pushes the QR/card/speaker stack
-    // BELOW THE FLOOR at tray_count 1-2 (total_h 579-700mm still leaves
-    // total_h-400 too low once the full stack's height is subtracted) --
-    // a real, confirmed conflict between Task A's now-live total_h range
-    // and Task B's fixed offset. DASH_STACK_H is the exact vertical span
-    // from screen_top_z down to the speaker's own bottom edge (same
-    // chained offsets as below: mh + 50+qr_h + 30+card_h + 20+speaker_h),
-    // DASH_MIN_Z is the minimum world Z we allow the speaker's bottom edge
-    // to reach (leg_h+10, a real 10mm clearance above the true floor).
-    // max() means: use the 400mm-from-top rule whenever the machine is
-    // tall enough for it to clear the floor; otherwise push the whole
-    // stack up just enough to stay valid.
-    DASH_STACK_H = screen_mount_h + 50+qr_h + 30+card_h + 20+speaker_h;  // 165+50+30+30+8+20+20 = 323mm
-    DASH_MIN_Z = leg_h + 10;   // 60mm
-    screen_top_z    = max(total_h - 400, DASH_MIN_Z + DASH_STACK_H);   // 421mm @ default tray_count=3 (unclamped); clamps to 383mm at tray_count 1-2
+    // screen_top_z is now a shared top-level DATUM (see PARAMETERS) --
+    // acrylic_display() anchors its own lower boundary to the same value,
+    // never an independently re-derived copy (Datum Rules).
     screen_center_z = screen_top_z - screen_mount_h/2;
     screen_z        = screen_center_z - screen_mount_h/2;   // bottom-front translate anchor, same convention v58 used
 
@@ -1029,6 +1114,84 @@ module dashboard() {
                    speaker_z + s*(slot_h + slot_gap)])
             cube([speaker_w, 3, slot_h]);
     }
+}
+
+// Acrylic display — RESTORED 2026-07-10 (Janis: "we need acrylic
+// window", the acrylic viewing feature is PERMANENT, not removed — a
+// reversal of this file's own first-draft judgment call, see header
+// changelog). 3 faces of the right compartment (front + right side +
+// top, same concept as VM-01's own acrylic_display()), resized/re-
+// anchored for VM-02's narrower/portrait compartment: front panel width
+// now dash_w's own interior-width formula (was hardcoded to the old
+// system_w proportions), Z-zone now anchored to the shared
+// acrylic_zone_bot_z/acrylic_zone_top_z datums (above the dashboard's own
+// screen assembly, up to the roofline) instead of the removed tray-
+// stack-derived datum (DATUM_TRAY_TOP/tray_zone_top_z — see the earlier
+// Cross-Cutting Warning resolution note). Right-side panel UNCHANGED
+// (spans corner_r to total_d-corner_r in Y, at the machine's own far
+// right edge — independent of the compartment's own interior width).
+module acrylic_display() {
+    // VM-02 FIX (found via real CGAL render on the FULL assembly -- this
+    // one did NOT reproduce in isolated pairwise intersection tests
+    // against the shell alone, a known CGAL robustness quirk; only
+    // surfaced once the full boolean union was actually computed, so
+    // isolation alone would have missed it): dash_x+dash_w is
+    // ALGEBRAICALLY IDENTICAL to the shell's own right-compartment cutout
+    // end (product_w+system_w-skin_t, confirmed by expanding both
+    // formulas), for ANY system_w value -- meaning the front panel's own
+    // right edge always lands EXACTLY on the boundary where the shell's
+    // cutout stops and solid material resumes. Pulled the panel's width
+    // in by a real ACRYLIC_OVERLAP margin (reusing the same constant/
+    // convention as the right/top panels below) so it sits with genuine
+    // clearance inside the cutout instead of touching its exact edge.
+    ACRYLIC_OVERLAP = 1;
+    acrylic_front_w = dash_w - ACRYLIC_OVERLAP;
+    acrylic_front_x = dash_x;
+
+    color("#ADD8E6", 0.3)
+    translate([acrylic_front_x, e, acrylic_zone_bot_z])
+        cube([acrylic_front_w, door_t, acrylic_zone_h]);
+
+    // Right panel — recessed to corner_r on both Y ends (clears the
+    // shell's rounded corner, same VM-01 v39 fix, unchanged reasoning).
+    // VM-02 FIX (found via real CGAL render, restoring this module):
+    // this panel's own right edge (X = total_w-skin_t, by construction)
+    // landed EXACTLY on the shell's own interior wall surface (same X) --
+    // a real, substantial coincident-face touch (Rule M-1), inherited
+    // unchanged from VM-01's own formula but never actually flagged there
+    // since it was hidden by more prominent issues. Nudged +e so the
+    // panel reaches e INTO the shell's own wall, a real (non-degenerate)
+    // shared volume. A bare epsilon (e=0.01mm) was tried first and
+    // confirmed INSUFFICIENT here (same R-002 lesson as tray_rack()'s own
+    // fix above -- epsilon is not always enough for a large-area
+    // near-coincident face); ACRYLIC_OVERLAP=1mm (cosmetically invisible
+    // on a 2mm-thick acrylic panel, declared once at the top of this
+    // module) gives CGAL real margin instead.
+    color("#ADD8E6", 0.3)
+    translate([total_w - (skin_t*2), corner_r, acrylic_zone_bot_z])
+        cube([skin_t + ACRYLIC_OVERLAP, total_d - (corner_r*2), acrylic_zone_h]);
+
+    // VM-02 FIX (same session, found via real CGAL render): this panel
+    // originally touched TWO different faces at once -- its own rear edge
+    // (Y=total_d-skin_t, by construction) landed exactly on BOTH
+    // rear_service_door()'s front face AND the shell's own back-wall
+    // inner surface (same Y, a NEW interaction from combining this
+    // session's own two changes: acrylic restored + rear door now full
+    // floor-to-ceiling, Task B.6 -- VM-01's original half-height door
+    // never reached this high) -- AND its own top edge (Z=total_h-skin_t)
+    // simultaneously touched the shell's interior roof surface. A simple
+    // +overlap on the Y side alone (tried first) made it overlap the
+    // shell's solid back-wall skin WHILE still exactly touching the roof
+    // in Z -- a doubly-coincident corner, confirmed via CGAL to still be
+    // non-manifold (9 vertices on what should be an 8-vertex box, the
+    // signature of a degenerate shared edge, not a clean shared volume).
+    // Fixed by treating each face independently: Z gets a real
+    // ACRYLIC_OVERLAP into the roof (matches the right panel's own fix
+    // above); Y gets a small real GAP instead (pulls back, doesn't touch
+    // the back wall/door at all) -- a 1mm reveal, cosmetically invisible.
+    color("#ADD8E6", 0.3)
+    translate([acrylic_front_x, skin_t, total_h - (skin_t*2)])
+        cube([acrylic_front_w, total_d-(skin_t*2)-ACRYLIC_OVERLAP, skin_t+ACRYLIC_OVERLAP]);
 }
 
 // Solid opaque hand-safety side guards -- inherited unchanged. Height
@@ -1121,6 +1284,7 @@ show_flap    = true;
 show_sensor  = true;
 show_frame   = true;
 show_lock_provision = true;
+show_acrylic_display = true;   // NEW (VM-02): isolation toggle for acrylic_display() -- VM-01's own equivalent had NO show_* toggle (render_mode-gated only, a confirmed Toggle-Completeness gap per its own PART_MANIFEST.md); added properly here since the module was rebuilt from scratch this session anyway
 
 // ─────────────────────────────
 // ASSEMBLY
@@ -1136,7 +1300,7 @@ compartment_divider();
 tray_rack();
 for (t = [0:tray_count-1]) spring_tray(t);
 
-// acrylic_display() REMOVED (VM-02 judgment call -- see header changelog).
+if (show_acrylic_display) acrylic_display();   // RESTORED 2026-07-10, Janis-confirmed permanent — see header changelog
 
 if (show_door) left_zone_door();
 flap_stopper_rod();

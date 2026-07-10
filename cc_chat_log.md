@@ -4,6 +4,21 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-10 | vm02-derivation-from-vm01-v58 (2nd direct-chat follow-up, same day) | DONE — tray/frame collision ACTUALLY FIXED now, full CGAL sweep clean
+
+Files: VM-02-base-v1.scad (same file, extended), rules-dimensions.md(v32→v33), PART_MANIFEST.md(1.1→1.2). Janis proposed the actual fix for the item left unresolved in the previous entry (tray_out_pct's ~27% ceiling): widen the tray compartment itself instead of touching the frame or the tray's own width.
+Implemented: product_w 416→422mm (+6mm), tray_x_inset 17→23mm (the SAME +6mm shift) — tray_w_global's formula evaluates to the exact same 389.01mm as before, so tray width/spring-lane layout is UNCHANGED, only the tray's position shifts right. Works because tray_zone_frame()'s LEFT vertical is anchored to the shell's fixed corner (doesn't move with product_w) while its RIGHT vertical (anchored to product_w+e) shifts by the same +6mm as the tray's own right wall, preserving the existing 2mm right-side clearance automatically.
+Confirmed via a full real CGAL sweep, tray_out_pct 0 through 1.0 (door_open=true, the physically valid state for a fully-extended tray — a tray at 100% still legitimately collides with a CLOSED door, unrelated/unavoidable, not a bug): Simple:yes throughout, including the prompt's own original literal example (tray0=0%, tray1=50%, tray2=100%) which now actually works, not just the previously-safe ~27% values. Re-verified tray_count=1/3/5, 11-angle door sweep, leg clearance (unaffected by this change) — all still clean. total_w now 584mm. Same gap confirmed still present, unfixed, in the locked VM-01 v58 file (out of scope there).
+
+### 2026-07-10 | vm02-derivation-from-vm01-v58 (direct-chat follow-up, same day) | DONE — 4 items answered, 1 root-caused but NOT fixed, real CGAL re-swept clean
+
+Files: VM-02-base-v1.scad (same file, extended), PART_MANIFEST.md(1.0→1.1), rules-dimensions.md(v31→v32). Direct response to Janis's 4 questions on the v1 entry below, no new prompt file (R-011 direct-cc pattern).
+(1) Governance flag: acknowledged by Janis, no action.
+(2) system_w CORRECTED 133→143mm — Janis: real 10mm border EACH SIDE of the panel (matches the original prompt's own arithmetic), not cc's own 2mm-clearance-based 133mm. total_w now 578mm.
+(3) tray_out_pct ~27% ceiling: NOT fixed (Janis asked "did you fix?"). Clarified it's a width/X issue, not height/ceiling. Root-caused precisely by reading archived VM-01-base-v55.scad vs v56.scad directly: v50 verified tray_x_inset=17mm against the frame's curve AT THE TIME (capped at X=15mm); v56's later kink-fix rebuilt that same curve to sweep further, silently reaching X=21mm — a real regression v56 never re-checked against tray clearance. A real fix needs ~5mm more width than available with product_w unchanged (5-lane spring layout is exactly at its owner-locked minimum) — not a quick tweak, flagged for Janis's decision (frame redesign vs. tray notch vs. accept documented limit).
+(4) acrylic_display() RESTORED, PERMANENT — Janis: "we need acrylic window." Rebuilt (not just re-added) for the new narrower/portrait compartment + live total_h; new show_acrylic_display toggle. Found+fixed 3 MORE real manifold bugs while resizing it (right panel vs. shell wall; top panel vs. shell roof AND rear door simultaneously — a doubly-coincident corner; front panel vs. the shell's own cutout edge, an algebraic coincidence for any system_w that only surfaced in the FULL assembly, not isolated pairwise CGAL tests — a real CGAL-robustness lesson worth remembering).
+Re-swept clean after all changes: tray_count=1/3/5, 11-angle door sweep, mixed tray_out_pct (safe range), flap_open true/false, C2 mode — Simple:yes throughout.
+
 ### 2026-07-10 | vm02-derivation-from-vm01-v58 | DONE — VM-02 v1 (NEW product line), real CGAL sweep clean, 3 items flagged for Janis
 
 Files: VM-02-base-v1.scad (new), vending-machine/VM-02-base/PART_MANIFEST.md (new), knowledge.map(v47→v48), rules-dimensions.md(v30→v31), prompts/archive/. Real OpenSCAD/CGAL used throughout (binary installed fresh this session), not estimates.

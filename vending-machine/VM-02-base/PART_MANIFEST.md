@@ -4,7 +4,10 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.1 — 2026-07-10
+# Version: 1.2 — 2026-07-10 (2nd follow-up, same day): tray_zone_frame()'s
+# entry updated — the left-vertical clearance gap flagged in 1.1 is now
+# FIXED (product_w widened 416->422mm, tray_x_inset shifted 17->23mm),
+# not just flagged. See that row and cc_chat_log.md.
 # Source: vending-machine/VM-02-base/VM-02-base-v1.scad ASSEMBLY block.
 # VM-02 inherits most of VM-01's module set/toggle convention unchanged
 # (same names, same architecture) — this manifest mirrors VM-01's own
@@ -35,7 +38,7 @@
 | `spring_tray()` x`tray_count` (1-5, live Customizer, default 3 — VM-02 Task A) | removable trays holding springs/product; NEW per-tray floor sensor hole (Task A.4); NEW TRAY_TOP_CLEARANCE vertical gap between stacked trays (real manifold fix, see cc_chat_log) | | GAP — no toggle (per-tray `tray_out_pct[tray_num]` vector IS the kinetic state for each tray, not a show_*-style visibility toggle) |
 | `left_zone_door()` | the main hinged front door — includes window + acrylic + flap + flange; stretches automatically with VM-02's derived `total_h` (Task D) | | `show_door` |
 | `flap_stopper_rod()` | fixed rod that stops the exit flap at full-open | | GAP — no toggle (static, fixed to cabinet — same open item as VM-01, not resolved here) |
-| `tray_zone_frame()` | structural H-frame reinforcement (2 verticals + 1 crossbar), NOT viewable/acrylic; stretches automatically with VM-02's derived `total_h` (Task D). FLAGGED (not fixed): left vertical's closing face limits real tray travel to ~27% of the `tray_out_pct` range, see cc_chat_log | the acrylic viewing pane — that lives INSIDE `left_zone_door()` instead | `show_frame` |
+| `tray_zone_frame()` | structural H-frame reinforcement (2 verticals + 1 crossbar), NOT viewable/acrylic; stretches automatically with VM-02's derived `total_h` (Task D). Left-vertical clearance gap (root-caused as a VM-01 v56 regression, initially only flagged) FIXED via widening `product_w`/shifting `tray_x_inset` (see PARAMETERS section) — full `tray_out_pct` 0-1 range now real, not capped at ~27%, see cc_chat_log | the acrylic viewing pane — that lives INSIDE `left_zone_door()` instead | `show_frame` |
 | `drop_zone_guards()` | solid hand-safety side guards at the exit/drop zone | | (none — always on, safety-critical) |
 | `tray_compartment_partition()` | fixed/welded horizontal panel sealing the space vacated by the tray-stack shift, full compartment width x depth | a removable/access panel — it's structural, not user-facing | (none — always on, safety-critical — blocks hand access from below) |
 | `exit_compartment_wall()` | fixed/welded rear-facing wall sealing front-to-back reach at the drop-zone/tray-compartment boundary | `drop_zone_guards()` — those are 2 thin SIDE panels within the drop zone's own depth; this is a full-width wall at the drop zone's REAR boundary | (none — always on, safety-critical — blocks hand access from the front) |

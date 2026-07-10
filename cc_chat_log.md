@@ -4,6 +4,12 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-10 | vm02-derivation-from-vm01-v58 (2nd direct-chat follow-up, same day) | DONE — tray/frame collision ACTUALLY FIXED now, full CGAL sweep clean
+
+Files: VM-02-base-v1.scad (same file, extended), rules-dimensions.md(v32→v33), PART_MANIFEST.md(1.1→1.2). Janis proposed the actual fix for the item left unresolved in the previous entry (tray_out_pct's ~27% ceiling): widen the tray compartment itself instead of touching the frame or the tray's own width.
+Implemented: product_w 416→422mm (+6mm), tray_x_inset 17→23mm (the SAME +6mm shift) — tray_w_global's formula evaluates to the exact same 389.01mm as before, so tray width/spring-lane layout is UNCHANGED, only the tray's position shifts right. Works because tray_zone_frame()'s LEFT vertical is anchored to the shell's fixed corner (doesn't move with product_w) while its RIGHT vertical (anchored to product_w+e) shifts by the same +6mm as the tray's own right wall, preserving the existing 2mm right-side clearance automatically.
+Confirmed via a full real CGAL sweep, tray_out_pct 0 through 1.0 (door_open=true, the physically valid state for a fully-extended tray — a tray at 100% still legitimately collides with a CLOSED door, unrelated/unavoidable, not a bug): Simple:yes throughout, including the prompt's own original literal example (tray0=0%, tray1=50%, tray2=100%) which now actually works, not just the previously-safe ~27% values. Re-verified tray_count=1/3/5, 11-angle door sweep, leg clearance (unaffected by this change) — all still clean. total_w now 584mm. Same gap confirmed still present, unfixed, in the locked VM-01 v58 file (out of scope there).
+
 ### 2026-07-10 | vm02-derivation-from-vm01-v58 (direct-chat follow-up, same day) | DONE — 4 items answered, 1 root-caused but NOT fixed, real CGAL re-swept clean
 
 Files: VM-02-base-v1.scad (same file, extended), PART_MANIFEST.md(1.0→1.1), rules-dimensions.md(v31→v32). Direct response to Janis's 4 questions on the v1 entry below, no new prompt file (R-011 direct-cc pattern).

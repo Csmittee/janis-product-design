@@ -49,9 +49,10 @@
 //   tray_out_pct is now a length-5 Customizer vector (per-tray
 //   independent slide) — spring_tray(tray_num) indexes tray_out_pct
 //   [tray_num] directly, confirmed independent via a mixed-value render
-//   (tray0=0%, tray1=15%, tray2=25% — NOT the prompt's own "0/50/100%"
-//   example, see "REAL TRAY-TRAVEL LIMIT FOUND" note below for why — one
-//   render, see cc_chat_log).
+//   matching the prompt's own literal example (tray0=0%, tray1=50%,
+//   tray2=100%, door_open=true — see "TRAY/FRAME CLEARANCE" note below:
+//   the full 0-1 range needed a real width fix before this example was
+//   actually achievable, not just the ~27%-safe values cc tried first).
 //   TWO REAL MANIFOLD BUGS FOUND AND FIXED during the mandatory
 //   tray_out_pct sweep (Section 7), both confirmed via real CGAL, neither
 //   guessed: (1) at tray_out_pct=1.0 EXACTLY, a sliding tray's rear edge
@@ -65,73 +66,54 @@
 //   face), but becomes a real T-junction once either tray slides (a
 //   partial, staggered overlap) — fixed with a genuine TRAY_TOP_CLEARANCE
 //   vertical gap between tray slots, see spring_tray()'s own comment.
-//   REAL TRAY-TRAVEL LIMIT FOUND (flagged for Janis, NOT fixed this
-//   session — see below): once both manifold bugs above were fixed, a
-//   THIRD, more fundamental issue surfaced via the same sweep — the fixed
-//   tray_zone_frame()'s left vertical has a flat radial closing face that
-//   reaches world X=21mm near its own front end (world Y 7-15mm), 4mm
-//   PAST the tray box's own left wall (world X=17mm=tray_x_inset, sized
-//   assuming only the frame's flat crossbar/flange reference at X=15mm,
-//   never checked against this curve's own closing-face extent). This is
-//   a real, physical collision confirmed via CGAL bisection at ANY
-//   tray_out_pct above ~0.27 (safe up to 0.27, confirmed non-manifold at
-//   0.28+, both real CGAL renders, not estimated) — meaning trays can
-//   physically extend to only ~27% of the Customizer slider's full 0-1
-//   range before hitting this fixed structural member, regardless of
-//   whether the door is open. CONFIRMED identical in the LOCKED VM-01 v58
-//   file (same frame/tray_x_inset construction, same limit) — a genuine
-//   pre-existing design gap in the shared architecture, not introduced by
-//   VM-02, and not something this prompt's Task A.3 scope (the per-tray
-//   ARRAY mechanism) asked cc to redesign. tray_zone_frame()'s own
-//   clearance geometry is already a delicate, non-negotiable balance
-//   against the door leaf (frame_arc_r capped at 14mm specifically
-//   because growing it re-collides the door, per VM-01 v50/v57's own
-//   bisection findings) -- widening tray clearance further needs its own
-//   dedicated investigation, not a same-session side-fix. FLAGGED
-//   EXPLICITLY for Janis: the tray_out_pct Customizer range stays [0:1]
-//   per this prompt's literal instruction, but values above ~0.27 are not
-//   physically achievable without hitting the fixed frame — confirm
-//   whether a future session should narrow the slider's practical range,
-//   redesign the frame's clearance, or leave this as a documented
-//   limitation.
-//   ROOT CAUSE CONFIRMED (2026-07-10 follow-up, in response to Janis's
-//   question "did you fix?" / "we fixed that on width before, wasn't
-//   it?"): this is NOT a height/ceiling issue — it's a horizontal (X-axis)
-//   clearance issue, unrelated to total_h/roofline; increasing machine
-//   height would not help. Janis's memory of "fixed on width before" is
-//   CORRECT — VM-01 v50 (VM-01-corner-frame-redesign) set tray_x_inset=
-//   17mm specifically for a real 2mm clearance from the frame's left
-//   vertical, verified against that vertical's OWN construction at the
-//   time (confirmed by reading the archived VM-01-base-v55.scad directly:
-//   its curve swept only until X=left_bar_inner_x=15mm, explicitly capped
-//   — "curve stops at X=15mm... before reaching angle=270"). VM-01 v56
-//   (vm01-v56-sensor-bracket-frame-joint-fix, a LATER, separate session)
-//   rebuilt this SAME curve to fix a visible kink, sweeping it all the way
-//   to y_stop_angle=270° instead (confirmed by reading VM-01-base-v56.scad
-//   directly) — at exactly 270°, the closing point's X-component reduces
-//   to the arc center's own X (21mm) regardless of radius, so the curve's
-//   closing face now reaches 4mm further than the OLD, v50-verified 15mm
-//   limit. v56's own scope/testing was door-vs-frame collision ONLY — it
-//   never re-checked tray clearance, so this regression went undetected
-//   for 2 versions (v56→v58) until THIS session's tray_out_pct sweep
-//   actually tested a high slide % with real CGAL. Likely why manual
-//   viewer testing didn't show it: the affected region is a narrow ~4mm
-//   intrusion confined to world Y 7-15mm, only entered once a tray slides
-//   past ~27% — easy to miss visually without an explicit boolean
-//   collision check at that specific range. ATTEMPTED FIX, NOT VIABLE AS
-//   A SIMPLE TWEAK: widening tray_x_inset to clear the new 21mm reach
-//   (need ~23mm for real 2mm clearance) leaves only ~383mm of tray width
-//   with product_w(416mm) unchanged and the right vertical's own 2mm
-//   clearance also preserved — but the 5-lane spring layout (spring_od/
-//   spring_gap both OWNER-LOCKED) needs a real minimum of ~388mm, so this
-//   is a genuine ~5mm shortfall, not a quick parameter change. Real fix
-//   options (Janis's call, not cc's): (a) revisit the frame's own curve
-//   construction so its closing face doesn't reach as far (touches the
-//   shared VM-01 architecture, needs its own dedicated bisection like
-//   v50/v56/v57's own history), (b) a notch/chamfer in the tray's own
-//   front-left corner to route around the curve locally, or (c) leave the
-//   Customizer's practical range documented at ~27% until (a) or (b) is
-//   done. NOT implemented this session — see cc_chat_log.md.
+//   TRAY/FRAME CLEARANCE — ROOT-CAUSED THEN FIXED (2 direct-chat follow-
+//   ups, both 2026-07-10, in response to Janis's questions): once both
+//   manifold bugs above were fixed, a THIRD, more fundamental issue
+//   surfaced via the same sweep — tray_zone_frame()'s left vertical has a
+//   flat radial closing face reaching world X=21mm near its own front end
+//   (world Y 7-15mm), 4mm past the tray box's own left wall (was world
+//   X=17mm=tray_x_inset). Confirmed via CGAL bisection this was a real
+//   physical collision at ANY tray_out_pct above ~0.27.
+//   ROOT CAUSE (1st follow-up, in response to Janis's "did you fix?" /
+//   "we fixed that on width before, wasn't it?"): NOT a height/ceiling
+//   issue — a horizontal (X-axis) clearance issue, unrelated to total_h/
+//   roofline. Janis's memory of "fixed on width before" was CORRECT —
+//   VM-01 v50 (VM-01-corner-frame-redesign) set tray_x_inset=17mm for a
+//   real 2mm clearance from the frame's left vertical, verified against
+//   that vertical's OWN construction AT THE TIME (confirmed by reading
+//   the archived VM-01-base-v55.scad directly: its curve swept only
+//   until X=left_bar_inner_x=15mm, explicitly capped). VM-01 v56 (a
+//   LATER, separate session, vm01-v56-sensor-bracket-frame-joint-fix)
+//   rebuilt this SAME curve to fix a visible kink, sweeping it all the
+//   way to y_stop_angle=270° instead (confirmed by reading VM-01-base-
+//   v56.scad directly) — at exactly 270°, the closing point's X-component
+//   reduces to the arc center's own X (21mm) regardless of radius, 4mm
+//   past the v50-verified 15mm limit. v56's own scope/testing was door-
+//   vs-frame collision ONLY, never re-checked tray clearance — this
+//   regression went undetected for 2 versions until THIS session's
+//   tray_out_pct sweep. A first attempted fix (widening tray_x_inset
+//   alone) was NOT viable: with product_w(416mm) unchanged, the 5-lane
+//   spring layout (OWNER-LOCKED spring_od/spring_gap) needs ~388mm
+//   minimum, but only ~383mm would remain — a genuine ~5mm shortfall.
+//   FIXED (2nd follow-up, Janis's own proposed direction): widen the
+//   compartment instead of touching the frame or the tray's own width.
+//   product_w 416mm->422mm (+6mm) and tray_x_inset 17mm->23mm (+6mm, the
+//   SAME shift) — tray_w_global's formula evaluates to the exact same
+//   389.01mm as before (both terms shift by the same amount, cancels
+//   out), so the tray's own width/spring-lane layout is UNCHANGED, only
+//   its POSITION shifts right within the wider compartment. This works
+//   because tray_zone_frame()'s LEFT vertical is anchored to the shell's
+//   fixed front-left corner (independent of product_w, doesn't move),
+//   while its RIGHT vertical (anchored to product_w+e) shifts by the same
+//   +6mm as the tray's own right wall — preserving the pre-existing 2mm
+//   right-side clearance automatically. Confirmed via a full CGAL sweep,
+//   tray_out_pct 0 through 1.0 (door_open=true, the physically valid
+//   state for a fully-extended tray — a tray at 100% still legitimately
+//   collides with a CLOSED door, an unrelated, unavoidable physical fact,
+//   not a bug), Simple:yes throughout — no longer capped at ~27%.
+//   total_w now 584mm accordingly (422+19+143). CONFIRMED this same
+//   frame/tray_x_inset gap still exists, UNFIXED, in the LOCKED VM-01 v58
+//   file (out of scope to touch there).
 //   New sensor_hole_d=3mm floor-mounted (vertical, Z-axis) hole per lane
 //   per tray (5 lanes x tray_count), centered at each lane's existing
 //   centerline X (same formula as the spring lanes, reused verbatim, not
@@ -179,12 +161,14 @@
 //   literal arithmetic (dash_w target = 10+100+10 = 120mm, not cc's own
 //   106+2+2=110mm figure) — system_w = 120 + divider_t(19) + skin_t*2(4)
 //   = 143mm, still "well under the old 204mm ceiling." total_w is a
-//   DERIVED formula (product_w + divider_t + system_w = 416+19+143 =
-//   578mm), not a literal — this also closes a real, pre-existing ~1mm
-//   arithmetic drift in VM-01's own total_w literal (v58: total_w=640 but
-//   product_w+divider_t+system_w=639 — out of scope to fix in the locked
-//   VM-01 file, but VM-02 avoids this entire bug class by never
-//   hardcoding the sum). Rear service door width (system_w-10) recomputed
+//   DERIVED formula (product_w + divider_t + system_w — see "TRAY/FRAME
+//   CLEARANCE — FIXED" below for why product_w itself is 422mm, not
+//   416mm: 422+19+143 = 584mm), not a literal — this also closes a real,
+//   pre-existing ~1mm arithmetic drift in VM-01's own total_w literal
+//   (v58: total_w=640 but product_w+divider_t+system_w=639 — out of scope
+//   to fix in the locked VM-01 file, but VM-02 avoids this entire bug
+//   class by never hardcoding the sum). Rear service door width
+//   (system_w-10) recomputed
 //   to 133mm accordingly.
 //   acrylic_display() RESTORED — PERMANENT, Janis-confirmed 2026-07-10
 //   ("we need acrylic window"): cc's first draft had removed this module
@@ -267,8 +251,14 @@
 // stopper rod, flap) confirmed still defined relative to product_w/
 // skin_t, not total_w (spot-checked every module: tray_zone_frame(),
 // drop_zone_guards(), sensor_strip(), compartment_divider() all key off
-// product_w directly, never total_w) — none of it moves when total_w
-// shrinks, confirmed via real render, not just inspection.
+// product_w directly, never total_w) — none of it moves when total_w/
+// system_w change independently, confirmed via real render, not just
+// inspection. product_w ITSELF does change this session (416->422mm, see
+// "TRAY/FRAME CLEARANCE" note above) — a deliberate, separate decision,
+// and everything anchored to product_w (door width, frame's right
+// vertical, compartment_divider() position, drop_zone_guards()'s right
+// guard, sensor_strip()'s right strip, exit_x centering) cascades with
+// it automatically and correctly, confirmed via the full render sweep.
 //
 // Full task-by-task detail, manifold sweep results (Simple:yes at every
 // combination tested), and open flags for Janis: see cc_chat_log.md
@@ -309,7 +299,16 @@ leg_inset = 40;   // UNCHANGED — confirmed clear at the new leg_od, see header
 FOOT_BASE_H = leg_h;   // 50mm
 
 // Compartments
-product_w = 416;    // UNCHANGED per Janis's decision — freed portrait-dashboard width comes off TOTAL MACHINE WIDTH, not the product/tray zone
+// product_w CHANGED 416->422mm, Janis-confirmed 2026-07-10 (2nd follow-up):
+// widens the tray/product compartment by 6mm specifically to resolve the
+// tray_zone_frame() left-vertical clearance gap (see tray_x_inset's own
+// comment below and the header changelog "TRAY/FRAME CLEARANCE — FIXED")
+// -- NOT the original prompt's "product_w stays 416mm unchanged" decision
+// (superseded by this direct instruction, same session). The freed
+// portrait-dashboard width still comes off TOTAL MACHINE WIDTH (system_w
+// unaffected by this change) -- this is a SEPARATE, additional 6mm on top
+// of that, specifically for tray clearance.
+product_w = 422;
 system_w = 143;     // VM-02 Task B.4/B.5 RECOMPUTED, Janis-confirmed 2026-07-10: real 10mm border EACH SIDE of the panel's own mounted width (10+100+10=120mm dash_w target, matching the prompt's own literal arithmetic), not the 2mm Global Clearance Tolerance figure cc first tried — see header changelog "system_w RECOMPUTED" for the full re-derivation (120 + divider_t + skin_t*2)
 divider_t = 19;     // UNCHANGED
 
@@ -317,7 +316,7 @@ divider_t = 19;     // UNCHANGED
 // in v58 (640, which itself had a real, un-flagged ~1mm arithmetic drift
 // vs. product_w+divider_t+system_w=639 there). Deriving it here closes
 // that entire bug class permanently for VM-02.
-total_w = product_w + divider_t + system_w;   // 416+19+133 = 568mm
+total_w = product_w + divider_t + system_w;   // 422+19+143 = 584mm
 
 // Spring / Tray
 spring_od = 66;
@@ -502,11 +501,26 @@ acrylic_zone_bot_z = screen_top_z + ACRYLIC_ZONE_MARGIN;
 acrylic_zone_top_z = total_h - skin_t;
 acrylic_zone_h = acrylic_zone_top_z - acrylic_zone_bot_z;   // 348mm @ default tray_count=3; 144mm @ tray_count=1 (both confirmed positive across the full 1-5 range, see cc_chat_log)
 
-// Tray's own X-inset / width -- unchanged formulas from v58 (product_w
-// itself unchanged, so these are unaffected by the total_w/system_w
-// changes above; confirmed via render, see header changelog).
-tray_x_inset = 17;
-tray_w_global = (product_w + e - frame_bar - 2) - tray_x_inset;  // 389.01mm
+// Tray's own X-inset / width -- CHANGED 2026-07-10 (2nd Janis follow-up):
+// tray_x_inset 17mm->23mm, the SAME +6mm shift as product_w's own change
+// above, so tray_w_global's formula below (product_w+e-frame_bar-2-
+// tray_x_inset) evaluates to EXACTLY the same 389.01mm as before -- tray
+// width/spring-lane layout is UNCHANGED, per Janis's own instruction
+// ("keep the tray width"), only the tray's POSITION shifts right within
+// the now-wider compartment. This is the real fix for the tray_zone_
+// frame() left-vertical clearance gap (see header changelog "TRAY/FRAME
+// CLEARANCE — FIXED"): the frame's LEFT vertical is anchored to the
+// shell's own fixed front-left corner (independent of product_w) and
+// doesn't move: shifting the tray's own left wall from X=17mm to X=23mm
+// gives it a real 2mm clearance from the curve's actual 21mm reach
+// (confirmed via CGAL, not assumed). The frame's RIGHT vertical (anchored
+// to product_w+e) shifts by the same +6mm as the tray's own right wall,
+// so the pre-existing 2mm right-side clearance is preserved automatically
+// -- confirmed via a full tray_out_pct=0-1 CGAL sweep (door_open=true,
+// the physically valid state for a fully-extended tray), Simple:yes
+// throughout, not just the old ~27% range.
+tray_x_inset = 23;
+tray_w_global = (product_w + e - frame_bar - 2) - tray_x_inset;  // 389.01mm -- UNCHANGED numeric value (both terms shifted +6mm, cancels out)
 
 // ─────────────────────────────
 // MODULES
@@ -986,7 +1000,7 @@ module tray_zone_frame() {
     left_outer_arc = arc_pts(world_arc_cx, world_arc_cy, frame_arc_r, 180, y_stop_angle, arc_segs);
     left_inner_arc = arc_pts(world_arc_cx, world_arc_cy, inner_r, y_stop_angle, 180, arc_segs);
 
-    divider_touch_x  = product_w + e;                    // 416.01mm -- unchanged, product_w unchanged
+    divider_touch_x  = product_w + e;                    // 422.01mm -- shifts +6mm with product_w's own 2026-07-10 change, preserving the tray's own right-side clearance automatically (see tray_x_inset's comment)
     right_bar_inner_x = divider_touch_x - frame_bar;
 
     color("#AAAAAA")

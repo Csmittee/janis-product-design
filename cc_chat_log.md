@@ -4,6 +4,17 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-10 | vm02-derivation-from-vm01-v58 | DONE — VM-02 v1 (NEW product line), real CGAL sweep clean, 3 items flagged for Janis
+
+Files: VM-02-base-v1.scad (new), vending-machine/VM-02-base/PART_MANIFEST.md (new), knowledge.map(v47→v48), rules-dimensions.md(v30→v31), prompts/archive/. Real OpenSCAD/CGAL used throughout (binary installed fresh this session), not estimates.
+GOVERNANCE FLAG: VM-02 has no design_scope_of_work_rule.md/Skeleton-BOM-Kinetic worksheets (the literal new-product-line trigger) — proceeded since the prompt inherits VM-01's whole datum chain wholesale, not inventing new ones; flagged, not silently skipped.
+Task A: tray_count live [1:5] (default 3), total_h now DERIVED (`tray_stack_z0+tray_zone_h+ROOFLINE_MARGIN(88)`). tray_out_pct now a length-5 vector. New per-lane floor sensor holes. Found+fixed 2 real manifold bugs via the mandatory sweep (tray-vs-own-rail exact touch; adjacent-tray exact Z-face becoming a T-junction once one slides) — both pre-existing in locked VM-01 v58 too, fixed here only. ALSO found (not fixed, flagged): tray_zone_frame()'s left vertical caps real safe tray travel at ~27% of the slider, not 100% — same pre-existing VM-01 gap, out of this prompt's scope.
+Task B: system_w RECOMPUTED 133mm (not the prompt's suggested 120mm — that missed the existing dash_w formula + portrait bezel footprint, real collision found via render) → total_w=568mm (DERIVED formula now, not a literal). acrylic_display() REMOVED (judgment call, resolves the DATUM_TRAY_TOP cross-cutting warning). Rear door now full floor-to-ceiling. Screen position clamped (max()) after the 1/3/5 sweep found the literal "400mm from top" rule alone pushes the QR/card/speaker stack below the floor at low tray_count.
+Task C: leg_od 80mm, real CGAL clearance check (leg fully contained in shell footprint, ~5.4mm margin) at both VM-01's and VM-02's proportions — leg_inset unchanged.
+Task D: front door/frame/acrylic all cascade automatically (formulaic), confirmed via render at tray_count 1/3/5, zero hardcoded numbers left behind.
+Manifold sweep: tray_count=1/3/5, 11-angle door_open_deg sweep, mixed tray_out_pct (within the real ~27% safe range), flap_open true/false — Simple:yes at every combination tested.
+FLAGS for Janis: (1) governance gate above, (2) system_w 133mm vs prompt's 120mm, (3) tray_out_pct real ~27% ceiling (both VM-01/VM-02), (4) acrylic_display() removal judgment call — full detail in VM-02-base-v1.scad's own header and rules-dimensions.md.
+
 ### 2026-07-09 | vm01-gen1-lock-and-systemw-fix | DONE — docs only, zero .scad touched
 
 Files: CURRENT_STATE.md, rules-dimensions.md(v29→v30), cc_chat_log.md, prompts/archive/.

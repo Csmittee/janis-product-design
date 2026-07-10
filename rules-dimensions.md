@@ -1,5 +1,21 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v34 — 2026-07-10
+# Version: v35 — 2026-07-10
+# Changes: vm02-dashboard-shelf-and-side-acrylic. New "VM-02 Base —
+# Display Shelf + Right-Side Viewing Acrylic" section added: a display
+# shelf (Feature A, `shelf_top_z = acrylic_zone_bot_z - 10`, full
+# compartment depth, `dash_x`/`dash_w` width, `tray_floor_t` thickness)
+# and a new permanent right-exterior viewing acrylic cutout (Feature B,
+# front half of the compartment's depth only — `corner_r` to `total_d/2`
+# — the shell's own rounded-corner tangent point, real numeric coincidence
+# with the front acrylic panel's own edge). `acrylic_display()`'s
+# existing internal right panel Y-range shrunk to match (was full depth,
+# now front-half). VM-02-base-v3.scad is the new active file (v2
+# superseded, kept per file-versioning convention). Real OpenSCAD/CGAL
+# used throughout — tray_count 1/3/5, 11-angle door sweep, mixed
+# tray_out_pct, flap_open, C2 mode, all Simple:yes; explicit isolation
+# checks (shelf vs. dashboard/shell/acrylic, new cutout vs. rear door/
+# frame) confirmed zero real collision.
+# Previous: v34 — 2026-07-10
 # Changes: vm02-lower-shell-fill-and-retro-governance, Part 1. New "VM-02
 # Base — System Compartment Metal Panel" section added: the right
 # compartment's dashboard zone is now enclosed in solid sheet metal
@@ -844,6 +860,45 @@ Also confirmed zero new collision with `rear_service_door()`,
 mode all re-verified clean (this change is confined to the right
 compartment, no interaction expected or found with the left-side door/
 tray/frame geometry).
+
+### VM-02 Base — Display Shelf + Right-Side Viewing Acrylic (NEW 2026-07-10, v3, vm02-dashboard-shelf-and-side-acrylic)
+
+Two NEW features in the right/system compartment's acrylic display zone
+(not fixes to v2's own work). R-009 Duplication Check performed first:
+`acrylic_zone_bot_z` already existed as a live top-level DATUM (promoted
+in v2) — both features read that same value, nothing re-derived.
+
+| Dimension | Value | Notes |
+|---|---|---|
+| Display shelf top surface (`shelf_top_z`) | `acrylic_zone_bot_z - 10` (`SHELF_TOP_MARGIN`) | Janis: "just 10mm below the acrylic edge" — read as the shelf's own TOP surface (where items sit), not its underside. Only one live "acrylic edge" exists in this file (one acrylic zone, one Z-range) — not a genuine ambiguity |
+| Display shelf X-span | `dash_x` (443mm) to `dash_x+dash_w` (563mm), width 120mm | Reuses the SAME X-extent `dashboard()`/`acrylic_display()` already establish for this compartment, per the prompt's explicit instruction, not re-derived. FLAGGED: this is a dashboard-component MOUNTING envelope, narrower than the compartment's true wall-to-wall interior (divider's right face at 441mm to the shell's own interior right wall at 582mm) — used verbatim anyway per the prompt's explicit direction to reuse these two named values |
+| Display shelf Y-span | `skin_t` (2mm) to `(total_d-skin_t)-SHELF_REAR_GAP` (597mm) | Same "interior front face to interior rear wall" full-depth convention `compartment_divider()` already uses. REAL CGAL FINDING: the un-gapped rear edge landed exactly on `rear_service_door()`'s own front face (Rule M-1) — fixed with a real 1mm `SHELF_REAR_GAP`, not a bare epsilon |
+| Display shelf thickness | `tray_floor_t` (5mm) | No thickness given in the prompt — reused this file's own existing "floor" thickness convention (`tray_compartment_partition()`), not a new invented constant |
+| Right-exterior viewing acrylic cutout (`outer_shell()`) | Z: `acrylic_zone_bot_z` to roofline (same live datum as the front cutout). Y: `corner_r` (20mm) to `total_d/2` (300mm) — FRONT HALF of the compartment's depth only | CONFIRMED no such cutout existed anywhere in `outer_shell()` before this session (`show_shell_right` only fully removes the panel for debug isolation). Y-range corrected mid-session per Janis (front half, not back half). `corner_r` is the exact tangent point of the shell's own rounded front-right corner (not an arbitrary split) — real numeric coincidence confirms this reading: the front acrylic panel's own right edge (`dash_x+dash_w`=563mm) lands within 1mm of this same tangent point (`total_w-corner_r`=564mm) |
+| `acrylic_display()`'s internal right panel Y-range | Was `corner_r` to `total_d-corner_r` (20-580mm, full depth) — now `corner_r-1` to `total_d/2+1` (19-301mm, front half + real `ACRYLIC_OVERLAP` margin each end) | CHANGED to match the new cutout's own opening so the glazing material and its opening align. REAL CGAL FINDING: sizing the panel's Y-range to exactly match the cutout's own boundaries produced a real coincident-edge non-manifold result — fixed with the SAME real `ACRYLIC_OVERLAP` (1mm) margin this module's other 2 panels already use |
+
+Real CGAL verification (real OpenSCAD binary, not estimates): full
+assembly `tray_count`=1/3/5, 11-angle `door_open_deg` sweep (0-100 step
+10, `door_open`=true), mixed `tray_out_pct` (including all-trays-at-100%,
+`tray_count`=5), `flap_open` true/false, C2 mode (`show_shell_top`/
+`show_shell_left`=false) — `Simple: yes` at every single check, no
+exceptions. Explicit isolation checks (real `intersection()`, confirmed
+genuinely EMPTY = zero collision unless noted): `display_shelf()` vs.
+`dashboard()`, vs. `outer_shell()`, vs. `acrylic_display()` — all empty,
+re-confirmed at `tray_count` 1 and 5 too (shelf sits `screen_top_z+40`
+regardless of `tray_count`, by construction). New cutout vs.
+`tray_zone_frame()` — empty. New cutout vs. `rear_service_door()` —
+non-empty (Vertices:17/Facets:10/Volumes:2) but confirmed BYTE-IDENTICAL
+to the same pair's own pre-existing v2 baseline (same real, already-
+accepted overlap, zero new collision introduced by this session's work).
+NOTE on methodology: the `acrylic_display()`-vs-`outer_shell()`
+`intersection()` probe kept reporting non-manifold even AFTER the real
+`ACRYLIC_OVERLAP` fix was confirmed correct — the FULL ASSEMBLY render
+(the authoritative test) was `Simple: yes` throughout; isolated
+`intersection()` probes are a known false-positive source for this
+specific module pair, already documented in this file's own v2 section
+above ("did NOT reproduce in isolated pairwise intersection tests...
+only surfaced once the full boolean union was actually computed").
 
 ---
 

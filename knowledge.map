@@ -1,5 +1,14 @@
 # knowledge.map
-# Version: v50 — 2026-07-10
+# Version: v51 — 2026-07-10
+# Changes: vm02-dashboard-shelf-and-side-acrylic — VM-02-base-v3.scad
+# added (v2 superseded, kept per file-versioning convention): NEW
+# display_shelf() module (display floor in the acrylic zone) + a NEW
+# permanent right-exterior viewing acrylic cutout in outer_shell() (front
+# half of the compartment's depth only), acrylic_display()'s own internal
+# right panel resized to match. Real OpenSCAD/CGAL verified — see
+# cc_chat_log.md and rules-dimensions.md's new VM-02 section for full
+# detail. Zero VM-01 files touched.
+# Previous: v50 — 2026-07-10
 # Changes: vm02-viewer-wiring — VM-02 wired into viewer/janis-product-
 # viewer.html's PROJECTS object for the first time (modelsFolder:'VM-02',
 # same dynamic-picker system VM-01 uses), all values read live from
@@ -161,7 +170,7 @@ or WORKFLOW_SKILL.md.
 | Folder | Contents |
 |---|---|
 | vending-machine/VM-01-base/ | VM-01 .scad versions + PART_MANIFEST.md — GENERATION 1 LOCKED at v58 (see CURRENT_STATE.md), unchanged by VM-02's derivation |
-| vending-machine/VM-02-base/ | VM-02 .scad versions (v2 current, v1 superseded but kept per file-versioning convention) + PART_MANIFEST.md + design_scope_of_work_rule.md + SKELETON_WORKSHEET.md — NEW sibling product line (2026-07-10), seeded from VM-01-base-v58 (same base architecture: DATUM_* chain, coordinate convention, module set). v2 adds a solid lower-compartment metal panel around the dashboard (a real, confirmed gap since VM-01-base-v6, fixed here, VM-01 itself untouched). Governance chain (scope file + Skeleton/BOM/Kinetic worksheets) completed RETROACTIVELY this session, grounded in the real v2 file — see those files' own content for detail, and cc_chat_log.md for the full session history |
+| vending-machine/VM-02-base/ | VM-02 .scad versions (v3 current, v1/v2 superseded but kept per file-versioning convention) + PART_MANIFEST.md + design_scope_of_work_rule.md + SKELETON_WORKSHEET.md — NEW sibling product line (2026-07-10), seeded from VM-01-base-v58 (same base architecture: DATUM_* chain, coordinate convention, module set). v2 adds a solid lower-compartment metal panel around the dashboard (a real, confirmed gap since VM-01-base-v6, fixed here, VM-01 itself untouched). v3 adds a display shelf + a right-exterior viewing acrylic cutout in the same compartment (see rules-dimensions.md's own VM-02 section for detail). Governance chain (scope file + Skeleton/BOM/Kinetic worksheets) completed RETROACTIVELY in the v2 session, grounded in the real v2 file — see those files' own content for detail, and cc_chat_log.md for the full session history |
 | vending-machine/design_scope_of_work_rule.md | VM-01 owner-facing product concept doc — VM-02 has its OWN separate file now, at vending-machine/VM-02-base/design_scope_of_work_rule.md (see row above) |
 | pilates-reformer/PR-01-base/ | PR-01 multi-file source (PR-01-assembly-vNN.scad + pole_top.scad + leg_socket.scad, NOT individually versioned — see those files' own headers) + PART_MANIFEST.md |
 | pilates-reformer/design_scope_of_work_rule.md | PR-01 owner-facing product concept doc |

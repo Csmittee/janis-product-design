@@ -4,6 +4,12 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-09 | vm01-gen1-lock-and-systemw-fix | DONE — docs only, zero .scad touched
+
+Files: CURRENT_STATE.md, rules-dimensions.md(v29→v30), cc_chat_log.md, prompts/archive/.
+T1: VM-01 marked GENERATION 1 LOCKED in CURRENT_STATE.md (was stale "DONE, dormant, v36" — corrected to v58 while adding the marker). Sent to supplier (China) for prototype quote; construction PDF delivered same session; future geometry changes = deliberate exception, not routine.
+T2: `system_w` UNLOCKED per Janis — row REMOVED entirely from OWNER-LOCKED table (not re-valued). Separately, doc drift fixed: system_w was documented 185mm in 3 places, live v58 PARAMETERS has used 204mm since v44 (confirmed live, not assumed) — corrected in Compartments table, Dashboard "Total width" recomputed 160→181mm (matches v58's own `dash_w` comment), PENDING DECISIONS baseline rebaselined 185/620→204/640 (also live-confirmed, not assumed). All other OWNER-LOCKED rows diff-checked untouched.
+
 ### 2026-07-09 | viewer-cache-folder-listing + grid-floor-fix | DONE — viewer only, zero .scad touched
 
 Files: viewer/janis-product-viewer.html, cc_chat_log.md, prompts/archive/.

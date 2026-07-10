@@ -1,5 +1,18 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v29 — 2026-07-09
+# Version: v30 — 2026-07-09
+# Changes: vm01-gen1-lock-and-systemw-fix (docs-only, zero .scad touched).
+# `system_w` UNLOCKED per Janis (no restriction on machine width/height
+# going forward) -- removed entirely from the OWNER-LOCKED DIMENSIONS
+# table, not just re-valued. Separately, and independent of the unlock:
+# this file had documented system_w as 185mm in 3 places while live v58
+# code has used 204mm since at least v44 (confirmed via v58's own PARAMETERS
+# block + its `dash_w` sanity-check comment, 204-19-4=181mm ✓) -- stale
+# value corrected everywhere it appears (Compartments table, Dashboard
+# "Total width" recomputed to 181mm, PENDING DESIGN DECISIONS baseline
+# rebaselined off the corrected system_w=204/total_w=640, live-confirmed
+# rather than assumed 620). See CURRENT_STATE.md for the companion VM-01
+# Generation-1-locked marker (same session).
+# Previous: v29 — 2026-07-09
 # Changes: vm01-acrylic-curve-hinge-lock-fix (v57.scad, fresh session, see
 # cc_chat_log.md for full 4-task write-up). Acrylic "double sheet" TOP-edge
 # step FIXED (real root cause: near-coincident acrylic-top vs window-hole-
@@ -277,7 +290,6 @@ Write flag in cc_chat_log and ask Claude Web to escalate to Janis.
 | Spring direction | Front at Y=0 | Products fall forward |
 | Payment | Online only | No cash/coin ever |
 | Dashboard screen | 7" landscape 165×100mm | Until firmware portrait confirmed |
-| system_w | 185mm | Drives total_w — cannot change without screen layout change |
 
 ---
 
@@ -356,7 +368,7 @@ Derived zone stack:
 | Dimension | Value | Notes |
 |---|---|---|
 | Product zone width | 416mm | Left compartment |
-| System zone width | 185mm | Right compartment |
+| System zone width | 204mm | Right compartment. CORRECTED 2026-07-09 (vm01-gen1-lock-and-systemw-fix) — was documented 185mm, but live v58 code (`system_w`) has been 204mm since at least v44; current as of v58, confirmed against live code, not independently re-derived. `system_w` is also no longer OWNER-LOCKED as of this session (Janis: no restriction on machine width/height going forward) — see removed row, OWNER-LOCKED DIMENSIONS table above. |
 | Divider thickness | 19mm | Between compartments |
 
 ## VM-01 Base — Legs
@@ -639,7 +651,7 @@ collision, see above).
 |---|---|---|
 | Style | ATM recessed | 30 degree screen — LOCKED |
 | X start | product_w + divider_t + skin_t | |
-| Total width | ~160mm | system_w - divider_t - (skin_t x 2) |
+| Total width | 181mm | system_w - divider_t - (skin_t x 2) = 204-19-4 = 181mm. CORRECTED 2026-07-09 (vm01-gen1-lock-and-systemw-fix) — was ~160mm, using the stale 185mm system_w value; live v58's own `dash_w` sanity-check comment already confirmed 181mm, this just brings the doc in sync. |
 | Screen size | 165mm x 100mm | 7" TFT touch |
 | Screen angle | 30° | From horizontal |
 | Screen recess | 30% into panel | |
@@ -839,7 +851,7 @@ fit-test before tooling.
 | Item | Decision needed | Owner |
 |---|---|---|
 | Dashboard orientation | Portrait vs landscape — depends on Satu firmware | Janis + firmware team |
-| system_w reduction | If portrait confirmed: 185→168mm, total_w 620→603mm | After firmware decision |
+| system_w reduction | If portrait confirmed: system_w 204→187mm, total_w 640→623mm (same 17mm reduction as originally proposed, rebaselined 2026-07-09 off the corrected current values — was stated against a stale 185mm/620mm baseline; live v58 is 204mm/640mm, confirmed against code, not assumed). NOTE: `system_w` is no longer OWNER-LOCKED as of this session (see removed row above) — this item now describes a design option, not an approval gate on a locked dimension. | After firmware decision |
 | PR-01 dimensions | Not started — Janis to provide measurements | Janis |
 
 ---

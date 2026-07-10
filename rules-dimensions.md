@@ -1,5 +1,18 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v33 — 2026-07-10
+# Version: v34 — 2026-07-10
+# Changes: vm02-lower-shell-fill-and-retro-governance, Part 1. New "VM-02
+# Base — System Compartment Metal Panel" section added: the right
+# compartment's dashboard zone is now enclosed in solid sheet metal
+# (real, confirmed gap since VM-01-base-v6, never actually built in
+# either product until now — VM-01 itself untouched, still has the gap).
+# 4 new individual mounting cutouts (screen+bezel+bracket, QR, card,
+# speaker), each sized to real component footprint + the existing 2mm
+# Global Clearance Tolerance. Real CGAL confirmed clean at tray_count
+# 1/3/5 after a found-and-fixed ~3mm gap against the dashboard's own
+# support bracket (a flat, non-tilted part reaching lower than the
+# bezel). VM-02-base-v2.scad is the new active file (v1 superseded, kept
+# per file-versioning convention).
+# Previous: v33 — 2026-07-10
 # Changes: vm02-derivation-from-vm01-v58, 2nd direct-chat follow-up (same
 # day as v32). Janis proposed the actual fix for item (3) below (v32's
 # tray_out_pct ~27% ceiling, left un-fixed): widen the tray compartment
@@ -802,6 +815,35 @@ system, drop zone dimensions, sensor Z-position (350mm world, UNCHANGED,
 DO-NOT-TOUCH), front door Z-formulas, tray rack/lock provision) is
 UNCHANGED from the VM-01 sections above — VM-02 inherits them formulaically,
 confirmed via real render at `tray_count` 1/3/5, not re-stated here.
+
+### VM-02 Base — System Compartment Metal Panel (NEW 2026-07-10, v2, vm02-lower-shell-fill-and-retro-governance)
+
+Real, confirmed design gap, NOT a regression this build introduced —
+Janis's original spec (restated 2026-07-10): the dashboard's lower zone
+should sit inside SOLID sheet metal, with the acrylic display window
+starting only above it. Live code check (Claude Web, reading
+`outer_shell()` directly) confirmed this was NEVER built — since VM-01-
+base-v6, the right-compartment front-face cutout has always been one
+continuous open hole spanning the entire lower zone, dashboard components
+floating in open space. VM-01 (locked) has the identical gap, untouched.
+
+| Dimension | Value | Notes |
+|---|---|---|
+| Right-compartment UPPER cutout | `acrylic_zone_bot_z` to roofline (world Z) | CHANGED — was full floor-to-ceiling (VM-02 v1). Now matches `acrylic_display()`'s own Z-zone exactly (the SAME live datum, not re-derived) — one cutout per one glazed opening |
+| Right-compartment LOWER zone | SOLID shell material, `skin_t` thick, floor to `acrylic_zone_bot_z` | NEW — achieved by simply not cutting a hole there; the base shell already provides this skin wherever nothing else cuts it |
+| Screen+bezel+bracket mounting cutout | Real footprint + 2mm clearance (`PANEL_CUTOUT_CLEARANCE`) on all sides. Z-lower-bound uses `max(bezel_t, bracket_r)`, not just the bezel | REAL CGAL FINDING: a first pass sized only to the bezel's own flat footprint left a genuine ~3mm gap against the dashboard's SEPARATE, flat (non-tilted) support bracket, which reaches lower than the bezel does (`bracket_r`=8mm vs `bezel_t`=3mm) — found by isolating `intersection(){dashboard();outer_shell();}` and reading the real colliding part's bounds, not guessed |
+| QR / card reader / speaker mounting cutouts | Each component's own real footprint (`qr_w`×`qr_h`, `card_w`×`card_h`, `speaker_w`×`speaker_h`) + 2mm clearance on all sides | `speaker_h` reused as the grille's own established total-footprint-height allocation (same value `DASH_STACK_H`'s own chain already uses), not a re-derived slot-by-slot span |
+| `dashboard()`'s own Z-position chain | PROMOTED to shared top-level DATUMs (`screen_mount_w/h`, `screen_z`, `qr_z`, `card_z`, `speaker_z`) | Was module-local only in v1 — `outer_shell()`'s new cutouts now read the SAME live values, never an independently re-derived copy (Datum Rules; R-009 Duplication Check performed first, confirmed this chain existed in exactly one place before this change) |
+
+Real CGAL sweep: zero collision between `dashboard()` and `outer_shell()`
+at `tray_count`=1/3/5 (`screen_top_z`'s own clamp shifts the dashboard's Z
+position differently at each), full assembly `Simple: yes` throughout.
+Also confirmed zero new collision with `rear_service_door()`,
+`tray_zone_frame()`, `compartment_divider()`, `acrylic_display()` at
+`tray_count` 1/3/5. Door sweep, mixed `tray_out_pct`, `flap_open`, and C2
+mode all re-verified clean (this change is confined to the right
+compartment, no interaction expected or found with the left-side door/
+tray/frame geometry).
 
 ---
 

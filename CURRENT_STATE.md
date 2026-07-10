@@ -1,6 +1,7 @@
 # CURRENT_STATE.md
 # Janis Product Design — Where We Left Off
-# Last updated: 2026-07-03 by cc (rapid amendment on top of PR #75)
+# Last updated: 2026-07-09 by cc (vm01-gen1-lock-and-systemw-fix — VM-01
+# Generation-1-locked marker added, prompt-mandated)
 #
 # UPDATE TRIGGER — read this before touching this file:
 # This file is updated ONLY when Janis explicitly confirms a pause is
@@ -20,8 +21,21 @@
 # Anything unresolved/undecided lives HERE, not in rules-waivers.md — a
 # waiver requires Janis's explicit accept, an open item here does not.
 
-## Vending Machine (VM-01) — DONE, dormant
-Active: VM-01-base-v36.scad | Last confirmed good: v36, PASS
+## Vending Machine (VM-01) — GENERATION 1 LOCKED, v58, 2026-07-09
+Active: VM-01-base-v58.scad | Last confirmed good: v58, PASS (real CGAL
+11-angle sweep, Simple:yes throughout, zero manifold warnings)
+
+- VM-01 is now LOCKED as Generation 1 — final design, Janis-confirmed
+  2026-07-09 planning session. v58 is the version going to the supplier
+  (China) for a prototype build quote.
+- Construction reference drawing (5-page PDF, front/side/top/iso +
+  tray/drop-zone/door/dashboard/back-door detail) delivered to Janis same
+  session.
+- No further structural/geometry changes expected on this generation
+  unless prompted by physical-prototype feedback or firmware integration
+  — a future session proposing a geometry change here should treat that
+  as a deliberate exception, not routine iteration.
+
 No open items.
 
 ## Pilates Reformer (PR-01) — PAUSED, awaiting customer

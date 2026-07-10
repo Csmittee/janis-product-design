@@ -1,5 +1,18 @@
 # knowledge.map
-# Version: v48 — 2026-07-10
+# Version: v49 — 2026-07-10
+# Changes: vm02-lower-shell-fill-and-retro-governance — VM-02-base-v2.scad
+# added (Part 1: lower right-compartment metal panel + dashboard mounting
+# cutouts, a real confirmed design gap since VM-01-base-v6, fixed for
+# VM-02 here, VM-01 itself untouched/still has the gap). GOVERNANCE FLAG
+# from v48 RESOLVED: new vending-machine/VM-02-base/design_scope_of_work_
+# rule.md and vending-machine/VM-02-base/SKELETON_WORKSHEET.md added
+# (retroactive Skeleton Definition Worksheet + BOM Subassembly Tree +
+# Kinetic Dual-View table, grounded in the real v2.scad, per Janis's own
+# "run the chain retroactively" decision) — see PROJECT FOLDERS below for
+# both new file paths. One real Kinetic Dual-View gap found during the
+# retroactive pass: rear_service_door() has no open/close toggle at all
+# (not fixed this session, flagged in SKELETON_WORKSHEET.md Finding 3).
+# Previous: v48 — 2026-07-10
 # Changes: vm02-derivation-from-vm01-v58 — new PROJECT FOLDERS row added
 # for vending-machine/VM-02-base/ (VM-02 v1, seeded from VM-01-base-v58,
 # same base architecture, several real geometry changes — see that
@@ -136,8 +149,8 @@ or WORKFLOW_SKILL.md.
 | Folder | Contents |
 |---|---|
 | vending-machine/VM-01-base/ | VM-01 .scad versions + PART_MANIFEST.md — GENERATION 1 LOCKED at v58 (see CURRENT_STATE.md), unchanged by VM-02's derivation |
-| vending-machine/VM-02-base/ | VM-02 .scad versions + PART_MANIFEST.md — NEW sibling product line (2026-07-10), seeded from VM-01-base-v58 (same base architecture: DATUM_* chain, coordinate convention, module set), real geometry changes since (3rd spring tray + live tray_count, per-tray independent slide, per-lane floor sensor holes, portrait dashboard mount, resized system compartment/rear door, resized legs). No design_scope_of_work_rule.md/Skeleton worksheets exist for VM-02 yet — see GOVERNANCE flag above and cc_chat_log.md |
-| vending-machine/design_scope_of_work_rule.md | VM-01 owner-facing product concept doc — VM-02 does not have its own scope file yet, see GOVERNANCE flag above |
+| vending-machine/VM-02-base/ | VM-02 .scad versions (v2 current, v1 superseded but kept per file-versioning convention) + PART_MANIFEST.md + design_scope_of_work_rule.md + SKELETON_WORKSHEET.md — NEW sibling product line (2026-07-10), seeded from VM-01-base-v58 (same base architecture: DATUM_* chain, coordinate convention, module set). v2 adds a solid lower-compartment metal panel around the dashboard (a real, confirmed gap since VM-01-base-v6, fixed here, VM-01 itself untouched). Governance chain (scope file + Skeleton/BOM/Kinetic worksheets) completed RETROACTIVELY this session, grounded in the real v2 file — see those files' own content for detail, and cc_chat_log.md for the full session history |
+| vending-machine/design_scope_of_work_rule.md | VM-01 owner-facing product concept doc — VM-02 has its OWN separate file now, at vending-machine/VM-02-base/design_scope_of_work_rule.md (see row above) |
 | pilates-reformer/PR-01-base/ | PR-01 multi-file source (PR-01-assembly-vNN.scad + pole_top.scad + leg_socket.scad, NOT individually versioned — see those files' own headers) + PART_MANIFEST.md |
 | pilates-reformer/design_scope_of_work_rule.md | PR-01 owner-facing product concept doc |
 | viewer/janis-product-viewer.html | Browser 3D viewer — self-contained HTML (Three.js). STL mesh data always loads from api.janishammer.com/models/. Projects with a `modelsFolder` key (VM-01, since 2026-07-09) discover which files exist live via the GitHub Contents API on the Satu backend repo (`Csmittee/Satu-vending-backend`, public/models/<PROJECT-ID>/) instead of a fixed cc-maintained filename list; legacy projects (PR-01) keep the fixed `stl`/`stlOpen`/`stlC2` keys. Governed by .claude/SKILL_viewer_update.md (Claude Web only) |

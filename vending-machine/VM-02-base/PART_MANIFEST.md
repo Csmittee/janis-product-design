@@ -4,11 +4,20 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.2 — 2026-07-10 (2nd follow-up, same day): tray_zone_frame()'s
+# Version: 1.3 — 2026-07-10 (vm02-lower-shell-fill-and-retro-governance):
+# outer_shell()'s entry updated — right-compartment cutout now solid below
+# the acrylic zone, with 4 individual dashboard mounting cutouts (a real
+# confirmed design gap fix, not new scope creep). Retroactive governance
+# chain completed this session (design_scope_of_work_rule.md,
+# SKELETON_WORKSHEET.md, both in this same folder) — see
+# SKELETON_WORKSHEET.md Finding 3 for a real Kinetic Dual-View gap found
+# during that pass: rear_service_door() has no open/close toggle at all,
+# not fixed this session, flagged for a future prompt.
+# Previous: 1.2 — 2026-07-10 (2nd follow-up, same day): tray_zone_frame()'s
 # entry updated — the left-vertical clearance gap flagged in 1.1 is now
 # FIXED (product_w widened 416->422mm, tray_x_inset shifted 17->23mm),
 # not just flagged. See that row and cc_chat_log.md.
-# Source: vending-machine/VM-02-base/VM-02-base-v1.scad ASSEMBLY block.
+# Source: vending-machine/VM-02-base/VM-02-base-v2.scad ASSEMBLY block.
 # VM-02 inherits most of VM-01's module set/toggle convention unchanged
 # (same names, same architecture) — this manifest mirrors VM-01's own
 # structure per the prompt's explicit instruction, with entries updated
@@ -32,7 +41,7 @@
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
 | `legs()` | 4 support legs, leg_od RESIZED 25mm->80mm this session (Task C) — real corner/leg-inset clearance check done, see cc_chat_log | | GAP — no toggle (inherited from VM-01, unchanged this session) |
-| `outer_shell()` | main cabinet shell (called via `translate([0,0,leg_h])`) — left-zone + right-compartment front cutouts simplified to full floor-to-ceiling height this session (Task B, resolves the DATUM_TRAY_TOP cross-cutting dependency) | | Partial — `show_shell_top`/`show_shell_bottom`/`show_shell_left`/`show_shell_back`/`show_shell_right` remove individual panels; no single master toggle for the whole module |
+| `outer_shell()` | main cabinet shell (called via `translate([0,0,leg_h])`) — left-zone cutout simplified to full floor-to-ceiling height (v1, Task B, resolves the DATUM_TRAY_TOP cross-cutting dependency). Right-compartment cutout CHANGED AGAIN in v2 (2026-07-10, vm02-lower-shell-fill-and-retro-governance): now only the UPPER (acrylic) zone is open — the lower (dashboard) zone is solid sheet metal with 4 individual mounting cutouts (screen+bezel+bracket, QR, card, speaker), a real confirmed design gap fix, see rules-dimensions.md's new "System Compartment Metal Panel" section | | Partial — `show_shell_top`/`show_shell_bottom`/`show_shell_left`/`show_shell_back`/`show_shell_right` remove individual panels; no single master toggle for the whole module |
 | `compartment_divider()` | wall between product zone and system/dashboard zone | | GAP — no toggle |
 | `tray_rack()` | fixed rails + latch pins holding trays — rail contact FIXED this session (real epsilon-class manifold bug found via the tray_out_pct sweep, see cc_chat_log) | | GAP — no toggle |
 | `spring_tray()` x`tray_count` (1-5, live Customizer, default 3 — VM-02 Task A) | removable trays holding springs/product; NEW per-tray floor sensor hole (Task A.4); NEW TRAY_TOP_CLEARANCE vertical gap between stacked trays (real manifold fix, see cc_chat_log) | | GAP — no toggle (per-tray `tray_out_pct[tray_num]` vector IS the kinetic state for each tray, not a show_*-style visibility toggle) |
@@ -45,7 +54,7 @@
 | `sensor_strip()` | 2 independent left/right sensor strips capturing product fall — Z position (350mm world) UNCHANGED, DO-NOT-TOUCH zone per this session's prompt | the NEW per-tray floor sensor holes (Task A.4) — those are a different part, drilled through each tray's own floor, not this strip | `show_sensor` |
 | `dashboard()` | ATM screen (PORTRAIT mount this session, Task B.1/B.2) + QR + card reader + speaker | the OLD landscape mount (superseded) | GAP — no toggle |
 | `acrylic_display()` | RESTORED, PERMANENT (Janis-confirmed 2026-07-10: "we need acrylic window") — 3 faces (front + right side + top) of the right compartment, resized/re-anchored for VM-02's narrower/portrait compartment and now-variable `total_h`. 3 real manifold issues found+fixed while resizing (right panel vs. shell interior wall; top panel vs. BOTH the shell's roof and rear_service_door() simultaneously; front panel vs. the shell's own cutout edge — an algebraic coincidence for any system_w, only surfaced in the full assembly, not isolated pairwise tests). See VM-02-base-v1.scad's own comments and cc_chat_log.md | VM-01's own equivalent (render_mode-gated only, a confirmed Toggle-Completeness GAP per its own manifest) | `show_acrylic_display` — added properly here since the module was rebuilt from scratch this session, better than the GAP it started as in VM-01 |
-| `rear_service_door()` | rear access panel — REBUILT this session (Task B.6): full floor-to-ceiling height (was a fixed 50%-height panel in VM-01), width = system_w-10 | | GAP — no toggle |
+| `rear_service_door()` | rear access panel — REBUILT this session (Task B.6): full floor-to-ceiling height (was a fixed 50%-height panel in VM-01), width = system_w-10 | | GAP — no toggle. ALSO a real Kinetic Dual-View gap (SKELETON_WORKSHEET.md Finding 3, 2026-07-10): drawn as a single static flat panel with no hinge/rotate geometry at all, despite being a real hinged door in the product concept — not fixed this session |
 
 ## Toggle-completeness count (2026-07-10, v1.1)
 

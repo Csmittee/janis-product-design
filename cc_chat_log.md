@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-10 | vm02-derivation-from-vm01-v58 (CLOSING — R-011 direct-cc session, 3 rounds total, same day) | PAUSED, Janis-confirmed, governance backfill planned
+
+Files: CURRENT_STATE.md (new VM-02 section), .claude/rules-waivers.md(1.0→1.1, new W-002). This entire VM-02 v1 build (all 3 entries below) ran as a direct-cc-chat session, no Claude Web prompt drafted any round — per R-011, this entry + the 3 below are the record to read directly, not a paraphrase.
+Janis confirmed closing this round here; a future Claude Web prompt will backfill the GOVERNANCE FLAG raised in round 1 ("rematch vm02 skeleton and scope of work") — see CURRENT_STATE.md's new VM-02 entry for the full open-items list this next prompt should start from.
+NEW W-002 waiver: VM-02 has no viewer/janis-product-viewer.html PROJECTS entry and no STL exports yet — kinetic params (tray_out_pct/door_open/flap_open) are real and CGAL-tested, but only viewable by opening the .scad directly in OpenSCAD. Janis explicitly accepted this (viewer's WASM path isn't ready, no time to fix now, manual OpenSCAD simulation is sufficient) — not fixed, not in scope this round.
+Also noted (cosmetic only, not a defect): round 3's product_w widen shifted the frame's right vertical but not the door's window opening, leaving the window ~6mm less centered in the frame's opening than before — still fully clear either side, purely a visual proportion note for the next visual QA pass.
+
 ### 2026-07-10 | vm02-derivation-from-vm01-v58 (2nd direct-chat follow-up, same day) | DONE — tray/frame collision ACTUALLY FIXED now, full CGAL sweep clean
 
 Files: VM-02-base-v1.scad (same file, extended), rules-dimensions.md(v32→v33), PART_MANIFEST.md(1.1→1.2). Janis proposed the actual fix for the item left unresolved in the previous entry (tray_out_pct's ~27% ceiling): widen the tray compartment itself instead of touching the frame or the tray's own width.

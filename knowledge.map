@@ -1,5 +1,18 @@
 # knowledge.map
-# Version: v47 — 2026-07-09
+# Version: v48 — 2026-07-10
+# Changes: vm02-derivation-from-vm01-v58 — new PROJECT FOLDERS row added
+# for vending-machine/VM-02-base/ (VM-02 v1, seeded from VM-01-base-v58,
+# same base architecture, several real geometry changes — see that
+# folder's own PART_MANIFEST.md and cc_chat_log.md for detail). GOVERNANCE
+# FLAG: VM-02 has no design_scope_of_work_rule.md or Skeleton/BOM/Kinetic
+# worksheets on record (the literal NEW-PRODUCT-LINE trigger per this
+# file's own GOVERNANCE section and .claude/SKILL_product_design_
+# skeleton.md) — proceeded anyway since the prompt explicitly inherits
+# VM-01's entire datum architecture wholesale rather than inventing new
+# ones; flagged here and in cc_chat_log.md for Claude Web/Janis to
+# backfill the formal gate if VM-02 continues past this v1, not silently
+# skipped. VM-01's own row/status unchanged, still LOCKED at v58.
+# Previous: v47 — 2026-07-09
 # Changes: vm01-viewer-dynamic-folder-picker — viewer/janis-product-
 # viewer.html's FILE SYSTEM MAP entry updated to describe the new
 # modelsFolder discovery mechanism (GitHub Contents API against
@@ -70,8 +83,8 @@ or WORKFLOW_SKILL.md.
 - rules-pr.md — PR-01 tasks only
 - CURRENT_STATE.md — session resumption / mid-session product switch
 - PART_MANIFEST.md (per-project — vending-machine/VM-01-base/,
-  pilates-reformer/PR-01-base/) — before any QA session, before adding any
-  new ASSEMBLY-called module
+  vending-machine/VM-02-base/, pilates-reformer/PR-01-base/) — before any
+  QA session, before adding any new ASSEMBLY-called module
 - design_scope_of_work_rule.md (per-project) — read whenever a session
   confirms a new owner feature/goal, per its own standing rule; NOT on
   cc's automatic session-start list otherwise (confirmed via grep of
@@ -122,8 +135,9 @@ or WORKFLOW_SKILL.md.
 
 | Folder | Contents |
 |---|---|
-| vending-machine/VM-01-base/ | VM-01 .scad versions + PART_MANIFEST.md |
-| vending-machine/design_scope_of_work_rule.md | VM-01 owner-facing product concept doc |
+| vending-machine/VM-01-base/ | VM-01 .scad versions + PART_MANIFEST.md — GENERATION 1 LOCKED at v58 (see CURRENT_STATE.md), unchanged by VM-02's derivation |
+| vending-machine/VM-02-base/ | VM-02 .scad versions + PART_MANIFEST.md — NEW sibling product line (2026-07-10), seeded from VM-01-base-v58 (same base architecture: DATUM_* chain, coordinate convention, module set), real geometry changes since (3rd spring tray + live tray_count, per-tray independent slide, per-lane floor sensor holes, portrait dashboard mount, resized system compartment/rear door, resized legs). No design_scope_of_work_rule.md/Skeleton worksheets exist for VM-02 yet — see GOVERNANCE flag above and cc_chat_log.md |
+| vending-machine/design_scope_of_work_rule.md | VM-01 owner-facing product concept doc — VM-02 does not have its own scope file yet, see GOVERNANCE flag above |
 | pilates-reformer/PR-01-base/ | PR-01 multi-file source (PR-01-assembly-vNN.scad + pole_top.scad + leg_socket.scad, NOT individually versioned — see those files' own headers) + PART_MANIFEST.md |
 | pilates-reformer/design_scope_of_work_rule.md | PR-01 owner-facing product concept doc |
 | viewer/janis-product-viewer.html | Browser 3D viewer — self-contained HTML (Three.js). STL mesh data always loads from api.janishammer.com/models/. Projects with a `modelsFolder` key (VM-01, since 2026-07-09) discover which files exist live via the GitHub Contents API on the Satu backend repo (`Csmittee/Satu-vending-backend`, public/models/<PROJECT-ID>/) instead of a fixed cc-maintained filename list; legacy projects (PR-01) keep the fixed `stl`/`stlOpen`/`stlC2` keys. Governed by .claude/SKILL_viewer_update.md (Claude Web only) |

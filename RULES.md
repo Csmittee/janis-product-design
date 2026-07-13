@@ -1,6 +1,14 @@
 # RULES.md
 # Janis Product Design — Numbered Rules Log
-# Version: 3.0 — 2026-07-09
+# Version: 4.0 — 2026-07-13
+# Changes: Added R-012/R-013, from the governance-inline-content-and-
+# predelivery-check retrospective on the BBQ v1-init session (the original
+# prompt referenced Claude Web <-> Janis chat content cc cannot access,
+# and shipped with no CC INTRO/DO NOT TOUCH/MANDATORY CLOSING sections at
+# all — both real process gaps, not cc's fault). New structural content
+# (new numbered rules), not a detail-only change — X.0 bump per the
+# Document Versioning Rule. R-001-R-011 untouched.
+# Previous: 3.0 — 2026-07-09
 # Changes: Added R-008/R-009/R-010/R-011, from the governance retrospective
 # on the VM-01 door/manifold/acrylic saga (57 versions to fully resolve;
 # governance-verification-escalation-rules). New structural content (new
@@ -45,6 +53,43 @@ Examples: PR-01-base-rail-joint-v1.stl / VM-01-frame-corner-v2.scad
 ---
 
 ## Numbered Rules — Newest First
+
+## R-013 — Pre-Delivery Self-Check Runs on EVERY cc Prompt, No Exceptions
+Date: 2026-07-13
+WORKFLOW_SKILL.md's PRE-DELIVERY SELF-CHECK (Build prompt is .md? Section
+1 has git fetch + all required reads? Target file path explicit? DO NOT
+TOUCH includes rules-dimensions.md? Save-as filename stated with version
+increment?) must be run and satisfied before ANY cc prompt is delivered
+to Janis — including prompts written late in a long session, prompts
+written under time pressure, and prompts for brand-new product lines
+with no prior template to copy from. A prompt missing CC INTRO, DO NOT
+TOUCH, or MANDATORY CLOSING sections has failed this check and must not
+be delivered until fixed — these are not optional sections that can be
+skipped for a "simple" or "first" prompt.
+Root cause of: bbq-offset-smoker-v1-init-cc-prompt.md shipped with no CC
+INTRO (no git fetch, no governance file read list, no continuation
+self-check), no DO NOT TOUCH section, and no MANDATORY CLOSING section —
+all five Pre-Delivery Self-Check items would have caught at least one of
+these gaps if actually run.
+
+## R-012 — No Chat-Only Content References in cc Prompts
+Date: 2026-07-13
+A cc prompt must NEVER instruct cc to pull content from "this session's
+chat log," "our discussion," "the confirmed conversation," or any
+similar phrase referring to the Claude Web <-> Janis chat itself. cc has
+no access to that conversation under any circumstance — only to the
+repo (files, cc_chat_log.md, knowledge.map, prompt files). Any content
+confirmed in chat that cc needs to act on (scope text, feature lists,
+worksheet content, dimensions, etc.) MUST be transcribed directly into
+the cc prompt's own text, in full, before the prompt is delivered to
+Janis. If Claude Web does not have the exact confirmed wording on hand
+when drafting a prompt, it must say so explicitly to Janis and ask for
+it, rather than writing a placeholder for cc to fill in from a source
+it cannot reach.
+Root cause of: bbq-offset-smoker-v1-init-cc-prompt.md told cc to pull
+Compartment Map / Functional Features / SKELETON_WORKSHEET content "from
+this session's chat log" — cc correctly could not do this, requiring a
+same-session addendum prompt to unblock Task 1.
 
 ## R-011 — Direct-CC Escalation Protocol
 Date: 2026-07-09

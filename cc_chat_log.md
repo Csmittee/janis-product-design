@@ -4,6 +4,20 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-13 | governance-inline-content-and-predelivery-check | DONE — 2 new rules added, docs only, zero .scad/bbq-offset-smoker touched
+
+Confirmed highest rule live before adding: R-011 (grepped, not assumed). Added R-012 (No Chat-Only Content References in cc Prompts) and R-013 (Pre-Delivery Self-Check Runs on EVERY cc Prompt, No Exceptions) to RULES.md(3.0→4.0), each with a concrete root-cause example from the BBQ v1-init session per the prompt's own drafted text.
+WORKFLOW_SKILL.md(3.14→3.15): PRE-DELIVERY SELF-CHECK section gets one new explanatory line (extra weight on a new product line's first prompt, cites R-012). chat_rules.md(v3.11→v3.12): Prompt Writing section gets one new bullet, cites R-012.
+Confirmed: no existing rule content removed/reworded/renumbered (R-001 through R-011 untouched); zero `.scad` files touched; zero `bbq-offset-smoker/` files touched in this prompt's own scope (that folder WAS touched by the separate bbq-offset-smoker-v1-init-ADDENDUM prompt, done earlier in this same run — different task, not this one).
+No knowledge.map edit needed (no version/status line required it).
+
+### 2026-07-13 | bbq-offset-smoker-v1-init-ADDENDUM | DONE — real content supplied, no new files (all 6 already existed from the merged v1-init PR)
+
+Files updated: design_scope_of_work_rule.md(1.0→1.1) — Compartment Map/Functional Features/Appearance/Made-Buy-Hire REPLACED with the addendum's supplied content (still NOT Janis-reconfirmed verbatim, same confidence tier as before, flag retained). SKELETON_WORKSHEET.md(1.0→1.1) — no content rewrite needed, addendum confirmed Parts B/C's DERIVE-from-Task-2/3 approach was already correct; flag section updated + Part A's axis notation reconciled (this file uses the corrected X=chamber_L, addendum's own restated text used the original prompt's pre-correction Y notation).
+STALE-PREMISE NOTE: the addendum's Section 4 "NEW FILES (six, none exist yet)" and Section 5's "rules-dimensions.md not applicable to BBQ" were both written without visibility into the fact the original v1-init work was already completed and merged (PR #115) — all 6 files already existed, and rules-dimensions.md already carries a "BBQ Offset Smoker Base" section from that merged session. Did not delete/revert that section (out of this addendum's own DO NOT TOUCH scope, and reverting merged work isn't this prompt's call) — flagged here and in both updated files for Janis/Claude Web to resolve the conflict.
+No knowledge.map edit — Section 4's "append new-file rows" instruction doesn't apply since no files were newly created this round.
+Both prompts (original v1-init + this addendum) now archived. PR to follow together with the governance-inline-content-and-predelivery-check prompt, done in the same run per Janis's instruction.
+
 ### 2026-07-13 | bbq-offset-smoker-v1-init | DONE — v1, NEW product line, real CGAL clean, 1 GOVERNANCE FLAG + 5 real bugs found+fixed
 
 Files (new): bbq-offset-smoker/{BBQ-chambers-v1.scad, BBQ-understructure.scad, BBQ-offset-smoker-base-v1.scad, design_scope_of_work_rule.md, rules-bbq-fab.md, SKELETON_WORKSHEET.md, PART_MANIFEST.md}, renders/BBQ-chambers-v1-{iso,front,side,rear}.png. Changed: rules-dimensions.md(v35→v36), knowledge.map(v51→v52), cc_chat_log.md, prompts/archive/. Real OpenSCAD 2021.01 + Xvfb installed fresh this session, used throughout (not estimates).

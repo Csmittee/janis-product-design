@@ -1,10 +1,13 @@
 # BBQ Offset Smoker — Design Scope of Work
-> Version 1.0 — 2026-07-13
-> Changes: New file, first version. Product Identity + Envelope sections
-> copied verbatim from prompts/bbq-offset-smoker-v1-init-cc-prompt.md
-> (marked FINAL by that prompt). Compartment Map / Functional Features /
-> Appearance / Made-Buy-Hire sections are a DRAFT — see the flag below.
-> Previous: N/A
+> Version 1.1 — 2026-07-13
+> Changes: bbq-offset-smoker-v1-init-ADDENDUM. Compartment Map / Functional
+> Features / Appearance / Made-Buy-Hire sections REPLACED — v1.0's content
+> was cc's own reconstruction from Task 2/3's technical description (no
+> other source was available at the time); this version uses the content
+> Claude Web supplied directly in the addendum prompt, reconstructed from
+> the confirmed session handoff. Still NOT re-confirmed verbatim by Janis
+> in this exact wording — see the flag below, unchanged confidence tier.
+> Previous: 1.0 — 2026-07-13
 
 Customer-facing scope only — owner vocabulary, features, envelope,
 appearance. Technical/construction detail belongs in rules-bbq-fab.md, not
@@ -14,31 +17,36 @@ here (same filter VM-01/PR-01's own scope files use).
 
 ## ⚠️ GOVERNANCE FLAG — READ BEFORE TREATING THIS FILE AS FINAL
 
-The source prompt (`prompts/bbq-offset-smoker-v1-init-cc-prompt.md`) states
-the Product Identity and Envelope sections below are "finalized... use
-verbatim from this session's confirmed scope," and instructs the
-Compartment Map / Functional Features / Appearance-DoNot / Made-Buy-Hire
-lists to be pulled "from the two confirmed scope drafts" of "this
-session's chat log."
+The original prompt (`prompts/bbq-offset-smoker-v1-init-cc-prompt.md`)
+instructed the Compartment Map / Functional Features / Appearance-DoNot /
+Made-Buy-Hire lists to be pulled "from the two confirmed scope drafts" of
+"this session's chat log" — a Claude Web <-> Janis conversation cc has no
+access to. cc correctly declined to invent this content (v1.0 of this
+file used a DRAFT reconstructed from Task 2/3's technical description
+instead, flagged as such).
 
-**cc has no access to that chat log.** It exists only in the Claude Web
-session that produced the prompt — not in this repo, not in
-`cc_chat_log.md`, not in any file cc can read. Per cc_rules.md ("If the
-prompt doesn't show evidence of this, flag it in cc_chat_log rather than
-silently inventing datums") and the general rule that cc never makes
-design decisions, this file is split into two tiers:
+The `bbq-offset-smoker-v1-init-ADDENDUM-cc-prompt.md` follow-up supplied
+real content for these sections directly in the prompt text (Section 3a),
+which is what appears below as of v1.1. Per that addendum's own stated
+confidence level: this content is "reconstructed by Claude Web from the
+confirmed session handoff... has NOT been re-confirmed verbatim by Janis
+in this exact wording." Two tiers, same as v1.0:
 
-- **Product Identity / Envelope** — copied verbatim from the prompt itself
-  (the prompt states this content directly, not by reference to an
-  external log) — this tier is FINAL as stated.
+- **Product Identity / Envelope** — copied verbatim from the original
+  prompt itself — FINAL as stated.
 - **Compartment Map / Functional Features / Appearance / Made-Buy-Hire**
-  — the prompt gives NO literal content for these, only a pointer to an
-  unavailable log. What appears below is a DRAFT cc reconstructed from
-  Task 2/3's own technical module descriptions (the only real source
-  available) — **NOT sourced from Janis's actual confirmed scope
-  conversation.** This DRAFT requires Janis's explicit review before it
-  can be treated as confirmed, same as the file's own governance
-  convention requires for any new product's scope file.
+  — supplied by the addendum, materially correct per Claude Web but NOT
+  yet Janis-reconfirmed in this exact wording. Still requires Janis's
+  explicit review before being treated as locked — not silently upgraded
+  to FINAL just because it's now inline in a committed file.
+
+Also flagged per the addendum's own DO NOT TOUCH instruction: this
+addendum states "rules-dimensions.md — VM-specific, not applicable to
+BBQ." That file already carries a "BBQ Offset Smoker Base" section, added
+in the original v1-init session (merged, PR #115) before this addendum
+existed — a real conflict between the addendum's stated scope and the
+already-merged state of the repo, not resolved here (out of this
+addendum's own DO NOT TOUCH scope) — left for Janis/Claude Web to decide.
 
 ---
 
@@ -54,43 +62,47 @@ Firebox 457x457x457mm cube, floor 200mm below chamber floor
 
 ---
 
-## Compartment Map — DRAFT, reconstruct from Task 2/3, see flag above
-- Cook chamber — the main smoking compartment, full 915mm length, grate
-  at fixed 700mm height, lid-accessible along its top.
-- Firebox — separate 457mm cube compartment at the rear, connected to the
-  cook chamber only via the pass-through opening (no direct food/heat
-  path other than that opening).
-- Ash/ember compartment — beneath the firebox's own fire grate, accessed
-  via the slide-out ash tray through the firebox door.
-- Prep surface — 2 fold-up shelves at the front of the chamber, stowed
-  vertical for transport, deployed horizontal for use.
+## Compartment Map — per addendum Section 3a, materially correct but NOT
+yet Janis-reconfirmed in this exact wording (see flag above)
+- Cook Chamber — main octagonal-profile smoking chamber, pass-through
+  smoke flow (V1)
+- Firebox — offset, attached at chamber rear (world X, corrected from the
+  original prompt's own Y notation — see BBQ-chambers-v1.scad header),
+  floor lower than chamber floor (classic offset-smoker draft technique)
+- Chimney — front shoulder mount, foldable, internal drop-tube down to
+  grate level
+- Understructure — corner-tube wheeled frame, 2 fixed + 2 swivel
+  casters, tow handle at chimney end
+- Prep Shelves x2 — fold-up (vertical stowed / horizontal deployed),
+  left + right, front of chamber
 
-## Functional Features — DRAFT, see flag above
-1. Pass-through smoke flow: firebox → chamber (full length) → chimney,
-   with an internal drop-tube pulling smoke down to grate height before
-   it recirculates across the food, not a short-circuit top vent.
-2. Hinged main lid, counterbalanced for a slight self-closing bias
-   (~85-90% balance, not full — per this session's torque calc, cited in
-   rules-bbq-fab.md), full-width lift handle.
-3. Hinged firebox door with an air-intake damper for fire control.
-4. Slide-out ash tray for cleanout without disturbing the fire grate.
-5. Foldable chimney for lower transport height/clearance.
-6. Mobile: 2 fixed + 2 swivel casters, tow handle at the chimney end.
-7. Fold-up prep shelves, left and right, stowed for transport.
-8. Floor drain valves (x2) for grease/moisture cleanout.
+## Functional Features — per addendum Section 3a, see flag above
+1. Full-length counterbalanced lid — lever + weight, target ~85-90%
+   self-balance (slight self-closing bias, not full balance)
+2. Full-width lift handle rail, 150mm standoff, 2+ mounting posts
+3. 2+ floor drain valves, spaced front-third / back-third of chamber
+4. Firebox door — lockable, off-shelf spiral-wire heat-safe handle
+5. Laser-cut steel grill grate, 3-4 removable segments on internal
+   support ledge
+6. 2 fold-up prep shelves (vertical stowed / horizontal deployed)
+7. Foldable chimney with internal drop-tube (smoke circulates low
+   across food, not a short-circuit top vent)
+8. Adjustable firebox air-intake damper
+9. Slide-out ash tray below the fire grate
+10. Toggle-clamp lid latches x2+
+11. Dome thermometer port (placeholder)
+12. Hybrid fuel — wood or charcoal
 
-## Appearance — DRAFT, see flag above
-- Octagonal-profile (chamfered-coffin) chamber cross-section, not a plain
-  round barrel — a deliberate silhouette choice, not just structural.
-- Raw/brushed steel finish (2-3mm), hobbyist-commercial reference grade —
-  not a mirror-polish showpiece finish.
-- Chimney: "fat over long" proportion (per Janis, this session) — height
-  capped at 2.5m from ground regardless of chimney volume.
+## Appearance / Do-Not — per addendum Section 3a, see flag above
+- Reference plan images (corner-tube frame, toggle-clamp lid) are
+  construction-method inspiration only — do NOT copy their dimensions
+- V1 is pass-through smoke flow only — reverse-flow is explicitly OUT
+  OF SCOPE for this version, do not add it
 
-## Made / Buy / Hire — DRAFT, see flag above (owner-vocabulary framing;
-full technical Made-vs-Buy split lives in rules-bbq-fab.md, not here)
-- MADE (fabricated in-house): chamber shell, lid, firebox, doors, grill
-  grate segments, chimney + drop tube, ash tray, drain bosses.
-- BUY (off-shelf hardware): wheels/casters, axle, tow handle, toggle
-  clamp latches, dome thermometer, drain valve hardware, spiral-wire
-  firebox handle.
+## Made / Buy / Hire — per addendum Section 3a, see flag above
+- Made (laser-cut / welded in-house): grill grate segments, drain valve
+  bosses, chamber/firebox shells, understructure frame
+- Buy (off-shelf): wheels, axle, wheel-axle joints, toggle clamp
+  latches, dome thermometer, spiral-wire firebox handle, drain valves
+- Hire / supplier-verify: bend allowances for formed panels (doors,
+  end-caps)

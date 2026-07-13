@@ -1,26 +1,37 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.0 — 2026-07-13
-> Changes: New file, first version. Per .claude/SKILL_product_design_
-> skeleton.md's 3-artifact convention (Skeleton Definition Worksheet + BOM
-> Subassembly Tree + Kinetic Dual-View table), consolidated into one file
-> per the same reasoning VM-02's own SKELETON_WORKSHEET.md used ("the
-> skill file specifies content format but not a file location").
-> Previous: N/A
+> Version 1.1 — 2026-07-13
+> Changes: bbq-offset-smoker-v1-init-ADDENDUM. No content rewrite needed —
+> the addendum's Section 3b instructs Part B/C to be DERIVED from the
+> module list already locked in Task 2/3, which is exactly what v1.0
+> already did (confirmed correct approach, not superseded). This version
+> updates the GOVERNANCE FLAG to reflect the addendum's confirmation +
+> confidence framing, and reconciles Part A's axis notation explicitly.
+> Previous: 1.0 — 2026-07-13
 
 ## ⚠️ GOVERNANCE FLAG — same as design_scope_of_work_rule.md
 
-The source prompt states these 3 parts are "exactly as confirmed this
+The original prompt states these 3 parts are "exactly as confirmed this
 session... Copy verbatim from chat log" — a Claude Web chat log cc has no
-access to. Part A (datum chain) below IS fully specified in the prompt's
-own TASK 2 (GLOBAL PARAMS + DATUMS + module descriptions are literal, not
-log-referenced) and is GROUNDED IN THE REAL BUILT FILE
-(BBQ-chambers-v1.scad, real CGAL-verified this session — see
-cc_chat_log.md). Parts B and C are NOT given anywhere in the prompt
-itself beyond scattered mentions inside Task 2's module descriptions —
-reconstructed here from that same real file, same as VM-02's own
-retroactive-governance precedent ("grounded in the real v2.scad, not an
-idealized pre-spec"). Not a substitute for Janis's actual confirmation —
-flagged for review, not silently presented as pre-confirmed.
+access to. The `bbq-offset-smoker-v1-init-ADDENDUM-cc-prompt.md` follow-up
+confirmed the correct handling for each part:
+
+- **Part A (datum chain)** — fully specified directly in the original
+  prompt's own TASK 2 (GLOBAL PARAMS + DATUMS + module descriptions are
+  literal, not log-referenced), GROUNDED IN THE REAL BUILT FILE
+  (BBQ-chambers-v1.scad, real CGAL-verified — see cc_chat_log.md). The
+  addendum's own Section 3b restates Part A using the original prompt's
+  pre-correction "Y=chamber_L" notation — this file uses the CORRECTED
+  axis (X=chamber_L) throughout, matching the actually-built file and
+  rules-dimensions.md's locked all-models coordinate standard (see
+  BBQ-chambers-v1.scad's header for the full correction rationale).
+- **Parts B/C (BOM tree, Kinetic table)** — the addendum confirms these
+  were never a verbatim Janis-confirmed source to begin with, and
+  instructs deriving them mechanically from the module list already
+  locked in Task 2/3 — exactly what this file already did. Confirmed
+  correct, not rewritten. Per the addendum's own instruction: stated
+  explicitly here that Parts B/C are CC-DERIVED from the geometry spec,
+  not copied from a prior Janis confirmation — still requires Janis's
+  review, not silently presented as pre-confirmed.
 
 ---
 
@@ -100,7 +111,7 @@ clamp latches) are NOT independently kinetic — they're removable/fixed
 hardware, not hinged/sliding mechanisms, so they get a `show_*` isolation
 toggle only (Toggle-Completeness Rule), not a dual-view kinetic state.
 
-## Toggle-Completeness count (2026-07-13, v1.0)
+## Toggle-Completeness count (2026-07-13, v1.1 — unchanged from v1.0)
 
 BBQ-chambers-v1.scad ASSEMBLY: 8 modules called (`chamber_shell`, `lid`,
 `lid_hardware`, `firebox`, `chimney`, `drop_tube`, `grill_grate`,

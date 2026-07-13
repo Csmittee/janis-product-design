@@ -1,5 +1,11 @@
 # Claude Web — Chat Rules
-# Version: v3.11 — 2026-07-09
+# Version: v3.12 — 2026-07-13
+# Changes: governance-inline-content-and-predelivery-check. Prompt Writing
+# section gets one new bullet — never write "pull from chat/session/
+# discussion" into a cc prompt, transcribe confirmed content directly (new
+# rule R-012, RULES.md). Detail addition to an existing section, not new
+# structure — X.Y bump.
+# Previous: v3.11 — 2026-07-09
 # Changes: New "Direct-CC Escalation Protocol" section added (wiring in
 # R-011 from RULES.md, governance-verification-escalation-rules) —
 # formalizes when Janis may escalate directly to cc bypassing prompt
@@ -116,6 +122,9 @@ Before searching for cc_chat_log, inspect the CHAT_HANDOFF body:
 - Every cc prompt must follow the 7-section template in WORKFLOW_SKILL exactly
 - Never hardcode values into cc prompts — cc reads from live repo, not from Claude Web memory
 - Never overwrite a file — always specify version increment in the save-as filename
+- Never write "pull from chat/session/discussion" into a cc prompt — cc
+  cannot see the Claude Web <-> Janis conversation under any circumstance.
+  Transcribe confirmed content directly, every time. See RULES.md R-012.
 
 ---
 

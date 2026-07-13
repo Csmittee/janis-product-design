@@ -1,6 +1,12 @@
 # WORKFLOW_SKILL.md
 # Janis Product Design — How We Work
-# Version: 3.14 — 2026-07-09
+# Version: 3.15 — 2026-07-13
+# Changes: governance-inline-content-and-predelivery-check. PRE-DELIVERY
+# SELF-CHECK section gets one new explanatory line — the checklist applies
+# with EXTRA weight on a new product line's first cc prompt, referencing
+# new rule R-012 (no chat-only content references, RULES.md). Detail
+# addition to an existing template section, not new structure — X.Y bump.
+# Previous: 3.14 — 2026-07-09
 # Changes: CC PROMPT TEMPLATE Section 1 (CC INTRO) gets a new mandatory
 # duplication-check line (governance-verification-escalation-rules,
 # wiring in R-009 from RULES.md) — before writing any fix, cc must state
@@ -379,6 +385,13 @@ Always: version incremented — never overwrite.
 - [ ] Save-as filename stated with version increment?
 
 Fix before delivering. Never ask Janis to remind.
+
+This checklist applies with EXTRA weight on the first cc prompt of any
+new product line (per chat_rules.md's New Product Design Discipline) —
+there is no prior version of that product's prompt to silently inherit
+structure from, so every section must be built fresh and correctly,
+including inlining all chat-confirmed content per R-012 (chat-only
+content rule, added 2026-07-13).
 
 ---
 

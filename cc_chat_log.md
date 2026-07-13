@@ -4,6 +4,15 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-13 | bbq-offset-smoker-v1-init | DONE — v1, NEW product line, real CGAL clean, 1 GOVERNANCE FLAG + 5 real bugs found+fixed
+
+Files (new): bbq-offset-smoker/{BBQ-chambers-v1.scad, BBQ-understructure.scad, BBQ-offset-smoker-base-v1.scad, design_scope_of_work_rule.md, rules-bbq-fab.md, SKELETON_WORKSHEET.md, PART_MANIFEST.md}, renders/BBQ-chambers-v1-{iso,front,side,rear}.png. Changed: rules-dimensions.md(v35→v36), knowledge.map(v51→v52), cc_chat_log.md, prompts/archive/. Real OpenSCAD 2021.01 + Xvfb installed fresh this session, used throughout (not estimates).
+GOVERNANCE FLAG (per cc_rules.md — flagged, not silently invented): the prompt's own scope/worksheet content ("copy verbatim from chat log") referenced a Claude Web session cc cannot read. Product Identity/Envelope are verbatim from the prompt itself (FINAL). Compartment Map/Functional Features/Appearance/Made-Buy-Hire (scope file) and BOM tree/Kinetic table (worksheet) are cc-reconstructed DRAFTs grounded in the real built files — flagged in both files' headers + rules-dimensions.md PENDING DECISIONS for Janis's review.
+Coordinate fix: prompt's own snippet used Y as chamber length; corrected to X per rules-dimensions.md's locked all-models standard (chamber_L along X) — stated explicitly in BBQ-chambers-v1.scad header.
+5 real collisions found via CGAL intersection()/union() and fixed (not in the source prompt, only discoverable by rendering): firebox door hinge exact-tangency (union, not intersection, was the tell); firebox's outward wall was wrongly solid (real design error — door would've covered a wall that shouldn't exist, ash tray collided sliding out); lid hinge clipped the fixed rear-margin shell near 100°; folded chimney swept through the fixed ridge; counterbalance lever grazed the fixed rear-margin shell at rest. All fixed, full kinetic sweep (lid/door/ash-tray/chimney/shelves, multiple combos) re-verified Simple:yes.
+QA: window+firebox pass-through opening confirmed genuinely continuous via real intersection() (both chamber_shell()'s own cut AND the union, independently checked) — matches the prompt's explicit QA requirement. 4-angle PNG renders done (iso/front/side/rear). firebox_drop=200mm OPEN FLAG left as-is per the prompt, re-flagged in rules-dimensions.md.
+CURRENT_STATE.md's BBQ line ("NOT STARTED") is now stale — NOT updated here per WORKFLOW_SKILL's own rule (update only on Janis-confirmed pause, not session-end) — flagged for the next pause-confirmation.
+
 ### 2026-07-10 | vm02-dashboard-shelf-and-side-acrylic | DONE — v3, 2 new features, real CGAL clean, zero VM-01 touched
 
 Files: VM-02-base-v3.scad (new, source v2), PART_MANIFEST.md(1.3→1.4), rules-dimensions.md(v34→v35), knowledge.map, cc_chat_log.md, prompts/archive/. Real OpenSCAD 2021.01 installed fresh + used throughout (STL export, manifold checks, isolated `intersection()` probes) — not estimates. R-009: `acrylic_zone_bot_z` confirmed already a live top-level DATUM before starting, read not re-derived.

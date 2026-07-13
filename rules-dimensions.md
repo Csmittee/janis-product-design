@@ -1,5 +1,19 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v35 — 2026-07-10
+# Version: v36 — 2026-07-13
+# Changes: bbq-offset-smoker-v1-init. New "BBQ Offset Smoker Base" section
+# added — first dimensions for this NEW product line (GRATE_Z=700 MASTER
+# CONTROL VALUE, chamber 915x610x610, firebox 457mm cube, firebox_drop=200
+# OPEN FLAG not yet Janis-confirmed). Real OpenSCAD/CGAL used throughout
+# (binary installed fresh this session) — full kinetic sweep (lid_open_deg,
+# firebox_door_open_deg, ash_tray_out_pct, chimney_open, shelf_deployed)
+# all Simple:yes; window/firebox pass-through opening confirmed genuinely
+# continuous via real intersection() checks, not assumed. See
+# bbq-offset-smoker/BBQ-chambers-v1.scad's own header for judgment calls
+# (lid-opening extent, chimney mount point) not specified in the source
+# prompt, and cc_chat_log.md for the full real-collision-found-and-fixed
+# record (firebox door hinge exact-tangency, firebox far-wall design error,
+# lid hinge clearance, chimney fold pivot, counterbalance standoff).
+# Previous: v35 — 2026-07-10
 # Changes: vm02-dashboard-shelf-and-side-acrylic. New "VM-02 Base —
 # Display Shelf + Right-Side Viewing Acrylic" section added: a display
 # shelf (Feature A, `shelf_top_z = acrylic_zone_bot_z - 10`, full
@@ -1064,6 +1078,50 @@ fit-test before tooling.
 
 ---
 
+## BBQ Offset Smoker Base — NEW product line (2026-07-13, bbq-offset-smoker-v1-init)
+
+First dimensions for this product. Full derivation/comments live in
+bbq-offset-smoker/BBQ-chambers-v1.scad's own PARAMETERS/DATUMS block
+(per the SKILL_product_design_skeleton.md convention for new products —
+this section is a summary pointer, not a second independent copy).
+
+| Parameter | Value | Note |
+|---|---|---|
+| GRATE_Z | 700mm | MASTER CONTROL VALUE, not derived |
+| grate_clearance | 100mm | chamber_floor_z = GRATE_Z - 100 = 600mm |
+| chamber_L x chamber_W x chamber_H | 915 x 610 x 610mm | length(X) x width(Y) x full hex height |
+| chamfer | 150mm | 45-degree chamfer, equal rise/run |
+| firebox_size | 457mm cube | |
+| firebox_drop | 200mm | ⚠️ OPEN FLAG — Claude Web's assumption, NOT yet Janis-confirmed, per the source prompt itself |
+| window_w x window_h | 254 x 119mm | pass-through opening, chamber rear wall + firebox near face |
+| intake_w x intake_h | 107 x 107mm | firebox door damper |
+| chimney_d / chimney_len | 127mm / 762mm | built length, not the raw volume formula; top stays <=2.5m from ground (confirmed: 1932mm world Z) |
+| wall_t | 3mm | shell thickness, all parts |
+
+**Coordinate correction from the source prompt**, stated explicitly (see
+BBQ-chambers-v1.scad header): the prompt's own module sketches used Y as
+the length axis. This project's locked "COORDINATE SYSTEM STANDARD — ALL
+MODELS" (above, this file) puts X as the longitudinal/length axis for
+every product, new lines included — chamber_L runs along X here, not Y.
+
+**Judgment calls, not in the source prompt** (flagged, not silently
+resolved — full reasoning in BBQ-chambers-v1.scad's own header):
+lid-opening extent (`LID_MARGIN_FRONT`=300mm / `LID_MARGIN_REAR`=60mm),
+chimney mounted on the fixed shell rather than the lid.
+
+**Real CGAL-found-and-fixed issues this session** (not in the source
+prompt — only discoverable by rendering, see cc_chat_log.md for the full
+record): firebox door hinge exact-tangency (`HINGE_GAP`=0.5mm), firebox's
+far/outward wall was wrongly solid in a first pass (design error, not
+just a manifold nudge — the door would have covered a wall that
+shouldn't have existed, and the ash tray collided with it when sliding
+out), lid hinge clearance past the fixed rear-margin shell
+(`HINGE_CLEARANCE`=15mm), chimney fold pivot height (`FOLD_PIVOT_Z`, above
+the ridge, not the recessed weld base), counterbalance lever standoff
+(`LEVER_CLEARANCE`=50mm).
+
+---
+
 ## PENDING DESIGN DECISIONS (not yet locked)
 
 | Item | Decision needed | Owner |
@@ -1071,6 +1129,8 @@ fit-test before tooling.
 | Dashboard orientation | Portrait vs landscape — depends on Satu firmware | Janis + firmware team |
 | system_w reduction | If portrait confirmed: system_w 204→187mm, total_w 640→623mm (same 17mm reduction as originally proposed, rebaselined 2026-07-09 off the corrected current values — was stated against a stale 185mm/620mm baseline; live v58 is 204mm/640mm, confirmed against code, not assumed). NOTE: `system_w` is no longer OWNER-LOCKED as of this session (see removed row above) — this item now describes a design option, not an approval gate on a locked dimension. | After firmware decision |
 | PR-01 dimensions | Not started — Janis to provide measurements | Janis |
+| BBQ firebox_drop | 200mm is Claude Web's assumption (source prompt's own OPEN FLAG), not yet Janis's explicit number | Janis |
+| BBQ scope file / SKELETON_WORKSHEET.md content | Compartment Map / Functional Features / Appearance / Made-Buy-Hire / BOM tree / Kinetic table are cc-reconstructed DRAFTs — the source prompt's referenced confirmed chat-log content was not available to cc. See bbq-offset-smoker/design_scope_of_work_rule.md and SKELETON_WORKSHEET.md's own governance flags | Janis |
 
 ---
 

@@ -1,17 +1,26 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.4 — 2026-07-14
-> Changes: direct-cc fix (R-011, no prompt file) — 3 findings from Janis's
-> annotated OpenSCAD-desktop screenshots of the v4 build, all investigated
-> first via real CGAL checks (R-008). Part B's BOM tree gets 2 new
-> `chamber_shell()` sub-parts: `lid_territory_end_caps()` (closes a
-> CGAL-confirmed real gap at both lid-territory end margins) and
-> `firebox_passage()` (replaces `window_hole()` — large profile-
-> intersection opening, per Janis's explicit spec, REMOVED the old fixed
-> 254x119mm rectangle, a real scope change). Grill Grate entry updated
-> (Y-range CGAL-confirmed collision-fixed against the fixed shell's own
-> bottom chamfers — was silently colliding before this session). Detail/
-> content update within the SAME 3-part structure, not a new artifact —
-> X.Y bump.
+> Version 1.5 — 2026-07-14
+> Changes: direct-cc fix (R-011, no prompt file) — Janis's live OpenSCAD-
+> desktop review of v5 found the "reads solid, not hollow" complaint STILL
+> unresolved (2nd loop on this symptom), plus 3 more concrete items, all
+> investigated first via real CGAL checks (R-008). RE-DIAGNOSIS:
+> `lid_territory_end_caps()` (v5's own Finding-1 fix) was a SOLID fill
+> sitting exactly in an open-lid viewer's sightline — a real design gap in
+> the v5 fix itself, not a repeat of PR #119's color/opacity root cause.
+> REBUILT as a proper hollow shell. Part A's Lid row updated (margin
+> widened 10mm->100mm each end — LID_X0=100/LID_X1=815). Part B's Firebox
+> Passage entry updated (inset 10mm->15mm, "triangle gap" investigated —
+> no CGAL-provable defect found, real wall material confirmed present).
+> Grill Grate entry updated (GRATE_Z repositioned 700->750, aligned to the
+> lid parting line, chamber_floor_z unaffected). Detail/content update
+> within the SAME 3-part structure, not a new artifact — X.Y bump.
+> Previous: 1.4 — 2026-07-14 (direct-cc fix, R-011, no prompt file — 3
+> findings from Janis's annotated OpenSCAD-desktop screenshots of the v4
+> build): Part B's BOM tree gets 2 new `chamber_shell()` sub-parts:
+> `lid_territory_end_caps()` (closes a CGAL-confirmed real gap at both
+> lid-territory end margins) and `firebox_passage()` (replaces
+> `window_hole()`). Grill Grate entry updated (Y-range CGAL-confirmed
+> collision-fixed against the fixed shell's own bottom chamfers).
 > Previous: 1.3 — 2026-07-14 (bbq-chambers-v3-closure-exhaust-resize-lid-
 > mirror): Part A's Lid row updated (mirrored to Y=0 side, per the new
 > Standing Orientation Convention in rules-bbq-fab.md) and Exhaust Room row
@@ -54,10 +63,14 @@ MASTER ORIGIN: (0, 0, 0) at floor level, front-left corner of the product
   footprint (chimney/tow-handle end = front, firebox end = rear) — matches
   rules-dimensions.md's global "front-left at floor" convention.
 
-PRIMARY DATUM:   DATUM_GRATE_Z (horizontal plane, Z=700mm, MASTER CONTROL
-                 VALUE, not derived) — locks Z. Chain runs "grate-down":
+PRIMARY DATUM:   DATUM_GRATE_Z (horizontal plane, Z=750mm v6 — was 700mm,
+                 REPOSITIONED to align with the lid parting line
+                 (chamber_floor_z+chamfer), MASTER CONTROL VALUE, not
+                 derived) — locks Z. Chain runs "grate-down":
                  chamber_floor_z and firebox_floor_z are both offsets FROM
-                 this plane, not built up from the floor.
+                 this plane, not built up from the floor. grate_clearance
+                 moved 100->150 in lockstep so chamber_floor_z itself
+                 stays exactly 600, unchanged.
 SECONDARY DATUM: DATUM_X_REAR (chamber's rear/firebox wall, X=915mm) —
                  locks X. Firebox is Parent: DATUM_X_REAR, not an
                  independently-set X position.
@@ -68,7 +81,7 @@ TERTIARY DATUM:  DATUM_Y_CENTER (chamber's lateral centerline, Y=305mm) —
 MAJOR SUB-ASSEMBLIES:
   Grill Grate      — Parent: DATUM_GRATE_Z              — offset: (0,0,0), fixed
   Cook Chamber      — Parent: DATUM_GRATE_Z              — offset: dZ=-100 (chamber_floor_z)
-  Lid               — Parent: Cook Chamber's ridge midpoint — offset: length-wise hinge at (-, DATUM_Y_CENTER, DATUM_Z_RIDGE); opens toward Y=0 (v3 mirror, was Y=chamber_W in v2) per the Standing Orientation Convention (rules-bbq-fab.md)
+  Lid               — Parent: Cook Chamber's ridge midpoint — offset: length-wise hinge at (-, DATUM_Y_CENTER, DATUM_Z_RIDGE); opens toward Y=0 (v3 mirror, was Y=chamber_W in v2) per the Standing Orientation Convention (rules-bbq-fab.md); margin widened v6 (LID_X0=100/LID_X1=815, was 10/905)
   Firebox           — Parent: Cook Chamber's rear wall (DATUM_X_REAR)   — offset: own floor via firebox_drop; near-wall closure panel added v3 (firebox_floor_z..chamber_floor_z step)
   Exhaust room      — Parent: Cook Chamber's front end-cap (DATUM_X_FRONT) — offset: welded flush at X=0; RESIZED v3 (360mm dia x 100mm height, was 200/200 v2)
   Chimney pipe      — Parent: Exhaust room's own top plate — offset: coaxial with the room's pipe-mounting hole; RE-POSITIONED v3 (real clearance now, not a forced overhang)
@@ -78,25 +91,30 @@ MAJOR SUB-ASSEMBLIES:
 ## PART B — BOM Subassembly Tree
 
 ```
-BBQ Offset Smoker V5 (top assembly)
+BBQ Offset Smoker V6 (top assembly)
 ├── Cook Chamber
 │   ├── Chamber shell (fixed 7-point profile: floor+RIGHT wall+right
 │   │   chamfer+half ridge, wall_t hollow, TRUE octagon closure — v3
 │   │   MIRRORED, was left-side in v2)
-│   │   ├── Lid-territory end caps (NEW v5 — closes a CGAL-confirmed real
-│   │   │   gap at both lid-territory end margins, X=0-10 and X=905-915)
-│   │   └── Firebox passage (NEW v5 — REPLACES the old fixed 254x119mm
-│   │       window_hole(); large profile-intersection opening, offset
-│   │       -10mm around the cut, per Janis's explicit spec)
-│   ├── Lid (ridge-hinged, full-length, 3 flat panels: half-ridge+chamfer
-│   │   +wall — v3 MIRRORED to Y=0 side, was Y=chamber_W side in v2)
+│   │   ├── Lid-territory end caps (v6 REBUILT — was a SOLID fill in v5,
+│   │   │   a real design gap that read as "solid mass" with lid open; now
+│   │   │   a proper hollow shell, wall_t thick, at the widened margins
+│   │   │   X=0-100 and X=815-915)
+│   │   └── Firebox passage (REPLACES the old fixed 254x119mm
+│   │       window_hole(); profile-intersection opening, offset v6: -15mm
+│   │       around the cut, was -10mm — retains partition strength per
+│   │       Janis's explicit request)
+│   ├── Lid (ridge-hinged, 3 flat panels: half-ridge+chamfer+wall — v3
+│   │   MIRRORED to Y=0 side, was Y=chamber_W side in v2; v6: margin
+│   │   widened to 100mm each end, LID_LENGTH=715, was 895)
 │   │   ├── Lift handle rail (2 standoff posts) — still DISABLED, stale positions
 │   │   ├── Toggle-clamp latches x2 (BUY, off-shelf placeholder) — still DISABLED
 │   │   ├── Dome thermometer (BUY, off-shelf placeholder) — still DISABLED
 │   │   └── Counterbalance lever + weight — still DISABLED
-│   ├── Grill grate (3 removable segments — Y-RANGE FIXED v5, was
-│   │   CGAL-confirmed colliding with the fixed shell's own bottom
-│   │   chamfers; GRATE_Z itself unchanged, MASTER CONTROL VALUE)
+│   ├── Grill grate (3 removable segments — v6: GRATE_Z REPOSITIONED
+│   │   700->750, aligned to the lid parting line per Janis's explicit
+│   │   spec; Y-range formula (v5 fix) re-evaluated at the new height,
+│   │   re-verified collision-free against shell and closed lid)
 │   └── Floor drain valves x2 (BUY, off-shelf placeholder)
 ├── Firebox
 │   ├── Firebox shell (4-wall hollow box, open both ends)
@@ -135,15 +153,15 @@ clamp latches) are NOT independently kinetic — they're removable/fixed
 hardware, not hinged/sliding mechanisms, so they get a `show_*` isolation
 toggle only (Toggle-Completeness Rule), not a dual-view kinetic state.
 
-## Toggle-Completeness count (2026-07-14, v1.4)
+## Toggle-Completeness count (2026-07-14, v1.5)
 
-BBQ-chambers-v5.scad ASSEMBLY: 8 modules called (`chamber_shell`, `lid`,
+BBQ-chambers-v6.scad ASSEMBLY: 8 modules called (`chamber_shell`, `lid`,
 `lid_hardware`, `firebox`, `exhaust_room`, `chimney_pipe`, `grill_grate`,
 `floor_drains`) — all 8 have a real `show_*` toggle, carried over
 unchanged from v2. 8/8 compliant. `firebox_near_wall_closure()`,
-`lid_territory_end_caps()` (NEW v5), and `firebox_passage()` (NEW v5) are
-all sub-parts called from within `chamber_shell()`/`firebox()`, same
-pattern as `fire_grate()`/`ash_tray()` — no separate toggle needed.
+`lid_territory_end_caps()` (REBUILT v6), and `firebox_passage()` are all
+sub-parts called from within `chamber_shell()`/`firebox()`, same pattern
+as `fire_grate()`/`ash_tray()` — no separate toggle needed.
 `show_lid_hardware` still defaults FALSE — see PART_MANIFEST.md.
 
 BBQ-understructure.scad ASSEMBLY: 4 modules called (`legs`, `casters`,

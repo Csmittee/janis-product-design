@@ -1,10 +1,13 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.0 — 2026-07-13
-> Changes: New file, first version. Content copied verbatim from
-> prompts/bbq-offset-smoker-v1-init-cc-prompt.md TASK 1 (technical/
-> construction rules, not customer-facing) — this section of the prompt
-> gave full literal content, no missing-source gap like the scope file.
-> Previous: N/A
+> Version 1.1 — 2026-07-14
+> Changes: bbq-chambers-v3-closure-exhaust-resize-lid-mirror. New
+> "Standing Orientation Convention" section added (locks exhaust=left/
+> firebox=right/lid-toward-user when facing the smoker, confirmed against
+> the v3 lid mirror's actual rotation direction — real geometry, not
+> assumed) — a previously-undocumented convention this session made
+> explicit so it's never re-guessed. Detail addition, not new document
+> structure — X.Y bump.
+> Previous: 1.0 — 2026-07-13
 
 Technical/construction only — NOT customer-facing (that's
 design_scope_of_work_rule.md). Read by cc before any BBQ SCAD task.
@@ -53,6 +56,27 @@ independently re-verified this external reference).
 `firebox_drop = 200mm` is Claude Web's assumption, not yet Janis's
 explicit number. Confirm or correct after first render — see
 BBQ-chambers-v1.scad's own header and design_scope_of_work_rule.md.
+
+## Standing Orientation Convention (locked 2026-07-14)
+
+When a person faces the smoker (the customer/user-facing view):
+- The EXHAUST end is always on their LEFT.
+- The FIREBOX end is always on their RIGHT.
+- The LID/DOOR always opens TOWARD the user (the near side, facing them)
+  — never the far side.
+
+In world coordinates (per SKELETON_WORKSHEET.md's MASTER ORIGIN):
+exhaust = DATUM_X_FRONT (X=0), firebox = DATUM_X_REAR (X=chamber_L).
+"Toward the user" = **the side nearer Y=0** — confirmed by the v3 lid
+mirror's own real geometry, not assumed: the lid was moved from the
+Y=chamber_W side (v2) to the Y=0 side (v3 TASK 3) specifically so it
+opens toward the user, and the rotation direction was empirically
+verified (CGAL bounding-box check) to swing toward NEGATIVE Y — i.e.
+away from the fixed shell, toward and past Y=0. This line reflects the
+real, built, verified state of BBQ-chambers-v3.scad, not a draft.
+
+This convention applies to ALL future BBQ product work — do not
+re-derive or re-ask per session.
 
 ## v1 Judgment Calls (technical, cc-made, flagged per R-009/general
 duplication+ambiguity discipline — see BBQ-chambers-v1.scad header and

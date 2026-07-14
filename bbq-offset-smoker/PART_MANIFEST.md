@@ -4,8 +4,16 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.1 — 2026-07-14 (bbq-chambers-v2-closure-exhaust-lid): source
-# now BBQ-chambers-v2.scad. chamber_shell()'s entry updated (true octagon,
+# Version: 1.2 — 2026-07-14 (bbq-chambers-v3-closure-exhaust-resize-lid-
+# mirror): source now BBQ-chambers-v3.scad. `firebox()`'s entry updated
+# (new `firebox_near_wall_closure()` sub-part, closes a real gap below
+# chamber_floor_z). `exhaust_room()`/`chimney_pipe()` entries updated
+# (resized 200/200 -> 360/100, the 127mm-pipe-vs-200mm-room conflict from
+# v2 resolved at the source, no more forced overhang). `lid()`'s entry
+# updated (mirrored to the Y=0 side, per the new Standing Orientation
+# Convention in rules-bbq-fab.md).
+# Previous: 1.1 — 2026-07-14 (bbq-chambers-v2-closure-exhaust-lid): source
+# then BBQ-chambers-v2.scad. chamber_shell()'s entry updated (true octagon,
 # closure-fixed, no more lid_opening_cut()). lid()'s entry updated (new
 # ridge-hinge mechanism, replaces the old end-hinged construction).
 # chimney()/drop_tube() REMOVED, exhaust_room()/chimney_pipe() ADDED.
@@ -13,22 +21,23 @@
 # Previous: 1.0 — 2026-07-13 (bbq-offset-smoker-v1-init): first version,
 # seeded from SKELETON_WORKSHEET.md's BOM Subassembly Tree, grounded in
 # the real BBQ-chambers-v1.scad + BBQ-understructure.scad.
-# Source: BBQ-chambers-v2.scad + BBQ-understructure.scad ASSEMBLY blocks.
+# Source: BBQ-chambers-v3.scad + BBQ-understructure.scad ASSEMBLY blocks.
 #
 # Toggle column key: a `show_*` name means the module is gated by that
 # toggle, per the Toggle-Completeness Rule (cc_rules.md). "(none — always
 # on, safety-critical)" is the ONLY other permitted value.
 
-## BBQ-chambers-v2.scad
+## BBQ-chambers-v3.scad
 
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
-| `chamber_shell()` | fixed portion of the octagon (floor + left wall + left chamfer + half ridge), full chamber_L length, wall_t hollow; TRUE 8-point octagon profile (chamfered top AND bottom, v2 — was 6-point, top-only in v1); CLOSURE BUG FIXED (v1's inner cavity overshot past both extrusion ends, leaving only a paper-thin end rim — v2 insets it to real wall_t solid end caps); rear wall carries the window_hole pass-through cut (unchanged); front end-cap carries the NEW exhaust_room_opening() cut (v2) | the lid's own territory (right wall + right chamfer + half ridge) — that's a SEPARATE part now (`lid()`), not a cutout in this module (v1 used a cutout in a full-octagon profile; v2 excludes that material from the profile itself) | `show_chamber_shell` |
-| `lid(lid_open_deg)` | full-length (895mm, X:10-905) clamshell lid, 3 flat panels (half-ridge + chamfer + wall), hinged along the FULL chamber length at the ridge midpoint (rotate about an X-axis line) — v2, REPLACES v1's end-hinged trunk-lid construction entirely (old lid_x0/lid_x1/LID_MARGIN_FRONT/REAR/lid_opening_cut() all removed) | the fixed shell's own left wall/chamfer/half-ridge — those stay part of `chamber_shell()` | `show_lid` |
-| `lid_hardware(lid_open_deg)` | lift handle rail, toggle-clamp latches x2, dome thermometer port, counterbalance lever+weight — UNCHANGED code from v1, built for the OLD lid geometry, now stale/wrong for the new lid shape | a correctly-positioned v2 part — it is NOT repositioned this session, explicitly deferred per this session's own DO NOT respecify instruction | `show_lid_hardware` — DEFAULTS FALSE v2 (was true in v1) — TODO: reposition once new lid confirmed, follow-up prompt |
-| `firebox(firebox_door_open_deg, ash_tray_out_pct)` | shelled 457mm cube, open on BOTH the chamber-facing and door-facing ends (door is the only covering on the outward face) — wraps `firebox_shell()`, `fire_grate()`, `ash_tray()`, `firebox_door()`. UNCHANGED this session (DO NOT TOUCH, already correct/CGAL-verified) | | `show_firebox` |
-| `exhaust_room()` | NEW v2 — half-cylinder mounting room (200mm dia/height), vertical axis, welded flush to the chamber's front end-cap (curved side + floor + top solid wall_t, back face fully open, matching the chamber's own new endcap opening). REPLACES v1's `chimney()` construction. REAL INCONSISTENCY FLAGGED: the source prompt describes the endcap opening as "semicircular" but the room's own true flat interface face (given its stated vertical axis + 200mm height) is a RECTANGLE — built to match the room's real geometry, not the prompt's semicircle description; see BBQ-chambers-v2.scad's own header | v1's `chimney()` (recessed stub, mounted differently) or `drop_tube()` (REMOVED entirely, no v2 equivalent — see cc_chat_log.md) | `show_exhaust_room` |
-| `chimney_pipe()` | NEW v2 — 127mm pipe, coaxial with a round hole cut through the room's own top plate, base extends below the hole for a real manifold-safe weld. REAL DIMENSIONAL CONFLICT FLAGGED: 127mm pipe cannot be fully inscribed within the room's 200mm semicircular top (max inscribable circle = 100mm) — positioned with real CGAL-verified clearance from the lid's own front edge (a SECOND real collision found+fixed this session, not in the source prompt) | v1's `chimney()` (recessed/foldable) — this is a simple fixed coaxial stack, no fold mechanism this version | `show_chimney_pipe` |
+| `chamber_shell()` | fixed portion of the octagon (floor + RIGHT wall + right chamfer + half ridge, v3 MIRRORED — was the left/Y=0 side in v2), full chamber_L length, wall_t hollow; TRUE 8-point octagon profile; closure-fixed real solid end caps; rear wall carries window_hole (unchanged); front end-cap carries exhaust_room_opening() (resized v3) | the lid's own territory (now the Y=0-ish side, v3) — a SEPARATE part (`lid()`) | `show_chamber_shell` |
+| `lid(lid_open_deg)` | full-length (895mm, X:10-905) clamshell lid, 3 flat panels, hinged along the FULL chamber length at the ridge midpoint. v3 MIRRORED to the Y=0 side (was Y=chamber_W in v2) per the new Standing Orientation Convention (rules-bbq-fab.md) — opens toward the user. Rotation SIGN also flipped from v2 (real CGAL bounding-box check, not assumed from mirror symmetry) | the fixed shell's own right wall/chamfer/half-ridge — those stay part of `chamber_shell()` | `show_lid` |
+| `lid_hardware(lid_open_deg)` | UNCHANGED code, still built for v1's original end-hinged geometry, now doubly stale (v2's ridge-hinge redesign AND v3's mirror both postdate it) | a correctly-positioned v3 part — still not repositioned, still explicitly deferred | `show_lid_hardware` — still FALSE by default — TODO: reposition once lid geometry is fully confirmed, follow-up prompt |
+| `firebox(firebox_door_open_deg, ash_tray_out_pct)` | shelled 457mm cube, open on both the chamber-facing and door-facing ends — wraps `firebox_shell()`, NEW `firebox_near_wall_closure()`, `fire_grate()`, `ash_tray()`, `firebox_door()`. `firebox_shell()`/`fire_grate()`/`ash_tray()`/`firebox_door()` UNCHANGED (DO NOT TOUCH) | | `show_firebox` |
+| `firebox_near_wall_closure()` | NEW v3 — solid wall_t panel closing a REAL gap: the firebox's near wall is correctly open for Z>=chamber_floor_z (matches window_hole), but for firebox_floor_z..chamber_floor_z (the 200mm firebox_drop step) there was no chamber wall behind it at all — a genuine unclosed hole, not a designed opening. Confirmed via real intersection() probe (full footprint check, not a sample point) | the window_hole's own opening — that stays untouched/open, this panel only covers the Z-range strictly below chamber_floor_z | (none — sub-part of `firebox()`, no separate toggle, same pattern as `fire_grate()`/`ash_tray()`) |
+| `exhaust_room()` | half-cylinder mounting room, RESIZED v3: 360mm dia x 100mm height (was 200/200 in v2) — inscribes a real 180mm-diameter circle around the 127mm pipe (26.5mm clearance each side), resolving v2's own found conflict (200mm room could only inscribe 100mm, forcing overhang) at the source. Endcap opening RE-CONFIRMED still a rectangle (360x100mm now), same real-geometry finding as v2, not the "semicircle" language | v2's 200/200 room (superseded) | `show_exhaust_room` |
+| `chimney_pipe()` | 127mm pipe, coaxial with the room's mounting hole. RE-POSITIONED v3: `PIPE_HOLE_X=-90` (was -60 in v2), now centered with real 26.5mm clearance on both sides instead of a forced overhang — v2's 2 real collision workarounds (rear-margin shell, then the lid's front edge) are no longer needed at this size | v2's overhang-compromise position (superseded) | `show_chimney_pipe` |
 | `grill_grate()` | 3 removable laser-cut segments, top at GRATE_Z exactly. UNCHANGED this session (DO NOT TOUCH) | | `show_grate` |
 | `floor_drains()` | 2 placeholder drain valve bosses, front third / back third of chamber length. UNCHANGED this session (DO NOT TOUCH) | | `show_drains` |
 
@@ -41,12 +50,12 @@
 | `tow_handle()` | placeholder tow handle, chimney/front end | `show_tow_handle` |
 | `prep_shelves(shelf_deployed)` | 2 fold-up prep shelves, left+right, front of chamber | `show_shelves` |
 
-## Toggle-completeness count (2026-07-14, v1.1)
+## Toggle-completeness count (2026-07-14, v1.2)
 
 12 modules called across both ASSEMBLY blocks (8 in chambers, 4 in
-understructure) — same count as v1.0 (chimney()+drop_tube() removed,
-exhaust_room()+chimney_pipe() added, net zero change). 12/12 have a real
-`show_*` isolation toggle — 0 gaps, 0 safety-critical exceptions needed
-this version. `show_lid_hardware` defaults false this session (see its
-own row above) — the toggle itself is present and compliant, only its
-default value changed.
+understructure) — same count as v1.1 (`firebox_near_wall_closure()` is a
+sub-part called from within `firebox()`, not a new direct ASSEMBLY entry,
+same pattern as `fire_grate()`/`ash_tray()`). 12/12 have a real `show_*`
+isolation toggle — 0 gaps, 0 safety-critical exceptions needed this
+version. `show_lid_hardware` still defaults false (unchanged this
+session).

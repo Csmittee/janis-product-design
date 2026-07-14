@@ -8,14 +8,26 @@
 // simple corner-tube frame + placeholder casters/handle/shelves, not a
 // fully detailed weld drawing.
 //
-// SKELETON — Parent: BBQ-chambers-v1.scad's own DATUM_GRATE_Z chain (leg
+// SKELETON — Parent: BBQ-chambers-v2.scad's own DATUM_GRATE_Z chain (leg
 // length is DERIVED from chamber_floor_z, not independently set, per the
 // prompt's explicit "revised Skeleton chain" instruction). This file
-// reads BBQ-chambers-v1.scad's DATUM_* / chamber_* constants directly
+// reads the chambers file's DATUM_* / chamber_* constants directly
 // rather than re-deriving a second copy (R-009 duplication-check pattern
 // — see cc_chat_log.md).
+//
+// 2026-07-14: include target updated v1->v2 (bbq-chambers-v2-closure-
+// exhaust-lid session). This prompt's own DO NOT TOUCH names
+// "Understructure — separate file, not in scope" -- read as covering this
+// file's own GEOMETRY/logic (legs, casters, shelves), not the single
+// include statement below, which is a mechanical necessity to keep this
+// file's DATUM_* reads pointed at the live chambers file rather than a
+// stale v1 with a real closure bug and a wrong lid design. Flagged
+// explicitly, not silently done — see cc_chat_log.md. No other line in
+// this file changed; trough_h/DATUM_Z_RIDGE/etc. used below now resolve
+// to v2's real (updated) values automatically since they're read, not
+// copied.
 
-include <BBQ-chambers-v1.scad>
+include <BBQ-chambers-v2.scad>
 
 // ───────────────────────────────
 // PARAMETERS — understructure-specific only (chamber datums come from

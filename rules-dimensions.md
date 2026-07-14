@@ -1,5 +1,16 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v36 — 2026-07-13
+# Version: v37 — 2026-07-14
+# Changes: bbq-chambers-v2-closure-exhaust-lid. "BBQ Offset Smoker Base"
+# section rewritten for v2 (3 corrections: true octagon + real closure,
+# exhaust room + pipe replacing chimney/drop-tube, ridge-hinged full-
+# length lid replacing the end-hinged trunk lid). trough_h real
+# dimensional change (460->310mm). 2 real prompt inconsistencies flagged
+# (semicircular-vs-rectangular endcap opening; 127mm pipe can't fit a
+# 200mm room's footprint). 3 real CGAL-found tangency/collision defects
+# fixed this session (lid profile's acute-angle offset() spike; room
+# endcap tangency; lid hinge vs shell vertex tangency; pipe vs lid
+# collision). Full detail in the section itself and cc_chat_log.md.
+# Previous: v36 — 2026-07-13
 # Changes: bbq-offset-smoker-v1-init. New "BBQ Offset Smoker Base" section
 # added — first dimensions for this NEW product line (GRATE_Z=700 MASTER
 # CONTROL VALUE, chamber 915x610x610, firebox 457mm cube, firebox_drop=200
@@ -1078,47 +1089,94 @@ fit-test before tooling.
 
 ---
 
-## BBQ Offset Smoker Base — NEW product line (2026-07-13, bbq-offset-smoker-v1-init)
+## BBQ Offset Smoker Base — v2 (2026-07-14, bbq-chambers-v2-closure-exhaust-lid)
 
-First dimensions for this product. Full derivation/comments live in
-bbq-offset-smoker/BBQ-chambers-v1.scad's own PARAMETERS/DATUMS block
-(per the SKILL_product_design_skeleton.md convention for new products —
-this section is a summary pointer, not a second independent copy).
+Full derivation/comments live in bbq-offset-smoker/BBQ-chambers-v2.scad's
+own PARAMETERS/DATUMS block (per the SKILL_product_design_skeleton.md
+convention for new products — this section is a summary pointer, not a
+second independent copy). v1's own entry below this one is superseded but
+kept for history (git log has the full v1 detail either way).
 
 | Parameter | Value | Note |
 |---|---|---|
-| GRATE_Z | 700mm | MASTER CONTROL VALUE, not derived |
-| grate_clearance | 100mm | chamber_floor_z = GRATE_Z - 100 = 600mm |
-| chamber_L x chamber_W x chamber_H | 915 x 610 x 610mm | length(X) x width(Y) x full hex height |
-| chamfer | 150mm | 45-degree chamfer, equal rise/run |
-| firebox_size | 457mm cube | |
-| firebox_drop | 200mm | ⚠️ OPEN FLAG — Claude Web's assumption, NOT yet Janis-confirmed, per the source prompt itself |
-| window_w x window_h | 254 x 119mm | pass-through opening, chamber rear wall + firebox near face |
-| intake_w x intake_h | 107 x 107mm | firebox door damper |
-| chimney_d / chimney_len | 127mm / 762mm | built length, not the raw volume formula; top stays <=2.5m from ground (confirmed: 1932mm world Z) |
-| wall_t | 3mm | shell thickness, all parts |
+| GRATE_Z | 700mm | MASTER CONTROL VALUE, not derived — unchanged |
+| grate_clearance | 100mm | chamber_floor_z = GRATE_Z - 100 = 600mm — unchanged |
+| chamber_L x chamber_W x chamber_H | 915 x 610 x 610mm | length(X) x width(Y) x full octagon height — unchanged |
+| chamfer | 150mm | 45-degree chamfer, now BOTH top and bottom (v2 — was top-only, v1) |
+| trough_h | 310mm | v2: chamber_H - 2*chamfer (was chamber_H - chamfer = 460mm in v1) — real dimensional change |
+| firebox_size | 457mm cube | unchanged, DO NOT TOUCH this session |
+| firebox_drop | 200mm | ⚠️ STILL OPEN — not resolved by this session either, per its own DO NOT TOUCH |
+| window_w x window_h | 254 x 119mm | unchanged, DO NOT TOUCH |
+| intake_w x intake_h | 107 x 107mm | unchanged, DO NOT TOUCH |
+| chimney_d | 127mm | unchanged |
+| chimney_len | 762mm | carried over from v1 (not restated in the v2 prompt) — still satisfies the <=2.5m top-height rule (confirmed: pipe top = 1617mm world) |
+| ROOM_D / ROOM_H | 200mm / 200mm | NEW v2 — exhaust room, half-cylinder, vertical axis |
+| LID_X0 / LID_X1 / LID_LENGTH | 10 / 905 / 895mm | NEW v2 — "full width -10mm each side," replaces v1's LID_MARGIN_FRONT(300)/REAR(60) |
+| wall_t | 3mm | shell thickness, all parts — unchanged |
 
-**Coordinate correction from the source prompt**, stated explicitly (see
-BBQ-chambers-v1.scad header): the prompt's own module sketches used Y as
-the length axis. This project's locked "COORDINATE SYSTEM STANDARD — ALL
-MODELS" (above, this file) puts X as the longitudinal/length axis for
-every product, new lines included — chamber_L runs along X here, not Y.
+**Coordinate correction** (unchanged from v1, restated): X = longitudinal
+(chamber_L), matching this project's locked all-models standard.
 
-**Judgment calls, not in the source prompt** (flagged, not silently
-resolved — full reasoning in BBQ-chambers-v1.scad's own header):
-lid-opening extent (`LID_MARGIN_FRONT`=300mm / `LID_MARGIN_REAR`=60mm),
-chimney mounted on the fixed shell rather than the lid.
+**v2 closure fix**: v1's inner-cavity cut overshot past BOTH extrusion
+ends, leaving only a paper-thin end rim instead of real wall_t solid end
+caps. Fixed — cavity now insets to [wall_t, chamber_L-wall_t].
 
-**Real CGAL-found-and-fixed issues this session** (not in the source
-prompt — only discoverable by rendering, see cc_chat_log.md for the full
-record): firebox door hinge exact-tangency (`HINGE_GAP`=0.5mm), firebox's
-far/outward wall was wrongly solid in a first pass (design error, not
-just a manifold nudge — the door would have covered a wall that
-shouldn't have existed, and the ash tray collided with it when sliding
-out), lid hinge clearance past the fixed rear-margin shell
-(`HINGE_CLEARANCE`=15mm), chimney fold pivot height (`FOLD_PIVOT_Z`, above
-the ridge, not the recessed weld base), counterbalance lever standoff
-(`LEVER_CLEARANCE`=50mm).
+**v2 REAL INCONSISTENCY FLAGGED** (source prompt, not cc's own error):
+the prompt describes the chamber's front-endcap opening as matching the
+exhaust room's "semicircular footprint" — but the room's own stated
+construction (vertical axis, 200mm HEIGHT not radius, bisected by a
+vertical plane to weld flush against a vertical wall) produces a
+RECTANGULAR flat interface face, not a semicircle. Built to match the
+room's real geometry (200mm Y x 200mm Z rectangle). See
+BBQ-chambers-v2.scad's own header for the full reasoning.
+
+**v2 REAL DIMENSIONAL CONFLICT FLAGGED**: chimney_d (127mm) cannot be
+fully inscribed within the room's own 200mm-diameter semicircular top —
+proven: the largest circle that fits a semicircle of radius R has
+diameter R/2*2=R... i.e. max diameter = R = 100mm (tangent to both the
+flat chord and the arc requires hole-radius = R/2). The 127mm pipe
+necessarily overhangs the room's footprint regardless of placement.
+`PIPE_HOLE_X`=-60mm chosen (not the source prompt's own number) after a
+SECOND real collision was found: the pipe's own overhang toward +X
+reached far enough to physically collide with the new lid's own front
+edge (LID_X0=10) — real CGAL intersection() found this at both open AND
+closed lid states (Z-independent of lid rotation). Re-verified clear
+after the shift (6.5mm real margin).
+
+**v2 lid redesign**: end-hinged trunk lid (v1) replaced by a full-length,
+ridge-hinged clamshell lid (hinge line: X=full chamber length, Y=305mm,
+Z=1210mm — DATUM_Y_CENTER/DATUM_Z_RIDGE). Confirmed against a Janis-
+supplied labeled diagram before building (parting line = the real wall
+edge starting at the "lowest apex" vertex; hinge = ridge midpoint).
+`lid_open_deg` confirmed clean via real CGAL sweep up to 120 deg (stays
+clean well past that too — 120 chosen as a practical max, not a hard
+limit). REAL DEFECT FOUND: the lid's own profile has an acute (~56.4 deg)
+interior angle at the hinge vertex — `offset(delta=-wall_t)` on that
+corner produced a numerically unstable spike, Simple:yes only at exactly
+0 deg (coincidental), Simple:no from ~46 deg upward. Fixed by rebuilding
+the lid from 3 flat cube() panels (matching rules-codes.md's own stated
+preference), not polygon+offset() extrusion.
+
+**v2 real CGAL-found-and-fixed tangency issues** (same failure class as
+v1's firebox door hinge, each a real zero-clearance touch found via
+union() not caught by intersection()): exhaust room's endcap cut was
+exactly tangent to the room's own curved surface (fixed: `ROOM_GAP`=1mm
+clearance margin); lid's hinge line sat exactly on the fixed shell's own
+vertex (fixed: `LID_HINGE_GAP`=0.5mm).
+
+**v2 scope change, flagged not silently dropped**: v1's `drop_tube()`
+(internal smoke-to-grate-level tube) has NO v2 equivalent — the source
+prompt explicitly groups `chimney()`+`drop_tube()` as both replaced by
+the new exhaust room + pipe unit, which doesn't describe an internal tube.
+
+**v2 lid_hardware()**: kept as-is (stale v1 positions, not repositioned),
+`show_lid_hardware` now defaults false. TODO: reposition once the new lid
+is Janis-confirmed, follow-up prompt.
+
+**v1 judgment calls, superseded by v2** (kept for history): lid-opening
+extent (`LID_MARGIN_FRONT`=300mm / `LID_MARGIN_REAR`=60mm — replaced by
+LID_X0/X1 above), chimney mounted on the fixed shell (concept carried
+forward — exhaust room is likewise on the fixed shell, not the lid).
 
 ---
 

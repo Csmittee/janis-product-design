@@ -28,8 +28,21 @@
 // passage resize). None of v5's changes touch chamber_floor_z or any
 // other datum this file reads (leg_h etc. unaffected) — same
 // flagged-not-silent mechanical update pattern as v1->v2->v3->v4 above.
+//
+// 2026-07-14: include target updated v5->v6 (direct-cc fix, R-011
+// pattern, no prompt file — end-cap rebuilt hollow, lid margin widened,
+// firebox passage inset widened, GRATE_Z REPOSITIONED 700->750 to align
+// with the lid parting line). CHECKED explicitly (not assumed): GRATE_Z's
+// own change does NOT affect chamber_floor_z (grate_clearance moved
+// 100->150 in lockstep specifically to keep chamber_floor_z at exactly
+// 600, unchanged) — and leg_h here derives from chamber_floor_z alone,
+// never from GRATE_Z/grate_clearance directly, so leg_h is genuinely
+// unaffected, confirmed by reading the live formula below, not assumed.
+// Janis's own note ("if 700mm can't be kept, we adjust the
+// understructure") does NOT apply here — 700 was NOT kept exactly (now
+// 750), but no understructure adjustment was needed as a result.
 
-include <BBQ-chambers-v5.scad>
+include <BBQ-chambers-v6.scad>
 
 // ───────────────────────────────
 // PARAMETERS — understructure-specific only (chamber datums come from

@@ -21,8 +21,15 @@
 // the chambers file's own ASSEMBLY call sites (no dimension/datum
 // changed), so nothing here in the understructure is affected either way
 // — updated purely to keep this file pointed at the live chambers file.
+//
+// 2026-07-14: include target updated v4->v5 (direct-cc fix, R-011
+// pattern, no prompt file — 3 real defects found+fixed: lid-territory end
+// gap closure, grill grate Y-range vs the real chamfer boundary, firebox
+// passage resize). None of v5's changes touch chamber_floor_z or any
+// other datum this file reads (leg_h etc. unaffected) — same
+// flagged-not-silent mechanical update pattern as v1->v2->v3->v4 above.
 
-include <BBQ-chambers-v4.scad>
+include <BBQ-chambers-v5.scad>
 
 // ───────────────────────────────
 // PARAMETERS — understructure-specific only (chamber datums come from

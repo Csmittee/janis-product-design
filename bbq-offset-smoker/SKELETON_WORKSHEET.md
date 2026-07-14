@@ -1,14 +1,24 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.3 — 2026-07-14
-> Changes: bbq-chambers-v3-closure-exhaust-resize-lid-mirror session. Part
-> A's Lid row updated (mirrored to Y=0 side, per the new Standing
-> Orientation Convention in rules-bbq-fab.md) and Exhaust Room row updated
-> (resized 200/200->360/100). Part B's BOM tree gets a new Firebox-near-
-> wall-closure sub-part (closes a real gap below chamber_floor_z). Part
-> C's Lid kinetic row updated (rotation sign flipped, real CGAL-verified,
-> not assumed from mirror symmetry). Detail/content update within the SAME
-> 3-part structure, not a new artifact — X.Y bump.
-> Previous: 1.2 — 2026-07-14
+> Version 1.4 — 2026-07-14
+> Changes: direct-cc fix (R-011, no prompt file) — 3 findings from Janis's
+> annotated OpenSCAD-desktop screenshots of the v4 build, all investigated
+> first via real CGAL checks (R-008). Part B's BOM tree gets 2 new
+> `chamber_shell()` sub-parts: `lid_territory_end_caps()` (closes a
+> CGAL-confirmed real gap at both lid-territory end margins) and
+> `firebox_passage()` (replaces `window_hole()` — large profile-
+> intersection opening, per Janis's explicit spec, REMOVED the old fixed
+> 254x119mm rectangle, a real scope change). Grill Grate entry updated
+> (Y-range CGAL-confirmed collision-fixed against the fixed shell's own
+> bottom chamfers — was silently colliding before this session). Detail/
+> content update within the SAME 3-part structure, not a new artifact —
+> X.Y bump.
+> Previous: 1.3 — 2026-07-14 (bbq-chambers-v3-closure-exhaust-resize-lid-
+> mirror): Part A's Lid row updated (mirrored to Y=0 side, per the new
+> Standing Orientation Convention in rules-bbq-fab.md) and Exhaust Room row
+> updated (resized 200/200->360/100). Part B's BOM tree gets a new
+> Firebox-near-wall-closure sub-part (closes a real gap below
+> chamber_floor_z). Part C's Lid kinetic row updated (rotation sign
+> flipped, real CGAL-verified, not assumed from mirror symmetry).
 
 ## ⚠️ GOVERNANCE FLAG — same as design_scope_of_work_rule.md
 
@@ -68,22 +78,29 @@ MAJOR SUB-ASSEMBLIES:
 ## PART B — BOM Subassembly Tree
 
 ```
-BBQ Offset Smoker V3 (top assembly)
+BBQ Offset Smoker V5 (top assembly)
 ├── Cook Chamber
 │   ├── Chamber shell (fixed 7-point profile: floor+RIGHT wall+right
 │   │   chamfer+half ridge, wall_t hollow, TRUE octagon closure — v3
 │   │   MIRRORED, was left-side in v2)
+│   │   ├── Lid-territory end caps (NEW v5 — closes a CGAL-confirmed real
+│   │   │   gap at both lid-territory end margins, X=0-10 and X=905-915)
+│   │   └── Firebox passage (NEW v5 — REPLACES the old fixed 254x119mm
+│   │       window_hole(); large profile-intersection opening, offset
+│   │       -10mm around the cut, per Janis's explicit spec)
 │   ├── Lid (ridge-hinged, full-length, 3 flat panels: half-ridge+chamfer
 │   │   +wall — v3 MIRRORED to Y=0 side, was Y=chamber_W side in v2)
 │   │   ├── Lift handle rail (2 standoff posts) — still DISABLED, stale positions
 │   │   ├── Toggle-clamp latches x2 (BUY, off-shelf placeholder) — still DISABLED
 │   │   ├── Dome thermometer (BUY, off-shelf placeholder) — still DISABLED
 │   │   └── Counterbalance lever + weight — still DISABLED
-│   ├── Grill grate (3 removable segments)
+│   ├── Grill grate (3 removable segments — Y-RANGE FIXED v5, was
+│   │   CGAL-confirmed colliding with the fixed shell's own bottom
+│   │   chamfers; GRATE_Z itself unchanged, MASTER CONTROL VALUE)
 │   └── Floor drain valves x2 (BUY, off-shelf placeholder)
 ├── Firebox
 │   ├── Firebox shell (4-wall hollow box, open both ends)
-│   ├── Firebox near-wall closure (NEW v3 — closes the firebox_drop step gap)
+│   ├── Firebox near-wall closure (v3 — closes the firebox_drop step gap)
 │   ├── Fire grate (welded bars)
 │   ├── Ash tray (slide-out)
 │   └── Firebox door (hinged, joggle-step joint)
@@ -118,15 +135,16 @@ clamp latches) are NOT independently kinetic — they're removable/fixed
 hardware, not hinged/sliding mechanisms, so they get a `show_*` isolation
 toggle only (Toggle-Completeness Rule), not a dual-view kinetic state.
 
-## Toggle-Completeness count (2026-07-14, v1.3)
+## Toggle-Completeness count (2026-07-14, v1.4)
 
-BBQ-chambers-v3.scad ASSEMBLY: 8 modules called (`chamber_shell`, `lid`,
+BBQ-chambers-v5.scad ASSEMBLY: 8 modules called (`chamber_shell`, `lid`,
 `lid_hardware`, `firebox`, `exhaust_room`, `chimney_pipe`, `grill_grate`,
 `floor_drains`) — all 8 have a real `show_*` toggle, carried over
-unchanged from v2. 8/8 compliant. `firebox_near_wall_closure()` is a
-sub-part called from within `firebox()`, same pattern as `fire_grate()`/
-`ash_tray()` — no separate toggle needed. `show_lid_hardware` still
-defaults FALSE — see PART_MANIFEST.md.
+unchanged from v2. 8/8 compliant. `firebox_near_wall_closure()`,
+`lid_territory_end_caps()` (NEW v5), and `firebox_passage()` (NEW v5) are
+all sub-parts called from within `chamber_shell()`/`firebox()`, same
+pattern as `fire_grate()`/`ash_tray()` — no separate toggle needed.
+`show_lid_hardware` still defaults FALSE — see PART_MANIFEST.md.
 
 BBQ-understructure.scad ASSEMBLY: 4 modules called (`legs`, `casters`,
 `tow_handle`, `prep_shelves`) — all 4 have a real `show_*` toggle from

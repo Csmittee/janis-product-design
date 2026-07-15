@@ -4,6 +4,12 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-16 | SKILL_local_render_addendum_independent_verification | DONE — docs only, zero .scad touched
+
+Files: .claude/SKILL_local_render.md (1.0→1.1), knowledge.map (v58→v59), prompts/archive/. Added the "INDEPENDENT POST-FIX VERIFICATION (R-111 ESCALATION)" section per the addendum's own exact text: once R-111 triggers, Claude Web must independently fetch+render the ACTUAL live/merged .scad file (not trust cc_chat_log/PR text alone) both before diagnosing a fix and before confirming one resolved — origin: bbq-chambers' 3 real-but-wrong-module fix attempts (PR #119, v5, PR #121) that each passed their own CGAL checks but missed the real visual defect.
+GOVERNANCE FLAG (not silently resolved): knowledge.map's own FILE SYSTEM MAP marks SKILL_local_render.md "Claude Web only — cc does NOT read this." This session's prompt was delivered to cc via the normal /prompts/ channel and named that exact file as its integration target, so cc read+edited it this one time to execute the addendum as written — a one-time exception for this specific governance-doc task, not a change to the standing rule (cc still does not read this file for ordinary geometry-design work). Flagged in knowledge.map's own header too, for Janis/Claude Web to confirm this handling was correct.
+No SCAD/rules-dimensions.md files touched, confirmed via git status.
+
 ### 2026-07-16 | bbq-chambers-v8-regular-octagon-continuous-channel | DONE — v8, 2 related fixes, both locally verified via real OpenSCAD/CGAL before writing
 
 Files: BBQ-chambers-v8.scad (new, source v7), renders/BBQ-chambers-v8-lid-open-{iso,straight,full-length}.png. Changed: BBQ-understructure.scad (include v7->v8), rules-dimensions.md(v37→v38, chamfer row only per DO NOT TOUCH), rules-bbq-fab.md(1.1→1.2, new Regular Octagon Requirement section), PART_MANIFEST.md(1.5→1.6), SKELETON_WORKSHEET.md(1.6→1.7), knowledge.map(v57→v58, also backfilled the missed v7 update), prompts/archive/. R-009 pre-check (full grep of `chamfer`, not just the prompt's own list): also found real consumers in `true_octagon_profile()`, `fixed_side_wedge()`, `lid_profile()`, `lid_slant_len`, `lid_closed_panels()`, `GRATE_Y0`/`GRATE_Y1` (DO NOT TOUCH, already formula-correct) — all update automatically, no code change needed for those.

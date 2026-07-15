@@ -1,5 +1,21 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.5 — 2026-07-14
+> Version 1.6 — 2026-07-15
+> Changes: bbq-chambers-v7-fixed-shell-open-channel-rebuild (R-111 territory,
+> 3 prior real-but-wrong-module fixes: PR #119 color/opacity, v5's own
+> end-cap gap, PR #121's lid_territory_end_caps() hollow rebuild). REAL
+> root cause: `fixed_shell_profile()`'s own PARTING-line closing edge (apex
+> A to ridge midpoint) was never a real octagon edge -- extruding it the
+> full chamber_L length turned that seam into a permanent spanning panel.
+> Fixed via `true_octagon_profile()` (real 8-point octagon, no fake edge)
+> + `fixed_side_wedge()` (cutting-plane mask applied to an already-hollow
+> ring, not baked into the profile). Part B's Chamber Shell entry CORRECTED
+> below -- it claimed "TRUE octagon closure" since v3, which was never
+> actually true until this version; now accurate. `fixed_shell_profile()`
+> KEPT (R-009 duplication check found a 3rd real caller,
+> `firebox_passage_profile()`, an explicit separate open item) but no
+> longer used by `chamber_outer_tube()`/`chamber_inner_cavity()`. Detail
+> correction within the SAME 3-part structure, not a new artifact — X.Y bump.
+> Previous: 1.5 — 2026-07-14
 > Changes: direct-cc fix (R-011, no prompt file) — Janis's live OpenSCAD-
 > desktop review of v5 found the "reads solid, not hollow" complaint STILL
 > unresolved (2nd loop on this symptom), plus 3 more concrete items, all
@@ -91,11 +107,17 @@ MAJOR SUB-ASSEMBLIES:
 ## PART B — BOM Subassembly Tree
 
 ```
-BBQ Offset Smoker V6 (top assembly)
+BBQ Offset Smoker V7 (top assembly)
 ├── Cook Chamber
-│   ├── Chamber shell (fixed 7-point profile: floor+RIGHT wall+right
-│   │   chamfer+half ridge, wall_t hollow, TRUE octagon closure — v3
-│   │   MIRRORED, was left-side in v2)
+│   ├── Chamber shell (fixed side only: floor+RIGHT wall+right chamfer+
+│   │   half ridge, wall_t hollow — v7 REBUILT from a real 8-point
+│   │   `true_octagon_profile()` [real edges only] clipped to the fixed
+│   │   side via a `fixed_side_wedge()` cutting-plane mask applied AFTER
+│   │   hollowing, not before; this is the first version where "TRUE
+│   │   octagon closure" is actually true — v3-v6 used
+│   │   `fixed_shell_profile()`'s own fake diagonal closing edge instead,
+│   │   which is what caused the "reads solid, flat panel across the
+│   │   opening" defect. v3 MIRRORED, was left-side in v2)
 │   │   ├── Lid-territory end caps (v6 REBUILT — was a SOLID fill in v5,
 │   │   │   a real design gap that read as "solid mass" with lid open; now
 │   │   │   a proper hollow shell, wall_t thick, at the widened margins
@@ -153,16 +175,20 @@ clamp latches) are NOT independently kinetic — they're removable/fixed
 hardware, not hinged/sliding mechanisms, so they get a `show_*` isolation
 toggle only (Toggle-Completeness Rule), not a dual-view kinetic state.
 
-## Toggle-Completeness count (2026-07-14, v1.5)
+## Toggle-Completeness count (2026-07-15, v1.6)
 
-BBQ-chambers-v6.scad ASSEMBLY: 8 modules called (`chamber_shell`, `lid`,
+BBQ-chambers-v7.scad ASSEMBLY: 8 modules called (`chamber_shell`, `lid`,
 `lid_hardware`, `firebox`, `exhaust_room`, `chimney_pipe`, `grill_grate`,
 `floor_drains`) — all 8 have a real `show_*` toggle, carried over
 unchanged from v2. 8/8 compliant. `firebox_near_wall_closure()`,
-`lid_territory_end_caps()` (REBUILT v6), and `firebox_passage()` are all
-sub-parts called from within `chamber_shell()`/`firebox()`, same pattern
-as `fire_grate()`/`ash_tray()` — no separate toggle needed.
-`show_lid_hardware` still defaults FALSE — see PART_MANIFEST.md.
+`lid_territory_end_caps()` (unchanged v6->v7, PR #121's fix), and
+`firebox_passage()` are all sub-parts called from within
+`chamber_shell()`/`firebox()`, same pattern as `fire_grate()`/`ash_tray()`
+— no separate toggle needed. `chamber_inner_cavity()` no longer called
+from `chamber_shell()` directly (v7 — now an internal helper inside the
+rebuilt `chamber_outer_tube()`), never had its own toggle either way (not
+ASSEMBLY-called). `show_lid_hardware` still defaults FALSE — see
+PART_MANIFEST.md.
 
 BBQ-understructure.scad ASSEMBLY: 4 modules called (`legs`, `casters`,
 `tow_handle`, `prep_shelves`) — all 4 have a real `show_*` toggle from

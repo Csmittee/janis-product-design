@@ -4,7 +4,24 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.4 — 2026-07-14 (direct-cc, R-011, no prompt file — Janis's
+# Version: 1.5 — 2026-07-15 (bbq-chambers-v7-fixed-shell-open-channel-
+# rebuild, R-111 territory — 3 prior real-but-wrong-module fixes: PR #119
+# color/opacity, v5's own end-cap gap, PR #121's lid_territory_end_caps()
+# hollow rebuild): source now BBQ-chambers-v7.scad. REAL root cause found
+# (via local OpenSCAD render before writing any fix): `fixed_shell_profile()`'s
+# own PARTING-line closing edge (apex A to ridge midpoint) was never a real
+# octagon edge, and extruding it the full chamber_L length turned that seam
+# into a permanent spanning panel across the open-lid sightline.
+# `chamber_shell()`'s entry CORRECTED (v3-v6 claimed "TRUE 8-point octagon
+# profile" — never actually true until now). `chamber_outer_tube()`/
+# `chamber_inner_cavity()` REBUILT from a new `true_octagon_profile()` (real
+# edges only) + `fixed_side_wedge()` (cutting-plane mask, applied to an
+# already-hollow ring, not baked into the profile). `fixed_shell_profile()`
+# KEPT unchanged (R-009 check found a 3rd real caller,
+# `firebox_passage_profile()`, a separate open item) but no longer used by
+# the main tube. `lid_territory_end_caps()` UNCHANGED (PR #121's fix,
+# re-verified clean join to the rebuilt tube, not re-touched).
+# Previous: 1.4 — 2026-07-14 (direct-cc, R-011, no prompt file — Janis's
 # live OpenSCAD-desktop review of v5 found the "reads solid" complaint
 # STILL unresolved plus 3 more items): source now BBQ-chambers-v6.scad.
 # `lid_territory_end_caps()` REBUILT (v5's own version was a SOLID fill —
@@ -41,19 +58,19 @@
 # Previous: 1.0 — 2026-07-13 (bbq-offset-smoker-v1-init): first version,
 # seeded from SKELETON_WORKSHEET.md's BOM Subassembly Tree, grounded in
 # the real BBQ-chambers-v1.scad + BBQ-understructure.scad.
-# Source: BBQ-chambers-v6.scad + BBQ-understructure.scad ASSEMBLY blocks.
+# Source: BBQ-chambers-v7.scad + BBQ-understructure.scad ASSEMBLY blocks.
 #
 # Toggle column key: a `show_*` name means the module is gated by that
 # toggle, per the Toggle-Completeness Rule (cc_rules.md). "(none — always
 # on, safety-critical)" is the ONLY other permitted value.
 
-## BBQ-chambers-v6.scad
+## BBQ-chambers-v7.scad
 
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
-| `chamber_shell()` | fixed portion of the octagon (floor + RIGHT wall + right chamfer + half ridge, v3 MIRRORED — was the left/Y=0 side in v2), full chamber_L length, wall_t hollow; TRUE 8-point octagon profile; closure-fixed real solid end caps; `lid_territory_end_caps()` (v6 REBUILT — now hollow, see below) closes the gap at both lid-territory end margins (now X=0-100, X=815-915, widened v6); rear wall carries `firebox_passage()` (v6: PASSAGE_INSET 10->15mm); front end-cap carries exhaust_room_opening() (resized v3, cut also applies through the end caps) | the lid's own territory for X=[LID_X0,LID_X1] — a SEPARATE part (`lid()`) | `show_chamber_shell` |
-| `lid_territory_end_caps()` | v6 REBUILT (was a SOLID fill in v5 — a real design gap in the v5 fix itself: a solid block sitting exactly in an open-lid viewer's sightline read as "solid mass" even though the rest of the shell was correctly hollow). Now a proper wall_t-thick HOLLOW shell using `lid_profile()`, same outer-minus-inset-inner construction as `chamber_outer_tube()`/`chamber_inner_cavity()`; solid only at the true outermost tip (wall_t). NO overlap into the lid's own kinetic X-range — confirmed via a full CGAL kinetic sweep (0-120°) that the fixed end-zone and the swinging lid never intersect (only a zero-volume coincident-face touch exactly at the shared X boundary, same benign tangency class this file has hit before) | a solid plug (v5's version) — that was the real defect | (none — sub-part of `chamber_shell()`, no separate toggle) |
-| `firebox_passage()` | REPLACES `window_hole()` (v1, fixed 254x119mm rectangle). Real 2D intersection of `fixed_shell_profile()` and the firebox's own square cross-section, inset v6: 15mm (was 10mm v5, per Janis's explicit request to retain partition strength). "Triangle gap" reported at the bottom corners INVESTIGATED — raw + offset(-10)/offset(-15) polygons both single-contour/non-self-intersecting (no topological defect), and a targeted solid probe at the exact corner divergence zone confirmed real chamber wall material still exists there (not a true hole) — most likely a fast-preview rendering seam between this octagon-clipped cut and `firebox_shell()`'s own plain-square frame, not a CGAL manifold defect; the wider inset also widens the visible solid margin there as a practical side effect | the old fixed-rectangle window — REMOVED, real scope change, not silently dropped | (none — sub-part of `chamber_shell()`, no separate toggle) |
+| `chamber_shell()` | fixed portion of the octagon (floor + RIGHT wall + right chamfer + half ridge, v3 MIRRORED — was the left/Y=0 side in v2), full chamber_L length, wall_t hollow. v7 REBUILT: real 8-point `true_octagon_profile()` (real edges only) hollowed FIRST, then clipped to the fixed side via `fixed_side_wedge()` (a cutting-plane mask, not baked into the profile) — this is the first version where "TRUE octagon profile" is actually accurate (v3-v6 used `fixed_shell_profile()`'s own fake diagonal closing edge, which caused the "reads solid" panel defect). Closure-fixed real solid end caps preserved; `lid_territory_end_caps()` (UNCHANGED, PR #121's fix) closes the gap at both lid-territory end margins (X=0-100, X=815-915); rear wall carries `firebox_passage()`; front end-cap carries exhaust_room_opening() | the lid's own territory for X=[LID_X0,LID_X1] — a SEPARATE part (`lid()`) | `show_chamber_shell` |
+| `lid_territory_end_caps()` | UNCHANGED v6->v7 (PR #121's fix, already correct for what it covers — this prompt fixed a DIFFERENT module, `fixed_shell_profile()`/`chamber_outer_tube()`). wall_t-thick HOLLOW shell using `lid_profile()`. Re-verified this session: clean join to the REBUILT main tube at LID_X0/LID_X1 (real union()/intersection() boundary probe — only the same benign zero-volume coincident-face touch this file has hit before, no gap, no new overlap) | a solid plug (v5's version) — that was the real defect, already fixed pre-v6 | (none — sub-part of `chamber_shell()`, no separate toggle) |
+| `firebox_passage()` | UNCHANGED this session (explicit separate open item, see file header). Real 2D intersection of `fixed_shell_profile()` (KEPT for this one caller only, see R-009 note in file header) and the firebox's own square cross-section, inset 15mm | the old fixed-rectangle window — REMOVED pre-v6, real scope change, not silently dropped | (none — sub-part of `chamber_shell()`, no separate toggle) |
 | `lid(lid_open_deg)` | clamshell lid, 3 flat panels, hinged along the ridge midpoint. v6: margin widened LID_X0=100/LID_X1=815 (715mm long, was 10/905/895mm) — the 2 end zones are now real fixed (welded, non-opening) octagon-ring sections, not a thin plug. v3 MIRRORED to the Y=0 side, opens toward the user. Rotation SIGN flipped from v2 (real CGAL bounding-box check) | the fixed shell's own right wall/chamfer/half-ridge — those stay part of `chamber_shell()` | `show_lid` |
 | `lid_hardware(lid_open_deg)` | UNCHANGED code, still built for v1's original end-hinged geometry, now stale across 3 redesigns (v2 ridge-hinge, v3 mirror, v6 margin widen) | a correctly-positioned part — still not repositioned, still explicitly deferred | `show_lid_hardware` — still FALSE by default — TODO: reposition once lid geometry is fully confirmed, follow-up prompt |
 | `firebox(firebox_door_open_deg, ash_tray_out_pct)` | shelled 457mm cube, open on both the chamber-facing and door-facing ends — wraps `firebox_shell()`, `firebox_near_wall_closure()`, `fire_grate()`, `ash_tray()`, `firebox_door()`. All 4 UNCHANGED (DO NOT TOUCH) | | `show_firebox` |
@@ -72,12 +89,13 @@
 | `tow_handle()` | placeholder tow handle, chimney/front end | `show_tow_handle` |
 | `prep_shelves(shelf_deployed)` | 2 fold-up prep shelves, left+right, front of chamber | `show_shelves` |
 
-## Toggle-completeness count (2026-07-14, v1.4)
+## Toggle-completeness count (2026-07-15, v1.5)
 
 12 modules called across both ASSEMBLY blocks (8 in chambers, 4 in
-understructure) — same count as v1.3 (`lid_territory_end_caps()` and
-`firebox_passage()` are both sub-parts called from within
-`chamber_shell()`, not new direct ASSEMBLY entries, same pattern as
-`firebox_near_wall_closure()`). 12/12 have a real `show_*` isolation
+understructure) — same count as v1.4 (no ASSEMBLY-called module
+added/removed this session; `chamber_inner_cavity()` changed from a
+`chamber_shell()`-level subtraction to an internal helper inside the
+rebuilt `chamber_outer_tube()`, but it was never ASSEMBLY-called either
+way, so no toggle count change). 12/12 have a real `show_*` isolation
 toggle — 0 gaps, 0 safety-critical exceptions needed this version.
 `show_lid_hardware` still defaults false (unchanged this session).

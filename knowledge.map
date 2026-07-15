@@ -1,5 +1,18 @@
 # knowledge.map
-# Version: v58 — 2026-07-16
+# Version: v59 — 2026-07-16
+# Changes: SKILL_local_render_addendum_independent_verification — the
+# SKILL_local_render.md row's description updated (v1.1: new Independent
+# Post-Fix Verification section for R-111 escalations). GOVERNANCE NOTE
+# (flagged, not silently resolved): this file's own WHO READS WHAT /
+# FILE SYSTEM MAP table marks SKILL_local_render.md "Claude Web only — cc
+# does NOT read this," but the addendum prompt that specified this change
+# was delivered to cc via the normal /prompts/ channel and named that
+# exact file as its integration target — cc read + edited it this session
+# to execute the addendum as written, a one-time exception for this
+# specific governance-doc task, not a change to the standing rule itself
+# (cc still does not read this file for ordinary geometry-design
+# purposes). See cc_chat_log.md for the same flag.
+# Previous: v58 — 2026-07-16
 # Changes: bbq-chambers-v8-regular-octagon-continuous-channel — bbq-offset-
 # smoker/ row rewritten (was frozen at v6-era detail, missed the v7 update
 # entirely — not this session's own fault, flagged and corrected here) to
@@ -224,7 +237,7 @@ or WORKFLOW_SKILL.md.
 | SKILL_problem_solving_kt.md | Kepner-Tregoe problem solving, R-111 trigger (2+ failed fix loops) | R-111 triggered |
 | SKILL_joint_construction.md | Joint/T-junction/cross-section-transition construction rules | Any joint/seam/mismatched-cross-section fix or build |
 | SKILL_manifold_triage.md | Manifold-warning triage fast-path | Claude Web only — cc does NOT read this |
-| SKILL_local_render.md | Mandatory local OpenSCAD render verification protocol before any new-shape geometry prompt | Claude Web only — cc does NOT read this |
+| SKILL_local_render.md | Mandatory local OpenSCAD render verification protocol before any new-shape geometry prompt — v1.1 (2026-07-16) also adds an Independent Post-Fix Verification procedure for R-111 escalations (re-render the actual merged file, don't trust cc_chat_log/PR text alone) | Claude Web only — cc does NOT read this |
 | SKILL_customizer_profile.md | Customizer-first workflow for aesthetic/artistic (non-dimensional) geometry decisions | Claude Web only — cc does NOT read this |
 | SKILL_option_b_unified_loft.md | Option B unified neck+collar loft spec for pole_top — DEFERRED, approved architecture not yet built | Before any pole_top seam/joint/T-junction work resumes |
 | SKILL_reference_point_first.md | Local-datum-origin habit (ask "measured FROM what" before dimensioning) — SUPERSEDED by SKILL_product_design_skeleton.md but still the live convention for VM-01/PR-01 specifically | Before designing any new module's geometry within VM-01 or PR-01 |

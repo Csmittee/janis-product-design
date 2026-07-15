@@ -4,7 +4,21 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.6 — 2026-07-16 (bbq-chambers-v8-regular-octagon-continuous-
+# Version: 1.7 — 2026-07-16 (bbq-chambers-v9-firebox-passage-true-profile):
+# source now BBQ-chambers-v9.scad. DOES NOT FIX THE "TRIANGLE LEAK" — the
+# prompt theorized `firebox_passage_profile()`'s use of `fixed_shell_profile()`
+# (fake diagonal) instead of the true-octagon+wedge construction was the
+# cause; independent verification (real geometric XOR test) proved these
+# two shapes are IDENTICAL, so the rebuild changes zero geometry (new
+# passage area 88209.549116mm², exact match to v8's 88209.5mm²). Still
+# implemented as a real code-quality cleanup: new `fixed_side_solid_2d()`
+# helper, `firebox_passage_profile()` rebuilt to use it,
+# `fixed_shell_profile()` DELETED entirely (confirmed zero remaining real
+# callers). The actual "triangle leak" symptom remains UNEXPLAINED after
+# 3 real investigation rounds (PR #121 x2, this session) — KT-exhausted,
+# needs Janis's direct input, not a 4th guess. See cc_chat_log.md and
+# BBQ-chambers-v9.scad's own header for the full verification record.
+# Previous: 1.6 — 2026-07-16 (bbq-chambers-v8-regular-octagon-continuous-
 # channel): source now BBQ-chambers-v8.scad. Two related fixes. (1)
 # `chamfer` corrected 150mm->178.665mm (real `chamber_W/(2+sqrt(2))`
 # regular-octagon formula) — forced `GRATE_Z` to become formula-derived
@@ -80,13 +94,13 @@
 # toggle, per the Toggle-Completeness Rule (cc_rules.md). "(none — always
 # on, safety-critical)" is the ONLY other permitted value.
 
-## BBQ-chambers-v8.scad
+## BBQ-chambers-v9.scad
 
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
 | `chamber_shell()` | fixed portion of the octagon (floor + RIGHT wall + right chamfer + half ridge, v3 MIRRORED — was the left/Y=0 side in v2), full chamber_L length, wall_t hollow. v8: octagon is now genuinely REGULAR (chamfer corrected 150->178.665mm, real `chamber_W/(2+sqrt(2))` formula, all 8 sides confirmed 252.670mm). Real 8-point `true_octagon_profile()` (real edges only) hollowed FIRST, then clipped to the fixed side via `fixed_side_wedge()` (a cutting-plane mask, not baked into the profile). Closure-fixed real solid end caps preserved; `lid_territory_margin_fill()` (v8 — REPLACES `lid_territory_end_caps()`) closes the gap at both lid-territory end margins (X=0-100, X=815-915); rear wall carries `firebox_passage()`; front end-cap carries exhaust_room_opening() | the lid's own territory for X=[LID_X0,LID_X1] — a SEPARATE part (`lid()`) | `show_chamber_shell` |
 | `lid_territory_margin_fill()` | v8 — REPLACES `lid_territory_end_caps()` (PR #121/v6, REMOVED). Same coverage (X=0-100, X=815-915) but now built from the SAME shared `true_octagon_profile()`+`octagon_ring()` helper `chamber_outer_tube()` itself uses (was a DIFFERENT profile, `lid_profile()`, in v6/v7 — two independently-modeled shapes meeting at a seam, which Janis was seeing as a visible wall). Real wall_t end cap ONLY at the true outer end (X=0 or X=915); fully OPEN at LID_X0/LID_X1 — no separate closing face. Real CGAL boundary probe: continuous wall_t-only material at the boundary (~5096mm² cross-section, vs ~308258mm² a solid closing panel would show) | a solid plug (v5's version, already fixed pre-v6) or a separately-profiled shape meeting the tube at a seam (v6/v7's version, the real cause of the visible wall) | (none — sub-part of `chamber_shell()`, no separate toggle) |
-| `firebox_passage()` | Code UNCHANGED this session (explicit separate open item, see file header). Real 2D intersection of `fixed_shell_profile()` (KEPT for this one caller only, see R-009 note in file header) and the firebox's own square cross-section, inset 15mm. v8: real AREA change as a side effect of the corrected chamfer — 92741.2mm² -> 88209.5mm² (~4.9% smaller, the corrected chamfer cuts deeper into the firebox square's corners); bounding box unchanged. Flagged for Janis, not silently absorbed | the old fixed-rectangle window — REMOVED pre-v6, real scope change, not silently dropped | (none — sub-part of `chamber_shell()`, no separate toggle) |
+| `firebox_passage()` | Real 2D intersection of `fixed_side_solid_2d()` (v9 NEW — real edges only, replaces `fixed_shell_profile()`, now DELETED) and the firebox's own square cross-section, inset 15mm. v9: rebuilt per the source prompt's theory that the fake-diagonal profile was causing the "triangle leak" — independently verified FALSE (real XOR test: `fixed_shell_profile()` and `fixed_side_solid_2d()` are identical shapes) — area unchanged at 88209.549116mm² (exact match to v8's 88209.5mm²). This rebuild is a code-quality cleanup, NOT a fix — the "triangle leak" symptom remains unexplained, see file header | a fix for the "triangle leak" — that symptom is still open, KT-exhausted, needs Janis's direct input | (none — sub-part of `chamber_shell()`, no separate toggle) |
 | `lid(lid_open_deg)` | clamshell lid, 3 flat panels, hinged along the ridge midpoint. v6: margin widened LID_X0=100/LID_X1=815 (715mm long, was 10/905/895mm) — the 2 end zones are now real fixed (welded, non-opening) octagon-ring sections, not a thin plug. v3 MIRRORED to the Y=0 side, opens toward the user. Rotation SIGN flipped from v2 (real CGAL bounding-box check) | the fixed shell's own right wall/chamfer/half-ridge — those stay part of `chamber_shell()` | `show_lid` |
 | `lid_hardware(lid_open_deg)` | UNCHANGED code, still built for v1's original end-hinged geometry, now stale across 3 redesigns (v2 ridge-hinge, v3 mirror, v6 margin widen) | a correctly-positioned part — still not repositioned, still explicitly deferred | `show_lid_hardware` — still FALSE by default — TODO: reposition once lid geometry is fully confirmed, follow-up prompt |
 | `firebox(firebox_door_open_deg, ash_tray_out_pct)` | shelled 457mm cube, open on both the chamber-facing and door-facing ends — wraps `firebox_shell()`, `firebox_near_wall_closure()`, `fire_grate()`, `ash_tray()`, `firebox_door()`. All 4 UNCHANGED (DO NOT TOUCH) | | `show_firebox` |
@@ -105,13 +119,12 @@
 | `tow_handle()` | placeholder tow handle, chimney/front end | `show_tow_handle` |
 | `prep_shelves(shelf_deployed)` | 2 fold-up prep shelves, left+right, front of chamber | `show_shelves` |
 
-## Toggle-completeness count (2026-07-16, v1.6)
+## Toggle-completeness count (2026-07-16, v1.7)
 
 12 modules called across both ASSEMBLY blocks (8 in chambers, 4 in
-understructure) — same count as v1.5 (no ASSEMBLY-called module
-added/removed this session; `lid_territory_end_caps()` renamed/rebuilt to
-`lid_territory_margin_fill()` and `chamber_inner_cavity()` fully retired,
-but neither was ever ASSEMBLY-called, so no toggle count change). 12/12
-have a real `show_*` isolation toggle — 0 gaps, 0 safety-critical
-exceptions needed this version. `show_lid_hardware` still defaults false
-(unchanged this session).
+understructure) — same count as v1.6 (no ASSEMBLY-called module
+added/removed this session; `fixed_shell_profile()` deleted, but it was
+never ASSEMBLY-called, so no toggle count change). 12/12 have a real
+`show_*` isolation toggle — 0 gaps, 0 safety-critical exceptions needed
+this version. `show_lid_hardware` still defaults false (unchanged this
+session).

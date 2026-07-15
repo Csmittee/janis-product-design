@@ -1,5 +1,20 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.7 — 2026-07-16
+> Version 1.8 — 2026-07-16
+> Changes: bbq-chambers-v9-firebox-passage-true-profile. DOES NOT FIX THE
+> "TRIANGLE LEAK" — the source prompt theorized `firebox_passage_profile()`'s
+> use of `fixed_shell_profile()` (fake diagonal) was the cause; a real
+> geometric XOR test proved `fixed_shell_profile()` and the proposed
+> replacement (`true_octagon_profile()` ∩ `fixed_side_wedge()`) are
+> IDENTICAL shapes, so the rebuild changes zero geometry (passage area
+> unchanged, 88209.549116mm² exact match to v8). Still implemented as a
+> real cleanup: new `fixed_side_solid_2d()` 2D helper, `fixed_shell_profile()`
+> DELETED (zero remaining callers). Part B's Firebox Passage entry
+> corrected below to state this plainly — the "triangle leak" symptom is
+> UNEXPLAINED after 3 real investigation rounds (PR #121 x2, this
+> session), KT-exhausted per this project's own protocol, needs Janis's
+> direct input rather than a 4th guess. Detail correction, not a new
+> artifact — X.Y bump.
+> Previous: 1.7 — 2026-07-16
 > Changes: bbq-chambers-v8-regular-octagon-continuous-channel. Two related
 > fixes. (1) `chamfer` corrected 150mm->178.665mm (real
 > `chamber_W/(2+sqrt(2))` regular-octagon formula — see rules-bbq-fab.md's
@@ -132,7 +147,7 @@ MAJOR SUB-ASSEMBLIES:
 ## PART B — BOM Subassembly Tree
 
 ```
-BBQ Offset Smoker V8 (top assembly)
+BBQ Offset Smoker V9 (top assembly)
 ├── Cook Chamber
 │   ├── Chamber shell (fixed side only: floor+RIGHT wall+right chamfer+
 │   │   half ridge, wall_t hollow — v7 REBUILT from a real 8-point
@@ -163,7 +178,15 @@ BBQ Offset Smoker V8 (top assembly)
 │   │       Janis's explicit request. v8: area changed 92741.2mm² ->
 │   │       88209.5mm² [~4.9% smaller] as a real side effect of the
 │   │       corrected chamfer — code itself unchanged, flagged not
-│   │       silently absorbed, see BBQ-chambers-v8.scad header TASK 5)
+│   │       silently absorbed. v9: rebuilt to intersect against
+│   │       `fixed_side_solid_2d()` [real edges only, `fixed_shell_profile()`
+│   │       DELETED] instead of the fake-diagonal profile — independently
+│   │       verified this is a code-quality cleanup ONLY (real XOR test:
+│   │       identical shapes, area unchanged at 88209.549116mm²), NOT a
+│   │       fix for the "triangle leak" Janis has reported 3 times — that
+│   │       symptom remains UNEXPLAINED, KT-exhausted, needs Janis's
+│   │       direct input. See BBQ-chambers-v9.scad header for the full
+│   │       verification record)
 │   ├── Lid (ridge-hinged, 3 flat panels: half-ridge+chamfer+wall — v3
 │   │   MIRRORED to Y=0 side, was Y=chamber_W side in v2; v6: margin
 │   │   widened to 100mm each end, LID_LENGTH=715, was 895)
@@ -217,9 +240,9 @@ clamp latches) are NOT independently kinetic — they're removable/fixed
 hardware, not hinged/sliding mechanisms, so they get a `show_*` isolation
 toggle only (Toggle-Completeness Rule), not a dual-view kinetic state.
 
-## Toggle-Completeness count (2026-07-16, v1.7)
+## Toggle-Completeness count (2026-07-16, v1.8)
 
-BBQ-chambers-v8.scad ASSEMBLY: 8 modules called (`chamber_shell`, `lid`,
+BBQ-chambers-v9.scad ASSEMBLY: 8 modules called (`chamber_shell`, `lid`,
 `lid_hardware`, `firebox`, `exhaust_room`, `chimney_pipe`, `grill_grate`,
 `floor_drains`) — all 8 have a real `show_*` toggle, carried over
 unchanged from v2. 8/8 compliant. `firebox_near_wall_closure()`,
@@ -231,8 +254,10 @@ PR #121/v6, same no-separate-toggle sub-part status), and
 a standalone module (v8 — its job is now `octagon_ring()`'s own internal
 step, reused by both `chamber_outer_tube()` and
 `lid_territory_margin_fill()`), never had its own toggle either way (not
-ASSEMBLY-called). `show_lid_hardware` still defaults FALSE — see
-PART_MANIFEST.md.
+ASSEMBLY-called). `fixed_shell_profile()` DELETED (v9 — zero remaining
+real callers after `firebox_passage_profile()`'s rebuild), also never
+ASSEMBLY-called, no toggle count change. `show_lid_hardware` still
+defaults FALSE — see PART_MANIFEST.md.
 
 BBQ-understructure.scad ASSEMBLY: 4 modules called (`legs`, `casters`,
 `tow_handle`, `prep_shelves`) — all 4 have a real `show_*` toggle from

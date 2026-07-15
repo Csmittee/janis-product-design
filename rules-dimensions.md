@@ -1,5 +1,13 @@
 # Janis Product Design — Confirmed Dimensions
-# Version: v37 — 2026-07-14
+# Version: v38 — 2026-07-16
+# Changes: bbq-chambers-v8-regular-octagon-continuous-channel. TASK 1 only
+# (per that prompt's own DO NOT TOUCH — nothing else in the BBQ section
+# touched, even though other rows there are separately stale since v2):
+# `chamfer` row corrected 150mm -> 178.665mm (real chamber_W/(2+sqrt(2))
+# formula, the regular-octagon requirement — 150mm was never derived this
+# way, an arbitrary round-number pick, not an intentional lock). Full
+# derivation in BBQ-chambers-v8.scad's own header.
+# Previous: v37 — 2026-07-14
 # Changes: bbq-chambers-v2-closure-exhaust-lid. "BBQ Offset Smoker Base"
 # section rewritten for v2 (3 corrections: true octagon + real closure,
 # exhaust room + pipe replacing chimney/drop-tube, ridge-hinged full-
@@ -1102,7 +1110,7 @@ kept for history (git log has the full v1 detail either way).
 | GRATE_Z | 700mm | MASTER CONTROL VALUE, not derived — unchanged |
 | grate_clearance | 100mm | chamber_floor_z = GRATE_Z - 100 = 600mm — unchanged |
 | chamber_L x chamber_W x chamber_H | 915 x 610 x 610mm | length(X) x width(Y) x full octagon height — unchanged |
-| chamfer | 150mm | 45-degree chamfer, now BOTH top and bottom (v2 — was top-only, v1) |
+| chamfer | 178.665mm | v8 (bbq-chambers-v8-regular-octagon-continuous-channel, 2026-07-16): CORRECTED to `chamber_W / (2 + sqrt(2))` — the real formula for a REGULAR octagon (all 8 sides equal) inscribed in a chamber_W-square. The prior 150mm (locked since v1) was NEVER derived this way — it was an arbitrary round-number pick that produced 4 sides at 310mm and 4 at 212.13mm (not a regular octagon, correctly flagged by Janis as visually exaggerated). This is now a DERIVED-CORRECT value, not an arbitrary lock — do not "correct" it back to 150 in a future session; 150 was the bug, not the intent. See BBQ-chambers-v8.scad's own header for the full derivation and the resulting real datum-chain changes (GRATE_Z is now derived from this, not the other way around). |
 | trough_h | 310mm | v2: chamber_H - 2*chamfer (was chamber_H - chamfer = 460mm in v1) — real dimensional change |
 | firebox_size | 457mm cube | unchanged, DO NOT TOUCH this session |
 | firebox_drop | 200mm | ⚠️ STILL OPEN — not resolved by this session either, per its own DO NOT TOUCH |

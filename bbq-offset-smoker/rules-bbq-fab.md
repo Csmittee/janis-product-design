@@ -1,5 +1,12 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.1 — 2026-07-14
+> Version 1.2 — 2026-07-16
+> Changes: bbq-chambers-v8-regular-octagon-continuous-channel. New
+> "Regular Octagon Requirement" section added (locks `chamfer` to the real
+> `chamber_W/(2+sqrt(2))` formula, not an arbitrary decimal — the prior
+> 150mm value, locked since v1, was never actually derived this way and
+> produced a non-regular octagon, correctly flagged by Janis as visually
+> exaggerated). Detail addition, not new document structure — X.Y bump.
+> Previous: 1.1 — 2026-07-14
 > Changes: bbq-chambers-v3-closure-exhaust-resize-lid-mirror. New
 > "Standing Orientation Convention" section added (locks exhaust=left/
 > firebox=right/lid-toward-user when facing the smoker, confirmed against
@@ -77,6 +84,28 @@ real, built, verified state of BBQ-chambers-v3.scad, not a draft.
 
 This convention applies to ALL future BBQ product work — do not
 re-derive or re-ask per session.
+
+## Regular Octagon Requirement (locked 2026-07-16)
+
+`chamfer` is NOT a free/arbitrary dimension — the chamber's octagon cross-
+section is required to be REGULAR (all 8 sides equal length). For an
+octagon inscribed in a `chamber_W`-square cross-section (chamber_W ==
+chamber_H, this product's own case), the real constraint is:
+```
+chamber_W - 2*chamfer = chamfer * sqrt(2)
+chamfer = chamber_W / (2 + sqrt(2))
+```
+`chamfer` was locked at 150mm from v1 through v7 — a round-number pick,
+never actually derived from this formula, and it does NOT produce a
+regular octagon (4 sides at 310mm, 4 at 212.13mm). CORRECTED v8 to the
+real formula (chamfer=178.665mm at the current chamber_W=610mm) — see
+BBQ-chambers-v8.scad's own header for the full derivation, including the
+resulting GRATE_Z datum-chain change (GRATE_Z is now derived from
+`chamber_floor_z + chamfer`, not the other way around).
+
+This convention applies to ALL future BBQ chamber work — if `chamber_W`
+or `chamber_H` ever change, `chamfer` must stay computed from this
+formula, never re-locked to a decimal literal.
 
 ## v1 Judgment Calls (technical, cc-made, flagged per R-009/general
 duplication+ambiguity discipline — see BBQ-chambers-v1.scad header and

@@ -1,5 +1,30 @@
 # BBQ Offset Smoker — Design Scope of Work
-> Version 1.2 — 2026-07-17
+> Version 1.3 — 2026-07-17
+> Changes: bbq-chambers-v12-firebox-rebuild-understructure-v4-wheel.
+> Envelope section rewritten: firebox rebuilt from a 457mm cube to an
+> insulated jacket (460x510x428.6mm, world Z=[571.4,1000] — LOCKED spec)
+> around a new internal fuel cylinder (388.6mm dia, replaces the old fire
+> grate concept, far-end treatment explicitly deferred per Janis's own "let
+> me see how it looks" note). Wheel size FINAL at 457.2mm/18" (was
+> 400mm/16"-equivalent). *** REAL, FLAGGED, UNRESOLVED CONFLICT *** — this
+> round's own mandatory wheel-anchor fix (world Z=0 must equal the wheel's
+> real ground-contact point, confirmed via CGAL the v3 wheel was NOT
+> actually anchored there, real offset -150mm found and corrected) drops
+> the real grate-height-above-ground from v3's 928.665mm back to
+> 778.665mm — BELOW this section's own standing 900-1000mm target
+> (locked v1.2, below). NOT silently resolved either direction — needs
+> Janis/Claude Web to pick: relax the grate-height target, or authorize
+> moving the chamber's own literal position (which v12's chamber-frozen
+> DO NOT TOUCH blocked this round). Also flagged (deferred, not fixed):
+> the intentional 100mm reinforcement-frame/shorter-door gap between the
+> new firebox top (1000mm) and the real apex-A/grate line (778.665mm real,
+> NOT the 900mm this round's prompt assumed — real gap is 221.335mm, still
+> not closed, still deliberate headroom per Janis) — future task. A real,
+> CGAL-confirmed front-wheel-vs-front-bracket collision (~6mm) was also
+> found this round, unresolved, blocking fabrication — see
+> BBQ-understructure-v4.scad's own header, not a scope-file item but noted
+> here for visibility.
+> Previous: 1.2 — 2026-07-17
 > Changes: bbq-understructure-v3-wheel-height-tray-handle. Envelope
 > section's grate-height control value CHANGED: 700mm (MASTER CONTROL
 > VALUE) SUPERSEDED — Janis re-verified ergonomic reach height this
@@ -70,12 +95,22 @@ Mobile wheeled octagonal-profile offset BBQ smoker, hobbyist-commercial
 grade, 2-3mm steel. V1 = pass-through smoke flow.
 
 ## Envelope
-Cook chamber 915mm L x 610mm flat-to-flat cross-section.
-Grate height 900-1000mm from true ground (SUPERSEDES the original 700mm
-MASTER CONTROL VALUE — Janis re-verified ergonomic reach height
-2026-07-17, real value 928.665mm — see BBQ-understructure-v3.scad).
-Firebox 457x457x457mm cube, floor 200mm below chamber floor
-[ASSUMPTION - Janis to confirm before final merge].
+Cook chamber 915mm L x 610mm flat-to-flat cross-section (UNCHANGED,
+chamber frozen).
+Grate height target 900-1000mm from true ground — *** REAL CONFLICT,
+UNRESOLVED (2026-07-17) ***: this round's real world-Z=0 wheel-anchor fix
+(BBQ-understructure-v4.scad TASK 3) dropped the real achieved value to
+778.665mm, BELOW this target. v3's own 928.665mm (in-range) figure relied
+on an anchor that was never actually applied to the literal geometry — see
+BBQ-understructure-v4.scad's own header for the full real finding. Needs
+Janis/Claude Web decision, not silently picked.
+Firebox: insulated jacket, 460mm(L) x 510mm(W) x 428.6mm(H), world
+Z=[571.4,1000]mm — REBUILT 2026-07-17 (was a 457mm cube, floor 200mm below
+chamber floor) around a NEW internal cylindrical fuel-storage vessel
+(388.6mm dia, wall 3mm) — the outer firebox is now sized independent of
+the internal fire-volume rule (that rule sizes the internal cylinder, not
+the outer jacket). Far end of the internal cylinder is an explicit OPEN
+ITEM — Janis: "let me see how it looks then I'll explain the adjustment."
 
 ---
 
@@ -84,12 +119,13 @@ yet Janis-reconfirmed in this exact wording (see flag above)
 - Cook Chamber — main octagonal-profile smoking chamber, pass-through
   smoke flow (V1)
 - Firebox — offset, attached at chamber rear (world X, corrected from the
-  original prompt's own Y notation — see BBQ-chambers-v1.scad header),
-  floor lower than chamber floor (classic offset-smoker draft technique)
+  original prompt's own Y notation — see BBQ-chambers-v1.scad header).
+  2026-07-17: insulated jacket around an internal cylindrical fuel vessel
+  (REPLACES the old internal fire-grate concept) — see Envelope above
 - Chimney — front shoulder mount, foldable, internal drop-tube down to
   grate level
-- Understructure — corner-tube wheeled frame, 2 fixed + 2 swivel
-  casters, tow handle at chimney end
+- Understructure — corner-tube wheeled frame, 2 fixed + 2 swivel casters
+  (18"/457.2mm wheels, FINAL as of 2026-07-17), tow handle at chimney end
 - Prep Shelves x2 — fold-up (vertical stowed / horizontal deployed),
   left + right, front of chamber
 
@@ -105,7 +141,10 @@ yet Janis-reconfirmed in this exact wording (see flag above)
 7. Foldable chimney with internal drop-tube (smoke circulates low
    across food, not a short-circuit top vent)
 8. Adjustable firebox air-intake damper
-9. Slide-out ash tray below the fire grate
+9. Slide-out ash tray below the firebox's internal fuel cylinder (2026-07-17:
+   firebox's old internal fire grate REMOVED, replaced by a cylindrical
+   fuel vessel — see Envelope above; ash tray height reduced to fit the
+   real clearance beneath it, flagged for review)
 10. Toggle-clamp lid latches x2+
 11. Dome thermometer port (placeholder)
 12. Hybrid fuel — wood or charcoal

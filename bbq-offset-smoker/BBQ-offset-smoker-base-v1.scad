@@ -25,8 +25,13 @@
 // the understructure file now follows the same versioned-filename
 // convention the chambers files already use; v1 kept unchanged as
 // BBQ-understructure-v1.scad, per file-versioning convention).
+//
+// 2026-07-17: include target updated v2->v3 (bbq-understructure-v3-wheel-
+// height-tray-handle — wheel size/count, GROUND_OFFSET height lift, tray
+// reattachment, coupled-steering T-bar handle; v2 kept unchanged, on
+// record, as BBQ-understructure-v2.scad).
 
-include <BBQ-understructure-v2.scad>
+include <BBQ-understructure-v3.scad>
 
 // ASSEMBLY — the included file already calls both its own geometry AND
 // (transitively) the chamber's, at include time (see each file's own

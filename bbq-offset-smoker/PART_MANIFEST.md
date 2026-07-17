@@ -4,7 +4,24 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.7 — 2026-07-16 (bbq-chambers-v9-firebox-passage-true-profile):
+# Version: 1.8 — 2026-07-17 (bbq-chambers-v11-firebox-wall-seal): source
+# now BBQ-chambers-v11.scad. THE REAL FIX for the "triangle leak" (v9's
+# 1.7 entry below left it KT-exhausted/unexplained after 3 rounds) — root
+# cause found by Janis directly, independently confirmed by Claude via a
+# real local render before any code was written. The octagon narrows near
+# the floor (bottom two chamfers); `firebox_shell()` is a plain square —
+# above `chamber_floor_z` the square sticks out past the true octagon
+# boundary on both sides, and nothing ever built a closing panel there
+# (`firebox_near_wall_closure()` only ever covered BELOW `chamber_floor_z`).
+# New `firebox_upper_wall_seal()` (+ `firebox_upper_wall_seal_2d()`) closes
+# exactly that region, built from the real `firebox_square_2d()`/
+# `fixed_side_solid_2d()` boolean (both unchanged). Verified: real CGAL
+# probe confirms the two former-gap triangles now solid (added ~31516mm³,
+# matches the expected 2x5218.84mm²x wall_t); full kinetic sweep 0-120°
+# and the full assembly chain both `Simple: yes`; both panels
+# 5218.8436mm² each, confirmed mirror-symmetric. `firebox()`'s entry
+# updated to include the new sub-part.
+# Previous: 1.7 — 2026-07-16 (bbq-chambers-v9-firebox-passage-true-profile):
 # source now BBQ-chambers-v9.scad. DOES NOT FIX THE "TRIANGLE LEAK" — the
 # prompt theorized `firebox_passage_profile()`'s use of `fixed_shell_profile()`
 # (fake diagonal) instead of the true-octagon+wedge construction was the
@@ -94,7 +111,7 @@
 # toggle, per the Toggle-Completeness Rule (cc_rules.md). "(none — always
 # on, safety-critical)" is the ONLY other permitted value.
 
-## BBQ-chambers-v9.scad
+## BBQ-chambers-v11.scad
 
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
@@ -103,8 +120,9 @@
 | `firebox_passage()` | Real 2D intersection of `fixed_side_solid_2d()` (v9 NEW — real edges only, replaces `fixed_shell_profile()`, now DELETED) and the firebox's own square cross-section, inset 15mm. v9: rebuilt per the source prompt's theory that the fake-diagonal profile was causing the "triangle leak" — independently verified FALSE (real XOR test: `fixed_shell_profile()` and `fixed_side_solid_2d()` are identical shapes) — area unchanged at 88209.549116mm² (exact match to v8's 88209.5mm²). This rebuild is a code-quality cleanup, NOT a fix — the "triangle leak" symptom remains unexplained, see file header | a fix for the "triangle leak" — that symptom is still open, KT-exhausted, needs Janis's direct input | (none — sub-part of `chamber_shell()`, no separate toggle) |
 | `lid(lid_open_deg)` | clamshell lid, 3 flat panels, hinged along the ridge midpoint. v6: margin widened LID_X0=100/LID_X1=815 (715mm long, was 10/905/895mm) — the 2 end zones are now real fixed (welded, non-opening) octagon-ring sections, not a thin plug. v3 MIRRORED to the Y=0 side, opens toward the user. Rotation SIGN flipped from v2 (real CGAL bounding-box check) | the fixed shell's own right wall/chamfer/half-ridge — those stay part of `chamber_shell()` | `show_lid` |
 | `lid_hardware(lid_open_deg)` | UNCHANGED code, still built for v1's original end-hinged geometry, now stale across 3 redesigns (v2 ridge-hinge, v3 mirror, v6 margin widen) | a correctly-positioned part — still not repositioned, still explicitly deferred | `show_lid_hardware` — still FALSE by default — TODO: reposition once lid geometry is fully confirmed, follow-up prompt |
-| `firebox(firebox_door_open_deg, ash_tray_out_pct)` | shelled 457mm cube, open on both the chamber-facing and door-facing ends — wraps `firebox_shell()`, `firebox_near_wall_closure()`, `fire_grate()`, `ash_tray()`, `firebox_door()`. All 4 UNCHANGED (DO NOT TOUCH) | | `show_firebox` |
-| `firebox_near_wall_closure()` | v3 — solid wall_t panel closing a REAL gap: the firebox's near wall is correctly open for Z>=chamber_floor_z, but for firebox_floor_z..chamber_floor_z (the 200mm firebox_drop step) there was no chamber wall behind it at all. Confirmed via real intersection() probe | the passage's own opening — that stays untouched/open, this panel only covers the Z-range strictly below chamber_floor_z | (none — sub-part of `firebox()`, no separate toggle) |
+| `firebox(firebox_door_open_deg, ash_tray_out_pct)` | shelled 457mm cube, open on both the chamber-facing and door-facing ends — wraps `firebox_shell()`, `firebox_near_wall_closure()`, `firebox_upper_wall_seal()` (v11, NEW), `fire_grate()`, `ash_tray()`, `firebox_door()`. `firebox_shell()`/`fire_grate()`/`ash_tray()`/`firebox_door()` UNCHANGED (DO NOT TOUCH) | | `show_firebox` |
+| `firebox_near_wall_closure()` | v3 — solid wall_t panel closing a REAL gap: the firebox's near wall is correctly open for Z>=chamber_floor_z, but for firebox_floor_z..chamber_floor_z (the 200mm firebox_drop step) there was no chamber wall behind it at all. Confirmed via real intersection() probe | the passage's own opening (stays untouched/open) OR the "triangle leak" gap ABOVE chamber_floor_z (that's `firebox_upper_wall_seal()`, v11, below) — this panel only covers the Z-range strictly below chamber_floor_z | (none — sub-part of `firebox()`, no separate toggle) |
+| `firebox_upper_wall_seal()` | v11 NEW — THE REAL "triangle leak" FIX. Closes the region ABOVE chamber_floor_z where the firebox's square footprint sticks out past the narrowing octagon (`firebox_square_2d()` minus `fixed_side_solid_2d()`, clipped to h>=0), extruded wall_t at firebox_x0. Built from the real `firebox_square_2d()`/`fixed_side_solid_2d()` boolean (eroded by epsilon `e` to guarantee real volume overlap with `chamber_outer_tube()`'s wall, not just face-touching — found via a real CGAL non-manifold check, fixed, re-verified Simple:yes), not hardcoded triangle coordinates — stays correct if chamfer/firebox_size ever change. Two mirror-symmetric panels, 5218.8436mm² each | a fix for the passage cut itself (`firebox_passage_profile()`, unchanged, already correct) or for the region below chamber_floor_z (`firebox_near_wall_closure()`, above, unchanged) | (none — sub-part of `firebox()`, no separate toggle) |
 | `exhaust_room()` | half-cylinder mounting room, 360mm dia x 100mm height (v3) — inscribes a real 180mm-diameter circle around the 127mm pipe (26.5mm clearance each side). Endcap opening a rectangle (360x100mm) | v2's 200/200 room (superseded) | `show_exhaust_room` |
 | `chimney_pipe()` | 127mm pipe, coaxial with the room's mounting hole, `PIPE_HOLE_X=-90` (v3), real 26.5mm clearance both sides | v2's overhang-compromise position (superseded) | `show_chimney_pipe` |
 | `grill_grate()` | 3 removable laser-cut segments, top at GRATE_Z exactly. v6: GRATE_Z REPOSITIONED 700->750 — aligned to the lid parting line, per Janis's explicit spec. v8: GRATE_Z is now FORMULA-DERIVED (`chamber_floor_z + chamfer` = 778.665mm, was hardcoded 750) — `chamber_floor_z` is now the fixed PRIMARY DATUM (`grate_clearance` retired) and GRATE_Z moves automatically with the corrected chamfer, "lifts up naturally" per Janis. Y-range (v5 fix) recomputed automatically from the same chamfer-boundary formulas at the new height band — re-verified collision-free against both the fixed shell and the closed lid | GRATE_Z is no longer an independent input at all — it's a real derived formula now, not "re-VALUED" by hand | `show_grate` |

@@ -41,8 +41,14 @@
 // Janis's own note ("if 700mm can't be kept, we adjust the
 // understructure") does NOT apply here — 700 was NOT kept exactly (now
 // 750), but no understructure adjustment was needed as a result.
+//
+// 2026-07-17: include target updated v10->v11 (bbq-chambers-v11-firebox-
+// wall-seal, real fix for the "triangle leak" — new firebox_upper_wall_seal()
+// module, additive material only, no datum this file reads changed
+// (chamber_floor_z, leg_h chain, chamber_W/H/chamfer all unchanged) —
+// same flagged-not-silent mechanical update pattern as prior bumps above.
 
-include <BBQ-chambers-v10.scad>
+include <BBQ-chambers-v11.scad>
 
 // ───────────────────────────────
 // PARAMETERS — understructure-specific only (chamber datums come from

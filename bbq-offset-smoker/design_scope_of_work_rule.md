@@ -1,5 +1,29 @@
 # BBQ Offset Smoker — Design Scope of Work
-> Version 1.3 — 2026-07-17
+> Version 1.4 — 2026-07-17
+> Changes: bbq-chambers-v13-reanchor-grate-decouple-rear-passage.
+> CHAMBER-ONLY round (firebox v12, understructure v4/wheel-anchor both
+> frozen, untouched). Envelope rewritten again: chamber body real-
+> reanchored so apex A/GRATE_Z lands at EXACTLY 900mm (was 778.665mm, the
+> v1.3 flagged real value) — a real, algebraic fix (`chamber_floor_z` is
+> now a live formula, `900-chamfer`), not a paper offset. The grill
+> grate itself is now DELIBERATELY, TEMPORARILY DECOUPLED from the
+> chamber body — fixed at a separate, independent 1000mm, a real 100mm
+> unsupported air gap above apex A, intentional (Janis's own call),
+> expected to be re-merged once a future reinforcement-frame + shorter-
+> door task exists — NOT permanent architecture. New rear-passage
+> construction: the chamber's rear wall opening is now a real
+> `intersection()` of the internal fuel cylinder's actual circle against
+> the chamber's own live octagon boundary (round upper portion, octagon-
+> clipped lower portion), sealed by a new dedicated firebox end-cap plate.
+> *** v1.3's flagged grate-height-vs-understructure conflict is now
+> PARTIALLY STALE ***: it was computed against the OLD chamber_floor_z
+> (600mm); the chamber's own real position has since moved. Understructure
+> (wheel world-Z=0 anchor) is untouched this round, so a fresh, real
+> "grate height above true ground" figure has NOT been recomputed this
+> session (the grate itself isn't even in the chamber's own coordinate
+> system anymore, TEMPORARILY) — flagged as an open item for the next
+> understructure-touching round, not silently resolved.
+> Previous: 1.3 — 2026-07-17
 > Changes: bbq-chambers-v12-firebox-rebuild-understructure-v4-wheel.
 > Envelope section rewritten: firebox rebuilt from a 457mm cube to an
 > insulated jacket (460x510x428.6mm, world Z=[571.4,1000] — LOCKED spec)
@@ -96,21 +120,34 @@ grade, 2-3mm steel. V1 = pass-through smoke flow.
 
 ## Envelope
 Cook chamber 915mm L x 610mm flat-to-flat cross-section (UNCHANGED,
-chamber frozen).
-Grate height target 900-1000mm from true ground — *** REAL CONFLICT,
-UNRESOLVED (2026-07-17) ***: this round's real world-Z=0 wheel-anchor fix
-(BBQ-understructure-v4.scad TASK 3) dropped the real achieved value to
-778.665mm, BELOW this target. v3's own 928.665mm (in-range) figure relied
-on an anchor that was never actually applied to the literal geometry — see
-BBQ-understructure-v4.scad's own header for the full real finding. Needs
-Janis/Claude Web decision, not silently picked.
+chamber's own shape frozen).
+Apex A / chamber body reference: EXACTLY 900mm world Z (REAL, BUILT,
+2026-07-17 — `chamber_floor_z` is now a live formula, `900-chamfer`, so
+this lands algebraically exact, not approximated). Supersedes the prior
+778.665mm real-but-unintended value (flagged the round before).
+Grill grate: independently, TEMPORARILY fixed at 1000mm — DECOUPLED from
+the chamber body this round, Janis's own explicit call. Real 100mm
+unsupported air gap above apex A, expected, NOT a defect — reserved for a
+future reinforcement frame at chamber face A-B plus a correspondingly
+shorter door (deferred, separate future task). Once that structure exists,
+the grate is intended to be RE-MERGED back into the chamber body's own
+coordinate system — this decoupling is explicitly NOT permanent
+architecture.
+Grate-height-above-true-ground target (900-1000mm, locked prior round) —
+OPEN ITEM, not resolved this round: understructure (wheel world-Z=0
+anchor) is untouched this session, and the grate itself is temporarily
+outside the chamber's own coordinate system, so no fresh combined figure
+has been computed. Needs a future understructure-touching round to
+restate this properly.
 Firebox: insulated jacket, 460mm(L) x 510mm(W) x 428.6mm(H), world
-Z=[571.4,1000]mm — REBUILT 2026-07-17 (was a 457mm cube, floor 200mm below
-chamber floor) around a NEW internal cylindrical fuel-storage vessel
-(388.6mm dia, wall 3mm) — the outer firebox is now sized independent of
-the internal fire-volume rule (that rule sizes the internal cylinder, not
-the outer jacket). Far end of the internal cylinder is an explicit OPEN
-ITEM — Janis: "let me see how it looks then I'll explain the adjustment."
+Z=[571.4,1000]mm (UNCHANGED, frozen this round) around an internal
+cylindrical fuel-storage vessel (388.6mm dia, wall 3mm). Rear passage
+(chamber-to-firebox): 2026-07-17 REBUILT — real intersection of the
+cylinder's own circle against the chamber's live octagon boundary (round
+upper portion, octagon-clipped lower portion near the floor), sealed by a
+new dedicated firebox end-cap plate matching the same opening. Far end of
+the internal cylinder remains an explicit OPEN ITEM — Janis: "let me see
+how it looks then I'll explain the adjustment."
 
 ---
 

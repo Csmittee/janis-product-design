@@ -1,6 +1,23 @@
 // BBQ Offset Smoker — Understructure
 // Version: v4
 // Date: 2026-07-17
+// 2026-07-17 (bbq-chambers-v13-reanchor-grate-decouple-rear-passage):
+// PURE POINTER BUMP ONLY — `include` target updated v12->v13 so the
+// combined assembly picks up the chamber's real reanchor (apex A now
+// 900mm, grate decoupled to a temporary fixed 1000mm, rear passage
+// reworked). Per that prompt's own explicit scope, this file is
+// "entirely out of scope this round" — zero changes to THIS file's own
+// wheel size, world-Z=0 anchor, REAR_BRACKET_H, or any other construction
+// value; this is the same one-line include-target bump every prior
+// chambers version bump has required (v11->v12 etc.), not a design
+// change. That prompt's own Mandatory Closing named
+// BBQ-offset-smoker-base-v1.scad for this bump, but base-v1.scad has no
+// direct chambers `include` of its own (it only includes THIS file,
+// which itself includes chambers) — flagged, not silently reinterpreted:
+// the real, single `include <BBQ-chambers-vNN.scad>` line in the current
+// 2-level chain lives here, so this is where the bump had to land for the
+// prompt's own real intent (chamber-only changes wired into the full
+// assembly) to take effect.
 // Changes from v3: bbq-chambers-v12-firebox-rebuild-understructure-v4-wheel.
 // TASK 3 — WHEEL SIZE CORRECTION + WORLD-Z RE-ANCHOR.
 //
@@ -124,7 +141,7 @@
 // above) — "this is the anchor everything else in future prompts will be
 // checked against," per this task's own instruction.
 
-include <BBQ-chambers-v12.scad>
+include <BBQ-chambers-v13.scad>
 
 // ───────────────────────────────
 // PARAMETERS — carried over from v3, UNCHANGED. Still real consumers:

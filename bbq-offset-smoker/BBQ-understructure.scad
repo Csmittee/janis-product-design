@@ -42,7 +42,7 @@
 // understructure") does NOT apply here — 700 was NOT kept exactly (now
 // 750), but no understructure adjustment was needed as a result.
 
-include <BBQ-chambers-v8.scad>
+include <BBQ-chambers-v9.scad>
 
 // ───────────────────────────────
 // PARAMETERS — understructure-specific only (chamber datums come from

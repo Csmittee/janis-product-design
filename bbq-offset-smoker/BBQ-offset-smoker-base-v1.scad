@@ -30,8 +30,22 @@
 // height-tray-handle — wheel size/count, GROUND_OFFSET height lift, tray
 // reattachment, coupled-steering T-bar handle; v2 kept unchanged, on
 // record, as BBQ-understructure-v2.scad).
+//
+// 2026-07-17: include target updated v3->v4 (bbq-chambers-v12-firebox-
+// rebuild-understructure-v4-wheel — firebox rebuilt to real insulated-
+// jacket dimensions + new internal fuel cylinder (BBQ-chambers-v12.scad,
+// source v11), 18" wheel size correction + real world-Z=0 wheel-ground
+// anchor fix (BBQ-understructure-v4.scad, source v3, itself includes
+// BBQ-chambers-v12.scad). v3 kept unchanged, on record, as
+// BBQ-understructure-v3.scad. REAL, CONFIRMED, UNRESOLVED ISSUE carried
+// into this include (see both source files' own headers and
+// cc_chat_log.md): the wheel-size/anchor fix causes a real, CGAL-confirmed
+// ~6mm collision between the front wheels and the (explicitly frozen this
+// round) front bracket legs/caster plate/tow triangle — flagged, not
+// fixed, blocking real fabrication until a follow-up prompt reworks the
+// front bracket.
 
-include <BBQ-understructure-v3.scad>
+include <BBQ-understructure-v4.scad>
 
 // ASSEMBLY — the included file already calls both its own geometry AND
 // (transitively) the chamber's, at include time (see each file's own

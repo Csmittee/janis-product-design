@@ -1,5 +1,31 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.11 — 2026-07-17
+> Version 1.12 — 2026-07-17
+> Changes: bbq-chambers-v12-firebox-rebuild-understructure-v4-wheel. Part
+> A's Firebox/Understructure rows and Part B's BOM tree REBUILT again —
+> source now BBQ-chambers-v12.scad + BBQ-understructure-v4.scad. Firebox
+> rebuilt to independent FIREBOX_L/W/H=460/510/428.6mm (was a uniform
+> 457mm cube), world Z=[571.4,1000] (LOCKED spec — real mismatch found vs
+> the prompt's own "apex A=900mm" claim, real live value 778.665mm,
+> chamber frozen/unchanged, flagged not silently resolved). New internal
+> `fuel_cylinder()` (388.6mm dia hollow tube, replaces `fire_grate()`,
+> REMOVED entirely). Wheel size corrected to 457.2/228.6/200mm (18",
+> FINAL). World-Z anchor: mandatory real check confirmed the v3 wheel's
+> real bottom sat at raw Z=-150mm, NOT world Z=0 as Janis suspected — real
+> offset found and corrected via direct construction (`REAR_AXLE_Z=WHEEL_R`,
+> `GROUND_OFFSET`'s subtractive role retired). REAL, FLAGGED CONSEQUENCE:
+> this direct fix, combined with the chamber staying frozen (DO NOT TOUCH),
+> drops the real grate-height-above-ground from v3's 928.665mm to
+> 778.665mm — below the standing 900-1000mm Envelope target — a genuine,
+> unresolved conflict between this round's own explicit anchor instruction
+> and the standing target, not silently picked either way. REAL,
+> CGAL-CONFIRMED, UNRESOLVED COLLISION found (NEW): the bigger/higher-
+> anchored front wheels now intersect the front bracket legs/caster
+> plate/tow triangle (~6mm each) — all explicitly DO-NOT-TOUCH/deferred
+> this round, blocking real fabrication until a follow-up prompt reworks
+> the front bracket. See both .scad files' own headers and cc_chat_log.md
+> for the full verification record. Detail/content update within the SAME
+> 3-part structure, not a new artifact — X.Y bump.
+> Previous: 1.11 — 2026-07-17
 > Changes: bbq-understructure-v3-wheel-height-tray-handle. Understructure
 > branch of Part B's BOM tree REBUILT again: (1) WHEEL_D/WHEEL_R
 > 609.6/304.8 -> 400/200, single source both axles, front caster ONE wheel
@@ -196,10 +222,10 @@ MAJOR SUB-ASSEMBLIES:
   Grill Grate      — Parent: DATUM_GRATE_Z (now itself Parent: chamber_floor_z) — offset: (0,0,0), fixed
   Cook Chamber      — Parent: chamber_floor_z              — offset: (0,0,0), fixed (v8 — chamber_floor_z is now the direct anchor, was dZ=-100 off DATUM_GRATE_Z)
   Lid               — Parent: Cook Chamber's ridge midpoint — offset: length-wise hinge at (-, DATUM_Y_CENTER, DATUM_Z_RIDGE); opens toward Y=0 (v3 mirror, was Y=chamber_W in v2) per the Standing Orientation Convention (rules-bbq-fab.md); margin widened v6 (LID_X0=100/LID_X1=815, was 10/905)
-  Firebox           — Parent: Cook Chamber's rear wall (DATUM_X_REAR)   — offset: own floor via firebox_drop; near-wall closure panel added v3 (firebox_floor_z..chamber_floor_z step)
+  Firebox           — Parent: Cook Chamber's rear wall (DATUM_X_REAR)   — offset: v12 REBUILT, independent FIREBOX_L/W/H=460/510/428.6mm world Z=[571.4,1000] (LOCKED spec, X-midpoint preserved from v11: 1143.5mm); near-wall closure panel now only 28.6mm band (was 200mm firebox_drop step); NEW fuel_cylinder() sub-part, Parent: firebox's own real internal height/Y-center
   Exhaust room      — Parent: Cook Chamber's front end-cap (DATUM_X_FRONT) — offset: welded flush at X=0; RESIZED v3 (360mm dia x 100mm height, was 200/200 v2)
   Chimney pipe      — Parent: Exhaust room's own top plate — offset: coaxial with the room's pipe-mounting hole; RE-POSITIONED v3 (real clearance now, not a forced overhang)
-  Understructure     — Parent: Cook Chamber's chamber_floor_z / firebox_* / DATUM_Y_CENTER / GRATE_Z, PLUS a NEW v3 ground reference (GROUND_OFFSET=150, true ground = local Z=-GROUND_OFFSET, chamber/firebox never move): rear_axle() Parent: firebox_floor_z/firebox_x0/y0/y1 + GROUND_OFFSET (offset: down to REAR_AXLE_Z=WHEEL_R-GROUND_OFFSET=50, real spacer brackets absorb the gap); front_wheel_support(steer_deg,handle_fold_deg) Parent: chamber_floor_z/chamfer/chamber_W/DATUM_Y_CENTER + GROUND_OFFSET (offset: down to chamber_floor_z-LEG_DROP, then a real front spacer down to the shared FRONT_AXLE_Z) — v3: tow_triangle()/tow_handle() are now children of front_wheel_support()'s own front_swivel_assembly(), Parent: front_spacer() (RIGIDLY WELDED, replaces v2's wrong "independent" design), NOT DATUM_Y_CENTER alone; prep_shelves() Parent: octagon "apex A" (world Y=0/610, Z=GRATE_Z=778.665 — v3, was chamber_floor_z/arbitrary-floating-point in v2/v1, real chamber-material contact now via tray_mount_bracket())
+  Understructure     — Parent: Cook Chamber's chamber_floor_z / firebox_* / DATUM_Y_CENTER / GRATE_Z. v4 TASK 3: GROUND_OFFSET's indirect subtractive role RETIRED — REAR_AXLE_Z is now DIRECT CONSTRUCTION (`=WHEEL_R`=228.6), real-CGAL-confirmed wheel bottom at literal world Z=0 for BOTH axles (mandatory check found the v3 wheel's real bottom at raw Z=-150, confirmed NOT zero — "this is the anchor everything else in future prompts will be checked against"). REAL FLAGGED CONFLICT: this direct anchor, with the chamber staying frozen, drops real grate-height-above-ground to 778.665mm, below the standing 900-1000mm Envelope target — unresolved, not silently picked either way. rear_axle() Parent: firebox_floor_z(now 571.4)/firebox_x0/y0/y1 (offset: down to REAR_AXLE_Z=228.6, REAR_BRACKET_H=342.8mm); front_wheel_support(steer_deg,handle_fold_deg) Parent: chamber_floor_z/chamfer/chamber_W/DATUM_Y_CENTER (offset: down to chamber_floor_z-LEG_DROP, then front_spacer, now 215.4mm, down to the shared FRONT_AXLE_Z=228.6) — REAL, CGAL-CONFIRMED, UNRESOLVED COLLISION (NEW): front wheels now intersect front_bracket()/front_caster_plate()/tow_triangle() (~6mm each), all DO-NOT-TOUCH/deferred this round, flagged not fixed; prep_shelves() Parent: octagon "apex A" (world Y=0/610, Z=GRATE_Z=778.665, UNCHANGED, chamber frozen)
 ```
 
 ## PART B — BOM Subassembly Tree
@@ -261,48 +287,71 @@ BBQ Offset Smoker V9 (top assembly)
 │   │   corrected chamfer, "lifts up naturally" per Janis; Y-range formula
 │   │   itself unchanged, DO NOT TOUCH, updates automatically too)
 │   └── Floor drain valves x2 (BUY, off-shelf placeholder)
-├── Firebox
-│   ├── Firebox shell (4-wall hollow box, open both ends)
-│   ├── Firebox near-wall closure (v3 — closes the firebox_drop step gap,
-│   │   strictly BELOW chamber_floor_z only)
-│   ├── Firebox upper wall seal (v11 NEW — THE REAL "triangle leak" FIX.
-│   │   Closes the region AT/ABOVE chamber_floor_z where the firebox's
-│   │   square footprint sticks out past the narrowing octagon —
-│   │   `firebox_square_2d()` minus `fixed_side_solid_2d()`, clipped to
-│   │   h>=0. Two mirror-symmetric panels, 5218.8436mm² each. Real CGAL
-│   │   probe + full kinetic sweep + full assembly chain all confirmed
-│   │   Simple:yes; see BBQ-chambers-v11.scad header for the full
-│   │   verification record)
-│   ├── Fire grate (welded bars)
-│   ├── Ash tray (slide-out)
-│   └── Firebox door (hinged, joggle-step joint)
+├── Firebox (v12 REBUILT — independent FIREBOX_L/W/H=460/510/428.6mm, was
+│   │   a uniform 457mm cube; world Z=[571.4,1000], LOCKED spec numbers;
+│   │   X-midpoint preserved from v11, 1143.5mm, real ~1.5mm shift each
+│   │   side)
+│   ├── Firebox shell (4-wall hollow box, open both ends — real, flagged
+│   │   ~1.5mm solid overlap with the chamber's own rear end-cap at the
+│   │   new position, not a manifold defect)
+│   ├── Firebox near-wall closure (real remaining band now only 28.6mm,
+│   │   was 200mm — real consequence of the new firebox floor sitting much
+│   │   closer to chamber_floor_z)
+│   ├── Firebox upper wall seal (UNCHANGED CODE v12, auto-follows the new
+│   │   firebox rectangle — still THE "triangle leak" fix)
+│   ├── Fuel cylinder (v12 TASK 2 NEW — REPLACES Fire grate, REMOVED
+│   │   entirely. Hollow tube, 388.6mm dia [re-derived live from the real
+│   │   Task 1 numbers, exact match to the prompt's own table], wall_t=3mm,
+│   │   full firebox-length span, open both ends — door-side end touches
+│   │   the closed door per Janis's spec; far/chamber-side end open/
+│   │   unfinished, flagged deferred open item per Janis's own note. Real
+│   │   CGAL clearance to the firebox's own inner wall: 17mm [Z]/57.7mm
+│   │   [Y], non-intersecting)
+│   ├── Ash tray (slide-out — HEIGHT REDUCED 80mm->12mm, real flagged
+│   │   consequence of the new fuel cylinder's real 17mm clearance above
+│   │   the firebox floor; real CGAL-confirmed 5mm margin under the
+│   │   cylinder)
+│   └── Firebox door (hinged, joggle-step joint — FIREBOX_W/H used
+│       directly, was uniform firebox_size)
 │       └── Air-intake damper cutout
 ├── Exhaust Room (half-cylinder, welded to front end-cap) — RESIZED v3 (360x100mm, was 200x200mm v2)
 │   └── Chimney Pipe (coaxial, sits on the room's own top plate) — RE-POSITIONED v3
-└── Understructure (v3 — 4 real fixes from Janis's actual v2 screenshot
-    │   review: wheel size+count, GROUND_OFFSET height lift + spacer
-    │   brackets, tray reattachment, coupled-steering T-bar handle)
-    ├── Rear axle (fixed, non-swivel. WHEEL_D/WHEEL_R 400/200 [v3, was
-    │   609.6/304.8]. 2 struts [UNCHANGED v2, DO NOT TOUCH] from the
-    │   firebox underside down to REAR_AXLE_Z=50 [v3, was 304.8 —
-    │   WHEEL_R-GROUND_OFFSET], REAR_BRACKET_H=350mm [v3, was 95.2].
-    │   REAR_AXLE_X=1143.5/REAR_TRACK_WIDTH=857mm ZERO diff from v2, DO NOT
-    │   TOUCH. No kinetic parameter — static)
-    │   └── Rear spacers x2 (TASK 2, NEW — 278.5mm each, symmetric,
-    │       pushing each wheel axle outward from the strut mount clear of
-    │       the firebox to the real wheel Y. Real CGAL junction+hub-
-    │       containment checks confirmed)
-    ├── Front wheel support (bracket UNCHANGED v2, DO NOT TOUCH:
+└── Understructure (v4 — TASK 3: wheel size correction + real world-Z=0
+    │   wheel-ground anchor fix. Mandatory check confirmed Janis's
+    │   suspicion: the v3 wheel's real bottom sat at raw Z=-150mm, NOT
+    │   world Z=0 — GROUND_OFFSET's indirect subtractive role RETIRED,
+    │   REAR_AXLE_Z now direct construction. REAL FLAGGED CONFLICT: this
+    │   drops real grate-height-above-ground to 778.665mm, below the
+    │   standing 900-1000mm Envelope target, unresolved)
+    ├── Rear axle (fixed, non-swivel. WHEEL_D/WHEEL_R/TREAD_W 457.2/228.6/200
+    │   [18", FINAL, was 400/200/100]. 2 struts [UNCHANGED, DO NOT TOUCH]
+    │   from the firebox underside down to REAR_AXLE_Z=228.6 [direct
+    │   =WHEEL_R, was 50], REAR_BRACKET_H=342.8mm [was 350]. REAR_AXLE_X
+    │   construction updated for v12's independent firebox_x0/x1, real
+    │   value UNCHANGED 1143.5. REAR_WHEEL_Y_LEFT/RIGHT/TRACK_WIDTH real
+    │   values shift to -150/760/910mm [was -123.5/733.5/857, flagged side
+    │   effect of the wider v12 firebox] — formulas themselves UNCHANGED.
+    │   Real CGAL-confirmed: wheel bottom at literal world Z=0, no
+    │   intersection w/ firebox_shell()/chamber_shell(). No kinetic
+    │   parameter — static)
+    │   └── Rear spacers x2 (construction UNCHANGED, DO NOT TOUCH — real
+    │       lengths now 308mm each, was 278.5mm, tracking the wider rear
+    │       track)
+    ├── Front wheel support (bracket UNCHANGED, DO NOT TOUCH:
     │   MID_H=89.332mm/TOP_W=431.335mm/BOT_W=252.670mm/LEG_GAP=250mm/
-    │   FRONT_X=300, real-CGAL-reconfirmed flush against
-    │   true_octagon_profile() at h=MID_H, zero diff. Fixed caster top-
-    │   plate unchanged position)
-    │   ├── Front spacer (TASK 2, NEW — 394mm, bridges the fixed top-plate
-    │   │   down to the new shared FRONT_AXLE_Z=50. Real CGAL junction
-    │   │   checks confirmed both ends)
-    │   ├── Dual swivel wheels (TASK 1 — was ONE wheel v2, now TWO, same
-    │   │   single pivot, new stub axle, 120mm center-to-center [100mm tire
-    │   │   + 20mm gap], WHEEL_D/WHEEL_R shared with rear axle — 400/200)
+    │   FRONT_X=300, zero diff. Fixed caster top-plate unchanged position.
+    │   *** REAL, CGAL-CONFIRMED, UNRESOLVED COLLISION (NEW) ***: the
+    │   bigger/higher-anchored front wheels now real-intersect this
+    │   bracket's legs (~6mm), the caster plate (~6mm, full footprint),
+    │   and the tow triangle (~6mm) — all explicitly frozen/deferred this
+    │   round, NOT fixed here, blocking real fabrication until a follow-up
+    │   prompt reworks the front bracket)
+    │   ├── Front spacer (real LENGTH recomputes to 215.4mm, was 394mm,
+    │   │   since FRONT_AXLE_Z rose to 228.6 — bridges the fixed top-plate
+    │   │   down to the new shared FRONT_AXLE_Z, construction UNCHANGED)
+    │   ├── Dual swivel wheels (WHEEL_D/WHEEL_R/TREAD_W shared with rear
+    │   │   axle — 457.2/228.6/200, center-to-center spacing now 220mm
+    │   │   [was 120mm])
     │   └── Tow handle + puller triangle bracket (TASK 4, REBUILT — v2's
     │       "entirely independent" design was WRONG, corrected via Janis's
     │       own reference photo this session: the triangle [apex forward,

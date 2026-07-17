@@ -4,6 +4,12 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-16 | bbq-chambers-exhaust-room-recenter | DONE — v10, small position-only fix
+
+Files: BBQ-chambers-v10.scad (new, source v9), renders/BBQ-chambers-v10-exhaust-room-recentered.png. Changed: BBQ-understructure.scad (include v9->v10), prompts/archive/. Every prior placement (v3's centering formula, v8's own "max-flush" recompute) wrongly assumed the flat vertical wall zone starts at chamber_floor_z — it actually starts at chamber_floor_z+chamfer (the bottom chamfer sits BELOW the flat zone). Real wall zone independently recomputed from the live file (not trusted from the prompt): [778.665, 1031.335]mm. ROOM_BASE_Z/ROOM_TOP_Z changed to a real formula centering the room on the octagon's TRUE vertical center (chamber_floor_z+chamber_H/2=905mm): 855/955mm (was 752.670/852.670mm under v8's flawed formula) — both confirmed inside the real wall zone by direct computation.
+R-009: ROOM_BASE_Z/ROOM_TOP_Z each defined exactly once, real consumers confirmed (exhaust_room_opening/room_half_space/room_outer_half/room_inner_cavity, room_pipe_hole/PIPE_BASE_Z) — no duplication, all update automatically. Chimney top height re-verified 1717mm world (well within 2.5m limit). Position-only: ROOM_D/ROOM_H, room construction, chimney construction all unchanged.
+QA: real union(chamber_shell(),exhaust_room()) Simple:yes (opening cut aligns cleanly at new Z). Full kinetic sweep (0-120°) + full base-v1 chain both Simple:yes, facet counts unchanged. Zero undefined-variable warnings.
+
 ### 2026-07-16 | bbq-chambers-v9-firebox-passage-true-profile | DONE, BUT DOES NOT FIX THE SYMPTOM — R-111 KT-EXHAUSTED, NEEDS JANIS
 
 Files: BBQ-chambers-v9.scad (new, source v8), renders/BBQ-chambers-v9-passage-corner.png. Changed: BBQ-understructure.scad (include v8->v9), PART_MANIFEST.md(1.6→1.7), SKELETON_WORKSHEET.md(1.7→1.8), knowledge.map(v59→v60), prompts/archive/. Per the NEW SKILL_local_render.md Independent Post-Fix Verification rule (used for the first time, on myself, before writing this): the prompt's theorized root cause (`fixed_shell_profile()`'s fake diagonal vs `true_octagon_profile()`+`fixed_side_wedge()`) was checked via a REAL geometric XOR test before trusting it — result: the two shapes are IDENTICAL (empty symmetric difference), confirmed 3 ways (XOR test, real 3D CGAL cross-section probe of the actual built `chamber_shell()`, and new passage area 88209.549116mm² = exact match to v8's 88209.5mm²).

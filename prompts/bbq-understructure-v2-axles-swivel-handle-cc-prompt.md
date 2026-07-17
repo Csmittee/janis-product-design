@@ -3,6 +3,11 @@ CC PROMPT — bbq-understructure-v2-axles-swivel-handle
 Repo location: bbq-offset-smoker/BBQ-understructure.scad (edit in
 place, save as v2)
 
+REVISION NOTE: this replaces the version of this prompt previously
+sitting in /prompts/ — Task 2 (front wheel support) is fully rewritten
+below, based on real sketches Janis provided directly. Task 1 and
+Task 3 are UNCHANGED from the original — do not reinterpret them.
+
 ## 1. CC INTRO
 
 ```
@@ -13,14 +18,15 @@ Read in order, state every file read before writing a single line:
 1. cc_rules.md
 2. knowledge.map
 3. cc_chat_log.md (first 3 entries — newest at top)
-4. bbq-offset-smoker/rules-bbq-fab.md (includes the new Standing
-   Orientation Convention — exhaust=left, firebox=right, door toward
-   user, when facing the smoker — locked in a prior session this week)
+4. bbq-offset-smoker/rules-bbq-fab.md (includes the Standing Orientation
+   Convention — exhaust=left, firebox=right, door toward user, when
+   facing the smoker)
 5. bbq-offset-smoker/SKELETON_WORKSHEET.md
-6. bbq-offset-smoker/BBQ-chambers-v3.scad (or whatever version is
-   actually live — confirm the real current filename/version from the
-   repo, do not assume v3 is current) — this file's own DATUM_* /
-   chamber_* constants are the parent for everything below
+6. bbq-offset-smoker/BBQ-chambers-v10.scad — LIVE file, in full (NOT v3
+   — confirm this against the real current filename/version from the
+   repo regardless). This file's own DATUM_*/chamber_* constants
+   (including the corrected `chamfer=chamber_W/(2+sqrt(2))`, NOT the old
+   150mm value) are the parent for everything below.
 7. bbq-offset-smoker/BBQ-understructure.scad (the LIVE file, in full —
    currently placeholder-level legs()/casters()/tow_handle(), being
    substantially replaced by this prompt)
@@ -30,22 +36,17 @@ Read in order, state every file read before writing a single line:
 ## 2. CONTEXT
 
 The existing legs()/casters()/tow_handle() were explicit placeholders
-from the original v1-init prompt ("basic placeholder pass, low churn").
-This prompt replaces them with a fully-specified real mechanism, derived
-through direct calculation with Janis (not sandbox-verified by Claude
-Web this session, per her explicit instruction — cc's own full QA
-remains mandatory as always).
+from the original v1-init prompt. This prompt replaces them with a
+fully-specified real mechanism.
 
-This is two genuinely different axle mechanisms, not four identical
-wheels:
-- REAR: fixed, non-swivel, mounted under the firebox
-- FRONT: single-swivel caster (steering), with a triangular bracket
-  carrying a hinged, tiltable tow handle
-
-All coordinates below are real numbers, derived step by step (wheel
-size → clearances → structural stack), not estimates. Where Claude Web
-made an explicit choice rather than deriving from a given constraint,
-it's flagged — verify those specifically, don't just build past them.
+Two genuinely different, UNRELATED mechanisms — do not let them
+influence each other's geometry:
+- REAR: fixed, non-swivel axle under the firebox (Task 1)
+- FRONT WHEEL SUPPORT: a single bent-sheet bracket carrying a swivel
+  caster under the chamber (Task 2, REWRITTEN this round)
+- PULLER/HANDLE MOUNT: a separate triangle bracket + hinged handle
+  (Task 3) — has NOTHING to do with the front wheel/caster. Do not
+  merge, cross-reference, or reconcile its geometry against Task 2's.
 
 ## 3. NEW FILES
 
@@ -53,182 +54,192 @@ None. Editing bbq-offset-smoker/BBQ-understructure.scad in place.
 
 ## 4. TASKS
 
-### TASK 1 — Rear axle (fixed, non-swivel, under firebox)
+### TASK 1 — Rear axle (fixed, non-swivel, under firebox) — UNCHANGED
 
 ```
 WHEEL_D = 609.6        // 24" wheel including tire
 WHEEL_R = 304.8         // 305mm, rounded
 FIREBOX_CLEARANCE = 200 // Janis's spec, each side, avoid heat
 
-// firebox footprint (read live values, do not hardcode from this
-// prompt — confirm firebox_x0/firebox_size/DATUM_Y_CENTER match):
-// firebox_x0 = DATUM_X_REAR (915), firebox_size = 457,
-// firebox spans Y: DATUM_Y_CENTER - firebox_size/2 to +firebox_size/2
-//   = 76.5 to 533.5
+// firebox footprint — READ THE LIVE FILE, do not hardcode from this
+// prompt. At time of writing: firebox_x0 = DATUM_X_REAR (915),
+// firebox_size = 457, firebox spans Y: DATUM_Y_CENTER - firebox_size/2
+// to +firebox_size/2 = 76.5 to 533.5. Re-derive from the live file.
 
-REAR_AXLE_X = firebox_x0 + firebox_size/2   // 1143.5 — centered on
-                                              // firebox midpoint
-REAR_WHEEL_Y_LEFT  = 76.5 - FIREBOX_CLEARANCE    // -123.5
-REAR_WHEEL_Y_RIGHT = 533.5 + FIREBOX_CLEARANCE   // 733.5
-REAR_TRACK_WIDTH = REAR_WHEEL_Y_RIGHT - REAR_WHEEL_Y_LEFT  // 857mm
+REAR_AXLE_X = firebox_x0 + firebox_size/2   // centered on firebox midpoint
+REAR_WHEEL_Y_LEFT  = firebox_y0 - FIREBOX_CLEARANCE
+REAR_WHEEL_Y_RIGHT = firebox_y1 + FIREBOX_CLEARANCE
+REAR_TRACK_WIDTH = REAR_WHEEL_Y_RIGHT - REAR_WHEEL_Y_LEFT  // ~857mm
 
-REAR_AXLE_Z = WHEEL_R   // 305 — ground contact, wheel radius
-REAR_BRACKET_H = firebox_floor_z - REAR_AXLE_Z  // 400 - 305 = 95mm
+REAR_AXLE_Z = WHEEL_R   // ground contact, wheel radius
+REAR_BRACKET_H = firebox_floor_z - REAR_AXLE_Z
 ```
 
-Build: a simple fixed drop-bracket (95mm tall, wall_t-ish plate/tube
-construction, your choice of reasonable structural cross-section) from
-the firebox underside (firebox_floor_z, at REAR_AXLE_X) down to
-REAR_AXLE_Z, with a transverse axle beam at the bottom spanning
-REAR_TRACK_WIDTH (Y: -123.5 to 733.5), wheel placeholder (simple
-cylinder, WHEEL_D diameter, reasonable tire width e.g. 150mm — off-
-shelf placeholder per project convention, no tread detail) centered at
-each end of that beam. No swivel, no kinetic parameter — this axle is
-static.
+Build: a simple fixed drop-bracket (real height per the formula above,
+wall_t-ish plate/tube construction, your choice of reasonable structural
+cross-section) from the firebox underside (firebox_floor_z, at
+REAR_AXLE_X) down to REAR_AXLE_Z, with a transverse axle beam at the
+bottom spanning REAR_TRACK_WIDTH, wheel placeholder (simple cylinder,
+WHEEL_D diameter, reasonable tire width e.g. 150mm — off-shelf
+placeholder, no tread detail) centered at each end of that beam. No
+swivel, no kinetic parameter — this axle is static.
 
-### TASK 2 — Front axle: support box + single swivel + triangle bracket
+### TASK 2 — Front wheel support bracket + caster (REWRITTEN)
 
-```
-// support box — under the G-H face (flat bottom edge of the octagon)
-SUPPORT_BOX_WIDTH = chamber_W - 2*chamfer   // 310mm, matches G-H width
-SUPPORT_BOX_DEPTH = 300                      // longitudinal, X: 0 to -300
-SUPPORT_BOX_Y0 = DATUM_Y_CENTER - SUPPORT_BOX_WIDTH/2   // 150
-SUPPORT_BOX_Y1 = DATUM_Y_CENTER + SUPPORT_BOX_WIDTH/2   // 460
-CHAMBER_UNDERSIDE_Z = chamber_floor_z - wall_t   // 597
+A single bent-sheet bracket, press-brake formed from ONE flat trapezoidal
+blank, 6mm thick. Confirmed via real local render against a sketch
+Janis provided directly — build EXACTLY this geometry, do not
+reinterpret or re-derive a different shape.
 
-SUPPORT_BOX_H = 120
-SUPPORT_BOX_Z0 = CHAMBER_UNDERSIDE_Z - SUPPORT_BOX_H   // 477
-// support box: X 0 to -300, Y 150-460, Z 477-597
-
-SWIVEL_X = -150   // support box CENTER (confirmed — not the outer
-                   // edge; corrected mid-session)
-SWIVEL_Y = DATUM_Y_CENTER   // 305
-SWIVEL_COLLAR_H = 20
-SWIVEL_Z0 = SUPPORT_BOX_Z0 - SWIVEL_COLLAR_H   // 457
-// swivel pivot: free Z-axis rotation collar, X=-150, Y=305, Z 457-477
-
-FRONT_WHEEL_X = SWIVEL_X   // -150 — wheel sits directly below the
-                            // swivel, does not move fore/aft on steer
-FRONT_WHEEL_Z = WHEEL_R     // 305, same wheel spec as rear
-
-// triangle bracket — TOP-VIEW triangle only (apex at swivel, widens
-// to a flat base at the hinge). In SIDE view this is just plate
-// thickness, not a tall vertical structure — confirmed explicitly by
-// Janis after an earlier misread. Do not build this as a tall
-// vertical member.
-HINGE_X = -400   // apex-to-base "height" of the top-view triangle =
-                  // 400-150 = 250mm forward of the swivel. Purpose:
-                  // move the tiltable handle's hinge far enough
-                  // forward to clear the exhaust room during its
-                  // fold-up swing to vertical storage — NOT a wheel
-                  // clearance requirement, the wheel stays at X=-150.
-TRIANGLE_BASE_Z = FRONT_WHEEL_Z   // 305 — base of the triangle carries
-                                   // the transverse axle beam, matches
-                                   // wheel height
-```
-
-CLEARANCE CHECK (state numerically in cc_chat_log, confirm against the
-LIVE chambers file's real exhaust room dimensions — do not assume the
-360mm/180mm-reach figures below are still current, re-read them):
-exhaust room's forward reach (ROOM_D/2, per that file) must leave real
-margin against HINGE_X=-400. At the time this prompt was written:
-ROOM_D=360 → reach=180mm → margin = 400-180 = 220mm. Re-verify this is
-still true against the actual live file before building.
-
-Triangle bracket construction: a flat plate (wall_t-appropriate
-thickness, e.g. similar to the chamber's own wall_t or a sturdier
-structural gauge — your call, flag your choice), apex at (SWIVEL_X,
-SWIVEL_Y, TRIANGLE_BASE_Z), widening in the -X direction to a flat base
-at HINGE_X spanning the SAME track width as the rear axle
-(REAR_TRACK_WIDTH, Y: -123.5 to 733.5 — this is Janis's explicit
-"front span must follow rear for parallelity" requirement). A
-transverse axle beam runs along that base (at HINGE_X, spanning the
-full track width), with a wheel (WHEEL_D, same spec as rear) at each
-end.
-
-Mechanism (single central swivel — not two independent front wheels):
-the swivel pivot (SWIVEL_X, SWIVEL_Y, Z 457-477) is the ONE steering
-axis. The triangle bracket + axle beam + both front wheels rotate
-TOGETHER about this single vertical (Z) axis when steered — one rigid
-assembly, not independent wheels. Support box (fixed to the chamber) is
-the parent; swivel collar is the child, free to rotate about Z; triangle
-+ axle beam + wheels are rigid children of the swivel, all moving
-together.
-
-### TASK 3 — Tow handle (separate part, hinged at the triangle's tip)
-
-The handle is a separate tall member from the triangle bracket, not
-part of it — confirmed against Janis's own reference sketch (two
-circles on a vertical post, distinct from the flat triangle plate).
+**Shape, in the chamber's own hex_pt(h,w) convention (h relative to
+chamber_floor_z, w = world Y) — read the live chambers file's own
+`chamfer`, `chamber_W`, `DATUM_Y_CENTER` values, do not hardcode
+decimals from this prompt:**
 
 ```
-HANDLE_HINGE_X = HINGE_X   // -400, at the triangle's forward tip/base
-HANDLE_HINGE_Y = DATUM_Y_CENTER   // 305, centered
-HANDLE_HINGE_Z = TRIANGLE_BASE_Z  // 305, same height as the axle beam
+MID_H    = chamfer / 2                        // 89.3325 at current values
+                                                 // -- 50% up the chamfer,
+                                                 // this is where the
+                                                 // bracket's top edge
+                                                 // welds to the chamber
+TOP_W    = (chamber_W - 2*chamfer) + 2*MID_H    // 431.335 -- the REAL
+                                                 // octagon width at
+                                                 // h=MID_H. This MUST be
+                                                 // computed from the same
+                                                 // octagon math the
+                                                 // chamber itself uses
+                                                 // (chamber_W-2*chamfer+2h),
+                                                 // not approximated —
+                                                 // the top edge has to be
+                                                 // flush/continuous with
+                                                 // the real chamfer
+                                                 // surface, no seam.
+BOT_W    = chamber_W - 2*chamfer                // 252.665 -- same as the
+                                                 // chamber's own actual
+                                                 // floor width
+LEG_GAP  = 250                                  // X spacing between the
+                                                 // front and rear leg
+LEG_DROP = 150                                  // chamber_floor_z (h=0)
+                                                 // down to the bracket's
+                                                 // bottom, where the
+                                                 // caster mounts
+t        = 6                                    // plate thickness
 ```
 
-Kinetic: `handle_tilt_deg` parameter. 0 = towing/use position (handle
-angled down/outward from the hinge — your reasonable choice of resting
-angle, flag it). Full tilt = vertical storage position, rotating about
-a Y-axis line through HANDLE_HINGE point (tilts fore/aft, i.e. up/down
-— NOT the same axis as the swivel's Z-rotation).
+**Construction — ONE bent blank, not separate welded plates:**
+- Two trapezoidal side plates (front leg, rear leg), each spanning from
+  h=MID_H (top, width=TOP_W, centered on DATUM_Y_CENTER) down to
+  h=-LEG_DROP (bottom, width=BOT_W, centered on DATUM_Y_CENTER) — a
+  straight-sided trapezoid, real edges only, same hex_pt(h,w) convention
+  the chamber file itself uses (h negative = below chamber_floor_z).
+  Position the two legs at X = FRONT_X and X = FRONT_X - LEG_GAP (pick a
+  reasonable FRONT_X placing the bracket under the chamber's front
+  overhang area — flag your choice, state reasoning).
+- A flat bottom plate, thickness t, spanning the full LEG_GAP between
+  the two legs at Z = chamber_floor_z - LEG_DROP, width BOT_W (matching
+  the legs' own bottom width) — this is where the caster mounts.
+- The TOP edge of each leg (at h=MID_H, width=TOP_W) must be flush
+  against the chamber's real chamfer surface at that height — verify
+  via a real CGAL check that there's no gap/interference (the leg's top
+  edge should lie exactly ON the chamber's own true_octagon_profile()
+  boundary at h=MID_H, not floating off it).
+- Caster: a real off-the-shelf swivel caster placeholder (cylinder +
+  simple mounting plate representation is fine, no internal bearing
+  detail), mounted centered on the bottom plate. State the mounting
+  interface you assumed (bolt pattern / plate size) — if you don't have
+  a real spec, use a reasonable generic heavy-duty swivel caster
+  footprint and flag it as a placeholder needing Janis's real hardware
+  spec to finalize.
+- Wheel(s) on the caster: reuse the same WHEEL_D/WHEEL_R spec as Task 1
+  unless the caster's own footprint requires a different size — flag
+  either way.
+
+No kinetic parameter for this bracket itself — it's a fixed weldment.
+The caster's own swivel/steer motion is inherent to the off-the-shelf
+part, not something this bracket needs to model kinematically.
+
+### TASK 3 — Tow handle + puller triangle bracket — UNCHANGED
+
+Do not modify, reinterpret, or cross-check this against Task 2's
+geometry. Build exactly as specified:
+
+The handle is a separate tall member, hinged at the tip of a flat
+top-view triangle bracket (plate thickness only in side view — not a
+tall vertical member). This triangle and its hinge point are entirely
+independent of the front wheel/caster built in Task 2 above — they do
+not share a mounting point, an axle, or any coordinate reference.
+
+```
+// triangle bracket — TOP-VIEW triangle only. Apex forward, base at the
+// hinge. Position and dimensions per Janis's own spec from the prior
+// session — read cc_chat_log.md / prior session record for the exact
+// HINGE_X / track-width / clearance numbers if not otherwise given
+// here, and re-verify the exhaust-room clearance check against the
+// LIVE chambers file (ROOM_D etc. may have changed — v10 recentered
+// the exhaust room's Z position, but re-confirm ROOM_D's own forward
+// reach is unchanged before trusting old clearance numbers).
+```
+
+Handle: `handle_tilt_deg` kinetic parameter, 0 = towing/use position,
+full tilt = vertical storage. Steering (rotation about the triangle's
+own mount axis) turns the handle assembly independent of tilt angle.
 
 Confirm via real CGAL that the handle at full-vertical tilt clears the
-exhaust room with the margin stated in Task 2's clearance check — this
-is the actual purpose of HINGE_X's forward offset, verify it's real,
-not just arithmetic.
-
-Steering behavior (state explicitly, this is the mechanism Janis
-specified): rotating the handle about the SWIVEL's Z-axis (not the
-tilt hinge) turns the whole front assembly — handle, triangle, axle
-beam, and both front wheels move together, at ANY tilt angle (down for
-towing, up for storage — steering works the same either way, since the
-swivel and the tilt hinge are independent, perpendicular axes).
+exhaust room — re-derive the real margin from the LIVE chambers file,
+don't assume old numbers still hold.
 
 ## 5. DO NOT TOUCH
 
 - Any `bbq-offset-smoker/BBQ-chambers-v*.scad` file — read only, do not
   modify chamber/firebox/lid/exhaust geometry
 - `prep_shelves()` geometry — unchanged, BUT flag via real intersection
-  probe whether the new support box (X:0 to -300) spatially conflicts
-  with it ("front of chamber" per its own original spec) — report the
-  finding, do not silently assume no overlap
+  probe whether Task 2's new bracket (at FRONT_X and below) spatially
+  conflicts with it — report the finding, do not silently assume no
+  overlap
 - `firebox_drop = 200` — still not resolved, read-only reference value
+- Task 3's own mechanism — build it, but do not redesign, reinterpret,
+  or tie it to Task 2's bracket in any way
 - rules-dimensions.md, cc_rules.md — read only
 
 ## 6. QA VERIFICATION
 
 - [ ] Full CGAL manifold sweep, `Simple: yes` on every solid
-- [ ] Rear axle: REAR_AXLE_X, REAR_TRACK_WIDTH, REAR_BRACKET_H stated
-      and confirmed matching the formulas above (or the real live
-      firebox values if they differ from what's assumed here)
-- [ ] Front swivel: confirmed single pivot, both front wheels + triangle
-      + axle beam rotate together as one rigid assembly
-- [ ] Front and rear track width confirmed EQUAL (parallelity)
-- [ ] Triangle bracket confirmed as a flat top-view shape (plate
-      thickness only in side view) — not built as a tall vertical member
-- [ ] Handle-to-exhaust-room clearance confirmed via real CGAL at full
-      vertical tilt, actual margin number stated (not assumed from this
-      prompt's numbers alone — re-derived from the live chambers file)
-- [ ] `prep_shelves()` vs new support box: real intersection probe
+- [ ] Rear axle: REAR_AXLE_X, REAR_TRACK_WIDTH, REAR_BRACKET_H stated,
+      derived from the LIVE firebox values (not this prompt's numbers)
+- [ ] Front bracket: MID_H, TOP_W, BOT_W all stated as computed from the
+      live file's real chamfer/chamber_W — not hardcoded decimals
+- [ ] Front bracket: real CGAL check confirms the leg's top edge (at
+      h=MID_H) lies flush on the chamber's true_octagon_profile()
+      boundary — no gap, no interference
+- [ ] Front bracket: confirmed as ONE bent-blank construction (trapezoid
+      taper from MID_H to bottom), not a separate offset/collar design
+- [ ] Caster mounting interface stated explicitly (real spec or flagged
+      placeholder)
+- [ ] Front and rear track width comparison stated (need not match —
+      state both, flag if Janis should confirm parallelity separately)
+- [ ] Task 3: triangle + handle built exactly per its own spec, zero
+      cross-reference to Task 2's bracket geometry
+- [ ] Task 3: handle-to-exhaust-room clearance re-verified against the
+      LIVE chambers file, real margin number stated
+- [ ] `prep_shelves()` vs Task 2's bracket: real intersection probe
       result stated either way
-- [ ] Kinetic sweep: `handle_tilt_deg` at rest/mid/full-vertical, swivel
-      rotation at a few angles combined with tilt states — all Simple:yes
+- [ ] Kinetic sweep: `handle_tilt_deg` at rest/mid/full-vertical —
+      Simple:yes throughout
 - [ ] 4-angle screenshots (iso/front/side/rear) + 1 with handle at full
-      vertical storage tilt, + 1 with swivel turned to a non-zero angle
+      vertical storage tilt
 - [ ] Error-Log clean
 
 ## 7. MANDATORY CLOSING
 
 1. Prepend cc_chat_log.md — newest entry at top, under 10 lines: state
-   real rear/front axle coordinates, confirmed track-width match,
-   handle clearance margin (actual number), prep_shelves conflict
-   finding, QA results
-2. Archive this prompt → /prompts/archive/ ✅ COMPLETE — 2026-07-14
+   real rear axle coordinates, real front bracket MID_H/TOP_W/BOT_W
+   values, flush-fit CGAL check result, caster spec assumption,
+   prep_shelves conflict finding, handle clearance margin, QA results
+2. Archive this prompt → /prompts/archive/ ✅ COMPLETE — 2026-07-17
 3. Update knowledge.map, PART_MANIFEST.md, SKELETON_WORKSHEET.md —
    remove the old generic legs()/casters()/tow_handle() entries, add
-   the new rear_axle()/front_axle()/tow_handle() (or your chosen names)
-   entries with real Toggle-Completeness coverage
+   the new rear_axle()/front_bracket()/caster()/tow_handle() (or your
+   chosen names) entries with real Toggle-Completeness coverage
 4. Save as BBQ-understructure-v2.scad (v1 kept per convention); update
    BBQ-offset-smoker-base-v1.scad's include if it references the
    understructure filename directly

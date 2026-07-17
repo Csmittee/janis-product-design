@@ -1,5 +1,21 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.8 — 2026-07-16
+> Version 1.9 — 2026-07-17
+> Changes: bbq-chambers-v11-firebox-wall-seal. THE REAL FIX for the
+> "triangle leak" (1.8's entry below left it KT-exhausted/unexplained).
+> Root cause found by Janis directly, independently confirmed by Claude
+> via a real local render before any code was written: the octagon
+> narrows near the floor (bottom two chamfers); the firebox is a plain
+> square — above `chamber_floor_z` the square sticks out past the true
+> octagon boundary on both sides, and no part ever closed that region
+> (`firebox_near_wall_closure()` only ever covered BELOW `chamber_floor_z`).
+> New `firebox_upper_wall_seal()` closes exactly that region, built from
+> the real `firebox_square_2d()`/`fixed_side_solid_2d()` boolean (both
+> unchanged). Verified: real CGAL probe confirms the two former-gap
+> triangles now solid; full kinetic sweep 0-120° and the full assembly
+> chain both `Simple: yes`; both panels 5218.8436mm² each, confirmed
+> mirror-symmetric. New "Firebox upper wall seal" bullet added to Part B's
+> skeleton tree below; Toggle-Completeness count updated.
+> Previous: 1.8 — 2026-07-16
 > Changes: bbq-chambers-v9-firebox-passage-true-profile. DOES NOT FIX THE
 > "TRIANGLE LEAK" — the source prompt theorized `firebox_passage_profile()`'s
 > use of `fixed_shell_profile()` (fake diagonal) was the cause; a real
@@ -205,7 +221,16 @@ BBQ Offset Smoker V9 (top assembly)
 │   └── Floor drain valves x2 (BUY, off-shelf placeholder)
 ├── Firebox
 │   ├── Firebox shell (4-wall hollow box, open both ends)
-│   ├── Firebox near-wall closure (v3 — closes the firebox_drop step gap)
+│   ├── Firebox near-wall closure (v3 — closes the firebox_drop step gap,
+│   │   strictly BELOW chamber_floor_z only)
+│   ├── Firebox upper wall seal (v11 NEW — THE REAL "triangle leak" FIX.
+│   │   Closes the region AT/ABOVE chamber_floor_z where the firebox's
+│   │   square footprint sticks out past the narrowing octagon —
+│   │   `firebox_square_2d()` minus `fixed_side_solid_2d()`, clipped to
+│   │   h>=0. Two mirror-symmetric panels, 5218.8436mm² each. Real CGAL
+│   │   probe + full kinetic sweep + full assembly chain all confirmed
+│   │   Simple:yes; see BBQ-chambers-v11.scad header for the full
+│   │   verification record)
 │   ├── Fire grate (welded bars)
 │   ├── Ash tray (slide-out)
 │   └── Firebox door (hinged, joggle-step joint)
@@ -240,12 +265,14 @@ clamp latches) are NOT independently kinetic — they're removable/fixed
 hardware, not hinged/sliding mechanisms, so they get a `show_*` isolation
 toggle only (Toggle-Completeness Rule), not a dual-view kinetic state.
 
-## Toggle-Completeness count (2026-07-16, v1.8)
+## Toggle-Completeness count (2026-07-17, v1.9)
 
-BBQ-chambers-v9.scad ASSEMBLY: 8 modules called (`chamber_shell`, `lid`,
+BBQ-chambers-v11.scad ASSEMBLY: 8 modules called (`chamber_shell`, `lid`,
 `lid_hardware`, `firebox`, `exhaust_room`, `chimney_pipe`, `grill_grate`,
 `floor_drains`) — all 8 have a real `show_*` toggle, carried over
 unchanged from v2. 8/8 compliant. `firebox_near_wall_closure()`,
+`firebox_upper_wall_seal()` (v11 NEW — same no-separate-toggle sub-part
+status, called from `firebox()` alongside `firebox_near_wall_closure()`),
 `lid_territory_margin_fill()` (v8 — REPLACES `lid_territory_end_caps()`,
 PR #121/v6, same no-separate-toggle sub-part status), and
 `firebox_passage()` are all sub-parts called from within

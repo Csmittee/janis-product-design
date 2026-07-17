@@ -4,7 +4,42 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.9 — 2026-07-17 (bbq-understructure-v2-axles-swivel-handle):
+# Version: 1.10 — 2026-07-17 (bbq-understructure-v3-wheel-height-tray-handle):
+# BBQ-understructure.scad's own table below REBUILT again for
+# BBQ-understructure-v3.scad. Real render review by Janis (actual v2
+# screenshots) found 4 things, all fixed: (1) WHEEL_D/WHEEL_R 609.6/304.8
+# -> 400/200, single source both axles; front caster ONE wheel -> TWO
+# (same single pivot, new stub axle, 120mm center-to-center, TIRE_W
+# 150->100). (2) Grate height control value CHANGED: 700-750mm SUPERSEDED,
+# new locked target 900-1000mm from true ground — achieved via ONE new
+# `GROUND_OFFSET`=150mm constant (chamber/firebox never move,
+# BBQ-chambers-v11.scad zero changes) — real grate height 928.665mm.
+# `REAR_AXLE_Z`/`REAR_BRACKET_H` recomputed (50mm/350mm, was 304.8/95.2).
+# New spacer brackets: front x1 (`front_spacer()`, 394mm, bridges the
+# confirmed caster top-plate down to the new axle Z) + rear x2
+# (`rear_spacers()`, 278.5mm each, push each wheel axle outward clear of
+# the firebox) — front bracket's own MID_H/TOP_W/BOT_W/LEG_GAP/LEG_DROP/
+# FRONT_X and rear strut's own REAR_AXLE_X/REAR_TRACK_WIDTH all confirmed
+# ZERO diff from v2. (3) `prep_shelves()` re-hinged at real octagon "apex
+# A" (world Y=0/610, Z=GRATE_Z=778.665mm — the same point
+# `fixed_side_wedge()`/`lid_side_wedge()` already share as the lid's own
+# parting-line reference), via new `tray_mount_bracket()` — real CGAL
+# contact confirmed (was floating in v2, no real chamber contact). (4) Tow
+# handle REPLACES v2's "entirely independent" design (wrong assumption,
+# corrected via Janis's own reference photo): triangle bracket now
+# RIGIDLY WELDED to `front_spacer()` (the front axle/caster yoke) inside
+# new `front_swivel_assembly()` — `steer_deg` now rotates the front wheel
+# pair too (coupled steering, real CGAL-confirmed weld + collision-free
+# sweep). Handle is now a real T-shaped crossbar
+# (`HANDLE_UPRIGHT_LEN`=400/`HANDLE_CROSSBAR_LEN`=300). Fold parameter
+# renamed `handle_fold_deg` (was v2's `handle_tilt_deg`) — real CGAL vs
+# `exhaust_room()` at full fold: 87.5mm X / 292.5mm Z margins (re-derived
+# at the new height/coupled geometry, NOT v2's old 137.5/155mm numbers).
+# See BBQ-understructure-v3.scad's own header + cc_chat_log.md for the
+# full verification record. BBQ-chambers-v11.scad's own table (below)
+# UNCHANGED this session (chambers file itself not touched, per DO NOT
+# TOUCH).
+# Previous: 1.9 — 2026-07-17 (bbq-understructure-v2-axles-swivel-handle):
 # BBQ-understructure.scad's own table below REBUILT for BBQ-understructure-v2.scad.
 # v1's explicit placeholders (`legs()`/`casters()`/`tow_handle()`) REPLACED
 # wholesale with 3 real, mutually-UNRELATED mechanisms: TASK 1 `rear_axle()`
@@ -155,26 +190,25 @@
 | `grill_grate()` | 3 removable laser-cut segments, top at GRATE_Z exactly. v6: GRATE_Z REPOSITIONED 700->750 — aligned to the lid parting line, per Janis's explicit spec. v8: GRATE_Z is now FORMULA-DERIVED (`chamber_floor_z + chamfer` = 778.665mm, was hardcoded 750) — `chamber_floor_z` is now the fixed PRIMARY DATUM (`grate_clearance` retired) and GRATE_Z moves automatically with the corrected chamfer, "lifts up naturally" per Janis. Y-range (v5 fix) recomputed automatically from the same chamfer-boundary formulas at the new height band — re-verified collision-free against both the fixed shell and the closed lid | GRATE_Z is no longer an independent input at all — it's a real derived formula now, not "re-VALUED" by hand | `show_grate` |
 | `floor_drains()` | 2 placeholder drain valve bosses, front third / back third of chamber length. UNCHANGED this session (DO NOT TOUCH) | | `show_drains` |
 
-## BBQ-understructure-v2.scad
+## BBQ-understructure-v3.scad
 
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
-| `rear_axle()` | TASK 1, NEW (replaces v1's `legs()`+half of `casters()`). Fixed, NON-swivel axle under the firebox: 2 struts (Y=DATUM_Y_CENTER+/-150, real weld target inside the firebox's own solid bottom wall) drop from the firebox underside (`firebox_floor_z`=400) to a transverse round beam (REAR_AXLE_Z=304.8=WHEEL_R) spanning the real REAR_TRACK_WIDTH=857mm (`firebox_y0`-200 .. `firebox_y1`+200), carrying 2 placeholder 609.6mm wheels centered at the beam's own ends. Wraps `rear_axle_bracket()` (struts+beam) + `rear_wheels()` | a swivel/steerable mechanism — this axle is static, no kinetic parameter, per the prompt | `show_rear_axle` |
-| `front_wheel_support()` | TASK 2, REWRITTEN this round (replaces v1's `legs()`+other half of `casters()`). ONE bent-sheet bracket, press-brake formed from ONE flat trapezoidal blank (6mm), built as 2 real trapezoid side-leg plates (X=FRONT_X=300 and X=FRONT_X-LEG_GAP=50, flagged cc judgment call — under the chamber's own front-third overhang, clear of the lid's hinge/motion zone) + 1 flat bottom plate (X-span=LEG_GAP=250, width=BOT_W), carrying a single swivel caster (100x100mm generic heavy-duty top-plate placeholder, flagged — no real hardware spec yet) whose own wheel REUSES TASK 1's 609.6mm WHEEL_D/WHEEL_R spec (flagged judgment call, real geometric fit — see file header). Top edge (h=MID_H=chamfer/2, width=TOP_W) real-CGAL-confirmed FLUSH against the chamber's own `true_octagon_profile()` boundary at that height (both endpoints, non-empty material probe). Wraps `front_bracket()` (2 legs + bottom plate) + `front_caster_plate()`/`front_caster_stem()`/`front_caster_wheel()` | a 2-caster/2-wheel front axle (only ONE caster, per the prompt's own "single bent-sheet bracket... carrying A swivel caster") — front/rear track width intentionally do NOT match (rear=857mm, front=single centered caster, no track width in the 2-wheel sense) — flagged for Janis to confirm the resulting 3-point/tricycle stance is intentional | `show_front_wheel_support` |
-| `tow_handle_assembly(handle_tilt_deg, steer_deg)` | TASK 3, UNCHANGED spec from the source prompt (built fresh — v1's only precedent was an unspec'd placeholder cylinder). Flat TOP-VIEW-only triangle bracket (apex at TRIANGLE_APEX_X=-350, base at TRIANGLE_BASE_X=-50/TRIANGLE_BASE_W=200, plate thickness TRIANGLE_T=6 only — never a tall member) + a separate tall handle bar (HANDLE_LEN=400/HANDLE_D=25), hinged near the triangle's own tip (HINGE_X=-330, 20mm inset from the true apex — a real hinge pin can't seat on a zero-width vertex, real-CGAL-confirmed manifold overlap there). `handle_tilt_deg`: 0=towing/use (horizontal) .. 90=full-vertical storage — real CGAL probe vs `exhaust_room()` at full tilt: EMPTY (137.5mm real X clearance, 155mm real Z clearance, both independently sufficient). `steer_deg`: independent rotation about the triangle's own mount axis (vertical line through TRIANGLE_BASE_X/DATUM_Y_CENTER), turns the whole assembly. GOVERNANCE FLAG: HINGE_X/track-width/clearance numbers are a flagged cc judgment call, NOT a Janis-confirmed prior-session spec — cc_chat_log.md has no such record, see file header | related to / sharing any mount point, axle, or coordinate reference with TASK 2's `front_wheel_support()` — deliberately independent, zero cross-reference (confirmed: X-ranges don't even overlap, -350..-50 vs 50..300) | `show_tow_handle_assembly` |
-| `prep_shelves(shelf_deployed)` | UNCHANGED from v1, per this prompt's DO NOT TOUCH. Real intersection() probe run this session against `front_wheel_support()` (TASK 2) — EMPTY, no conflict (X-ranges overlap but Y-ranges don't: bracket Y=[89.3,520.7] vs shelf Y=[-300,0]/[610,910]) | | `show_shelves` |
+| `rear_axle()` | Fixed, NON-swivel axle under the firebox — WHEEL_D/WHEEL_R now 400/200 (was 609.6/304.8), REAR_AXLE_Z/REAR_BRACKET_H recomputed to 50/350mm (was 304.8/95.2) via the new shared `GROUND_OFFSET`=150. REAR_AXLE_X=1143.5/REAR_TRACK_WIDTH=857mm/strut construction all ZERO diff from v2 (DO NOT TOUCH). Wraps `rear_axle_bracket()` (struts + `rear_center_beam()` + NEW `rear_spacers()`) + `rear_wheels()` | a swivel/steerable mechanism — static, no kinetic parameter | `show_rear_axle` |
+| `rear_spacers()` | NEW (TASK 2) — 2 real spacer tubes (278.5mm each, symmetric), pushing each wheel's axle OUTWARD from the strut mount (Y=155/455, near the firebox) clear of the firebox out to the real wheel Y (Y=-123.5/733.5). Real CGAL-confirmed junction overlap with `rear_center_beam()` and with `rear_wheels()` (hub containment) | a single center spacer (that's the front's own design, not the rear's) | (none — sub-part of `rear_axle_bracket()`, no separate toggle) |
+| `front_wheel_support(steer_deg, handle_fold_deg)` | ONE bent-sheet bracket — `front_bracket()` (2 trapezoid legs + bottom plate: MID_H/TOP_W/BOT_W/LEG_GAP/LEG_DROP/FRONT_X all ZERO diff from v2, DO NOT TOUCH, real-CGAL-reconfirmed flush fit unaffected) + `front_caster_plate()` (fixed swivel bearing top-plate, unchanged position) + NEW `front_swivel_assembly()` (the rotating yoke: `front_spacer()` [NEW, 394mm, bridges the fixed plate down to the new axle Z] + `front_stub_axle()` + `front_wheels()` [NOW TWO, TASK 1, 120mm center-to-center, same single pivot] + `tow_triangle()` + `tow_handle()` — ALL rotate together under `steer_deg`, the TASK 4 coupled-steering fix; `handle_fold_deg` is a SEPARATE inner rotation, the T-bar's own fold hinge). Real CGAL: triangle-to-spacer weld confirmed genuine shared material (not v2's independent mount); steer sweep (0/±22.5/±45/90) vs front_bracket()+prep_shelves() confirmed empty at every tested angle (Z-separation argument: wheels never rise above Z=250, bracket/trays start at Z≥447) | a 2-independent-mechanism split like v2 — the triangle/handle/wheels are now ONE rigid rotating assembly, per Janis's own reference-photo correction | `show_front_wheel_support` |
+| `tow_triangle()` / `tow_handle(handle_fold_deg)` | TASK 4, REBUILT. Triangle: flat top-view-only plate (TRIANGLE_APEX_X=-300/BASE_X=200/BASE_W=200/T=6), rigidly welded to `front_spacer()` (TRIANGLE_BASE_X extends 25mm past CASTER_X specifically to guarantee real 3D overlap with the 40mm-dia spacer, flagged judgment call, real-CGAL-confirmed non-empty). Handle: REAL T-shaped crossbar (HANDLE_UPRIGHT_LEN=400/D=25 + HANDLE_CROSSBAR_LEN=300/D=25, perpendicular grip at the upright's far end) — REPLACES v2's plain round bar. `handle_fold_deg` (renamed from v2's `handle_tilt_deg` — materially different payload+nesting, not a decimal tweak): 0=towing/use (horizontal) .. 90=folded vertical storage, SAME rotate-about-Y-hinge convention as v2. Real CGAL vs `exhaust_room()` at full fold, steer=0: EMPTY, 87.5mm real X clearance / 292.5mm real Z clearance (re-derived at the NEW height+coupled geometry — v2's old 137.5/155mm numbers explicitly NOT reused) | independent of the front caster (that was v2's wrong assumption, corrected via Janis's reference photo) | (none — sub-parts of `front_wheel_support()`'s own `front_swivel_assembly()`, no separate toggle — v2's separate `show_tow_handle_assembly` toggle correctly RETIRED, since the triangle/handle are no longer an independent mechanism) |
+| `prep_shelves(shelf_deployed)` | TASK 3, RE-HINGED. SAME size (`chamber_L*0.35 x SHELF_D x SHELF_T`) and SAME kinetic behavior as v2/v1 (DO NOT TOUCH) — ONLY the mount point changed: was an arbitrary floating point (`DATUM_X_FRONT+LEG_INSET`, `chamber_floor_z`, confirmed NO real chamber contact); now real octagon "apex A" (`true_octagon_profile()` point 3, world Y=0/610, Z=`GRATE_Z`=778.665mm — the SAME point `fixed_side_wedge()`/`lid_side_wedge()` already share as the lid's own parting-line reference), via NEW `tray_mount_bracket()` — real CGAL contact check confirms non-empty shared material with `chamber_outer_tube()`/`lid_territory_margin_fill()` at both trays | the profile's absolute lowest point (that's the floor, Z=600) — apex A is the lowest true WALL/CHAMFER corner, real fixed material regardless of `lid_open_deg` | `show_shelves` |
 
-## Toggle-completeness count (2026-07-17, v1.9)
+## Toggle-completeness count (2026-07-17, v1.10)
 
-12 modules called across both ASSEMBLY blocks (8 in chambers, unchanged;
-4 in understructure — same COUNT as v1.8, but 3 of the 4 are now real
-mechanisms, not placeholders: `rear_axle()`, `front_wheel_support()`,
-`tow_handle_assembly()` REPLACE `legs()`/`casters()`/`tow_handle()`
-1-for-1, `prep_shelves()` unchanged). 12/12 have a real `show_*` isolation
-toggle — 0 gaps, 0 safety-critical exceptions needed this version.
-Sub-parts (`rear_axle_bracket()`/`rear_wheels()`,
-`front_bracket()`/`front_caster_*()`, `tow_triangle()`/`tow_handle()`) are
-called from within their own single ASSEMBLY-toggled wrapper — same
-no-separate-toggle pattern `chamber_shell()`'s own sub-parts already use,
-not a new exception. `show_lid_hardware` still defaults false (unchanged
-this session, BBQ-chambers-v11.scad itself not touched).
+11 modules called across both ASSEMBLY blocks (8 in chambers, unchanged; 3
+in understructure — was 4 in v2: `rear_axle()`, `front_wheel_support()`,
+`prep_shelves()`; v2's separate `show_tow_handle_assembly` toggle
+correctly RETIRED this session, not a gap — the triangle/handle are no
+longer an independently-toggleable mechanism, they're a rigid sub-part of
+`front_wheel_support()`'s own swivel assembly now, same no-separate-toggle
+pattern `chamber_shell()`'s sub-parts already use). 11/11 have a real
+`show_*` isolation toggle — 0 gaps, 0 safety-critical exceptions needed
+this version. `show_lid_hardware` still defaults false (unchanged this
+session, BBQ-chambers-v11.scad itself not touched).

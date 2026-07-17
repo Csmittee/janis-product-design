@@ -1,5 +1,20 @@
 # BBQ Offset Smoker — Design Scope of Work
-> Version 1.1 — 2026-07-13
+> Version 1.2 — 2026-07-17
+> Changes: bbq-understructure-v3-wheel-height-tray-handle. Envelope
+> section's grate-height control value CHANGED: 700mm (MASTER CONTROL
+> VALUE) SUPERSEDED — Janis re-verified ergonomic reach height this
+> session, new locked target is 900-1000mm from true ground. Real chosen
+> value 928.665mm (GRATE_Z + new understructure-level GROUND_OFFSET=150mm
+> -- see BBQ-understructure-v3.scad's own header for the full mechanism:
+> chamber_floor_z/GRATE_Z themselves are unchanged, BBQ-chambers-v11.scad
+> is completely locked -- the lift happens entirely at the understructure
+> level, true ground moves relative to the fixed chamber frame). Detail
+> correction to an already-FINAL section (per this file's own two-tier
+> confidence system below) -- Product Identity/Envelope numbers were
+> "copied verbatim from the original prompt" and FINAL as of v1.0/1.1; this
+> specific figure is now Janis-superseded, explicitly, not a silent
+> downgrade of the section's overall FINAL status.
+> Previous: 1.1 — 2026-07-13
 > Changes: bbq-offset-smoker-v1-init-ADDENDUM. Compartment Map / Functional
 > Features / Appearance / Made-Buy-Hire sections REPLACED — v1.0's content
 > was cc's own reconstruction from Task 2/3's technical description (no
@@ -56,7 +71,9 @@ grade, 2-3mm steel. V1 = pass-through smoke flow.
 
 ## Envelope
 Cook chamber 915mm L x 610mm flat-to-flat cross-section.
-Grate height 700mm from ground (MASTER CONTROL VALUE, fixed).
+Grate height 900-1000mm from true ground (SUPERSEDES the original 700mm
+MASTER CONTROL VALUE — Janis re-verified ergonomic reach height
+2026-07-17, real value 928.665mm — see BBQ-understructure-v3.scad).
 Firebox 457x457x457mm cube, floor 200mm below chamber floor
 [ASSUMPTION - Janis to confirm before final merge].
 

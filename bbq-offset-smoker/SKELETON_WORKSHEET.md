@@ -1,5 +1,25 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.12 — 2026-07-17
+> Version 1.13 — 2026-07-17
+> Changes: bbq-chambers-v13-reanchor-grate-decouple-rear-passage.
+> CHAMBER-ONLY round (firebox v12, understructure v4 both frozen — v4's
+> own `include` pointer-bumped to v13, zero real construction change).
+> Part A's PRIMARY DATUM row updated: `chamber_floor_z` is now a live
+> formula (900-chamfer=721.335mm, was a 600mm literal) so apex A/GRATE_Z
+> lands at EXACTLY 900mm — the real, algebraic fix for last round's own
+> honestly-flagged finding (apex A was really 778.665mm, not the 900mm a
+> prior prompt mistakenly assumed, traced to a v3 GROUND_OFFSET constant
+> that was computed on paper but never wired into real geometry). Grill
+> Grate row DECOUPLED from the chamber body — *** TEMPORARY *** fixed at
+> `GRATE_Z_FIXED`=1000mm, a real 100mm unsupported air gap above apex A,
+> expected, NOT a defect — intended to be re-merged once a future
+> reinforcement-frame+shorter-door task exists (flagged in the module
+> itself, not just here). Part B's Firebox subtree: Firebox Passage
+> REBUILT (real cylinder∩octagon `intersection()`, replaces the old
+> rectangular cut) and Firebox near-wall-closure/upper-wall-seal RETIRED,
+> REPLACED by one new `firebox_end_cap()` plate (real, aligned hole,
+> full-face seal). Detail/content update within the SAME 3-part structure,
+> not a new artifact — X.Y bump.
+> Previous: 1.12 — 2026-07-17
 > Changes: bbq-chambers-v12-firebox-rebuild-understructure-v4-wheel. Part
 > A's Firebox/Understructure rows and Part B's BOM tree REBUILT again —
 > source now BBQ-chambers-v12.scad + BBQ-understructure-v4.scad. Firebox
@@ -199,17 +219,21 @@ MASTER ORIGIN: (0, 0, 0) at floor level, front-left corner of the product
   footprint (chimney/tow-handle end = front, firebox end = rear) — matches
   rules-dimensions.md's global "front-left at floor" convention.
 
-PRIMARY DATUM:   chamber_floor_z (horizontal plane, Z=600mm, unchanged
-                 numeric value — MASTER CONTROL VALUE / independent input)
-                 — locks Z. v8: FLIPPED from DATUM_GRATE_Z (was
-                 "grate-down": chamber_floor_z derived FROM the grate).
-                 GRATE_Z is now DERIVED (= chamber_floor_z + chamfer =
-                 778.665mm, v8 — was hardcoded 750mm) — a real geometric
-                 constraint (the grate sits exactly at the top of the
-                 lower chamfer, the lid parting line), not an
-                 independently-set ergonomic pick. `grate_clearance`
-                 RETIRED (its only consumer was the old, now-reversed,
-                 chamber_floor_z formula). firebox_floor_z's own direction
+PRIMARY DATUM:   chamber_floor_z (horizontal plane — v13: now a LIVE
+                 FORMULA, `900 - chamfer` = 721.335mm real, was a
+                 hardcoded 600mm literal through v12) — locks Z. Chosen
+                 specifically so GRATE_Z (`= chamber_floor_z + chamfer`,
+                 formula itself UNCHANGED since v8) lands at EXACTLY
+                 900mm by algebraic cancellation — the real fix for the
+                 v12 session's own honestly-flagged finding that apex A
+                 was really 778.665mm, not the 900mm a prior prompt
+                 mistakenly assumed. GRATE_Z remains the chamber body's
+                 own real apex-A reference; the GRILL GRATE part itself is
+                 now a SEPARATE, TEMPORARILY-DECOUPLED thing (see Part B/C
+                 below) — do not confuse `GRATE_Z`/`DATUM_GRATE_Z` (the
+                 chamber's own apex-A datum, 900mm) with `GRATE_Z_FIXED`
+                 (the physical grill grate part's own independent Z,
+                 1000mm). firebox_floor_z's own direction
                  off chamber_floor_z is UNCHANGED either way.
 SECONDARY DATUM: DATUM_X_REAR (chamber's rear/firebox wall, X=915mm) —
                  locks X. Firebox is Parent: DATUM_X_REAR, not an
@@ -256,21 +280,17 @@ BBQ Offset Smoker V9 (top assembly)
 │   │   │   continuous wall_t-only material through the boundary (~5096mm²
 │   │   │   cross-section, not the ~308258mm² a solid closing panel would
 │   │   │   show). Same X-range as before: X=0-100 and X=815-915)
-│   │   └── Firebox passage (REPLACES the old fixed 254x119mm
-│   │       window_hole(); profile-intersection opening, offset v6: -15mm
-│   │       around the cut, was -10mm — retains partition strength per
-│   │       Janis's explicit request. v8: area changed 92741.2mm² ->
-│   │       88209.5mm² [~4.9% smaller] as a real side effect of the
-│   │       corrected chamfer — code itself unchanged, flagged not
-│   │       silently absorbed. v9: rebuilt to intersect against
-│   │       `fixed_side_solid_2d()` [real edges only, `fixed_shell_profile()`
-│   │       DELETED] instead of the fake-diagonal profile — independently
-│   │       verified this is a code-quality cleanup ONLY (real XOR test:
-│   │       identical shapes, area unchanged at 88209.549116mm²), NOT a
-│   │       fix for the "triangle leak" Janis has reported 3 times — that
-│   │       symptom remains UNEXPLAINED, KT-exhausted, needs Janis's
-│   │       direct input. See BBQ-chambers-v9.scad header for the full
-│   │       verification record)
+│   │   └── Firebox passage (v13 REBUILT — real `intersection()` of the
+│   │       ALREADY-BUILT v12 fuel cylinder's own 388.6mm circular
+│   │       cross-section against the live octagon boundary
+│   │       [`fixed_side_solid_2d()`, UNCHANGED], REPLACES the old
+│   │       rectangular/inset firebox-footprint cut. `PASSAGE_INSET`
+│   │       retired. Real result: round on the ridge-ward side, real
+│   │       octagon-clipped boundary on the floor-ward side [h clamped
+│   │       exactly to [0,258.665], zero material below chamber_floor_z,
+│   │       confirmed numerically] — matches Janis's "look through the
+│   │       door" description, see BBQ-chambers-v13.scad header for the
+│   │       full verification record)
 │   ├── Lid (ridge-hinged, 3 flat panels: half-ridge+chamfer+wall — v3
 │   │   MIRRORED to Y=0 side, was Y=chamber_W side in v2; v6: margin
 │   │   widened to 100mm each end, LID_LENGTH=715, was 895)
@@ -278,28 +298,35 @@ BBQ Offset Smoker V9 (top assembly)
 │   │   ├── Toggle-clamp latches x2 (BUY, off-shelf placeholder) — still DISABLED
 │   │   ├── Dome thermometer (BUY, off-shelf placeholder) — still DISABLED
 │   │   └── Counterbalance lever + weight — still DISABLED
-│   ├── Grill grate (3 removable segments — v6: GRATE_Z REPOSITIONED
-│   │   700->750, aligned to the lid parting line per Janis's explicit
-│   │   spec; Y-range formula (v5 fix) re-evaluated at the new height,
-│   │   re-verified collision-free against shell and closed lid. v8:
-│   │   GRATE_Z now FORMULA-DERIVED (`chamber_floor_z + chamfer`, real
-│   │   value 778.665mm, was hardcoded 750) — moves automatically with the
-│   │   corrected chamfer, "lifts up naturally" per Janis; Y-range formula
-│   │   itself unchanged, DO NOT TOUCH, updates automatically too)
+│   ├── Grill grate (v13 TASK 2: Z-anchor DECOUPLED from the chamber
+│   │   body — *** TEMPORARY *** fixed at GRATE_Z_FIXED=1000mm (mandatory
+│   │   comment at its own declaration), real 100mm unsupported air gap
+│   │   above the reanchored apex A (GRATE_Z=900mm exact, TASK 1),
+│   │   expected, intended to be re-merged once a future reinforcement-
+│   │   frame+shorter-door task exists. X/Y placement formulas UNCHANGED
+│   │   CODE per explicit DO NOT TOUCH — still keyed to DATUM_GRATE_Z
+│   │   [900], NOT GRATE_Z_FIXED [1000], real flagged consequence: grate
+│   │   built narrower [564mm] than geometrically available at its real
+│   │   height, safe/non-colliding [re-verified vs lid 0-120°/chimney/
+│   │   exhaust room], just not width-optimal)
 │   └── Floor drain valves x2 (BUY, off-shelf placeholder)
-├── Firebox (v12 REBUILT — independent FIREBOX_L/W/H=460/510/428.6mm, was
-│   │   a uniform 457mm cube; world Z=[571.4,1000], LOCKED spec numbers;
-│   │   X-midpoint preserved from v11, 1143.5mm, real ~1.5mm shift each
-│   │   side)
+├── Firebox (v12, FROZEN this round — independent FIREBOX_L/W/H=
+│   │   460/510/428.6mm, world Z=[571.4,1000], LOCKED spec numbers;
+│   │   X-midpoint preserved from v11, 1143.5mm)
 │   ├── Firebox shell (4-wall hollow box, open both ends — real, flagged
-│   │   ~1.5mm solid overlap with the chamber's own rear end-cap at the
-│   │   new position, not a manifold defect)
-│   ├── Firebox near-wall closure (real remaining band now only 28.6mm,
-│   │   was 200mm — real consequence of the new firebox floor sitting much
-│   │   closer to chamber_floor_z)
-│   ├── Firebox upper wall seal (UNCHANGED CODE v12, auto-follows the new
-│   │   firebox rectangle — still THE "triangle leak" fix)
-│   ├── Fuel cylinder (v12 TASK 2 NEW — REPLACES Fire grate, REMOVED
+│   │   ~1.5mm solid overlap with the chamber's own rear end-cap, not a
+│   │   manifold defect, UNCHANGED this round)
+│   ├── Firebox end-cap (v13 TASK 3 NEW — REPLACES Firebox near-wall
+│   │   closure + Firebox upper wall seal, BOTH RETIRED entirely [the real
+│   │   ~149.9mm-taller unsealed band the TASK 1 reanchor created made
+│   │   both narrow-band modules insufficient]. ONE continuous plate: the
+│   │   firebox's own full real rectangle minus the SAME passage-hole
+│   │   shape the chamber's own rear-wall cut uses — provably aligned,
+│   │   below chamber_floor_z fully solid by direct construction, above it
+│   │   matches the round/octagon-clipped hole exactly. Real CGAL seal-
+│   │   weld: non-empty contact vs both the fuel cylinder and the firebox
+│   │   shell, confirmed)
+│   ├── Fuel cylinder (v12, FROZEN this round — REPLACES Fire grate, REMOVED
 │   │   entirely. Hollow tube, 388.6mm dia [re-derived live from the real
 │   │   Task 1 numbers, exact match to the prompt's own table], wall_t=3mm,
 │   │   full firebox-length span, open both ends — door-side end touches
@@ -400,10 +427,12 @@ verified via real CGAL render this session (not just the default state
 | Prep shelves | deployed (`shelf_deployed=true`, horizontal) | stowed (`shelf_deployed=false`, vertical) | Discrete boolean, unchanged from v1 |
 | Tow handle (TASK 4, v3 REBUILT) | towing/use (`handle_fold_deg=0`, horizontal) | folded vertical storage (`handle_fold_deg=90`) | Continuous angle, renamed from v2's `handle_tilt_deg`. Real CGAL-confirmed clear of `exhaust_room()` at full fold (87.5mm real X clearance, 292.5mm real Z clearance — re-derived at the new height+coupled geometry, v2's old 137.5/155mm numbers NOT reused). `steer_deg` is now COUPLED (TASK 4 fix — was independent of the wheels in v2): rotates the triangle+handle AND the front wheel pair together as one rigid assembly — still a SEPARATE parameter from fold (no fixed "both end states"), not its own dual-view row, but no longer an independent mechanism either |
 
-Static/removable parts (Grill grate segments, floor drain valves, toggle-
-clamp latches, Rear axle — fixed/non-swivel, no kinetic parameter, and
-Front wheel support's own bracket — fixed weldment, the caster's swivel
-IS the `steer_deg` kinetic captured above, not separately modeled) are NOT
+Static/removable parts (Grill grate segments — *** TEMPORARILY,
+independently Z-positioned at GRATE_Z_FIXED=1000mm as of v13, see Part A/B
+above, NOT permanent architecture — floor drain valves, toggle-clamp
+latches, Rear axle — fixed/non-swivel, no kinetic parameter, and Front
+wheel support's own bracket — fixed weldment, the caster's swivel IS the
+`steer_deg` kinetic captured above, not separately modeled) are NOT
 independently kinetic beyond what's listed — they get a `show_*`
 isolation toggle only (Toggle-Completeness Rule), not a dual-view kinetic
 state.

@@ -1,5 +1,27 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.13 — 2026-07-17
+> Version 1.14 — 2026-07-18
+> Changes: bbq-chambers-v14-apex950-firebox-widen-dual-endcap.
+> CHAMBER+FIREBOX round — understructure (v4) COMPLETELY untouched, not
+> opened, its own `include` still points at v13 (bumping it is a later,
+> separate round). Part A's PRIMARY DATUM: `chamber_floor_z` formula
+> 900-chamfer -> 950-chamfer = 771.335mm real, apex A/GRATE_Z now EXACTLY
+> 950mm. Firebox rebuilt as TWO fully independent welded assemblies —
+> inner hot duct (540x388.6mm rect, FIREBOX_L=460mm interior UNCHANGED,
+> welded directly to the chamber) and outer insulating shell (widened to
+> 580mm, physical length 480mm via a new 20mm additive structural flange,
+> real-octagon-clipped tuck-under) — replacing v13's single shared end-cap
+> plate (a real full-face thermal-bridge problem this eliminates). Real
+> fire volume 5,890.5in³ = 102.7% of the 5,737in³ target (was ~58%). Real,
+> mandatory CGAL zero-contact check between the two assemblies confirmed
+> EMPTY (3 real coordinate/epsilon bugs found+fixed to get there, see
+> BBQ-chambers-v14.scad's own header). Rear passage now a plain,
+> independently-sized 197mm circle (flagged adjustable placeholder) — real
+> finding, NOT silently clipped: does not fully clear real chamber
+> material at the new apex, real cut is a chord roughly half the circle,
+> flagged for Janis. Part B's BOM tree and Part A's Understructure/Firebox
+> rows both updated below. Detail/content update within the SAME 3-part
+> structure, not a new artifact — X.Y bump.
+> Previous: 1.13 — 2026-07-17
 > Changes: bbq-chambers-v13-reanchor-grate-decouple-rear-passage.
 > CHAMBER-ONLY round (firebox v12, understructure v4 both frozen — v4's
 > own `include` pointer-bumped to v13, zero real construction change).
@@ -246,7 +268,7 @@ MAJOR SUB-ASSEMBLIES:
   Grill Grate      — Parent: DATUM_GRATE_Z (now itself Parent: chamber_floor_z) — offset: (0,0,0), fixed
   Cook Chamber      — Parent: chamber_floor_z              — offset: (0,0,0), fixed (v8 — chamber_floor_z is now the direct anchor, was dZ=-100 off DATUM_GRATE_Z)
   Lid               — Parent: Cook Chamber's ridge midpoint — offset: length-wise hinge at (-, DATUM_Y_CENTER, DATUM_Z_RIDGE); opens toward Y=0 (v3 mirror, was Y=chamber_W in v2) per the Standing Orientation Convention (rules-bbq-fab.md); margin widened v6 (LID_X0=100/LID_X1=815, was 10/905)
-  Firebox           — Parent: Cook Chamber's rear wall (DATUM_X_REAR)   — offset: v12 REBUILT, independent FIREBOX_L/W/H=460/510/428.6mm world Z=[571.4,1000] (LOCKED spec, X-midpoint preserved from v11: 1143.5mm); near-wall closure panel now only 28.6mm band (was 200mm firebox_drop step); NEW fuel_cylinder() sub-part, Parent: firebox's own real internal height/Y-center
+  Firebox           — Parent: Cook Chamber's rear wall (DATUM_X_REAR)   — offset: v14 REWORK, TWO independent welded assemblies, no shared Parent chain between them. Inner duct — Parent: chamber's own octagon end cap (welds DIRECTLY, own end cap module, real aligned hole matching the passage), 540x388.6mm rect, FIREBOX_L=460mm interior UNCHANGED. Outer shell — Parent: chamber's rear wall via a NEW 20mm additive structural flange (real-octagon-clipped tuck-under, own separate end cap, structural), widened to FIREBOX_W=580mm (was 510mm). The two assemblies share NO Parent/contact point with each other (real, mandatory CGAL zero-contact confirmed) — eliminates v13's single shared-end-cap Parent relationship
   Exhaust room      — Parent: Cook Chamber's front end-cap (DATUM_X_FRONT) — offset: welded flush at X=0; RESIZED v3 (360mm dia x 100mm height, was 200/200 v2)
   Chimney pipe      — Parent: Exhaust room's own top plate — offset: coaxial with the room's pipe-mounting hole; RE-POSITIONED v3 (real clearance now, not a forced overhang)
   Understructure     — Parent: Cook Chamber's chamber_floor_z / firebox_* / DATUM_Y_CENTER / GRATE_Z. v4 TASK 3: GROUND_OFFSET's indirect subtractive role RETIRED — REAR_AXLE_Z is now DIRECT CONSTRUCTION (`=WHEEL_R`=228.6), real-CGAL-confirmed wheel bottom at literal world Z=0 for BOTH axles (mandatory check found the v3 wheel's real bottom at raw Z=-150, confirmed NOT zero — "this is the anchor everything else in future prompts will be checked against"). REAL FLAGGED CONFLICT: this direct anchor, with the chamber staying frozen, drops real grate-height-above-ground to 778.665mm, below the standing 900-1000mm Envelope target — unresolved, not silently picked either way. rear_axle() Parent: firebox_floor_z(now 571.4)/firebox_x0/y0/y1 (offset: down to REAR_AXLE_Z=228.6, REAR_BRACKET_H=342.8mm); front_wheel_support(steer_deg,handle_fold_deg) Parent: chamber_floor_z/chamfer/chamber_W/DATUM_Y_CENTER (offset: down to chamber_floor_z-LEG_DROP, then front_spacer, now 215.4mm, down to the shared FRONT_AXLE_Z=228.6) — REAL, CGAL-CONFIRMED, UNRESOLVED COLLISION (NEW): front wheels now intersect front_bracket()/front_caster_plate()/tow_triangle() (~6mm each), all DO-NOT-TOUCH/deferred this round, flagged not fixed; prep_shelves() Parent: octagon "apex A" (world Y=0/610, Z=GRATE_Z=778.665, UNCHANGED, chamber frozen)
@@ -310,36 +332,44 @@ BBQ Offset Smoker V9 (top assembly)
 │   │   height, safe/non-colliding [re-verified vs lid 0-120°/chimney/
 │   │   exhaust room], just not width-optimal)
 │   └── Floor drain valves x2 (BUY, off-shelf placeholder)
-├── Firebox (v12, FROZEN this round — independent FIREBOX_L/W/H=
-│   │   460/510/428.6mm, world Z=[571.4,1000], LOCKED spec numbers;
-│   │   X-midpoint preserved from v11, 1143.5mm)
-│   ├── Firebox shell (4-wall hollow box, open both ends — real, flagged
-│   │   ~1.5mm solid overlap with the chamber's own rear end-cap, not a
-│   │   manifold defect, UNCHANGED this round)
-│   ├── Firebox end-cap (v13 TASK 3 NEW — REPLACES Firebox near-wall
-│   │   closure + Firebox upper wall seal, BOTH RETIRED entirely [the real
-│   │   ~149.9mm-taller unsealed band the TASK 1 reanchor created made
-│   │   both narrow-band modules insufficient]. ONE continuous plate: the
-│   │   firebox's own full real rectangle minus the SAME passage-hole
-│   │   shape the chamber's own rear-wall cut uses — provably aligned,
-│   │   below chamber_floor_z fully solid by direct construction, above it
-│   │   matches the round/octagon-clipped hole exactly. Real CGAL seal-
-│   │   weld: non-empty contact vs both the fuel cylinder and the firebox
-│   │   shell, confirmed)
-│   ├── Fuel cylinder (v12, FROZEN this round — REPLACES Fire grate, REMOVED
-│   │   entirely. Hollow tube, 388.6mm dia [re-derived live from the real
-│   │   Task 1 numbers, exact match to the prompt's own table], wall_t=3mm,
-│   │   full firebox-length span, open both ends — door-side end touches
-│   │   the closed door per Janis's spec; far/chamber-side end open/
-│   │   unfinished, flagged deferred open item per Janis's own note. Real
-│   │   CGAL clearance to the firebox's own inner wall: 17mm [Z]/57.7mm
-│   │   [Y], non-intersecting)
-│   ├── Ash tray (slide-out — HEIGHT REDUCED 80mm->12mm, real flagged
-│   │   consequence of the new fuel cylinder's real 17mm clearance above
-│   │   the firebox floor; real CGAL-confirmed 5mm margin under the
-│   │   cylinder)
-│   └── Firebox door (hinged, joggle-step joint — FIREBOX_W/H used
-│       directly, was uniform firebox_size)
+├── Firebox (v14 REWORK — TWO fully independent welded assemblies, NO
+│   │   shared end-cap plate [eliminates v13's real full-face thermal-
+│   │   bridge design]. FIREBOX_L=460mm [duct's own interior length,
+│   │   UNCHANGED] vs FIREBOX_SHELL_L=480mm [outer shell's own physical
+│   │   length, NEW, +20mm additive flange] — two separate, never-confused
+│   │   numbers)
+│   ├── Inner duct + inner duct end-cap (v14 TASK 2 NEW — REPLACES Fuel
+│   │   cylinder, RETIRED entirely. Rectangular, 540x388.6mm [20mm uniform
+│   │   margin vs the outer shell, all 4 sides], full FIREBOX_L span, open
+│   │   both ends [same convention as the retired cylinder]. Own end cap
+│   │   welds DIRECTLY to the chamber's own octagon end cap, NOT to the
+│   │   outer shell — real full rectangle minus the SAME passage-hole
+│   │   shape the chamber's own rear-wall cut uses [judgment call: keeps
+│   │   the duct's interior connected to the chamber, flagged]. Real CGAL
+│   │   seal-weld: non-empty contact vs the chamber's own solid wall,
+│   │   confirmed. Real fire volume: 540x388.6x460mm = 5,890.5in³ =
+│   │   102.7% of the 5,737in³ target [was ~58%])
+│   ├── Outer shell + outer shell end-cap (v14 TASK 2 NEW — REPLACES
+│   │   Firebox shell + Firebox end-cap, BOTH RETIRED. Widened to 580mm
+│   │   [15mm margin/side vs chamber_W=610, was 510mm]. Physical length
+│   │   480mm via a NEW 20mm solid ADDITIVE structural flange [not a
+│   │   trim] — real-`intersection()`-clipped to the chamber's own live
+│   │   octagon boundary so its upper zone genuinely tucks under real
+│   │   chamber material, confirmed via CGAL at the NEW 950mm-apex
+│   │   position, not assumed from the v13-era clearance. End-cap is
+│   │   STRUCTURAL, bears real load from the chamber's rear edge. Real,
+│   │   MANDATORY CGAL check: ZERO contact anywhere vs the inner duct
+│   │   assembly, confirmed EMPTY [3 real coordinate/epsilon bugs found+
+│   │   fixed during this build to get there, see BBQ-chambers-v14.scad's
+│   │   own header])
+│   ├── Ash tray (slide-out — width formula corrected to the DUCT's own
+│   │   real interior [514mm, was FIREBOX_W-based/484mm] — required real
+│   │   fix, the tray sits inside the duct, not the wider outer shell.
+│   │   Height/Z-position UNCHANGED, real 5mm clearance under the duct's
+│   │   own lower wall, same as v13)
+│   └── Firebox door (hinged, joggle-step joint — UNCHANGED CODE, real
+│       dimensions widen automatically 510->580mm, mounted on the wider
+│       outer shell, flagged real consequence)
 │       └── Air-intake damper cutout
 ├── Exhaust Room (half-cylinder, welded to front end-cap) — RESIZED v3 (360x100mm, was 200x200mm v2)
 │   └── Chimney Pipe (coaxial, sits on the room's own top plate) — RE-POSITIONED v3

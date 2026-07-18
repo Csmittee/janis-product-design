@@ -1,5 +1,29 @@
 # BBQ Offset Smoker — Design Scope of Work
-> Version 1.4 — 2026-07-17
+> Version 1.5 — 2026-07-18
+> Changes: bbq-chambers-v14-apex950-firebox-widen-dual-endcap. CHAMBER+
+> FIREBOX round (understructure v4 COMPLETELY untouched, not opened — its
+> own include bump to v14 is a later, separate round). Apex A/GRATE_Z now
+> EXACTLY 950mm (was 900mm), a real algebraic reanchor. Grate-to-apex-A
+> gap now 50mm (was 100mm), automatic consequence, grate itself still
+> TEMPORARILY fixed at 1000mm (unchanged, still not permanent
+> architecture). Firebox rebuilt as TWO fully independent welded
+> assemblies (real fire-holding volume was only ~58% of the theoretical
+> target and a shared end-cap created a real full-face thermal bridge —
+> both fixed together): inner hot duct (540x388.6mm, real interior length
+> 460mm UNCHANGED, welded directly to the chamber) + outer insulating
+> shell (widened 510->580mm, structurally tucked under the chamber's rear
+> wall via a new 20mm flange, physically 480mm long — a separate number
+> from the duct's own 460mm interior). Real fire volume now 5,890.5in³ =
+> 102.7% of the 5,737in³ target. Rear passage decoupled from the duct's
+> own shape entirely — now a plain, independently-sized 197mm circle,
+> explicitly flagged as a field-adjustable placeholder, NOT a locked spec.
+> *** REAL FINDING, NOT SILENTLY RESOLVED ***: this 197mm circle, at the
+> new 950mm-apex chamber position, does NOT fully clear real chamber
+> material — the real cut is a chord-shaped opening, roughly half the true
+> circle (confirmed via CGAL). A real, open decision for Janis: move the
+> passage, resize it, or accept the chord shape as field-adjusted with the
+> fabricator.
+> Previous: 1.4 — 2026-07-17
 > Changes: bbq-chambers-v13-reanchor-grate-decouple-rear-passage.
 > CHAMBER-ONLY round (firebox v12, understructure v4/wheel-anchor both
 > frozen, untouched). Envelope rewritten again: chamber body real-
@@ -121,33 +145,36 @@ grade, 2-3mm steel. V1 = pass-through smoke flow.
 ## Envelope
 Cook chamber 915mm L x 610mm flat-to-flat cross-section (UNCHANGED,
 chamber's own shape frozen).
-Apex A / chamber body reference: EXACTLY 900mm world Z (REAL, BUILT,
-2026-07-17 — `chamber_floor_z` is now a live formula, `900-chamfer`, so
-this lands algebraically exact, not approximated). Supersedes the prior
-778.665mm real-but-unintended value (flagged the round before).
-Grill grate: independently, TEMPORARILY fixed at 1000mm — DECOUPLED from
-the chamber body this round, Janis's own explicit call. Real 100mm
-unsupported air gap above apex A, expected, NOT a defect — reserved for a
-future reinforcement frame at chamber face A-B plus a correspondingly
-shorter door (deferred, separate future task). Once that structure exists,
-the grate is intended to be RE-MERGED back into the chamber body's own
-coordinate system — this decoupling is explicitly NOT permanent
+Apex A / chamber body reference: EXACTLY 950mm world Z (REAL, BUILT,
+2026-07-18 — `chamber_floor_z` is now `950-chamfer`, algebraically exact).
+Supersedes the prior 900mm value (2026-07-17 round).
+Grill grate: still independently, TEMPORARILY fixed at 1000mm — UNCHANGED
+this round. Real gap above apex A is now 50mm (was 100mm), an automatic
+consequence of the chamber's own reanchor, not a separate edit. Same
+future-reinforcement-frame re-merge plan as before, still NOT permanent
 architecture.
 Grate-height-above-true-ground target (900-1000mm, locked prior round) —
-OPEN ITEM, not resolved this round: understructure (wheel world-Z=0
-anchor) is untouched this session, and the grate itself is temporarily
-outside the chamber's own coordinate system, so no fresh combined figure
-has been computed. Needs a future understructure-touching round to
-restate this properly.
-Firebox: insulated jacket, 460mm(L) x 510mm(W) x 428.6mm(H), world
-Z=[571.4,1000]mm (UNCHANGED, frozen this round) around an internal
-cylindrical fuel-storage vessel (388.6mm dia, wall 3mm). Rear passage
-(chamber-to-firebox): 2026-07-17 REBUILT — real intersection of the
-cylinder's own circle against the chamber's live octagon boundary (round
-upper portion, octagon-clipped lower portion near the floor), sealed by a
-new dedicated firebox end-cap plate matching the same opening. Far end of
-the internal cylinder remains an explicit OPEN ITEM — Janis: "let me see
-how it looks then I'll explain the adjustment."
+still an OPEN ITEM, still not resolved (understructure untouched again
+this round).
+Firebox: REBUILT as two fully independent welded assemblies (2026-07-18),
+replacing the prior shared-end-cap concept (a real, confirmed full-face
+thermal-bridge problem). Inner hot duct: 540mm(W) x 388.6mm(H) x 460mm(L
+interior, UNCHANGED), rectangular, welded directly to the chamber's own
+octagon end cap. Outer insulating shell: widened 510->580mm(W) x
+428.6mm(H), physical length 480mm (a NEW, separate number from the duct's
+own 460mm interior — the extra 20mm is a solid structural flange only,
+tucked under the chamber's own rear wall for real support). Real fire
+volume: 5,890.5in³ ≈ 103% of the theoretical ~5,737in³ target (was ~58%
+under the old round-duct design). Rear passage: now a plain,
+independently-sized circle (197mm diameter default), fully decoupled
+from the duct's own shape — explicitly flagged as a field-adjustable
+placeholder, not a locked spec. *** REAL, OPEN FINDING (2026-07-18, not
+resolved) ***: this 197mm circle does NOT fully clear real chamber
+material at the new 950mm-apex position — the real cut is a chord-shaped
+opening, roughly half the true circle. Needs Janis's decision (move it,
+resize it, or accept the chord shape with the fabricator). Far end of the
+internal duct remains an explicit OPEN ITEM — Janis: "let me see how it
+looks then I'll explain the adjustment."
 
 ---
 

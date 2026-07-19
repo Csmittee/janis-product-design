@@ -1,5 +1,20 @@
 # BBQ Offset Smoker — Design Scope of Work
-> Version 1.5 — 2026-07-18
+> Version 1.6 — 2026-07-20
+> Changes: bbq-chambers-v14.1-flat-tuckunder-trapezoid-passage. Targeted
+> bug-fix + simplification round on the just-merged v14 — apex(950mm)/
+> firebox width(580mm)/fire-volume math ALL FROZEN, unchanged. Envelope's
+> Firebox entry: outer shell's rear tuck-under flange (+ its end cap)
+> simplified from a 2-zone octagon-clipped shape (the real visible STEP
+> Janis screenshotted) to ONE flat, full-height, unclipped plane — real
+> CGAL-confirmed genuine contact with chamber material above the floor
+> line, zero material below it, no size change. Rear passage: the plain
+> 197mm circle (flagged chord-shaped, did not fully clear chamber
+> material) RETIRED — replaced by a real trapezoid derived directly from
+> the octagon's own boundary (bottom 226.67mm/top 540mm duct-governed, top
+> edge lands EXACTLY on apex A=950mm by construction) — a LOCKED spec, not
+> a placeholder. Real CGAL confirms full containment, no chord/partial-
+> clip.
+> Previous: 1.5 — 2026-07-18
 > Changes: bbq-chambers-v14-apex950-firebox-widen-dual-endcap. CHAMBER+
 > FIREBOX round (understructure v4 COMPLETELY untouched, not opened — its
 > own include bump to v14 is a later, separate round). Apex A/GRATE_Z now
@@ -163,18 +178,24 @@ interior, UNCHANGED), rectangular, welded directly to the chamber's own
 octagon end cap. Outer insulating shell: widened 510->580mm(W) x
 428.6mm(H), physical length 480mm (a NEW, separate number from the duct's
 own 460mm interior — the extra 20mm is a solid structural flange only,
-tucked under the chamber's own rear wall for real support). Real fire
-volume: 5,890.5in³ ≈ 103% of the theoretical ~5,737in³ target (was ~58%
-under the old round-duct design). Rear passage: now a plain,
-independently-sized circle (197mm diameter default), fully decoupled
-from the duct's own shape — explicitly flagged as a field-adjustable
-placeholder, not a locked spec. *** REAL, OPEN FINDING (2026-07-18, not
-resolved) ***: this 197mm circle does NOT fully clear real chamber
-material at the new 950mm-apex position — the real cut is a chord-shaped
-opening, roughly half the true circle. Needs Janis's decision (move it,
-resize it, or accept the chord shape with the fabricator). Far end of the
-internal duct remains an explicit OPEN ITEM — Janis: "let me see how it
-looks then I'll explain the adjustment."
+tucked under the chamber's own rear wall for real support). 2026-07-20
+(v14.1): outer shell's rear tuck-under flange (+ its end cap) SIMPLIFIED
+from a 2-zone octagon-clipped shape (the real visible STEP Janis
+screenshotted) to ONE flat, full-height, UNCLIPPED plane — real CGAL-
+confirmed genuine contact with chamber material above the floor line,
+zero material below it (no size change, shape simplification only). Real
+fire volume: 5,890.5in³ ≈ 103% of the theoretical ~5,737in³ target (was
+~58% under the old round-duct design) — unaffected by the v14.1 changes.
+Rear passage: 2026-07-20 (v14.1) — the plain 197mm circle (flagged
+chord-shaped, field-adjustable placeholder) RETIRED, REPLACED by a real
+trapezoid cut through the chamber's own octagon end cap only, a LOCKED
+spec (Janis's real heat-rises/ash-avoidance design choice, not a
+placeholder): bottom edge 226.67mm wide at the chamber floor line, top
+edge 540mm wide (capped by the inner duct's own real width) at world
+Z=950mm — lands EXACTLY on apex A by construction. Real CGAL confirms
+full containment, no chord/partial-clip (unlike the retired circle).
+Far end of the internal duct remains an explicit OPEN ITEM — Janis: "let
+me see how it looks then I'll explain the adjustment."
 
 ---
 

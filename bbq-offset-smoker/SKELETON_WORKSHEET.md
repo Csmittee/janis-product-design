@@ -1,5 +1,69 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.17 — 2026-07-20
+> Version 1.19 — 2026-07-20
+> Changes: bbq-understructure-v6-fitment-fixes. TASK 0 bumps this file's
+> own `include` to BBQ-chambers-v15.scad, wiring v15's real square-shell/
+> cylinder firebox redesign into the full assembly chain for the first
+> time. 4 real fitment fixes from Janis's live OpenSCAD-desktop review of
+> v5: Part A's Prep shelves entry REBUILT (3 real distributed mounting
+> brackets, was 1 cantilevered — kinematics already correct, real fix is
+> physical support). TRACK_WIDTH recomputed to 980mm (100mm wheel-to-
+> firebox gap, was 1080mm/150mm). Rear fender rebuilt as a real short
+> flared wing (was a long straight panel — real cause: the flat mounting
+> portion spanned to the wheel's own centerline before curving; fixed by
+> starting the arc almost immediately at the real angle where it reaches
+> the firebox wall, live-computed via acos()). T-bar bracket now mounts
+> directly at the front axle's own real plane with a new curved gusset
+> (was floating 100mm above it). REAR_BRACKET_H/LEG_DROP recompute
+> automatically via v15's new firebox_floor_z (191.4mm/351.335mm, were
+> 342.8mm/199.935mm) — zero code change beyond the pointer bump. TBAR_LEN
+> unaffected (1102.735mm) — the v5-flagged 50mm roof-overshoot flips to a
+> genuine 50mm real clearance margin as a side effect of the gusset fix.
+> Front-wheel/bracket collision re-check at the new geometry: still
+> resolved (EMPTY), confirmed not assumed. REAL BUG FOUND+FIXED VIA CGAL
+> DURING THE BUILD: the fender's own wider 147deg arc sweep broke the
+> inherited 3-point wedge-mask technique (the chord between its 2 far
+> points cut INSIDE the ring at this wider angle, producing disconnected
+> slivers instead of a band, confirmed via real render) — fixed with a
+> real multi-point fan mask, robust to any sweep angle, re-verified as a
+> clean continuous band via CGAL.
+> Previous: 1.18 — 2026-07-20
+> Changes: bbq-chambers-v15-square-shell-cylinder-firebox. Real structural
+> firebox redesign, source v14.2 (understructure v5 completely out of
+> scope, not opened — a separate, already-prepared v6 round depends on
+> this round's own real output). Part B's Firebox section REBUILT: outer
+> shell rebuilt as a true 580x580x580 cube (FIREBOX_H 428.6->580mm, "dice"
+> proportions per Janis's own explicit direction); firebox_floor_z now a
+> live formula (420mm, was 571.4mm literal, top pinned at 1000mm instead) —
+> firebox now extends 351.335mm below chamber_floor_z (was 199.935mm).
+> REAL, NECESSARY FORMULA CORRECTION found before shipping: firebox_x0
+> repinned directly at its own real weld position (913.5mm, unchanged
+> value) instead of a historical-midpoint formula that would have pulled
+> it 60mm into the chamber's own real territory as FIREBOX_L grew
+> (460->580mm) — confirmed via direct computation, not assumed; all +120mm
+> of growth now happens on the door/far end only. Rectangular inner duct
+> RETIRED, replaced by a real 456mm-dia fire cylinder (62mm wall
+> clearance, Janis's own explicit choice) — real volume 5,780.25in³ =
+> 100.75% of the 5,737in³ target. Rear passage rebuilt as a circle
+> (194.898mm dia, target-area-sized) — real finding: the cylinder's own
+> true center now sits BELOW chamber_floor_z (a direct consequence of the
+> height growth), passage biased to the cylinder's own real top; real CGAL
+> measurement (STL volume, not estimated): 88.7% of the circle's own area
+> is genuinely cut through real chamber material, ~11.3% a real confirmed
+> chord (matches this project's own v13/v14 precedent for circular-passage
+> findings). NEW fire_cylinder_partition() end plate locates the cylinder
+> within the square shell. TWO REAL BUGS FOUND+FIXED VIA CGAL DURING THE
+> BUILD: (1) the ash tray's own real safe width was derived checking the
+> WRONG corner (top, not the farther-from-center bottom face) — a real,
+> substantial 49,100mm³ overlap with the cylinder's own solid wall found
+> via CGAL, fixed 150->80mm, re-verified empty. (2) the new partition sat
+> exactly coincident with firebox_door()'s own face (Simple:no) — pulled
+> back by a real e=0.01mm epsilon, re-verified Simple:yes. SEPARATE,
+> REAL, PRE-EXISTING FINDING (flagged, not fixed, chambers frozen no
+> further touching this round): firebox_door() is still real, CGAL-
+> confirmed non-manifold above ~90-95deg open — same defect flagged in the
+> prior (understructure v5) round, reproduced identically here, confirming
+> it is NOT a v15 regression.
+> Previous: 1.17 — 2026-07-20
 > Changes: bbq-understructure-v5-trackwidth-fender-tbar. Full understructure
 > rebuild, first round since v4 (2026-07-17) — TASK 0 (not optional
 > preamble) finally bumps this file's own `include` past v13 to
@@ -310,7 +374,7 @@ MAJOR SUB-ASSEMBLIES:
   Grill Grate      — Parent: DATUM_GRATE_Z (now itself Parent: chamber_floor_z) — offset: (0,0,0), fixed
   Cook Chamber      — Parent: chamber_floor_z              — offset: (0,0,0), fixed (v8 — chamber_floor_z is now the direct anchor, was dZ=-100 off DATUM_GRATE_Z)
   Lid               — Parent: Cook Chamber's ridge midpoint — offset: length-wise hinge at (-, DATUM_Y_CENTER, DATUM_Z_RIDGE); opens toward Y=0 (v3 mirror, was Y=chamber_W in v2) per the Standing Orientation Convention (rules-bbq-fab.md); margin widened v6 (LID_X0=100/LID_X1=815, was 10/905)
-  Firebox           — Parent: Cook Chamber's rear wall (DATUM_X_REAR)   — offset: v14 REWORK, TWO independent welded assemblies, no shared Parent chain between them. Inner duct — Parent: chamber's own octagon end cap (welds DIRECTLY, own end cap module, real trapezoid hole matching the passage — v14.2 TASK 1: resized to the real 0.008-area target [95.29mm bottom/227.00mm top] and repositioned [top now 20mm below the duct's own top wall, 960mm, was apex A=950mm in v14.1], was a chord-shaped circle through v14), 540x388.6mm rect, FIREBOX_L=460mm interior UNCHANGED. Outer shell — Parent: chamber's rear wall via a 20mm additive structural flange, v14.1 TASK 1: ONE flat, full-height, UNCLIPPED plane (was a 2-zone octagon-clipped shape that produced a real visible step); v14.2 TASK 2 REAL FIX: this flat plane never had the passage hole cut through it (a real, confirmed defect — Janis's own "thin film"/"not cut through" report), now cut via `outer_shell_flange_cut_2d()`, real CGAL ray-probe confirms a genuine unobstructed through-hole. Own separate end cap, structural, widened to FIREBOX_W=580mm (was 510mm). The two assemblies share NO Parent/contact point with each other (real, mandatory CGAL zero-contact RE-CONFIRMED against the new perforated shape) — eliminates v13's single shared-end-cap Parent relationship
+  Firebox           — Parent: Cook Chamber's rear wall (chamber's own real weld-overlap position, X=913.5mm — v15: REPINNED as a direct fixed anchor, was a derived side-effect of a historical-midpoint formula that would have drifted with FIREBOX_L, see file header) — offset: v15 REDESIGN, TWO independent welded assemblies, no shared Parent chain between them. Fire cylinder (REPLACES Inner duct/rectangular design entirely, RETIRED) — Parent: chamber's own octagon end cap (welds DIRECTLY, own end cap module, real CIRCULAR hole matching the passage — v15 TASK 3: passage rebuilt as a circle, 194.898mm dia, target-area-sized, real CGAL: 88.7% of its area genuinely cut through real material, ~11.3% a real confirmed chord since the cylinder's own true center now sits below chamber_floor_z), 456mm dia (62mm wall clearance), FIREBOX_L=580mm interior (was 460mm, TASK 2). Outer shell — Parent: chamber's rear wall via a 20mm additive structural flange (UNCHANGED construction/code), v15 TASK 1: rebuilt as a true 580x580x580 CUBE (FIREBOX_H 428.6->580mm, all 3 dims equal), firebox_floor_z now 420mm (was 571.4mm, top pinned at 1000mm instead). NEW fire_cylinder_partition() end plate locates the cylinder within the shell (Parent: outer_shell_footprint_2d()'s own real exterior boundary, reused). The two assemblies share NO Parent/contact point with each other (real, mandatory CGAL zero-contact RE-CONFIRMED at the new cube/cylinder geometry) — same architecture v14 established, reused not redesigned
   Exhaust room      — Parent: Cook Chamber's front end-cap (DATUM_X_FRONT) — offset: welded flush at X=0; RESIZED v3 (360mm dia x 100mm height, was 200/200 v2)
   Chimney pipe      — Parent: Exhaust room's own top plate — offset: coaxial with the room's pipe-mounting hole; RE-POSITIONED v3 (real clearance now, not a forced overhang)
   Understructure     — Parent: Cook Chamber's chamber_floor_z / firebox_* / DATUM_Y_CENTER / GRATE_Z. v4 TASK 3: GROUND_OFFSET's indirect subtractive role RETIRED — REAR_AXLE_Z is now DIRECT CONSTRUCTION (`=WHEEL_R`=228.6), real-CGAL-confirmed wheel bottom at literal world Z=0 for BOTH axles (mandatory check found the v3 wheel's real bottom at raw Z=-150, confirmed NOT zero — "this is the anchor everything else in future prompts will be checked against"). REAL FLAGGED CONFLICT: this direct anchor, with the chamber staying frozen, drops real grate-height-above-ground to 778.665mm, below the standing 900-1000mm Envelope target — unresolved, not silently picked either way. rear_axle() Parent: firebox_floor_z(now 571.4)/firebox_x0/y0/y1 (offset: down to REAR_AXLE_Z=228.6, REAR_BRACKET_H=342.8mm); front_wheel_support(steer_deg,handle_fold_deg) Parent: chamber_floor_z/chamfer/chamber_W/DATUM_Y_CENTER (offset: down to chamber_floor_z-LEG_DROP, then front_spacer, now 215.4mm, down to the shared FRONT_AXLE_Z=228.6) — REAL, CGAL-CONFIRMED, UNRESOLVED COLLISION (NEW): front wheels now intersect front_bracket()/front_caster_plate()/tow_triangle() (~6mm each), all DO-NOT-TOUCH/deferred this round, flagged not fixed; prep_shelves() Parent: octagon "apex A" (world Y=0/610, Z=GRATE_Z=778.665, UNCHANGED, chamber frozen)
@@ -374,152 +438,169 @@ BBQ Offset Smoker V9 (top assembly)
 │   │   height, safe/non-colliding [re-verified vs lid 0-120°/chimney/
 │   │   exhaust room], just not width-optimal)
 │   └── Floor drain valves x2 (BUY, off-shelf placeholder)
-├── Firebox (v14 REWORK — TWO fully independent welded assemblies, NO
-│   │   shared end-cap plate [eliminates v13's real full-face thermal-
-│   │   bridge design]. FIREBOX_L=460mm [duct's own interior length,
-│   │   UNCHANGED] vs FIREBOX_SHELL_L=480mm [outer shell's own physical
-│   │   length, NEW, +20mm additive flange] — two separate, never-confused
-│   │   numbers)
-│   ├── Inner duct + inner duct end-cap (v14 TASK 2 NEW — REPLACES Fuel
-│   │   cylinder, RETIRED entirely. Rectangular, 540x388.6mm [20mm uniform
-│   │   margin vs the outer shell, all 4 sides], full FIREBOX_L span, open
-│   │   both ends [same convention as the retired cylinder]. Own end cap
-│   │   welds DIRECTLY to the chamber's own octagon end cap, NOT to the
-│   │   outer shell — real full rectangle minus the SAME passage-hole
-│   │   shape the chamber's own rear-wall cut uses [judgment call: keeps
-│   │   the duct's interior connected to the chamber, flagged; v14.1 TASK 2:
-│   │   this hole is a real LOCKED trapezoid — REPLACES v14's placeholder
-│   │   197mm circle, which was flagged chord-shaped/did not fully clear
-│   │   chamber material. v14.2 TASK 1: RESIZED to the real 0.008-of-fire-
-│   │   volume opening-area target [47.124in²=30,402.6mm², was 2.25x
-│   │   oversized at 106.2in²] — bottom=95.29mm/top=227.00mm, same taper
-│   │   preserved. Per Janis's own direct clarification [flagged deviation
-│   │   from this round's own prompt-file "height frozen" note]: bottom
-│   │   stays at chamber_floor_z, top rises to 20mm below the duct's own
-│   │   real top wall [960mm, was 950mm=apex A] — height 178.665→188.665mm,
-│   │   the "top edge=apex A" coincidence does NOT carry over. Real CGAL
-│   │   seal-weld: non-empty contact vs the chamber's own solid wall,
-│   │   confirmed. Real fire volume: 540x388.6x460mm = 5,890.5in³ =
-│   │   102.7% of the 5,737in³ target [was ~58%])
-│   ├── Outer shell + outer shell end-cap (v14 TASK 2 NEW — REPLACES
-│   │   Firebox shell + Firebox end-cap, BOTH RETIRED. Widened to 580mm
-│   │   [15mm margin/side vs chamber_W=610, was 510mm]. Physical length
-│   │   480mm via a 20mm solid ADDITIVE structural flange [not a trim].
-│   │   v14.1 TASK 1 REBUILT: flange+end-cap now use the plain, UNCLIPPED
-│   │   `outer_shell_footprint_2d()` for their ENTIRE height — ONE flat
-│   │   continuous plane, no zones [was a 2-zone octagon-clipped shape
-│   │   that produced a real visible STEP at chamber_floor_z, Janis's own
-│   │   screenshot]. Real CGAL: upper zone [world Z=chamber_floor_z..
-│   │   firebox top] has real non-empty contact with chamber material;
-│   │   lower zone [below chamber_floor_z] confirmed EMPTY, matches this
-│   │   file's own "no material below the floor" convention — no separate
-│   │   clip needed. End-cap is STRUCTURAL, bears real load from the
-│   │   chamber's rear edge. Real, MANDATORY CGAL check: ZERO contact
-│   │   anywhere vs the inner duct assembly, RE-RUN against the new flat
-│   │   shape, confirmed still EMPTY. v14.2 TASK 2 REAL BUG FOUND+FIXED:
-│   │   this flat plane never had the passage hole cut through it — since
-│   │   it's LARGER than the duct's own opening and sits directly in the
-│   │   line of sight, it fully sealed the passage shut even though the
-│   │   chamber wall and duct end cap both had a real hole [found via an
-│   │   actual CGAL ray-probe, not a visual read — matches Janis's own
-│   │   "very large but not cut through"/"thin film" report exactly]. NEW
-│   │   `outer_shell_flange_cut_2d()` = footprint MINUS the same passage
-│   │   shape, now used at both the flange and end-cap. Ray-probe re-run
-│   │   confirmed a genuine, unobstructed through-hole)
-│   ├── Ash tray (slide-out — width formula corrected to the DUCT's own
-│   │   real interior [514mm, was FIREBOX_W-based/484mm] — required real
-│   │   fix, the tray sits inside the duct, not the wider outer shell.
-│   │   Height/Z-position UNCHANGED, real 5mm clearance under the duct's
-│   │   own lower wall, same as v13)
+├── Firebox (v15 REDESIGN — TWO fully independent welded assemblies, NO
+│   │   shared end-cap plate [SAME real architecture v14 established,
+│   │   reused not reinvented]. FIREBOX_L=580mm [fire cylinder's own
+│   │   interior depth, was 460mm] vs FIREBOX_SHELL_L=600mm [outer shell's
+│   │   own physical length, was 480mm, +20mm additive flange] — two
+│   │   separate, never-confused numbers. REAL, NECESSARY FORMULA
+│   │   CORRECTION found before shipping: firebox_x0 repinned directly at
+│   │   its own real weld position [913.5mm, unchanged value] instead of a
+│   │   historical-midpoint formula that would have pulled it 60mm into
+│   │   the chamber's own real territory as FIREBOX_L grew — all +120mm of
+│   │   growth now happens on the door/far end only [firebox_x1=1493.5mm])
+│   ├── Fire cylinder + fire cylinder end-cap (v15 TASK 2 NEW — REPLACES
+│   │   Inner duct + inner duct end-cap, BOTH RETIRED entirely. Round,
+│   │   456mm dia [62mm wall clearance vs the outer shell, Janis's own
+│   │   explicit choice, real OPEN AIR gap], full FIREBOX_L[580mm] span,
+│   │   open both ends [same convention as the retired rectangular duct].
+│   │   Own end cap welds DIRECTLY to the chamber's own octagon end cap,
+│   │   NOT to the outer shell — real full circle minus the SAME passage-
+│   │   hole shape the chamber's own rear-wall cut uses. Real fire volume:
+│   │   π×228²×580mm = 5,780.25in³ = 100.75% of the 5,737in³ target [was
+│   │   102.7% under the old rectangular design]. Real CGAL seal-weld:
+│   │   non-empty contact vs the chamber's own solid wall, confirmed;
+│   │   zero-contact vs the outer shell RE-CONFIRMED EMPTY)
+│   ├── Firebox passage (v15 TASK 3 REBUILT as a plain CIRCLE — was v14.2's
+│   │   trapezoid, derived from the octagon's taper to match a RECTANGULAR
+│   │   duct's footprint; no longer has a natural basis now the duct is
+│   │   round. Real target area [0.008x the new real fire volume]:
+│   │   46.242in²=29,833.5mm², diameter 194.898mm. REAL FINDING: the fire
+│   │   cylinder's own true center now sits BELOW chamber_floor_z entirely
+│   │   [direct consequence of TASK 1's height growth] — passage biased to
+│   │   the cylinder's own real top [5mm margin, judgment call, flagged].
+│   │   Real CGAL measurement [STL volume, not estimated]: 88.7% of the
+│   │   circle's own area is genuinely cut through real chamber material,
+│   │   ~11.3% a real confirmed chord below the floor [matches this
+│   │   project's own v13/v14 precedent for circular-passage findings])
+│   ├── Outer shell + outer shell end-cap (v15 TASK 1 REBUILT as a true
+│   │   580x580x580 CUBE [FIREBOX_H 428.6->580mm, FIREBOX_W unchanged,
+│   │   FIREBOX_L now 580mm too — all 3 real dimensions equal, "dice"
+│   │   proportions per Janis's own explicit direction]. Flange/end-cap
+│   │   construction UNCHANGED CODE [`outer_shell_footprint_2d()`/
+│   │   `outer_shell_flange_cut_2d()`, reused as-is, automatically consume
+│   │   the new FIREBOX_H/L live]. Real, direct consequence: the firebox
+│   │   now extends 351.335mm below chamber_floor_z [was 199.935mm] —
+│   │   closes ~151mm of the real gap to the axle plane [understructure's
+│   │   own concern, next round]. Real CGAL re-verification [mandatory, not
+│   │   assumed]: the flat "no material below the floor" construction still
+│   │   Simple:yes at the new, much larger range. Zero-contact vs the fire
+│   │   cylinder RE-CONFIRMED EMPTY)
+│   ├── Fire cylinder partition (v15 TASK 4, NEW — square end plate
+│   │   matching the outer shell's own real 580x580 exterior footprint
+│   │   minus a circle matching the cylinder's own real diameter [+2e real
+│   │   clearance vs an exact-diameter coincident-surface touch], locates
+│   │   the cylinder within the square shell per Janis's reference photo.
+│   │   REAL BUG FOUND+FIXED VIA CGAL: positioned flush at exactly
+│   │   X=firebox_x1 produced a real Simple:no coincident-face result
+│   │   against the door — pulled back by a real e=0.01mm epsilon,
+│   │   re-verified Simple:yes/empty. Real CGAL: non-empty contact vs the
+│   │   outer shell's own wall, EMPTY vs the cylinder and the door)
+│   ├── Ash tray (slide-out — v15 REQUIRED real fix: width now governed by
+│   │   the fire cylinder's own real chord width at the tray's own
+│   │   FARTHEST-from-center face. REAL BUG FOUND+FIXED VIA CGAL: the first
+│   │   pass [150mm, checking only the tray's TOP corner] found a real,
+│   │   substantial 49,100mm³ overlap with the cylinder's own solid wall —
+│   │   the tray's BOTTOM face is actually farther from center [220mm vs
+│   │   the top's 208mm] and is the true binding constraint [94.34mm safe
+│   │   max, not 171.6mm]. Fixed: ASH_TRAY_W=80mm [was 514mm under the old
+│   │   rectangular duct], real margin, re-verified empty. Length grows
+│   │   automatically to 534mm [was 414mm] with the longer cylinder)
 │   └── Firebox door (hinged, joggle-step joint — UNCHANGED CODE, real
-│       dimensions widen automatically 510->580mm, mounted on the wider
-│       outer shell, flagged real consequence)
+│       dimensions stay 580mm wide [FIREBOX_W unchanged], now mounted on a
+│       taller 580mm-high shell [was 428.6mm], flagged real consequence)
 │       └── Air-intake damper cutout
 ├── Exhaust Room (half-cylinder, welded to front end-cap) — RESIZED v3 (360x100mm, was 200x200mm v2)
 │   └── Chimney Pipe (coaxial, sits on the room's own top plate) — RE-POSITIONED v3
-└── Understructure (v5 — TASK 0: pointer FINALLY bumped v13->v14.2, real
-    │   +50mm chamber_floor_z shift [721.335->771.335], front bracket leg
-    │   re-verified flush against the chamber's real octagon boundary at
-    │   the new Z via CGAL [local-coordinate identity, invariant to the
-    │   shift, confirmed not just assumed]. TASK 1: ONE shared TRACK_WIDTH
-    │   =1080mm [FIREBOX_W+2*150+TREAD_W] now drives BOTH front and rear
-    │   wheel Y-position — retires REAR_TRACK_WIDTH and the front caster's
-    │   own DUAL_WHEEL_OFFSET spacing)
+└── Understructure (v6 — TASK 0: pointer bumped v14.2->v15, wires v15's
+    │   real square-shell/cylinder firebox into the full assembly chain
+    │   for the first time. chamber_floor_z/chamfer/chamber_W all
+    │   UNCHANGED by v15 — front bracket flush-fit is a re-CONFIRMATION,
+    │   not a rebuild, re-verified live via CGAL not assumed. LEG_DROP/
+    │   REAR_BRACKET_H/CASTER_PLATE_BOTTOM_Z/FRONT_SPACER_LEN all recompute
+    │   AUTOMATICALLY via their own unchanged live formulas the instant
+    │   this pointer moves — zero additional code change needed)
     ├── Rear axle (fixed, non-swivel. WHEEL_D/WHEEL_R/TREAD_W UNCHANGED
-    │   457.2/228.6/200 [18"]. REAR_AXLE_Z UNCHANGED [=WHEEL_R=228.6,
-    │   wheel bottom still real world Z=0]. REAR_AXLE_X UNCHANGED [1143.5].
-    │   REAR_WHEEL_Y_LEFT/RIGHT now driven by TRACK_WIDTH = -235/845mm
-    │   [was -150/760] — real, confirmed 150mm gap to the firebox's own
-    │   outer-shell edge each side [TASK 3, closer than v4's old 200mm
-    │   clearance]. REAR_BRACKET_H UNCHANGED VALUE [342.8mm, matches v4's
-    │   own real number exactly — both inputs unchanged]. No kinetic
-    │   parameter — static)
-    │   ├── Rear spacers x2 (construction UNCHANGED, DO NOT TOUCH — real
-    │   │   lengths now 379.5mm each, was 308mm, tracking the wider track)
-    │   └── Rear fenders x2 (NEW, TASK 3 — flat steel panel welded to the
-    │       firebox's own OUTER SHELL wall, real 150mm radial clearance
-    │       maintained continuously by a concentric arc around the wheel's
-    │       own axle, curving 25deg past the wheel's own outer edge. Panel
-    │       thickness [4mm]/width [240mm] are judgment calls, flagged, no
-    │       numeric spec beyond the 150mm gap. Real CGAL: EMPTY vs the
-    │       wheel itself [clearance maintained throughout, not just at
-    │       endpoints], NON-EMPTY vs the firebox's outer shell [real weld
-    │       contact, 1.5mm overlap into the 3mm wall])
-    ├── Front wheel support (bracket's own MAIN SHAPE UNCHANGED, DO NOT
-    │   TOUCH: MID_H=89.332mm/TOP_W=431.335mm/BOT_W=252.670mm/LEG_GAP=250mm/
-    │   FRONT_X=300, zero diff. TASK 4: LEG_DROP now a live formula
-    │   [chamber_floor_z-firebox_floor_z=199.935mm, was a 150mm literal] —
-    │   the leg's own bottom edge now lands EXACTLY at firebox_floor_z
-    │   [571.4mm], reaching as low as the firebox's own real lowest point,
-    │   confirmed via echo. Fixed caster top-plate position formula
-    │   unchanged, real Z recomputes automatically [565.4mm, was 444mm].
-    │   *** REAL, CGAL-CONFIRMED: THE STANDING v4 ~6mm FRONT-WHEEL/BRACKET
-    │   COLLISION IS NOW RESOLVED (TASK 7) ***: the new 1080mm TRACK_WIDTH
-    │   puts the near tire face 224mm clear of the bracket's own widest
-    │   edge [was overlapping ~6mm] — confirmed via a real intersection()
-    │   probe returning EMPTY, not assumed from the wider spacing alone)
-    │   ├── Front spacer (real LENGTH recomputes to 336.8mm, was 215.4mm,
-    │   │   since CASTER_PLATE_BOTTOM_Z moved with the new LEG_DROP —
-    │   │   construction UNCHANGED)
-    │   ├── Dual rigid wheels (TASK 1/5: respan from the retired
-    │   │   DUAL_WHEEL_OFFSET[110mm]-based close-set caster spacing to the
-    │   │   SAME shared TRACK_WIDTH/2[540mm] the rear now uses — front
-    │   │   wheel is a real COPY of the rear wheel [same WHEEL_R/Z=0
-    │   │   anchor]. Same rigid single-center-pivot mechanism as v4
-    │   │   [triangle welded to one yoke, steer_deg rotates the pair] —
-    │   │   re-verified through the respan via a real CGAL steer_deg sweep,
-    │   │   not rebuilt)
-    │   └── Tow handle + puller triangle bracket (TASK 2 tip + TASK 6
-    │       length/angle. Triangle: sharp pyramid apex REBUILT round via
-    │       hull() [150mm dia boss — judgment call, read as the boss's own
-    │       real diameter], forward reach [TRIANGLE_APEX_X=-300] UNCHANGED
-    │       so HINGE_X's own formula is untouched, now lands inside genuine
-    │       round material instead of v4's thin near-point sliver [real,
-    │       flagged improvement]. Handle upright length: HANDLE_UPRIGHT_LEN
-    │       [400mm literal] RETIRED, replaced by live TBAR_LEN=
-    │       DATUM_Z_RIDGE-WHEEL_R-50=1102.735mm)
-    │       ├── Kinetic: handle_fold_deg — default FIXED 0->90 [vertical
-    │       │   storage, was shipping flat/towing by default, a standing
-    │       │   v12/v4 QA defect, now real-render-confirmed at the new
-    │       │   default]. *** REAL, FLAGGED VARIANCE, NOT SILENTLY
-    │       │   ABSORBED ***: TBAR_LEN's own formula implicitly assumes a
-    │       │   wheel-height pivot; this file's real [unchanged, out of
-    │       │   scope this round] TRIANGLE_Z hinge sits 100mm higher, so at
-    │       │   the new 90deg default the tip's real Z [1431.335mm] exceeds
-    │       │   the roof [DATUM_Z_RIDGE=1381.335mm] by 50mm on paper — a
-    │       │   real CGAL check [intersection() vs the full built chamber/
-    │       │   lid/firebox/exhaust/chimney] confirms this causes NO actual
-    │       │   collision [T-bar sits outside the chamber's own X-footprint
-    │       │   entirely at 90deg], but the numeric margin is genuinely
-    │       │   negative, flagged for the record
-    │       └── Kinetic: steer_deg — UNCHANGED mechanism from v4, re-spanned
-    │           only [TASK 5]. Real CGAL sweep (0/+-22.5/+-45/90) vs front
-    │           bracket + caster plate + tow triangle re-run at the new
-    │           wider span, confirmed empty at every tested angle
-    └── Prep shelves x2 (UNCHANGED from v4, DO NOT TOUCH this round — mount
-        point [GRATE_Z] is chamber-frozen; real value moves to 950mm
-        [v14.2, was 778.665mm under v13] purely as an automatic consequence
-        of TASK 0's pointer bump, not this round's own scope)
+    │   457.2/228.6/200. REAR_AXLE_Z UNCHANGED [=WHEEL_R=228.6]. REAR_AXLE_X
+    │   formula UNCHANGED but real value shifts +60mm [1203.5, was 1143.5]
+    │   since v15's own firebox_x1 grew while firebox_x0 stayed pinned —
+    │   real, flagged, automatic consequence. REAR_WHEEL_Y_LEFT/RIGHT now
+    │   driven by TASK 2's narrower TRACK_WIDTH[980mm] = -185/795mm [was
+    │   -235/845mm] — real 100mm gap to the firebox's own outer-shell edge
+    │   each side [was 150mm, firebox insulated, wheel sits closer].
+    │   REAR_BRACKET_H recomputes AUTOMATICALLY via v15's new
+    │   firebox_floor_z [191.4mm, was 342.8mm] — TASK 4, zero code change.
+    │   No kinetic parameter — static)
+    │   ├── Rear spacers x2 (construction UNCHANGED — real lengths change
+    │   │   automatically from the new REAR_WHEEL_Y_LEFT/RIGHT)
+    │   └── Rear fenders x2 (TASK 3 REBUILT as a short flared wing — was
+    │       "a long straight panel," Janis's live review finding. Real
+    │       cause: the flat mounting portion spanned the ENTIRE distance
+    │       to the wheel's own vertical centerline [250mm flat run] before
+    │       curving. Fixed: flat portion now a genuinely SHORT weld tab
+    │       [1.5mm, unchanged] — the arc starts almost immediately, at the
+    │       real angle [a_start=acos(d/FENDER_R_IN), live-computed,
+    │       symmetric both sides — 58.11deg left/121.89deg right at the
+    │       new 980mm track] where it naturally reaches the firebox wall.
+    │       Real arc sweep now ~147deg [was 115deg]. *** REAL BUG
+    │       FOUND+FIXED VIA CGAL ***: this wider sweep broke the inherited
+    │       3-point wedge-mask technique [chord between the 2 far points
+    │       cut INSIDE the ring at this wider angle, producing two
+    │       disconnected thin slivers instead of a band, confirmed via
+    │       real render not assumed] — fixed with a real multi-point fan
+    │       mask, robust to any sweep angle, re-verified as a clean
+    │       continuous band. FENDER_GAP[150mm]/FENDER_T[4mm]/FENDER_W
+    │       [240mm]/FENDER_ARC_PAST_EDGE[25deg] all UNCHANGED)
+    ├── Front wheel support (bracket's own MAIN SHAPE UNCHANGED. LEG_DROP's
+    │   own FORMULA UNCHANGED from v5 but real value recomputes
+    │   AUTOMATICALLY via v15's new firebox_floor_z [351.335mm, was
+    │   199.935mm] — TASK 5, zero code change beyond the pointer bump; leg
+    │   bottom still lands EXACTLY at firebox_floor_z[420mm]. Caster
+    │   top-plate/front spacer recompute automatically too [185.4mm, was
+    │   336.8mm]. *** REAL, CGAL-CONFIRMED: THE FRONT-WHEEL/BRACKET
+    │   COLLISION RE-CHECK AT THIS ROUND'S OWN FURTHER-CHANGED GEOMETRY
+    │   (TASK 8) STILL CONFIRMS EMPTY *** — re-verified via a real
+    │   intersection() probe at the new 980mm track/351.335mm LEG_DROP/
+    │   lowered TRIANGLE_Z, not assumed resolved just because v5 already
+    │   resolved it once)
+    │   ├── Front spacer (real LENGTH recomputes automatically, unchanged
+    │   │   construction)
+    │   ├── Dual rigid wheels (UNCHANGED mechanism, respans automatically
+    │   │   with the new shared TRACK_WIDTH)
+    │   └── Tow handle + puller triangle bracket (TASK 6 REBUILT mount +
+    │       TASK 7 length re-verified unaffected. TRIANGLE_Z = FRONT_AXLE_Z
+    │       directly [228.6mm, was FRONT_AXLE_Z+100=328.6mm floating above
+    │       the axle's own real plane, a v3-era carryover, Janis's own
+    │       annotated finding]. NEW curved gusset fillet [GUSSET_R=30mm,
+    │       judgment call, flagged — no reference photo directly available
+    │       this session] via hull() of two spheres, bridging the flat
+    │       triangle plate's own underside to the round stub axle's own
+    │       surface at their shared mounting point — real CGAL: genuine
+    │       volume overlap vs BOTH the plate and the axle, confirmed.
+    │       TBAR_LEN UNCHANGED VALUE [1102.735mm, DATUM_Z_RIDGE/WHEEL_R
+    │       both untouched by v15])
+    │       ├── Kinetic: handle_fold_deg — default UNCHANGED 90 [vertical
+    │       │   storage, fixed last round]. *** REAL, FLAGGED SIDE EFFECT
+    │       │   OF TASK 6, NOT THE GOAL BUT A WELCOME CONSEQUENCE ***:
+    │       │   since TRIANGLE_Z dropped 100mm, the tip's real Z at the
+    │       │   90deg default is now 1331.335mm — 50mm BELOW the roof
+    │       │   [DATUM_Z_RIDGE=1381.335mm] this time [was 50mm ABOVE under
+    │       │   v5] — the v5-flagged roof-overshoot resolves as a real
+    │       │   side effect, confirmed via echo not assumed
+    │       └── Kinetic: steer_deg — UNCHANGED mechanism, re-verified via a
+    │           real CGAL sweep (0/+-22.5/+-45/90) at the new narrower
+    │           track + lowered gusset assembly, confirmed empty throughout
+    └── Prep shelves x2 (TASK 1 REBUILT mounting — kinematics UNCHANGED
+        [rotate([deg,0,0]) about the X-axis was already a proper hinge-LINE
+        rotation for every X along the shelf, not just a point]. Real
+        problem was PHYSICAL SUPPORT: only ONE mounting bracket existed
+        near the shelf's own near end while the shelf spans ~320mm — a
+        real ~290mm unsupported cantilevered far end [Janis's live review
+        finding]. Fixed: 3 real brackets [judgment call, flagged] evenly
+        spread across the shelf's own real X span, same hinge line, real
+        distributed weld support [confirmed via CGAL, all 3 individually
+        contact real chamber material] — sits level/flush when folded down
+        instead of drooping under its own cantilever)
 ```
 
 ## PART C — Kinetic Dual-View Table
@@ -533,11 +614,11 @@ verified via real CGAL render this session (not just the default state
 | KINETIC PART | STATE A | STATE B | Notes |
 |---|---|---|---|
 | Lid | closed (`lid_open_deg=0`) | open (`lid_open_deg` up to 120, real CGAL-confirmed ceiling, re-verified after the v3 mirror — stays clean well past that too, 120 chosen as a practical usable-design max, not a hard collision limit) | v3: ridge-hinged, full-length, rotate([-deg,0,0]) about an X-axis line — SIGN FLIPPED from v2's rotate([+deg,0,0]) since the lid is now mirrored to the opposite (Y=0) side; verified via real CGAL bounding-box check, not assumed from symmetry |
-| Firebox door | closed (`firebox_door_open_deg=0`) | open (up to ~110) | Continuous angle, unchanged from v1 (DO NOT TOUCH this session). *** REAL DEFECT FLAGGED, NOT FIXED (out of scope, chambers frozen) ***: found incidentally during this round's own (v5) mandatory kinetic sweep — real CGAL-confirmed non-manifold (Simple:no) at roughly >90-95deg open, reproduced identically on standalone BBQ-chambers-v14/v14.1/v14.2 with zero understructure geometry present, so pre-existing in the frozen firebox_door() code, NOT introduced this round. Needs a future chambers-scoped round |
+| Firebox door | closed (`firebox_door_open_deg=0`) | open (up to ~110) | Continuous angle, unchanged from v1 (DO NOT TOUCH this session). *** REAL DEFECT FLAGGED, STILL NOT FIXED *** (found during understructure v5's own kinetic sweep, RE-CONFIRMED identically this round, v15): real CGAL-confirmed non-manifold (Simple:no) at roughly >90-95deg open, reproduced identically on standalone BBQ-chambers-v14/v14.1/v14.2/v15 — pre-existing in the frozen firebox_door() code across every version tested, NOT introduced by v15's own real cube-shell/cylinder redesign (a real, deliberate re-check this round, not assumed still true). Needs a future chambers-scoped round |
 | Ash tray | in (`ash_tray_out_pct=0`) | out (`ash_tray_out_pct=1`) | Full-out only physically valid with door open — same accepted door-dependency pattern as VM-02's `tray_out_pct`, not a bug. Unchanged from v1 |
 | Chimney (fold) | REMOVED v2 | REMOVED v2 | v1's foldable chimney/drop-tube replaced by a fixed exhaust room + pipe (v2 TASK 2) — no fold mechanism in this version, flagged as a real scope change, not silently dropped |
 | Prep shelves | deployed (`shelf_deployed=true`, horizontal) | stowed (`shelf_deployed=false`, vertical) | Discrete boolean, unchanged from v1 |
-| Tow handle (v5 TASK 2/6) | towing/use (`handle_fold_deg=0`, horizontal) | folded vertical storage (`handle_fold_deg=90`, NOW THE DEFAULT — TASK 6 fix, was defaulting to 0/flat, a standing v12/v4 QA defect) | Continuous angle. Length now a live formula (`TBAR_LEN`=1102.735mm, was 400mm literal). Real CGAL: at the new 90deg default, tip Z exceeds the roof by 50mm on paper (hinge-height/formula mismatch, flagged) but a real intersection() check vs the full built assembly confirms NO actual collision (T-bar sits outside the chamber's own footprint at that height). `steer_deg` UNCHANGED mechanism (re-spanned only, TASK 5): rotates the triangle+handle AND the front wheel pair together as one rigid assembly — still a SEPARATE parameter from fold, not its own dual-view row |
+| Tow handle (v6 TASK 6) | towing/use (`handle_fold_deg=0`, horizontal) | folded vertical storage (`handle_fold_deg=90`, UNCHANGED default from v5) | Continuous angle. `TRIANGLE_Z`=`FRONT_AXLE_Z` directly now (228.6mm, was `FRONT_AXLE_Z+100`=328.6mm floating above the axle plane — Janis's own annotated finding, fixed) + new curved gusset fillet bridging the plate to the stub axle. `TBAR_LEN` UNCHANGED (1102.735mm). Real, flagged side effect of the `TRIANGLE_Z` fix (not the goal of TASK 6): tip Z at the 90deg default is now 50mm BELOW the roof (was 50mm above under v5) — the v5-flagged roof-overshoot resolves as a welcome consequence, confirmed via echo. `steer_deg` UNCHANGED mechanism, re-verified via a real CGAL sweep at the new narrower track — still a SEPARATE parameter from fold, not its own dual-view row |
 
 Static/removable parts (Grill grate segments — *** TEMPORARILY,
 independently Z-positioned at GRATE_Z_FIXED=1000mm as of v13, see Part A/B
@@ -548,6 +629,17 @@ wheel support's own bracket — fixed weldment, the caster's swivel IS the
 independently kinetic beyond what's listed — they get a `show_*`
 isolation toggle only (Toggle-Completeness Rule), not a dual-view kinetic
 state.
+
+## Toggle-Completeness count (2026-07-20, v1.19)
+
+BBQ-understructure-v6.scad ASSEMBLY: 4 modules called (`rear_axle`, `rear_
+fenders`, `front_wheel_support`, `prep_shelves`) — all 4 have a real
+`show_*` toggle, unchanged from v5. `tow_bracket_gusset()` NEW but a
+sub-part of `front_swivel_assembly()`, no separate toggle needed (same
+pattern the tow triangle/handle already use). BBQ-chambers-v15.scad
+ASSEMBLY (unchanged this round — chambers not touched): 8 modules called,
+all 8 toggled, carried over unchanged. 12/12 compliant across the full
+assembly, 0 gaps, 0 safety-critical exceptions needed.
 
 ## Toggle-Completeness count (2026-07-20, v1.17)
 

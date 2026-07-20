@@ -58,7 +58,29 @@
 // variance found this round (unrelated to the collision this include
 // resolves).
 
-include <BBQ-understructure-v5.scad>
+// 2026-07-20: bbq-chambers-v15-square-shell-cylinder-firebox — real
+// structural firebox redesign (outer shell rebuilt as a true 580x580x580
+// cube, inner rectangular duct replaced by a 456mm-dia fire cylinder) —
+// BBQ-chambers-v15.scad exists and is real-CGAL-verified standalone.
+//
+// 2026-07-20: include target updated v5->v6 (bbq-understructure-v6-
+// fitment-fixes — v6's own TASK 0 bumps its own include to
+// BBQ-chambers-v15.scad, wiring v15 into the full assembly chain for the
+// first time. 4 real fitment fixes from Janis's live desktop review of
+// v5: prep shelf multi-point flush mount (was cantilevered from a single
+// point), track width recomputed to 980mm (100mm wheel-to-firebox gap,
+// was 150mm), rear fender rebuilt as a short flared wing (was a long
+// straight panel), T-bar bracket now mounts at the front axle's own real
+// plane with a curved gusset (was floating 100mm above it). Real,
+// automatic consequences of v15's own firebox reanchor: LEG_DROP/
+// REAR_BRACKET_H/FRONT_SPACER_LEN/REAR_AXLE_X all recompute via their own
+// unchanged live formulas. Real, CGAL-confirmed: the standing front-wheel/
+// bracket collision re-check (TASK 8) remains resolved at the new
+// geometry. v5 kept unchanged, on record, as BBQ-understructure-v5.scad.
+// See BBQ-understructure-v6.scad's own header + cc_chat_log.md for full
+// detail.
+
+include <BBQ-understructure-v6.scad>
 
 // ASSEMBLY — the included file already calls both its own geometry AND
 // (transitively) the chamber's, at include time (see each file's own

@@ -58,6 +58,19 @@
 // variance found this round (unrelated to the collision this include
 // resolves).
 
+// 2026-07-20: bbq-chambers-v15-square-shell-cylinder-firebox — real
+// structural firebox redesign (outer shell rebuilt as a true 580x580x580
+// cube, inner rectangular duct replaced by a 456mm-dia fire cylinder) —
+// BBQ-chambers-v15.scad exists and is real-CGAL-verified standalone, but
+// is NOT yet wired into the full vehicle: BBQ-understructure-v5.scad
+// (still out of scope this round, per that prompt's own explicit
+// instruction) still includes BBQ-chambers-v14.2.scad as of this entry.
+// Same "exists standalone, not yet wired in" pattern this file's own
+// v14/v14.1/v14.2 entries already established. The `include` line below
+// is therefore UNCHANGED this round — the pointer bump into the full
+// assembly chain is explicitly reserved for the next (already-prepared)
+// understructure round.
+
 include <BBQ-understructure-v5.scad>
 
 // ASSEMBLY — the included file already calls both its own geometry AND

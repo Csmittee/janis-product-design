@@ -1,5 +1,39 @@
 # BBQ Offset Smoker — Design Scope of Work
-> Version 1.8 — 2026-07-20
+> Version 1.9 — 2026-07-20
+> Changes: bbq-chambers-v15-square-shell-cylinder-firebox. Real structural
+> firebox redesign, source v14.2 (understructure v5 completely out of
+> scope this round — a separate, already-prepared v6 round depends on this
+> round's own real output). Envelope's Firebox entry REBUILT: outer shell
+> rebuilt as a true 580x580x580 cube (FIREBOX_H 428.6->580mm, "dice"
+> proportions per Janis's own explicit direction) — firebox_floor_z now a
+> live formula (420mm, was 571.4mm literal, top pinned at 1000mm instead) —
+> firebox now extends 351.335mm below chamber_floor_z (was 199.935mm),
+> closing ~151mm of the real gap to the axle plane (understructure's own
+> concern, next round). REAL, NECESSARY FORMULA CORRECTION found before
+> shipping: firebox_x0 repinned directly at its own real weld position
+> (913.5mm, unchanged value) instead of a historical-midpoint formula that
+> would have pulled it 60mm into the chamber's own real territory as
+> FIREBOX_L grew (460->580mm) — all +120mm of growth now happens on the
+> door/far end only. Rectangular inner duct RETIRED, replaced by a real
+> 456mm-dia fire cylinder (62mm wall clearance, Janis's own explicit
+> choice) — real volume 5,780.25in³ = 100.75% of the 5,737in³ target. Rear
+> passage rebuilt as a circle (194.898mm dia, target-area-sized) — real
+> finding: the cylinder's own true center now sits BELOW chamber_floor_z,
+> passage biased to the cylinder's own real top; real CGAL measurement:
+> 88.7% of the circle's own area is genuinely cut through real chamber
+> material, ~11.3% a real confirmed chord (matches this project's own
+> v13/v14 precedent). NEW end plate locates the cylinder within the square
+> shell. TWO REAL BUGS FOUND+FIXED VIA CGAL DURING THE BUILD: ash tray
+> width (150mm) collided with the cylinder's own solid wall (checked the
+> wrong/nearer corner, not the farther bottom face) — fixed to 80mm; the
+> new end plate sat exactly coincident with the door's own face
+> (Simple:no) — fixed via a real epsilon, re-verified Simple:yes. SEPARATE,
+> REAL, PRE-EXISTING FINDING (flagged, not fixed, chambers frozen no
+> further touching this round): the firebox door is still real, CGAL-
+> confirmed non-manifold above ~90-95deg open — re-confirmed identically
+> this round on the new v15 geometry, same defect flagged in the prior
+> (understructure v5) round, NOT a v15 regression.
+> Previous: 1.8 — 2026-07-20
 > Changes: bbq-understructure-v5-trackwidth-fender-tbar. First understructure
 > round since v4 (2026-07-17) — TASK 0 finally bumps this file's own
 > `include` past v13 to BBQ-chambers-v14.2.scad (three chamber rounds landed
@@ -223,49 +257,62 @@ dia boss, was a sharp point); the bracket's drop length now reaches
 exactly to firebox_floor_z. Tow handle (T-bar): real live-computed length
 1102.735mm (was a 400mm literal), default angle now vertical/storage
 (90deg, was defaulting flat — a standing v12/v4 QA defect, now fixed).
-Firebox: REBUILT as two fully independent welded assemblies (2026-07-18),
-replacing the prior shared-end-cap concept (a real, confirmed full-face
-thermal-bridge problem). Inner hot duct: 540mm(W) x 388.6mm(H) x 460mm(L
-interior, UNCHANGED), rectangular, welded directly to the chamber's own
-octagon end cap. Outer insulating shell: widened 510->580mm(W) x
-428.6mm(H), physical length 480mm (a NEW, separate number from the duct's
-own 460mm interior — the extra 20mm is a solid structural flange only,
-tucked under the chamber's own rear wall for real support). 2026-07-20
-(v14.1): outer shell's rear tuck-under flange (+ its end cap) SIMPLIFIED
-from a 2-zone octagon-clipped shape (the real visible STEP Janis
-screenshotted) to ONE flat, full-height, UNCLIPPED plane — real CGAL-
-confirmed genuine contact with chamber material above the floor line,
-zero material below it (no size change, shape simplification only). Real
-fire volume: 5,890.5in³ ≈ 103% of the theoretical ~5,737in³ target (was
-~58% under the old round-duct design) — unaffected by the v14.1 changes.
-Rear passage: 2026-07-20 (v14.1) — the plain 197mm circle (flagged
-chord-shaped, field-adjustable placeholder) RETIRED, REPLACED by a real
-trapezoid cut through the chamber's own octagon end cap only, a LOCKED
-spec (Janis's real heat-rises/ash-avoidance design choice, not a
-placeholder). 2026-07-20 (v14.2): RESIZED to the real 0.008-of-fire-
-volume opening-area target — 5,890.5in³×0.008 = 47.124in² = 30,402.6mm²
-(v14.1's own trapezoid was never checked against this rule and came out
-2.25x oversized at 106.2in²). Real, current dimensions: bottom edge
-95.29mm wide at the chamber floor line (chamber_floor_z, unchanged
-anchor), top edge 227.00mm wide (capped by the inner duct's own real
-width) at world Z=960mm — 20mm below the inner duct's own real top wall,
-a real weld-clearance margin (Janis's own direct request this round,
-superseding v14.1's "top edge = apex A" placement; height grew
-178.665mm->188.665mm as a direct consequence). Real CGAL confirms full
-containment, no chord/partial-clip. REAL BUG FOUND+FIXED (v14.2): the
-outer shell's own flat tuck-under flange (2026-07-20/v14.1 simplification
-above) never had this passage hole cut through it — being larger than
-the duct's own opening and sitting directly in the line of sight, it
-fully sealed the passage shut even though the chamber wall and duct end
-cap both had a real hole (Janis's own "very large but not cut through"/
-"thin film" report, confirmed via a real CGAL ray-probe, not a visual
-read) — fixed via a new `outer_shell_flange_cut_2d()` cutting the same
-passage shape through the flange and its end cap; ray-probe re-run
-confirms a genuine, unobstructed through-hole. Fire volume math
-unaffected by either fix, unchanged: 5,890.5in³ ≈ 103% of the theoretical
-~5,737in³ target.
-Far end of the internal duct remains an explicit OPEN ITEM — Janis: "let
-me see how it looks then I'll explain the adjustment."
+Firebox: 2026-07-20 (v15) — REAL STRUCTURAL REDESIGN. Outer shell rebuilt
+as a true 580x580x580mm CUBE (was 580(W) x 428.6mm(H) x 480mm physical
+length under v14.2) — all three real dimensions equal, "dice" proportions
+per Janis's own explicit direction against reference photos. Real, direct
+consequence: firebox_floor_z drops to 420mm (was 571.4mm) — the firebox
+now extends 351.335mm below chamber_floor_z (was 199.935mm), closing
+~151mm of the real gap to the axle plane (understructure's own concern,
+next round). Rectangular inner duct RETIRED entirely, replaced by a real
+456mm-diameter fire cylinder (62mm wall clearance, Janis's own explicit
+choice — well over this project's 30mm minimum, real OPEN AIR gap, not
+insulation-filled, a deliberate choice not a default), full 580mm depth
+(equal to W/H, per the cube requirement). Real fire volume: π×228²×580mm
+= 5,780.25in³ = 100.75% of the theoretical ~5,737in³ target (was 102.7%
+under the old rectangular-duct design). REAL, NECESSARY FORMULA
+CORRECTION found before shipping (not a silent carryover): the firebox's
+own near/weld end (`firebox_x0`) was previously derived from a historical
+X-midpoint formula that only worked by coincidence while the duct's own
+interior length never changed — growing it (460->580mm) under that old
+formula would have pulled the firebox's own hollow cavity 60mm into the
+main chamber's own real territory, a genuine new conflict risk with the
+grate/lid-territory. Fixed: `firebox_x0` now pinned directly at its own
+real, unchanged weld-overlap position (913.5mm) — all +120mm of this
+round's own real growth happens on the door/far end only, away from the
+chamber, matching how a bigger firebox physically must behave.
+Rear passage: 2026-07-20 (v15) — the trapezoid (v14.1/v14.2's own LOCKED
+spec, derived from the octagon's taper to match a RECTANGULAR duct)
+RETIRED — that derivation has no natural basis now the duct is round.
+REBUILT as a plain circle, real target area (0.008x the new real fire
+volume): 46.242in² = 29,833.5mm², diameter 194.898mm. REAL FINDING, NOT
+SILENTLY RESOLVED: the fire cylinder's own true center now sits BELOW
+chamber_floor_z entirely (a direct consequence of the height growth
+above) — the passage is positioned biased toward the cylinder's own real
+top instead (5mm margin below it, judgment call, flagged). Real CGAL
+measurement (STL volume, not an estimate): 88.7% of the circle's own real
+area is genuinely cut through real chamber material; the remaining
+~11.3% is a real, confirmed chord below the floor line — matches this
+project's own repeated v13/v14 precedent for circular-passage findings,
+not a novel deviation. Real cut-through ray-probe (door open) confirms a
+genuine, unobstructed through-hole.
+NEW end partition (fire_cylinder_partition()): square plate locating the
+cylinder within the square outer shell, per Janis's reference photo.
+TWO REAL BUGS FOUND+FIXED VIA CGAL DURING THIS ROUND'S BUILD (not assumed
+clean): (1) the ash tray's own real safe width was first derived checking
+the wrong corner (the tray's top, not its farther-from-center bottom
+face) — a real, substantial 49,100mm³ overlap with the cylinder's own
+solid wall was found via CGAL, fixed by shrinking the tray 150->80mm,
+re-verified empty. (2) the new end partition sat exactly coincident with
+the firebox door's own face (a real Simple:no non-manifold result) —
+fixed via a real e=0.01mm epsilon pull-back, re-verified Simple:yes.
+SEPARATE, REAL, PRE-EXISTING FINDING (flagged, not fixed — chambers
+frozen, no further touching this round): the firebox door is still real,
+CGAL-confirmed non-manifold above ~90-95deg open — re-confirmed
+identically on this round's own new v15 geometry, same defect flagged in
+the prior (understructure v5) round, NOT a v15 regression.
+Far end of the internal duct/cylinder remains an explicit OPEN ITEM —
+Janis: "let me see how it looks then I'll explain the adjustment."
 
 ---
 

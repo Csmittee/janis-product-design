@@ -44,8 +44,21 @@
 // round) front bracket legs/caster plate/tow triangle — flagged, not
 // fixed, blocking real fabrication until a follow-up prompt reworks the
 // front bracket.
+//
+// 2026-07-20: include target updated v4->v5 (bbq-understructure-v5-
+// trackwidth-fender-tbar — pointer bump to BBQ-chambers-v14.2.scad (was
+// still wired to v13 through 3 chamber rounds), shared 1080mm TRACK_WIDTH
+// front+rear (resolves the ~6mm front-wheel/bracket collision noted above,
+// real CGAL-confirmed), round front-bracket tip, rear wheel reposition +
+// new fender, front U-bracket drop length = firebox_floor_z, T-bar real
+// live length + 90deg default-vertical fix (BBQ-understructure-v5.scad,
+// source v4, itself includes BBQ-chambers-v14.2.scad). v4 kept unchanged,
+// on record, as BBQ-understructure-v4.scad. See BBQ-understructure-v5.scad's
+// own header + cc_chat_log.md for the real flagged T-bar/roof-clearance
+// variance found this round (unrelated to the collision this include
+// resolves).
 
-include <BBQ-understructure-v4.scad>
+include <BBQ-understructure-v5.scad>
 
 // ASSEMBLY — the included file already calls both its own geometry AND
 // (transitively) the chamber's, at include time (see each file's own

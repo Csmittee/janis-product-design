@@ -1,5 +1,32 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.18 — 2026-07-20
+> Version 1.19 — 2026-07-20
+> Changes: bbq-understructure-v6-fitment-fixes. TASK 0 bumps this file's
+> own `include` to BBQ-chambers-v15.scad, wiring v15's real square-shell/
+> cylinder firebox redesign into the full assembly chain for the first
+> time. 4 real fitment fixes from Janis's live OpenSCAD-desktop review of
+> v5: Part A's Prep shelves entry REBUILT (3 real distributed mounting
+> brackets, was 1 cantilevered — kinematics already correct, real fix is
+> physical support). TRACK_WIDTH recomputed to 980mm (100mm wheel-to-
+> firebox gap, was 1080mm/150mm). Rear fender rebuilt as a real short
+> flared wing (was a long straight panel — real cause: the flat mounting
+> portion spanned to the wheel's own centerline before curving; fixed by
+> starting the arc almost immediately at the real angle where it reaches
+> the firebox wall, live-computed via acos()). T-bar bracket now mounts
+> directly at the front axle's own real plane with a new curved gusset
+> (was floating 100mm above it). REAR_BRACKET_H/LEG_DROP recompute
+> automatically via v15's new firebox_floor_z (191.4mm/351.335mm, were
+> 342.8mm/199.935mm) — zero code change beyond the pointer bump. TBAR_LEN
+> unaffected (1102.735mm) — the v5-flagged 50mm roof-overshoot flips to a
+> genuine 50mm real clearance margin as a side effect of the gusset fix.
+> Front-wheel/bracket collision re-check at the new geometry: still
+> resolved (EMPTY), confirmed not assumed. REAL BUG FOUND+FIXED VIA CGAL
+> DURING THE BUILD: the fender's own wider 147deg arc sweep broke the
+> inherited 3-point wedge-mask technique (the chord between its 2 far
+> points cut INSIDE the ring at this wider angle, producing disconnected
+> slivers instead of a band, confirmed via real render) — fixed with a
+> real multi-point fan mask, robust to any sweep angle, re-verified as a
+> clean continuous band via CGAL.
+> Previous: 1.18 — 2026-07-20
 > Changes: bbq-chambers-v15-square-shell-cylinder-firebox. Real structural
 > firebox redesign, source v14.2 (understructure v5 completely out of
 > scope, not opened — a separate, already-prepared v6 round depends on
@@ -485,89 +512,95 @@ BBQ Offset Smoker V9 (top assembly)
 │       └── Air-intake damper cutout
 ├── Exhaust Room (half-cylinder, welded to front end-cap) — RESIZED v3 (360x100mm, was 200x200mm v2)
 │   └── Chimney Pipe (coaxial, sits on the room's own top plate) — RE-POSITIONED v3
-└── Understructure (v5 — TASK 0: pointer FINALLY bumped v13->v14.2, real
-    │   +50mm chamber_floor_z shift [721.335->771.335], front bracket leg
-    │   re-verified flush against the chamber's real octagon boundary at
-    │   the new Z via CGAL [local-coordinate identity, invariant to the
-    │   shift, confirmed not just assumed]. TASK 1: ONE shared TRACK_WIDTH
-    │   =1080mm [FIREBOX_W+2*150+TREAD_W] now drives BOTH front and rear
-    │   wheel Y-position — retires REAR_TRACK_WIDTH and the front caster's
-    │   own DUAL_WHEEL_OFFSET spacing)
+└── Understructure (v6 — TASK 0: pointer bumped v14.2->v15, wires v15's
+    │   real square-shell/cylinder firebox into the full assembly chain
+    │   for the first time. chamber_floor_z/chamfer/chamber_W all
+    │   UNCHANGED by v15 — front bracket flush-fit is a re-CONFIRMATION,
+    │   not a rebuild, re-verified live via CGAL not assumed. LEG_DROP/
+    │   REAR_BRACKET_H/CASTER_PLATE_BOTTOM_Z/FRONT_SPACER_LEN all recompute
+    │   AUTOMATICALLY via their own unchanged live formulas the instant
+    │   this pointer moves — zero additional code change needed)
     ├── Rear axle (fixed, non-swivel. WHEEL_D/WHEEL_R/TREAD_W UNCHANGED
-    │   457.2/228.6/200 [18"]. REAR_AXLE_Z UNCHANGED [=WHEEL_R=228.6,
-    │   wheel bottom still real world Z=0]. REAR_AXLE_X UNCHANGED [1143.5].
-    │   REAR_WHEEL_Y_LEFT/RIGHT now driven by TRACK_WIDTH = -235/845mm
-    │   [was -150/760] — real, confirmed 150mm gap to the firebox's own
-    │   outer-shell edge each side [TASK 3, closer than v4's old 200mm
-    │   clearance]. REAR_BRACKET_H UNCHANGED VALUE [342.8mm, matches v4's
-    │   own real number exactly — both inputs unchanged]. No kinetic
-    │   parameter — static)
-    │   ├── Rear spacers x2 (construction UNCHANGED, DO NOT TOUCH — real
-    │   │   lengths now 379.5mm each, was 308mm, tracking the wider track)
-    │   └── Rear fenders x2 (NEW, TASK 3 — flat steel panel welded to the
-    │       firebox's own OUTER SHELL wall, real 150mm radial clearance
-    │       maintained continuously by a concentric arc around the wheel's
-    │       own axle, curving 25deg past the wheel's own outer edge. Panel
-    │       thickness [4mm]/width [240mm] are judgment calls, flagged, no
-    │       numeric spec beyond the 150mm gap. Real CGAL: EMPTY vs the
-    │       wheel itself [clearance maintained throughout, not just at
-    │       endpoints], NON-EMPTY vs the firebox's outer shell [real weld
-    │       contact, 1.5mm overlap into the 3mm wall])
-    ├── Front wheel support (bracket's own MAIN SHAPE UNCHANGED, DO NOT
-    │   TOUCH: MID_H=89.332mm/TOP_W=431.335mm/BOT_W=252.670mm/LEG_GAP=250mm/
-    │   FRONT_X=300, zero diff. TASK 4: LEG_DROP now a live formula
-    │   [chamber_floor_z-firebox_floor_z=199.935mm, was a 150mm literal] —
-    │   the leg's own bottom edge now lands EXACTLY at firebox_floor_z
-    │   [571.4mm], reaching as low as the firebox's own real lowest point,
-    │   confirmed via echo. Fixed caster top-plate position formula
-    │   unchanged, real Z recomputes automatically [565.4mm, was 444mm].
-    │   *** REAL, CGAL-CONFIRMED: THE STANDING v4 ~6mm FRONT-WHEEL/BRACKET
-    │   COLLISION IS NOW RESOLVED (TASK 7) ***: the new 1080mm TRACK_WIDTH
-    │   puts the near tire face 224mm clear of the bracket's own widest
-    │   edge [was overlapping ~6mm] — confirmed via a real intersection()
-    │   probe returning EMPTY, not assumed from the wider spacing alone)
-    │   ├── Front spacer (real LENGTH recomputes to 336.8mm, was 215.4mm,
-    │   │   since CASTER_PLATE_BOTTOM_Z moved with the new LEG_DROP —
-    │   │   construction UNCHANGED)
-    │   ├── Dual rigid wheels (TASK 1/5: respan from the retired
-    │   │   DUAL_WHEEL_OFFSET[110mm]-based close-set caster spacing to the
-    │   │   SAME shared TRACK_WIDTH/2[540mm] the rear now uses — front
-    │   │   wheel is a real COPY of the rear wheel [same WHEEL_R/Z=0
-    │   │   anchor]. Same rigid single-center-pivot mechanism as v4
-    │   │   [triangle welded to one yoke, steer_deg rotates the pair] —
-    │   │   re-verified through the respan via a real CGAL steer_deg sweep,
-    │   │   not rebuilt)
-    │   └── Tow handle + puller triangle bracket (TASK 2 tip + TASK 6
-    │       length/angle. Triangle: sharp pyramid apex REBUILT round via
-    │       hull() [150mm dia boss — judgment call, read as the boss's own
-    │       real diameter], forward reach [TRIANGLE_APEX_X=-300] UNCHANGED
-    │       so HINGE_X's own formula is untouched, now lands inside genuine
-    │       round material instead of v4's thin near-point sliver [real,
-    │       flagged improvement]. Handle upright length: HANDLE_UPRIGHT_LEN
-    │       [400mm literal] RETIRED, replaced by live TBAR_LEN=
-    │       DATUM_Z_RIDGE-WHEEL_R-50=1102.735mm)
-    │       ├── Kinetic: handle_fold_deg — default FIXED 0->90 [vertical
-    │       │   storage, was shipping flat/towing by default, a standing
-    │       │   v12/v4 QA defect, now real-render-confirmed at the new
-    │       │   default]. *** REAL, FLAGGED VARIANCE, NOT SILENTLY
-    │       │   ABSORBED ***: TBAR_LEN's own formula implicitly assumes a
-    │       │   wheel-height pivot; this file's real [unchanged, out of
-    │       │   scope this round] TRIANGLE_Z hinge sits 100mm higher, so at
-    │       │   the new 90deg default the tip's real Z [1431.335mm] exceeds
-    │       │   the roof [DATUM_Z_RIDGE=1381.335mm] by 50mm on paper — a
-    │       │   real CGAL check [intersection() vs the full built chamber/
-    │       │   lid/firebox/exhaust/chimney] confirms this causes NO actual
-    │       │   collision [T-bar sits outside the chamber's own X-footprint
-    │       │   entirely at 90deg], but the numeric margin is genuinely
-    │       │   negative, flagged for the record
-    │       └── Kinetic: steer_deg — UNCHANGED mechanism from v4, re-spanned
-    │           only [TASK 5]. Real CGAL sweep (0/+-22.5/+-45/90) vs front
-    │           bracket + caster plate + tow triangle re-run at the new
-    │           wider span, confirmed empty at every tested angle
-    └── Prep shelves x2 (UNCHANGED from v4, DO NOT TOUCH this round — mount
-        point [GRATE_Z] is chamber-frozen; real value moves to 950mm
-        [v14.2, was 778.665mm under v13] purely as an automatic consequence
-        of TASK 0's pointer bump, not this round's own scope)
+    │   457.2/228.6/200. REAR_AXLE_Z UNCHANGED [=WHEEL_R=228.6]. REAR_AXLE_X
+    │   formula UNCHANGED but real value shifts +60mm [1203.5, was 1143.5]
+    │   since v15's own firebox_x1 grew while firebox_x0 stayed pinned —
+    │   real, flagged, automatic consequence. REAR_WHEEL_Y_LEFT/RIGHT now
+    │   driven by TASK 2's narrower TRACK_WIDTH[980mm] = -185/795mm [was
+    │   -235/845mm] — real 100mm gap to the firebox's own outer-shell edge
+    │   each side [was 150mm, firebox insulated, wheel sits closer].
+    │   REAR_BRACKET_H recomputes AUTOMATICALLY via v15's new
+    │   firebox_floor_z [191.4mm, was 342.8mm] — TASK 4, zero code change.
+    │   No kinetic parameter — static)
+    │   ├── Rear spacers x2 (construction UNCHANGED — real lengths change
+    │   │   automatically from the new REAR_WHEEL_Y_LEFT/RIGHT)
+    │   └── Rear fenders x2 (TASK 3 REBUILT as a short flared wing — was
+    │       "a long straight panel," Janis's live review finding. Real
+    │       cause: the flat mounting portion spanned the ENTIRE distance
+    │       to the wheel's own vertical centerline [250mm flat run] before
+    │       curving. Fixed: flat portion now a genuinely SHORT weld tab
+    │       [1.5mm, unchanged] — the arc starts almost immediately, at the
+    │       real angle [a_start=acos(d/FENDER_R_IN), live-computed,
+    │       symmetric both sides — 58.11deg left/121.89deg right at the
+    │       new 980mm track] where it naturally reaches the firebox wall.
+    │       Real arc sweep now ~147deg [was 115deg]. *** REAL BUG
+    │       FOUND+FIXED VIA CGAL ***: this wider sweep broke the inherited
+    │       3-point wedge-mask technique [chord between the 2 far points
+    │       cut INSIDE the ring at this wider angle, producing two
+    │       disconnected thin slivers instead of a band, confirmed via
+    │       real render not assumed] — fixed with a real multi-point fan
+    │       mask, robust to any sweep angle, re-verified as a clean
+    │       continuous band. FENDER_GAP[150mm]/FENDER_T[4mm]/FENDER_W
+    │       [240mm]/FENDER_ARC_PAST_EDGE[25deg] all UNCHANGED)
+    ├── Front wheel support (bracket's own MAIN SHAPE UNCHANGED. LEG_DROP's
+    │   own FORMULA UNCHANGED from v5 but real value recomputes
+    │   AUTOMATICALLY via v15's new firebox_floor_z [351.335mm, was
+    │   199.935mm] — TASK 5, zero code change beyond the pointer bump; leg
+    │   bottom still lands EXACTLY at firebox_floor_z[420mm]. Caster
+    │   top-plate/front spacer recompute automatically too [185.4mm, was
+    │   336.8mm]. *** REAL, CGAL-CONFIRMED: THE FRONT-WHEEL/BRACKET
+    │   COLLISION RE-CHECK AT THIS ROUND'S OWN FURTHER-CHANGED GEOMETRY
+    │   (TASK 8) STILL CONFIRMS EMPTY *** — re-verified via a real
+    │   intersection() probe at the new 980mm track/351.335mm LEG_DROP/
+    │   lowered TRIANGLE_Z, not assumed resolved just because v5 already
+    │   resolved it once)
+    │   ├── Front spacer (real LENGTH recomputes automatically, unchanged
+    │   │   construction)
+    │   ├── Dual rigid wheels (UNCHANGED mechanism, respans automatically
+    │   │   with the new shared TRACK_WIDTH)
+    │   └── Tow handle + puller triangle bracket (TASK 6 REBUILT mount +
+    │       TASK 7 length re-verified unaffected. TRIANGLE_Z = FRONT_AXLE_Z
+    │       directly [228.6mm, was FRONT_AXLE_Z+100=328.6mm floating above
+    │       the axle's own real plane, a v3-era carryover, Janis's own
+    │       annotated finding]. NEW curved gusset fillet [GUSSET_R=30mm,
+    │       judgment call, flagged — no reference photo directly available
+    │       this session] via hull() of two spheres, bridging the flat
+    │       triangle plate's own underside to the round stub axle's own
+    │       surface at their shared mounting point — real CGAL: genuine
+    │       volume overlap vs BOTH the plate and the axle, confirmed.
+    │       TBAR_LEN UNCHANGED VALUE [1102.735mm, DATUM_Z_RIDGE/WHEEL_R
+    │       both untouched by v15])
+    │       ├── Kinetic: handle_fold_deg — default UNCHANGED 90 [vertical
+    │       │   storage, fixed last round]. *** REAL, FLAGGED SIDE EFFECT
+    │       │   OF TASK 6, NOT THE GOAL BUT A WELCOME CONSEQUENCE ***:
+    │       │   since TRIANGLE_Z dropped 100mm, the tip's real Z at the
+    │       │   90deg default is now 1331.335mm — 50mm BELOW the roof
+    │       │   [DATUM_Z_RIDGE=1381.335mm] this time [was 50mm ABOVE under
+    │       │   v5] — the v5-flagged roof-overshoot resolves as a real
+    │       │   side effect, confirmed via echo not assumed
+    │       └── Kinetic: steer_deg — UNCHANGED mechanism, re-verified via a
+    │           real CGAL sweep (0/+-22.5/+-45/90) at the new narrower
+    │           track + lowered gusset assembly, confirmed empty throughout
+    └── Prep shelves x2 (TASK 1 REBUILT mounting — kinematics UNCHANGED
+        [rotate([deg,0,0]) about the X-axis was already a proper hinge-LINE
+        rotation for every X along the shelf, not just a point]. Real
+        problem was PHYSICAL SUPPORT: only ONE mounting bracket existed
+        near the shelf's own near end while the shelf spans ~320mm — a
+        real ~290mm unsupported cantilevered far end [Janis's live review
+        finding]. Fixed: 3 real brackets [judgment call, flagged] evenly
+        spread across the shelf's own real X span, same hinge line, real
+        distributed weld support [confirmed via CGAL, all 3 individually
+        contact real chamber material] — sits level/flush when folded down
+        instead of drooping under its own cantilever)
 ```
 
 ## PART C — Kinetic Dual-View Table
@@ -585,7 +618,7 @@ verified via real CGAL render this session (not just the default state
 | Ash tray | in (`ash_tray_out_pct=0`) | out (`ash_tray_out_pct=1`) | Full-out only physically valid with door open — same accepted door-dependency pattern as VM-02's `tray_out_pct`, not a bug. Unchanged from v1 |
 | Chimney (fold) | REMOVED v2 | REMOVED v2 | v1's foldable chimney/drop-tube replaced by a fixed exhaust room + pipe (v2 TASK 2) — no fold mechanism in this version, flagged as a real scope change, not silently dropped |
 | Prep shelves | deployed (`shelf_deployed=true`, horizontal) | stowed (`shelf_deployed=false`, vertical) | Discrete boolean, unchanged from v1 |
-| Tow handle (v5 TASK 2/6) | towing/use (`handle_fold_deg=0`, horizontal) | folded vertical storage (`handle_fold_deg=90`, NOW THE DEFAULT — TASK 6 fix, was defaulting to 0/flat, a standing v12/v4 QA defect) | Continuous angle. Length now a live formula (`TBAR_LEN`=1102.735mm, was 400mm literal). Real CGAL: at the new 90deg default, tip Z exceeds the roof by 50mm on paper (hinge-height/formula mismatch, flagged) but a real intersection() check vs the full built assembly confirms NO actual collision (T-bar sits outside the chamber's own footprint at that height). `steer_deg` UNCHANGED mechanism (re-spanned only, TASK 5): rotates the triangle+handle AND the front wheel pair together as one rigid assembly — still a SEPARATE parameter from fold, not its own dual-view row |
+| Tow handle (v6 TASK 6) | towing/use (`handle_fold_deg=0`, horizontal) | folded vertical storage (`handle_fold_deg=90`, UNCHANGED default from v5) | Continuous angle. `TRIANGLE_Z`=`FRONT_AXLE_Z` directly now (228.6mm, was `FRONT_AXLE_Z+100`=328.6mm floating above the axle plane — Janis's own annotated finding, fixed) + new curved gusset fillet bridging the plate to the stub axle. `TBAR_LEN` UNCHANGED (1102.735mm). Real, flagged side effect of the `TRIANGLE_Z` fix (not the goal of TASK 6): tip Z at the 90deg default is now 50mm BELOW the roof (was 50mm above under v5) — the v5-flagged roof-overshoot resolves as a welcome consequence, confirmed via echo. `steer_deg` UNCHANGED mechanism, re-verified via a real CGAL sweep at the new narrower track — still a SEPARATE parameter from fold, not its own dual-view row |
 
 Static/removable parts (Grill grate segments — *** TEMPORARILY,
 independently Z-positioned at GRATE_Z_FIXED=1000mm as of v13, see Part A/B
@@ -596,6 +629,17 @@ wheel support's own bracket — fixed weldment, the caster's swivel IS the
 independently kinetic beyond what's listed — they get a `show_*`
 isolation toggle only (Toggle-Completeness Rule), not a dual-view kinetic
 state.
+
+## Toggle-Completeness count (2026-07-20, v1.19)
+
+BBQ-understructure-v6.scad ASSEMBLY: 4 modules called (`rear_axle`, `rear_
+fenders`, `front_wheel_support`, `prep_shelves`) — all 4 have a real
+`show_*` toggle, unchanged from v5. `tow_bracket_gusset()` NEW but a
+sub-part of `front_swivel_assembly()`, no separate toggle needed (same
+pattern the tow triangle/handle already use). BBQ-chambers-v15.scad
+ASSEMBLY (unchanged this round — chambers not touched): 8 modules called,
+all 8 toggled, carried over unchanged. 12/12 compliant across the full
+assembly, 0 gaps, 0 safety-critical exceptions needed.
 
 ## Toggle-Completeness count (2026-07-20, v1.17)
 

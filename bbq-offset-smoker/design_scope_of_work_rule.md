@@ -1,5 +1,34 @@
 # BBQ Offset Smoker — Design Scope of Work
-> Version 1.9 — 2026-07-20
+> Version 1.10 — 2026-07-20
+> Changes: bbq-understructure-v6-fitment-fixes. TASK 0 bumps this file's
+> own `include` to BBQ-chambers-v15.scad, wiring v15's real square-shell/
+> cylinder firebox redesign into the full assembly for the first time. 4
+> real fitment fixes from Janis's live OpenSCAD-desktop review of v5:
+> prep shelf now 3 real distributed mounting brackets (was 1, cantilevered
+> ~290mm unsupported far end — kinematics were already correct, real fix
+> is physical support). Track width recomputed to 980mm (100mm wheel-to-
+> firebox gap, was 1080mm/150mm — firebox is insulated, wheel sits
+> closer). Rear fender rebuilt as a real short flared wing (was a long
+> straight panel — real cause: the flat mounting portion spanned to the
+> wheel's own vertical centerline before curving; fixed by starting the
+> arc almost immediately at the real angle where it naturally reaches the
+> firebox wall, live-computed via acos()). T-bar bracket now mounts
+> directly at the front axle's own real plane with a new curved gusset
+> fillet (was floating 100mm above it, a v3-era carryover). Real,
+> automatic consequences of v15's own firebox reanchor: REAR_BRACKET_H/
+> LEG_DROP/FRONT_SPACER_LEN/REAR_AXLE_X all recompute via their own
+> unchanged live formulas (191.4mm/351.335mm/185.4mm/+60mm respectively).
+> T-bar length unaffected (1102.735mm) — the v5-flagged 50mm roof-
+> overshoot flips to a genuine 50mm real clearance margin as a side
+> effect of the gusset fix. Front-wheel/bracket collision re-check at the
+> new geometry: still resolved (EMPTY), confirmed not assumed. REAL BUG
+> FOUND+FIXED VIA CGAL DURING THE BUILD: the fender's own wider 147deg
+> arc sweep broke the inherited 3-point wedge-mask technique (the chord
+> between its 2 far points cut INSIDE the ring at this wider angle,
+> producing disconnected slivers instead of a band, confirmed via real
+> render) — fixed with a real multi-point fan mask, robust to any sweep
+> angle, re-verified as a clean continuous band via CGAL.
+> Previous: 1.9 — 2026-07-20
 > Changes: bbq-chambers-v15-square-shell-cylinder-firebox. Real structural
 > firebox redesign, source v14.2 (understructure v5 completely out of
 > scope this round — a separate, already-prepared v6 round depends on this
@@ -245,18 +274,26 @@ architecture.
 Grate-height-above-true-ground target (900-1000mm, locked prior round) —
 still an OPEN ITEM, still not resolved (this round's own understructure
 work is track-width/fender/T-bar scoped, does not touch grate height).
-Understructure (2026-07-20, v5): real, CGAL-confirmed — the standing v4
-~6mm front-wheel/front-bracket collision (open since 2026-07-17) IS NOW
-RESOLVED, via a new shared TRACK_WIDTH=1080mm driving both front AND rear
-wheel position (was: independent rear formula + a close-set front caster
-spacing). Rear wheel: real 150mm gap to the firebox's own outer-shell edge
-each side, wheel bottom still real world Z=0. NEW rear fender per side
-(150mm real radial clearance, welds to the firebox's own outer shell).
-Front U-bracket's own forward tow-triangle extension rebuilt round (150mm
-dia boss, was a sharp point); the bracket's drop length now reaches
-exactly to firebox_floor_z. Tow handle (T-bar): real live-computed length
-1102.735mm (was a 400mm literal), default angle now vertical/storage
-(90deg, was defaulting flat — a standing v12/v4 QA defect, now fixed).
+Understructure (2026-07-20, v6): real pointer bump wires v15's own square-
+shell/cylinder firebox into the full assembly for the first time. 4 real
+fitment fixes from Janis's live desktop review of v5: prep shelf now 3
+real distributed mounting brackets (was 1, cantilevered ~290mm unsupported
+far end). TRACK_WIDTH recomputed 1080->980mm (100mm wheel-to-firebox gap,
+was 150mm — firebox insulated, wheel sits closer). Rear fender rebuilt as
+a real short flared wing (was a long straight panel — the flat mounting
+portion spanned to the wheel's own centerline before curving; fixed by
+starting the arc almost immediately at the real angle where it reaches
+the firebox wall). T-bar bracket now mounts directly at the front axle's
+own real plane (was floating 100mm above it) with a new curved gusset
+fillet. Real, automatic consequences of v15's own firebox reanchor:
+REAR_BRACKET_H/LEG_DROP recompute to 191.4mm/351.335mm (were 342.8mm/
+199.935mm) via their own unchanged live formulas. Tow handle (T-bar):
+length unchanged (1102.735mm) — the v5-flagged 50mm roof-overshoot flips
+to a genuine 50mm real clearance margin as a side effect of the gusset
+fix. Front-wheel/bracket collision re-checked at the new geometry: still
+resolved. REAL BUG FOUND+FIXED VIA CGAL: the fender's own wider arc sweep
+broke the inherited wedge-mask technique (chord cut inside the ring,
+producing disconnected slivers) — fixed with a real multi-point fan mask.
 Firebox: 2026-07-20 (v15) — REAL STRUCTURAL REDESIGN. Outer shell rebuilt
 as a true 580x580x580mm CUBE (was 580(W) x 428.6mm(H) x 480mm physical
 length under v14.2) — all three real dimensions equal, "dice" proportions
@@ -327,9 +364,12 @@ yet Janis-reconfirmed in this exact wording (see flag above)
 - Chimney — front shoulder mount, foldable, internal drop-tube down to
   grate level
 - Understructure — corner-tube wheeled frame, 2 fixed + 2 swivel casters
-  (18"/457.2mm wheels, FINAL as of 2026-07-17), shared 1080mm track width
-  front+rear (2026-07-20, v5 — resolves the standing front-wheel/bracket
-  collision), rear fenders (NEW, v5), T-bar tow handle at chimney end
+  (18"/457.2mm wheels, FINAL as of 2026-07-17), shared 980mm track width
+  front+rear (2026-07-20, v6, was 1080mm — resolves the standing
+  front-wheel/bracket collision, re-confirmed at this round's own
+  geometry), short flared-wing rear fenders (v6, was a long panel under
+  v5), T-bar tow handle mounted at the front axle's own real plane with a
+  curved gusset (v6, was floating 100mm above it) at chimney end
 - Prep Shelves x2 — fold-up (vertical stowed / horizontal deployed),
   left + right, front of chamber
 

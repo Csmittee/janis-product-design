@@ -4,6 +4,12 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-20 | bbq-chambers-v14.2-passage-area-fix-real-cut-check | DONE — v14.2, real 0.008-area resize + REAL cut-penetration bug fixed (not the v14.1 camera artifact)
+
+Files: BBQ-chambers-v14.2.scad (new, source v14.1). Real target area = 5,890.51in³×0.008 = 47.124in²=30,402.6mm². Per Janis's own direct clarification (overrides this round's prompt's "height frozen" note, flagged): bottom stays at chamber_floor_z, top rises to duct-top−20mm weld gap (960mm, was 950mm=apex A) — height 178.665→188.665mm. Widths scaled from v14.1's real values, same taper: bottom=95.29mm/top=227.00mm, resulting area exactly 100% of target. Real containment re-confirmed EMPTY (no chord/clip) at new size.
+REAL BUG FOUND (not the benign v14.1 axial-camera artifact — a genuine, different defect): CGAL ray-probe (10mm then 80mm rod through the passage centerline vs. the full assembly) found solid, UNBROKEN material blocking real world X=[890.49,913.5] — v14.1's TASK 1 made the outer shell's flange+end cap a PLAIN unperforated rectangle (fixed the visible step) but never cut the passage hole through it, so the chamber wall's and duct end cap's real holes existed but the flange (bigger than the duct's own opening, directly in the line of sight) sealed the passage shut — exactly matches Janis's "very large but not cut through"/"thin film" report. Fixed: new `outer_shell_flange_cut_2d()` = footprint MINUS `firebox_passage_profile()`, wired into both the flange and its end cap. Ray-probe re-run: confirmed EMPTY (genuine through-hole), visual proof screenshot captured.
+QA: full CGAL sweep Simple:yes (606 facets, 7 volumes); kinetic sweep (lid/door/ash tray) all Simple:yes; zero warnings.
+
 ### 2026-07-20 | bbq-chambers-v14.1-flat-tuckunder-trapezoid-passage | DONE — v14.1, targeted bug-fix + simplification on frozen v14 (apex/width/fire-volume untouched)
 
 Files: BBQ-chambers-v14.1.scad (new, source v14). Changed: design_scope_of_work_rule.md(1.5→1.6), PART_MANIFEST.md(1.13→1.14), SKELETON_WORKSHEET.md(1.14→1.15), knowledge.map(v66→v67), prompts/archive/, renders/BBQ-v14.1-{iso,front,side,rear,door-f5,door-f6,door-f5-axial,door-f6-axial,trapezoid-dims}.png. Understructure untouched, include chain still unwired to chambers per v14 precedent (base-v1→understructure-v4→chambers-v13 still, this file remains standalone).

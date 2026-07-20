@@ -4,28 +4,27 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.14 — 2026-07-20 (bbq-chambers-v14.1-flat-tuckunder-trapezoid-
+# Version: 1.15 — 2026-07-20 (bbq-chambers-v14.2-passage-area-fix-real-cut-
+# check): chambers table REBUILT — source now BBQ-chambers-v14.2.scad, two
+# targeted fixes on the just-merged v14.1 (chamber apex/firebox width/
+# fire-volume math ALL FROZEN, understructure v4 COMPLETELY untouched).
+# Trapezoid resized to the real 0.008-of-fire-volume opening-area target
+# (47.124in²=30,402.6mm², was 2.25x oversized) — bottom=95.29mm/
+# top=227.00mm, same taper. Per Janis's own direct clarification
+# (overrides this round's own prompt-file "height frozen" note, flagged):
+# bottom stays at chamber_floor_z, top rises to 20mm below the inner
+# duct's own real top wall (960mm, was 950mm=apex A) — height grows
+# 178.665→188.665mm. REAL cut-penetration defect found via an actual CGAL
+# ray-probe (NOT the benign v14.1 axial-camera artifact — a genuinely
+# different bug): v14.1's flange/end-cap simplification left them PLAIN
+# unperforated rectangles, sealing the passage shut even though the
+# chamber wall and duct end cap both had a real hole (matches Janis's
+# "very large but not cut through"/"thin film" report). Fixed via new
+# `outer_shell_flange_cut_2d()` — see BBQ-chambers-v14.2.scad's own header
+# for the full record.
+# Previous: 1.14 — 2026-07-20 (bbq-chambers-v14.1-flat-tuckunder-trapezoid-
 # passage): chambers table REBUILT — source now BBQ-chambers-v14.1.scad,
-# targeted bug-fix + simplification round on the just-merged v14 (chamber
-# apex/firebox width/fire-volume math ALL FROZEN, understructure v4
-# COMPLETELY untouched/not opened). `outer_shell_flange_2d()`'s 2-zone
-# octagon-clipped/plain-rectangle shape (the real visible STEP Janis
-# screenshotted) RETIRED — `outer_shell()`/`outer_shell_end_cap()` now
-# both use the plain, unclipped `outer_shell_footprint_2d()` full height,
-# one flat continuous plane. Real CGAL: upper zone has real non-empty
-# contact with chamber material, lower zone confirmed EMPTY, zero-contact
-# vs inner duct RE-RUN and confirmed still holds. `passage_circle_2d()`/
-# `PASSAGE_D`/`PASSAGE_Y_CENTER`/`PASSAGE_Z_CENTER` (v14's chord-shaped,
-# flagged-placeholder circle) RETIRED — `firebox_passage_profile()`
-# rebuilt as a real trapezoid derived directly from the octagon's own
-# boundary (bottom 226.67mm/top 540mm duct-governed, top edge = apex A =
-# 950mm exactly by construction) — a LOCKED spec, not a placeholder. Real
-# CGAL confirms full containment, no chord/partial-clip. F5-preview-vs-
-# F6-render door visual discrepancy investigated — real cause found
-# (camera-angle-dependent OpenGL alpha-blend artifact at near-exact axial
-# viewing angles, disproved the union-of-6-solids hypothesis directly via
-# a render()-wrapped test), no code fix needed — see BBQ-chambers-
-# v14.1.scad's own header for the full record.
+# targeted bug-fix + simplification round on the just-merged v14.
 # Previous: 1.13 — 2026-07-18 (bbq-chambers-v14-apex950-firebox-widen-dual-
 # endcap): chambers table REBUILT — source now BBQ-chambers-v14.scad,
 # CHAMBER+FIREBOX round (understructure v4 COMPLETELY untouched/not
@@ -243,18 +242,18 @@
 # toggle, per the Toggle-Completeness Rule (cc_rules.md). "(none — always
 # on, safety-critical)" is the ONLY other permitted value.
 
-## BBQ-chambers-v14.1.scad
+## BBQ-chambers-v14.2.scad
 
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
 | `chamber_shell()` | UNCHANGED CODE v13 (chamber's own shape frozen, DO NOT TOUCH) — fixed portion of the octagon, full chamber_L length, wall_t hollow. Real world position moves via `chamber_floor_z`'s own new live-formula value (900-chamfer=721.335mm, was hardcoded 600) — every downstream Z (DATUM_Z_RIDGE, ROOM_BASE_Z/TOP_Z, lid panels) recomputes automatically. Rear wall carries the REBUILT `firebox_passage()` (real cylinder∩octagon cut, TASK 3); front end-cap carries exhaust_room_opening() | the lid's own territory for X=[LID_X0,LID_X1] — a SEPARATE part (`lid()`) | `show_chamber_shell` |
 | `lid_territory_margin_fill()` | v8 — REPLACES `lid_territory_end_caps()` (PR #121/v6, REMOVED). Same coverage (X=0-100, X=815-915) but now built from the SAME shared `true_octagon_profile()`+`octagon_ring()` helper `chamber_outer_tube()` itself uses (was a DIFFERENT profile, `lid_profile()`, in v6/v7 — two independently-modeled shapes meeting at a seam, which Janis was seeing as a visible wall). Real wall_t end cap ONLY at the true outer end (X=0 or X=915); fully OPEN at LID_X0/LID_X1 — no separate closing face. Real CGAL boundary probe: continuous wall_t-only material at the boundary (~5096mm² cross-section, vs ~308258mm² a solid closing panel would show) | a solid plug (v5's version, already fixed pre-v6) or a separately-profiled shape meeting the tube at a seam (v6/v7's version, the real cause of the visible wall) | (none — sub-part of `chamber_shell()`, no separate toggle) |
-| `firebox_passage()` | v14.1 REBUILT — a real TRAPEZOID (`firebox_passage_profile()`, `TRAP_MARGIN`/`TRAP_BOT_W`/`TRAP_TOP_W`), derived DIRECTLY from `true_octagon_profile()`'s own real boundary at local h=0/h=chamfer — a **LOCKED spec** (Janis's real heat-rises/ash-avoidance design choice), NOT a placeholder. REPLACES v14's `passage_circle_2d()`/`PASSAGE_D`/`PASSAGE_Y_CENTER`/`PASSAGE_Z_CENTER` (ALL RETIRED — v14's circle was flagged as a chord-shaped cut that did NOT fully clear real chamber material). Bottom edge 226.67mm wide (octagon floor width 252.67mm inset 13mm/side, same `GRATE_Y_SAFETY` margin formula), top edge 540mm wide at world Z=950mm (duct-width-governed, not the octagon — confirmed live via `min()`) — top edge lands EXACTLY on apex A (950mm) by construction. Real CGAL: full containment confirmed, NO chord/partial-clip (unlike the retired circle) | a placeholder/adjustable default like v14's circle was — this trapezoid is locked | (none — sub-part of `chamber_shell()`, no separate toggle) |
+| `firebox_passage()` | v14.2 TASK 1 RESIZED + REPOSITIONED (was v14.1's own trapezoid build) — still a real TRAPEZOID (`firebox_passage_profile()`), still a **LOCKED spec** (Janis's real heat-rises/ash-avoidance design choice), NOT a placeholder; taper direction UNCHANGED. Resized to the real 0.008-of-fire-volume opening-area rule (5,890.51in³×0.008=47.124in²=30,402.6mm² — v14.1's own trapezoid was never checked against this and came out 2.25x oversized): bottom=95.29mm/top=227.00mm, same proportional taper as v14.1's real values, scaled down. Repositioned per Janis's own direct clarification (real, flagged deviation from this round's own prompt-file "height frozen" instruction): bottom edge STAYS at `chamber_floor_z` (unchanged anchor); top edge RISES from v14.1's chamfer(=apex A=950mm) to 20mm below the inner duct's own real top wall (960mm) for a real weld-clearance margin — height grows 178.665mm→188.665mm as a direct consequence; the "top edge=apex A" coincidence does NOT carry over. Real CGAL: full containment confirmed, NO chord/partial-clip at the new size/position | a placeholder/adjustable default like v14's retired circle was — this trapezoid is locked; its top edge landing on apex A — that was true only for v14.1's own geometry, not this round's | (none — sub-part of `chamber_shell()`, no separate toggle) |
 | `lid(lid_open_deg)` | clamshell lid, 3 flat panels, hinged along the ridge midpoint. v6: margin widened LID_X0=100/LID_X1=815 (715mm long, was 10/905/895mm) — the 2 end zones are now real fixed (welded, non-opening) octagon-ring sections, not a thin plug. v3 MIRRORED to the Y=0 side, opens toward the user. Rotation SIGN flipped from v2 (real CGAL bounding-box check) | the fixed shell's own right wall/chamfer/half-ridge — those stay part of `chamber_shell()` | `show_lid` |
 | `lid_hardware(lid_open_deg)` | UNCHANGED code, still built for v1's original end-hinged geometry, now stale across 3 redesigns (v2 ridge-hinge, v3 mirror, v6 margin widen) | a correctly-positioned part — still not repositioned, still explicitly deferred | `show_lid_hardware` — still FALSE by default — TODO: reposition once lid geometry is fully confirmed, follow-up prompt |
 | `firebox(firebox_door_open_deg, ash_tray_out_pct)` | v14 REWORK — TWO fully independent welded assemblies (see next 4 rows), NO shared end-cap plate between them (eliminates the full-face thermal-bridge problem the v13 concept had). `firebox_door()` UNCHANGED CODE, real dimensions widen automatically 510->580mm (mounted on the wider outer shell). `ash_tray()` width formula corrected to `DUCT_W`-based (514mm, was `FIREBOX_W`-based/484mm — required real fix, the tray sits inside the duct's real interior, not the wider outer shell) | one shared assembly — this version is deliberately two separate, non-touching solids | `show_firebox` |
 | `inner_duct()` / `inner_duct_end_cap()` | v14 TASK 2, NEW — REPLACES `fuel_cylinder()` (RETIRED). Rectangular duct, 540x388.6mm cross-section (20mm uniform margin vs the outer shell on all 4 sides), full `FIREBOX_L`(460mm, UNCHANGED) span, open both ends (same convention as the retired cylinder). Own end cap welds DIRECTLY to the chamber's own octagon end cap (NOT to the outer shell) — real full rectangle minus the SAME passage-hole shape `firebox_passage()` cuts (shared 2D module, judgment call: keeps the duct's interior actually connected to the chamber — flagged, see file header). Real CGAL seal-weld: non-empty contact vs the chamber's own solid wall, confirmed | connected to or touching the outer shell anywhere — confirmed via a real mandatory zero-contact CGAL check | (none — sub-part of `firebox()`, no separate toggle) |
-| `outer_shell()` / `outer_shell_end_cap()` | v14.1 TASK 1 REBUILT — the flange+end cap now both use `outer_shell_footprint_2d()` DIRECTLY (plain, UNCLIPPED, full FIREBOX_H x FIREBOX_W rectangle) for their ENTIRE height — ONE flat continuous plane, no zones, no octagon-intersection clipping. REPLACES v14's `outer_shell_flange_2d()` (RETIRED — its 2-zone octagon-clipped/plain-rectangle construction produced a real, visible abrupt WIDTH JUMP at chamber_floor_z, the STEP Janis screenshotted). Widened to 580mm (15mm margin/side vs chamber_W=610), physical length 480mm — a NEW, SEPARATE number from `FIREBOX_L`(460, the duct's own interior length). Real CGAL: upper portion (world Z=[chamber_floor_z,firebox top]) has real non-empty contact with chamber material; lower portion (below chamber_floor_z) confirmed EMPTY (no material there, matches this file's standing convention) — no separate clip needed. `outer_shell_end_cap()` is STRUCTURAL (bears real load from the chamber's rear edge, Janis's explicit intent) | a 2-zone/stepped shape (v14's version) — this version is one flat plane, full height; touching the inner duct assembly anywhere — real, mandatory CGAL zero-contact check RE-RUN against this new shape, confirmed still EMPTY | (none — sub-part of `firebox()`, no separate toggle) |
+| `outer_shell()` / `outer_shell_end_cap()` | v14.1 TASK 1: flange+end cap use `outer_shell_footprint_2d()`'s plain, UNCLIPPED, full FIREBOX_H x FIREBOX_W rectangle for their ENTIRE height — ONE flat continuous plane, no zones (fixed the real, visible STEP Janis screenshotted). v14.2 TASK 2 REAL BUG FOUND+FIXED: v14.1 never cut a passage hole through this rectangle — since the flange's own footprint is LARGER than the duct's own opening and sits directly in the line of sight, it fully sealed the passage shut even though the chamber wall and duct end cap both had a real hole (found via an actual CGAL ray-probe, not a visual read — matches Janis's own "very large but not cut through"/"thin film" report exactly). NEW `outer_shell_flange_cut_2d()` = `outer_shell_footprint_2d()` MINUS `firebox_passage_profile()` (same shared 2D module), now used at BOTH the flange extrusion and `outer_shell_end_cap()` call sites. Real CGAL: upper portion still has non-empty contact with chamber material, lower portion still EMPTY, zero-contact vs inner duct RE-RUN and still EMPTY, and a real ray-probe (10mm then 80mm rod through the passage) now confirms a genuine unobstructed through-hole | a 2-zone/stepped shape (v14's version); a solid unperforated rectangle blocking the passage (v14.1's real bug, now fixed) | (none — sub-part of `firebox()`, no separate toggle) |
 | `exhaust_room()` | half-cylinder mounting room, 360mm dia x 100mm height (v3) — inscribes a real 180mm-diameter circle around the 127mm pipe (26.5mm clearance each side). Endcap opening a rectangle (360x100mm) | v2's 200/200 room (superseded) | `show_exhaust_room` |
 | `chimney_pipe()` | 127mm pipe, coaxial with the room's mounting hole, `PIPE_HOLE_X=-90` (v3), real 26.5mm clearance both sides | v2's overhang-compromise position (superseded) | `show_chimney_pipe` |
 | `grill_grate()` | UNCHANGED CODE v14 (still `GRATE_Z_FIXED`=1000mm, *** TEMPORARY ***, still DO NOT TOUCH). Real gap above the reanchored apex A (`GRATE_Z`=950mm exact, v14 TASK 1) is now 50mm (was 100mm) — automatic consequence of the chamber's own reanchor, GRATE_Z_FIXED itself untouched. X/Y placement formulas unchanged, real values IDENTICAL to v13 (23/587mm) since GRATE_LOCAL_H is invariant under a uniform +50mm shift of both chamber_floor_z and DATUM_GRATE_Z | GRATE_Z_FIXED is NOT the same value as GRATE_Z/DATUM_GRATE_Z — still two independently-positioned things, still TEMPORARY | `show_grate` |

@@ -1,30 +1,31 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.15 — 2026-07-20
-> Changes: bbq-chambers-v14.1-flat-tuckunder-trapezoid-passage.
-> Targeted bug-fix + simplification round on the just-merged v14 — chamber
-> apex(950mm)/firebox width(580mm)/fire-volume math ALL FROZEN, unchanged.
-> Understructure (v4) COMPLETELY untouched, not opened. Part A's Firebox
-> row: outer shell's rear tuck-under flange (+ its end cap) rebuilt from a
-> 2-zone octagon-clipped shape (the real visible STEP Janis screenshotted)
-> to ONE plain, unclipped, full-height flat rectangle — real CGAL confirms
-> genuine contact with chamber material above chamber_floor_z, zero
-> material below it (matches this file's own standing convention), and
-> the mandatory outer-shell-vs-inner-duct zero-contact check RE-RUN and
-> still confirmed EMPTY under the new shape. Part B's Inner duct + inner
-> duct end-cap row: the passage-hole shape it welds around (also the
-> chamber's own rear-wall cut) — v14's placeholder 197mm circle (flagged
-> chord-shaped, did NOT fully clear chamber material) RETIRED — replaced
-> by a real trapezoid
-> derived directly from the octagon's own boundary (bottom 226.67mm/top
-> 540mm duct-width-governed, top edge lands EXACTLY on apex A=950mm by
-> construction) — a LOCKED spec, not a placeholder, unlike v14's circle.
-> Real CGAL confirms full containment, no chord/partial-clip. F5-preview-
-> vs-F6-render door visual discrepancy investigated (Problem 3) — real
-> cause found: a camera-angle-dependent OpenGL alpha-blend artifact at
-> near-exact axial viewing angles (disproved the union-of-6-solids
-> hypothesis directly via a render()-wrapped test), NOT a modeling defect
-> — no code fix needed. Detail/content update within the SAME 3-part
-> structure, not a new artifact — X.Y bump.
+> Version 1.16 — 2026-07-20
+> Changes: bbq-chambers-v14.2-passage-area-fix-real-cut-check. Two
+> targeted fixes on the just-merged v14.1 — chamber apex(950mm)/firebox
+> width(580mm)/fire-volume math ALL FROZEN, unchanged. Understructure (v4)
+> COMPLETELY untouched. Part B's Firebox Passage (Inner duct end-cap row):
+> trapezoid RESIZED to the real 0.008-of-fire-volume opening-area target
+> (47.124in²=30,402.6mm², was 2.25x oversized at 106.2in²) — bottom=
+> 95.29mm/top=227.00mm, same taper preserved. Per Janis's own direct
+> clarification (real, flagged deviation from this round's own prompt-file
+> "height frozen" instruction): bottom stays at chamber_floor_z, top rises
+> to 20mm below the inner duct's own real top wall (960mm, was 950mm=apex
+> A) for a real weld-clearance margin — height grows 178.665mm->188.665mm;
+> the "top edge=apex A" coincidence does NOT carry over from v14.1. Part
+> A/B's Outer shell + outer shell end-cap row: REAL cut-penetration defect
+> found via an actual CGAL ray-probe (NOT the benign v14.1 axial-camera
+> artifact — a genuinely different bug): v14.1's own flange/end-cap
+> simplification left them PLAIN unperforated rectangles, sealing the
+> passage shut even though the chamber wall and duct end cap both had a
+> real hole (matches Janis's own "very large but not cut through"/"thin
+> film" report exactly) — fixed via new `outer_shell_flange_cut_2d()`,
+> ray-probe re-run confirmed a genuine unobstructed through-hole. Detail/
+> content update within the SAME 3-part structure, not a new artifact —
+> X.Y bump.
+> Previous: 1.15 — 2026-07-20
+> Changes: bbq-chambers-v14.1-flat-tuckunder-trapezoid-passage. Targeted
+> bug-fix + simplification round on the just-merged v14 (outer shell flat-
+> face fix, trapezoid passage replacing v14's circle).
 > Previous: 1.14 — 2026-07-18
 > Changes: bbq-chambers-v14-apex950-firebox-widen-dual-endcap.
 > CHAMBER+FIREBOX round — understructure (v4) COMPLETELY untouched, not
@@ -277,7 +278,7 @@ MAJOR SUB-ASSEMBLIES:
   Grill Grate      — Parent: DATUM_GRATE_Z (now itself Parent: chamber_floor_z) — offset: (0,0,0), fixed
   Cook Chamber      — Parent: chamber_floor_z              — offset: (0,0,0), fixed (v8 — chamber_floor_z is now the direct anchor, was dZ=-100 off DATUM_GRATE_Z)
   Lid               — Parent: Cook Chamber's ridge midpoint — offset: length-wise hinge at (-, DATUM_Y_CENTER, DATUM_Z_RIDGE); opens toward Y=0 (v3 mirror, was Y=chamber_W in v2) per the Standing Orientation Convention (rules-bbq-fab.md); margin widened v6 (LID_X0=100/LID_X1=815, was 10/905)
-  Firebox           — Parent: Cook Chamber's rear wall (DATUM_X_REAR)   — offset: v14 REWORK, TWO independent welded assemblies, no shared Parent chain between them. Inner duct — Parent: chamber's own octagon end cap (welds DIRECTLY, own end cap module, real trapezoid hole matching the passage — v14.1 TASK 2, was a chord-shaped circle), 540x388.6mm rect, FIREBOX_L=460mm interior UNCHANGED. Outer shell — Parent: chamber's rear wall via a 20mm additive structural flange, v14.1 TASK 1 REBUILT: now ONE flat, full-height, UNCLIPPED plane (was a 2-zone octagon-clipped shape that produced a real visible step), real CGAL-confirmed genuine contact with chamber material above chamber_floor_z / zero material below it, own separate end cap, structural, widened to FIREBOX_W=580mm (was 510mm). The two assemblies share NO Parent/contact point with each other (real, mandatory CGAL zero-contact RE-CONFIRMED against the new flat shape) — eliminates v13's single shared-end-cap Parent relationship
+  Firebox           — Parent: Cook Chamber's rear wall (DATUM_X_REAR)   — offset: v14 REWORK, TWO independent welded assemblies, no shared Parent chain between them. Inner duct — Parent: chamber's own octagon end cap (welds DIRECTLY, own end cap module, real trapezoid hole matching the passage — v14.2 TASK 1: resized to the real 0.008-area target [95.29mm bottom/227.00mm top] and repositioned [top now 20mm below the duct's own top wall, 960mm, was apex A=950mm in v14.1], was a chord-shaped circle through v14), 540x388.6mm rect, FIREBOX_L=460mm interior UNCHANGED. Outer shell — Parent: chamber's rear wall via a 20mm additive structural flange, v14.1 TASK 1: ONE flat, full-height, UNCLIPPED plane (was a 2-zone octagon-clipped shape that produced a real visible step); v14.2 TASK 2 REAL FIX: this flat plane never had the passage hole cut through it (a real, confirmed defect — Janis's own "thin film"/"not cut through" report), now cut via `outer_shell_flange_cut_2d()`, real CGAL ray-probe confirms a genuine unobstructed through-hole. Own separate end cap, structural, widened to FIREBOX_W=580mm (was 510mm). The two assemblies share NO Parent/contact point with each other (real, mandatory CGAL zero-contact RE-CONFIRMED against the new perforated shape) — eliminates v13's single shared-end-cap Parent relationship
   Exhaust room      — Parent: Cook Chamber's front end-cap (DATUM_X_FRONT) — offset: welded flush at X=0; RESIZED v3 (360mm dia x 100mm height, was 200/200 v2)
   Chimney pipe      — Parent: Exhaust room's own top plate — offset: coaxial with the room's pipe-mounting hole; RE-POSITIONED v3 (real clearance now, not a forced overhang)
   Understructure     — Parent: Cook Chamber's chamber_floor_z / firebox_* / DATUM_Y_CENTER / GRATE_Z. v4 TASK 3: GROUND_OFFSET's indirect subtractive role RETIRED — REAR_AXLE_Z is now DIRECT CONSTRUCTION (`=WHEEL_R`=228.6), real-CGAL-confirmed wheel bottom at literal world Z=0 for BOTH axles (mandatory check found the v3 wheel's real bottom at raw Z=-150, confirmed NOT zero — "this is the anchor everything else in future prompts will be checked against"). REAL FLAGGED CONFLICT: this direct anchor, with the chamber staying frozen, drops real grate-height-above-ground to 778.665mm, below the standing 900-1000mm Envelope target — unresolved, not silently picked either way. rear_axle() Parent: firebox_floor_z(now 571.4)/firebox_x0/y0/y1 (offset: down to REAR_AXLE_Z=228.6, REAR_BRACKET_H=342.8mm); front_wheel_support(steer_deg,handle_fold_deg) Parent: chamber_floor_z/chamfer/chamber_W/DATUM_Y_CENTER (offset: down to chamber_floor_z-LEG_DROP, then front_spacer, now 215.4mm, down to the shared FRONT_AXLE_Z=228.6) — REAL, CGAL-CONFIRMED, UNRESOLVED COLLISION (NEW): front wheels now intersect front_bracket()/front_caster_plate()/tow_triangle() (~6mm each), all DO-NOT-TOUCH/deferred this round, flagged not fixed; prep_shelves() Parent: octagon "apex A" (world Y=0/610, Z=GRATE_Z=778.665, UNCHANGED, chamber frozen)
@@ -355,10 +356,16 @@ BBQ Offset Smoker V9 (top assembly)
 │   │   outer shell — real full rectangle minus the SAME passage-hole
 │   │   shape the chamber's own rear-wall cut uses [judgment call: keeps
 │   │   the duct's interior connected to the chamber, flagged; v14.1 TASK 2:
-│   │   this hole is now a real LOCKED trapezoid, 226.67mm bottom/540mm top,
-│   │   top edge = apex A exactly — REPLACES v14's placeholder 197mm circle,
-│   │   which was flagged chord-shaped/did not fully clear chamber material].
-│   │   Real CGAL
+│   │   this hole is a real LOCKED trapezoid — REPLACES v14's placeholder
+│   │   197mm circle, which was flagged chord-shaped/did not fully clear
+│   │   chamber material. v14.2 TASK 1: RESIZED to the real 0.008-of-fire-
+│   │   volume opening-area target [47.124in²=30,402.6mm², was 2.25x
+│   │   oversized at 106.2in²] — bottom=95.29mm/top=227.00mm, same taper
+│   │   preserved. Per Janis's own direct clarification [flagged deviation
+│   │   from this round's own prompt-file "height frozen" note]: bottom
+│   │   stays at chamber_floor_z, top rises to 20mm below the duct's own
+│   │   real top wall [960mm, was 950mm=apex A] — height 178.665→188.665mm,
+│   │   the "top edge=apex A" coincidence does NOT carry over. Real CGAL
 │   │   seal-weld: non-empty contact vs the chamber's own solid wall,
 │   │   confirmed. Real fire volume: 540x388.6x460mm = 5,890.5in³ =
 │   │   102.7% of the 5,737in³ target [was ~58%])
@@ -377,7 +384,16 @@ BBQ Offset Smoker V9 (top assembly)
 │   │   clip needed. End-cap is STRUCTURAL, bears real load from the
 │   │   chamber's rear edge. Real, MANDATORY CGAL check: ZERO contact
 │   │   anywhere vs the inner duct assembly, RE-RUN against the new flat
-│   │   shape, confirmed still EMPTY)
+│   │   shape, confirmed still EMPTY. v14.2 TASK 2 REAL BUG FOUND+FIXED:
+│   │   this flat plane never had the passage hole cut through it — since
+│   │   it's LARGER than the duct's own opening and sits directly in the
+│   │   line of sight, it fully sealed the passage shut even though the
+│   │   chamber wall and duct end cap both had a real hole [found via an
+│   │   actual CGAL ray-probe, not a visual read — matches Janis's own
+│   │   "very large but not cut through"/"thin film" report exactly]. NEW
+│   │   `outer_shell_flange_cut_2d()` = footprint MINUS the same passage
+│   │   shape, now used at both the flange and end-cap. Ray-probe re-run
+│   │   confirmed a genuine, unobstructed through-hole)
 │   ├── Ash tray (slide-out — width formula corrected to the DUCT's own
 │   │   real interior [514mm, was FIREBOX_W-based/484mm] — required real
 │   │   fix, the tray sits inside the duct, not the wider outer shell.

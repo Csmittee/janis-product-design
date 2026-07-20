@@ -1,19 +1,24 @@
 # BBQ Offset Smoker — Design Scope of Work
-> Version 1.6 — 2026-07-20
+> Version 1.7 — 2026-07-20
+> Changes: bbq-chambers-v14.2-passage-area-fix-real-cut-check. Two
+> targeted fixes on the just-merged v14.1 — apex(950mm)/firebox
+> width(580mm)/fire-volume math ALL FROZEN, unchanged. Envelope's Rear
+> passage entry: trapezoid RESIZED to the real 0.008-of-fire-volume
+> opening-area target (47.124in²=30,402.6mm², was 2.25x oversized at
+> 106.2in²) — bottom=95.29mm/top=227.00mm, same taper. Per Janis's own
+> direct clarification (overrides this round's own prompt-file "height
+> frozen" note, flagged): top edge also rises to 20mm below the inner
+> duct's own real top wall (960mm, was 950mm=apex A) for a real weld-
+> clearance margin, bottom stays at chamber_floor_z, height grows
+> 178.665->188.665mm. REAL BUG FOUND+FIXED: the outer shell's flat tuck-
+> under flange (v14.1) never had the passage hole cut through it, sealing
+> the passage shut (Janis's own "very large but not cut through"/"thin
+> film" report, confirmed via a real CGAL ray-probe) — fixed via new
+> `outer_shell_flange_cut_2d()`.
+> Previous: 1.6 — 2026-07-20
 > Changes: bbq-chambers-v14.1-flat-tuckunder-trapezoid-passage. Targeted
-> bug-fix + simplification round on the just-merged v14 — apex(950mm)/
-> firebox width(580mm)/fire-volume math ALL FROZEN, unchanged. Envelope's
-> Firebox entry: outer shell's rear tuck-under flange (+ its end cap)
-> simplified from a 2-zone octagon-clipped shape (the real visible STEP
-> Janis screenshotted) to ONE flat, full-height, unclipped plane — real
-> CGAL-confirmed genuine contact with chamber material above the floor
-> line, zero material below it, no size change. Rear passage: the plain
-> 197mm circle (flagged chord-shaped, did not fully clear chamber
-> material) RETIRED — replaced by a real trapezoid derived directly from
-> the octagon's own boundary (bottom 226.67mm/top 540mm duct-governed, top
-> edge lands EXACTLY on apex A=950mm by construction) — a LOCKED spec, not
-> a placeholder. Real CGAL confirms full containment, no chord/partial-
-> clip.
+> bug-fix + simplification round on the just-merged v14 (outer shell flat-
+> face fix, trapezoid passage replacing v14's circle).
 > Previous: 1.5 — 2026-07-18
 > Changes: bbq-chambers-v14-apex950-firebox-widen-dual-endcap. CHAMBER+
 > FIREBOX round (understructure v4 COMPLETELY untouched, not opened — its
@@ -190,10 +195,28 @@ Rear passage: 2026-07-20 (v14.1) — the plain 197mm circle (flagged
 chord-shaped, field-adjustable placeholder) RETIRED, REPLACED by a real
 trapezoid cut through the chamber's own octagon end cap only, a LOCKED
 spec (Janis's real heat-rises/ash-avoidance design choice, not a
-placeholder): bottom edge 226.67mm wide at the chamber floor line, top
-edge 540mm wide (capped by the inner duct's own real width) at world
-Z=950mm — lands EXACTLY on apex A by construction. Real CGAL confirms
-full containment, no chord/partial-clip (unlike the retired circle).
+placeholder). 2026-07-20 (v14.2): RESIZED to the real 0.008-of-fire-
+volume opening-area target — 5,890.5in³×0.008 = 47.124in² = 30,402.6mm²
+(v14.1's own trapezoid was never checked against this rule and came out
+2.25x oversized at 106.2in²). Real, current dimensions: bottom edge
+95.29mm wide at the chamber floor line (chamber_floor_z, unchanged
+anchor), top edge 227.00mm wide (capped by the inner duct's own real
+width) at world Z=960mm — 20mm below the inner duct's own real top wall,
+a real weld-clearance margin (Janis's own direct request this round,
+superseding v14.1's "top edge = apex A" placement; height grew
+178.665mm->188.665mm as a direct consequence). Real CGAL confirms full
+containment, no chord/partial-clip. REAL BUG FOUND+FIXED (v14.2): the
+outer shell's own flat tuck-under flange (2026-07-20/v14.1 simplification
+above) never had this passage hole cut through it — being larger than
+the duct's own opening and sitting directly in the line of sight, it
+fully sealed the passage shut even though the chamber wall and duct end
+cap both had a real hole (Janis's own "very large but not cut through"/
+"thin film" report, confirmed via a real CGAL ray-probe, not a visual
+read) — fixed via a new `outer_shell_flange_cut_2d()` cutting the same
+passage shape through the flange and its end cap; ray-probe re-run
+confirms a genuine, unobstructed through-hole. Fire volume math
+unaffected by either fix, unchanged: 5,890.5in³ ≈ 103% of the theoretical
+~5,737in³ target.
 Far end of the internal duct remains an explicit OPEN ITEM — Janis: "let
 me see how it looks then I'll explain the adjustment."
 

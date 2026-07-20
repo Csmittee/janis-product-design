@@ -1,5 +1,40 @@
 # BBQ Offset Smoker — Design Scope of Work
-> Version 1.7 — 2026-07-20
+> Version 1.8 — 2026-07-20
+> Changes: bbq-understructure-v5-trackwidth-fender-tbar. First understructure
+> round since v4 (2026-07-17) — TASK 0 finally bumps this file's own
+> `include` past v13 to BBQ-chambers-v14.2.scad (three chamber rounds landed
+> since v4 without this pointer moving; real +50mm chamber_floor_z shift,
+> front bracket leg re-verified flush via CGAL). Envelope's Understructure
+> entry REBUILT: real, CGAL-confirmed, THE STANDING v4 ~6mm front-wheel/
+> bracket collision (open since 2026-07-17) IS NOW RESOLVED — ONE shared
+> TRACK_WIDTH=1080mm (FIREBOX_W+2*150+TREAD_W) now drives both front AND
+> rear wheel position (retires the old REAR_TRACK_WIDTH formula and the
+> front caster's own close-set DUAL_WHEEL_OFFSET spacing); confirmed via a
+> real intersection() probe returning EMPTY, not assumed from the wider
+> spacing alone. NEW rear fender (150mm real radial clearance arc, welds to
+> the firebox's own outer shell — no numeric spec beyond the 150mm gap,
+> panel thickness/width are judgment calls, flagged). Front bracket's
+> forward tow-triangle extension rebuilt round (150mm dia boss, was a sharp
+> pyramid point). Front U-bracket drop length now a live formula, lands
+> exactly at firebox_floor_z. T-bar length now a live formula (1102.735mm,
+> was 400mm) and its default angle FIXED 0->90 (vertical storage — was
+> shipping flat, a standing v12/v4 QA defect). *** REAL, FLAGGED, NOT
+> SILENTLY ABSORBED ***: at the new 90deg default, the T-bar's own numeric
+> tip-Z exceeds the roof by 50mm on paper (the length formula assumes a
+> wheel-height pivot; this file's real, unchanged hinge sits 100mm higher)
+> — a real CGAL check confirms NO actual collision (T-bar sits outside the
+> chamber's own footprint at that height), but the margin itself is
+> negative, flagged for the record. SEPARATE REAL FINDING, out of this
+> round's own scope, found incidentally during this round's mandatory
+> kinetic sweep: the firebox door (frozen chambers code, UNCHANGED) is
+> real, CGAL-confirmed non-manifold above ~90-95deg open, reproduced
+> identically on standalone v14/v14.1/v14.2 with zero understructure
+> geometry present — pre-existing, NOT introduced this round, NOT fixed
+> (chambers frozen this round), flagged for a future chambers-scoped round.
+> Grate-height-above-true-ground target (900-1000mm, locked, still an OPEN
+> ITEM) UNCHANGED this round — understructure's own wheel/track work does
+> not touch the chamber-side grate height question.
+> Previous: 1.7 — 2026-07-20
 > Changes: bbq-chambers-v14.2-passage-area-fix-real-cut-check. Two
 > targeted fixes on the just-merged v14.1 — apex(950mm)/firebox
 > width(580mm)/fire-volume math ALL FROZEN, unchanged. Envelope's Rear
@@ -174,8 +209,20 @@ consequence of the chamber's own reanchor, not a separate edit. Same
 future-reinforcement-frame re-merge plan as before, still NOT permanent
 architecture.
 Grate-height-above-true-ground target (900-1000mm, locked prior round) —
-still an OPEN ITEM, still not resolved (understructure untouched again
-this round).
+still an OPEN ITEM, still not resolved (this round's own understructure
+work is track-width/fender/T-bar scoped, does not touch grate height).
+Understructure (2026-07-20, v5): real, CGAL-confirmed — the standing v4
+~6mm front-wheel/front-bracket collision (open since 2026-07-17) IS NOW
+RESOLVED, via a new shared TRACK_WIDTH=1080mm driving both front AND rear
+wheel position (was: independent rear formula + a close-set front caster
+spacing). Rear wheel: real 150mm gap to the firebox's own outer-shell edge
+each side, wheel bottom still real world Z=0. NEW rear fender per side
+(150mm real radial clearance, welds to the firebox's own outer shell).
+Front U-bracket's own forward tow-triangle extension rebuilt round (150mm
+dia boss, was a sharp point); the bracket's drop length now reaches
+exactly to firebox_floor_z. Tow handle (T-bar): real live-computed length
+1102.735mm (was a 400mm literal), default angle now vertical/storage
+(90deg, was defaulting flat — a standing v12/v4 QA defect, now fixed).
 Firebox: REBUILT as two fully independent welded assemblies (2026-07-18),
 replacing the prior shared-end-cap concept (a real, confirmed full-face
 thermal-bridge problem). Inner hot duct: 540mm(W) x 388.6mm(H) x 460mm(L
@@ -233,7 +280,9 @@ yet Janis-reconfirmed in this exact wording (see flag above)
 - Chimney — front shoulder mount, foldable, internal drop-tube down to
   grate level
 - Understructure — corner-tube wheeled frame, 2 fixed + 2 swivel casters
-  (18"/457.2mm wheels, FINAL as of 2026-07-17), tow handle at chimney end
+  (18"/457.2mm wheels, FINAL as of 2026-07-17), shared 1080mm track width
+  front+rear (2026-07-20, v5 — resolves the standing front-wheel/bracket
+  collision), rear fenders (NEW, v5), T-bar tow handle at chimney end
 - Prep Shelves x2 — fold-up (vertical stowed / horizontal deployed),
   left + right, front of chamber
 

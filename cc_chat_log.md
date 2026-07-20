@@ -4,6 +4,12 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-20 | bbq-understructure-v5-trackwidth-fender-tbar | DONE — v5, real TASK 0 pointer bump + 6 mechanical tasks, standing v4 collision RESOLVED
+
+Files: BBQ-understructure-v5.scad (new, source v4, `include` finally bumped v13->BBQ-chambers-v14.2.scad — full assembly now renders current chambers for the first time since v13). TASK 0: real chamber_floor_z=771.335mm (+50mm), front bracket leg re-verified flush via CGAL. TASK 1: shared TRACK_WIDTH=1080mm (real formula, front+rear) — real CGAL intersection() confirms this ALONE resolves the standing ~6mm front-wheel/bracket collision (EMPTY, was overlapping since v4). TASK 2: tow_triangle tip rebuilt round (150mm dia hull(), was sharp point). TASK 3: rear wheel real 150mm firebox gap + NEW rear_fenders() (150mm radial clearance, real CGAL weld-contact vs outer_shell, EMPTY vs wheel). TASK 4: LEG_DROP live formula lands exactly at firebox_floor_z(571.4). TASK 5: steer_deg re-verified clean via CGAL sweep. TASK 6: TBAR_LEN live=1102.735mm, default 90deg (was 0/flat, fixed standing QA defect) — flagged real variance (tip Z exceeds roof by 50mm on paper) but real CGAL check confirms NO actual collision.
+REAL, UNRELATED FINDING (flagged not fixed, chambers frozen): firebox_door() non-manifold above ~90-95deg, reproduced identically on standalone v14/v14.1/v14.2, pre-existing not introduced this round.
+QA: full CGAL manifold sweep Simple:yes (1571 facets, 8 volumes); kinetic sweep (steer/fold full range, lid<=120, door<=90, ash, shelves) all Simple:yes; 8 screenshots to /renders/.
+
 ### 2026-07-20 | bbq-chambers-v14.2-passage-area-fix-real-cut-check | DONE — v14.2, real 0.008-area resize + REAL cut-penetration bug fixed (not the v14.1 camera artifact)
 
 Files: BBQ-chambers-v14.2.scad (new, source v14.1). Real target area = 5,890.51in³×0.008 = 47.124in²=30,402.6mm². Per Janis's own direct clarification (overrides this round's prompt's "height frozen" note, flagged): bottom stays at chamber_floor_z, top rises to duct-top−20mm weld gap (960mm, was 950mm=apex A) — height 178.665→188.665mm. Widths scaled from v14.1's real values, same taper: bottom=95.29mm/top=227.00mm, resulting area exactly 100% of target. Real containment re-confirmed EMPTY (no chord/clip) at new size.

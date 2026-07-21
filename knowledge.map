@@ -1,5 +1,25 @@
 # knowledge.map
-# Version: v73 — 2026-07-21
+# Version: v74 — 2026-07-21
+# Changes: bbq-governance-dual-endcap-convention — docs-only, zero .scad
+# files touched (same pattern as the 2026-07-13 governance-inline-content-
+# and-predelivery-check entry). New "Dual End-Cap Independence Convention"
+# section locked into bbq-offset-smoker/rules-bbq-fab.md (v1.2->1.3) — every
+# BBQ firebox/chamber assembly's outer-shell end cap and inner fire-holding
+# entity's own end cap are built independently, never sharing geometry,
+# with a real air gap between them at the back (not just the sides). Rule
+# 1 (outer shell end cap): square/cube everywhere except the top zone,
+# which follows the chamber's own real profile, min 50mm tuck, ONE
+# continuous surface, no step. Rule 2 (inner end cap): never re-derives
+# the passage — cuts the SAME shared hole-profile already cut through the
+# chamber wall. Found necessary from the real v15/v16/v17 build-and-fix
+# cycle (visible-hole/mismatched-passage/wall-inside-chamber/missing-
+# material defects each traced to this relationship being re-derived
+# ad-hoc per round). Applies to ALL future BBQ firebox/chamber work.
+# Judged BBQ-specific geometry (no new RULES.md R-number) — see
+# cc_chat_log.md for the full reasoning. bbq-offset-smoker/ row UNCHANGED
+# otherwise (chambers/understructure active files still v17/v8, no .scad
+# geometry touched this entry).
+# Previous: v73 — 2026-07-21
 # Changes: Janis's own SECOND direct-feedback round the same day, on the
 # just-pushed v16/v7 fixes — bbq-offset-smoker/ row updated: chambers now
 # BBQ-chambers-v17.scad (source v16), understructure now

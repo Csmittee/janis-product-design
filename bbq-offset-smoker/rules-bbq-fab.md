@@ -1,5 +1,17 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.2 — 2026-07-16
+> Version 1.3 — 2026-07-21
+> Changes: bbq-governance-dual-endcap-convention (docs-only, zero .scad
+> files touched). New "Dual End-Cap Independence Convention" section
+> added — locks the standing architectural relationship between a
+> firebox/chamber assembly's TWO independent end-cap partitions (the
+> outer shell's own end cap, and the inner fire-holding entity's own end
+> cap), found necessary during the v15/v16/v17 build-and-fix cycle (real
+> visible-hole/mismatched-passage/wall-inside-chamber/missing-material
+> defects, each traced back to this relationship being re-derived
+> ad-hoc per round instead of written down once). Applies to ALL future
+> BBQ firebox/chamber work, not just this round. Detail addition, not new
+> document structure — X.Y bump.
+> Previous: 1.2 — 2026-07-16
 > Changes: bbq-chambers-v8-regular-octagon-continuous-channel. New
 > "Regular Octagon Requirement" section added (locks `chamfer` to the real
 > `chamber_W/(2+sqrt(2))` formula, not an arbitrary decimal — the prior
@@ -106,6 +118,56 @@ resulting GRATE_Z datum-chain change (GRATE_Z is now derived from
 This convention applies to ALL future BBQ chamber work — if `chamber_W`
 or `chamber_H` ever change, `chamfer` must stay computed from this
 formula, never re-locked to a decimal literal.
+
+---
+**Dual End-Cap Independence Convention (locked 2026-07-21)**
+
+Every BBQ firebox/chamber assembly has TWO independent end-cap
+partitions — the outer shell's own end cap, and the inner fire-holding
+entity's own end cap (duct, cylinder, or whatever shape a future round
+uses). They are built independently, do not share geometry, and a real
+air gap exists between them (the same gap that forms the insulation
+space along the assembly's side walls continues across the back, at
+the end caps, too — not just the sides).
+
+**Rule 1 — Outer shell end cap:** constrained to ONLY its own square/
+cube projection (matching the outer shell's own cross-section) in
+every zone EXCEPT the top part, which follows the chamber's own real
+profile (octagon or whatever profile the chamber body uses — this
+convention doesn't hardcode "octagon", it means "whatever
+`true_octagon_profile()` or its future equivalent actually is"). This
+end cap must tuck under the chamber body at a MINIMUM of 50mm. The
+face is ONE CONTINUOUS SURFACE from the tuck zone down to the bottom —
+no step, no zone-clipped transition between two differently-derived
+shapes.
+
+**Rule 2 — Inner (true firebox) end cap:** whatever its own shape
+(circle, square, or any future entity shape), it attaches to the
+chamber's own end-cap face. It does NOT influence, derive, or
+re-shape the passage in any way — the passage is defined SOLELY by
+the hole already cut through the chamber wall itself, and the inner
+end cap must cut the EXACT SAME shared hole-profile, not an
+independently-derived approximation of it. Above that shared cut, the
+end cap's own top zone follows the chamber's real profile (same
+"whatever the chamber's shape is" language as Rule 1); everywhere else,
+it follows its own entity's real shape (circle for a cylinder, square/
+rectangle for a duct, etc.).
+
+**Why this exists**: found necessary during the v15 square-shell/
+cylinder-firebox review — two independently-derived hole shapes on the
+chamber wall vs. the inner cylinder's end cap produced a real
+mismatched/visible defect; conflating this convention with the
+separate "flat full-height side-wall" fix (a different, earlier
+convention, for a different part of the assembly) produced a second,
+distinct real defect on the outer shell's own end cap. This section
+applies to ALL future BBQ firebox/chamber work — any prompt describing
+a NEW fire-holding shape or a NEW outer shell shape must build both end
+caps per this rule, not re-derive the relationship from scratch, and
+must implement the passage/hole cut as ONE shared 2D profile module
+reused across every surface it passes through (chamber wall, inner
+end cap, and any other assembly it crosses) — never independently
+re-derived per-surface.
+---
 
 ## v1 Judgment Calls (technical, cc-made, flagged per R-009/general
 duplication+ambiguity discipline — see BBQ-chambers-v1.scad header and

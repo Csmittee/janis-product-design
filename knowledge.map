@@ -1,5 +1,27 @@
 # knowledge.map
-# Version: v76 — 2026-07-21
+# Version: v77 — 2026-07-21
+# Changes: Janis's own closer visual inspection of v18 (looking INSIDE the
+# built cylinder) — bbq-offset-smoker/ row updated: chambers now
+# BBQ-chambers-v19.scad (source v18), understructure now
+# BBQ-understructure-v10.scad (source v9, pure pointer bump).
+# 2 real fixes: (1) `fire_cylinder_end_cap_2d()` had a real remaining
+# hole — same failure class as the outer shell's own Rule 1 defect (real
+# math confirmed: octagon half-width 126.335mm < circle half-width
+# 219.6mm at chamber_floor_z, so the old `intersection(circle,octagon)`
+# clipped the circle down there) — v18's own QA Step 2 never actually
+# checked this specific end cap. FIX: directly reused the Dual End-Cap
+# Footprint Pattern (RULE 4) already written this session —
+# `union(circle, octagon)` bounded by the cylinder's own real diameter
+# box, minus the shared passage cut — no re-derivation needed, the
+# standardization work paid off same-day. Real CGAL/STL: end cap now
+# always >= the native circle (2mm margin), real weld contact preserved,
+# own bbox exactly matches the cylinder's diameter envelope. (2)
+# `ash_tray()` RETIRED entirely (module + constants + parameter
+# threading) per Janis's own explicit, direct instruction — flagged as
+# asked several versions prior and never actually done until now; R-009
+# confirmed zero remaining consumers. Full assembly Simple:yes (6
+# volumes, was 7).
+# Previous: v76 — 2026-07-21
 # Changes: standardization follow-up (docs-only, zero .scad files touched),
 # Janis's own explicit request after the v16/v17/v18 churn — real cause:
 # CGAL "Simple:yes, no collision" is not the same as "satisfies the

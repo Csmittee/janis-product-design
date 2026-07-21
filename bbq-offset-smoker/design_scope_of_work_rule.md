@@ -1,5 +1,63 @@
 # BBQ Offset Smoker — Design Scope of Work
-> Version 1.11 — 2026-07-21
+> Version 1.13 — 2026-07-21
+> Changes: Janis's own 4-step QA simulation, run against unmerged PR #138
+> (v17) before merging, alongside the new rules-bbq-fab.md "Dual End-Cap
+> Independence Convention" locked the same session. Found v17's own
+> flange/end-cap footprint (always-plain-square) dodged the 2 known real
+> bugs (wall-blocks-interior, missing-material gap) without ever
+> satisfying the new Rule 1 ("the top part follows the chamber's own real
+> profile", "meets the octagon face"). Include bumped v17->
+> BBQ-chambers-v18.scad / v8->BBQ-understructure-v9.scad (pure pointer
+> bump). Envelope's Firebox entry: rebuilt via `union(plain square, true
+> octagon profile)` minus the chamber's own real hollow-bore hole, bounded
+> by a real height mask (a real bug caught before shipping via an STL
+> bbox probe: a bare union reached the chamber's own ridge height) — real
+> CGAL/STL re-verified: EMPTY vs the hollow cavity, NON-EMPTY vs the real
+> wall material, `outer_shell()`'s own world-Z range confirmed exactly
+> [420,1000].
+> Previous: 1.12 — 2026-07-21
+> Changes: Janis's own SECOND direct-feedback round the same day, on the
+> just-pushed v16/v7 fixes. Include bumped v16->BBQ-chambers-v17.scad /
+> v7->BBQ-understructure-v8.scad. Envelope's Firebox entry: the outer
+> shell's own flange/end-cap footprint mechanism REBUILT again — the prior
+> round's real octagon-clip (v16 TASK C) was found, via CGAL and
+> re-rendering before this round shipped (not assumed), to have 2 real
+> defects: (1) it solid-filled ~48.5mm of the chamber's own real hollow
+> interior bore — a genuine wall blocking the chamber's interior Janis
+> never asked for ("i didnt ask for this wall!"), confirmed via a real
+> non-empty CGAL probe against the chamber's own hollow-cavity solid; (2)
+> it also carved a real hole with NO material from either part wherever
+> the firebox's own 580mm square exceeds the octagon's real width (the
+> chamber has zero material of its own outside its true octagon boundary)
+> — matching Janis's own separate "missing firebox outer shell end cap
+> that should stretch to fuse with the chamber shell" finding. FIX (one
+> redesign resolves both): the flange's own outer boundary is now ALWAYS
+> the full continuous 580mm square (flush with the main body everywhere,
+> zero notches, by construction identical to the plain footprint's own
+> boundary), with ONLY the chamber's own real hollow-bore shape cut out of
+> it so it can never block the chamber's interior. Real CGAL: EMPTY vs the
+> chamber's own hollow cavity (2mm real margin, not just an exact touch),
+> NON-EMPTY vs the chamber's own real wall material (genuine structural
+> contact preserved). FLANGE_LEN stays 50mm, unchanged this round. Also
+> new: 4 real firebox sub-part toggles (fire cylinder, its end cap, outer
+> shell, its end cap), Janis's own explicit request, so future issues can
+> be isolated and reported precisely.
+> Envelope's Rear fender entry: re-investigated (Janis's own OpenSCAD-
+> desktop screenshot showed a "coiled" look) — CODE UNCHANGED this round;
+> a real matching-angle F6 (--render, full CGAL boolean) render reproduces
+> the same clean flat+curved band with zero coiling, strong evidence this
+> was an F5 Preview (unresolved-overlap) rendering artifact, not a real
+> geometry defect — flagged for Janis to re-check specifically via F6
+> (Render), not re-guessed at further.
+> Understructure's Prep tray entry: real pre-existing bug found+fixed —
+> `prep_shelves()`'s own right-side shelf applied `mirror()` AFTER an
+> already-applied `translate()`, reflecting the pre-positioned geometry
+> back around Y=0 instead of onto the chamber's opposite side — real,
+> measured consequence (STL vertex-extent probe): both shelves landed on
+> the SAME side, matching Janis's own "bad tray stack in each other".
+> FIX: dropped the unnecessary `mirror()`, right shelf now a direct
+> `translate([0,chamber_W,0])` — real, confirmed one shelf per side.
+> Previous: 1.11 — 2026-07-21
 > Changes: Janis's own DIRECT feedback round (not a new CC prompt) on 7 real
 > defects across the firebox and understructure, explicitly flagged "told
 > chat many time to fix but dont effectively fixed". Include bumped v15->
@@ -300,6 +358,34 @@ architecture.
 Grate-height-above-true-ground target (900-1000mm, locked prior round) —
 still an OPEN ITEM, still not resolved (this round's own understructure
 work is track-width/fender/T-bar scoped, does not touch grate height).
+Understructure (2026-07-21, v8): Janis's own SECOND direct-feedback round
+the same day. Real pre-existing bug found+fixed: prep_shelves()'s own
+right-side shelf applied mirror() AFTER an already-applied translate(),
+reflecting the pre-positioned geometry back around Y=0 instead of onto
+the chamber's opposite side — real measured consequence (STL vertex-
+extent probe): both shelves landed on the SAME side (combined Y-extent
+[-610,0]) — matches "bad tray stack in each other". Fixed: dropped the
+unnecessary mirror(), right shelf now a direct translate([0,chamber_W,0])
+— real, confirmed one shelf per side ([-300,0]/[610,910]). Also
+re-investigated (unchanged code): the rear fender's "coiled" look in
+Janis's own screenshot — a real matching-angle F6 render reproduces the
+same clean flat+curved band, strong evidence of an F5 Preview rendering
+artifact, flagged for Janis to re-check via F6 specifically.
+Firebox (2026-07-21, v17): 2 real fixes to defects the v16 round's own
+octagon-clip fix introduced/left unaddressed, found via CGAL and
+re-rendering before this round shipped (not assumed clean). (1) the
+flange solid-filled ~48.5mm of the chamber's own real hollow interior
+bore — a genuine wall blocking the interior, never asked for. (2) that
+same clip also carved a real hole with no material from either part
+wherever the firebox's 580mm square exceeds the octagon's real width —
+matches the separate "missing...end cap that should stretch to fuse"
+finding. Fixed via one redesign: the flange's own outer boundary is now
+always the full continuous square (flush with the main body, zero
+notches), with only the chamber's own real hollow-bore shape cut out of
+it. Real CGAL: EMPTY vs the hollow cavity (2mm margin), NON-EMPTY vs the
+real wall material. Also new: 4 real firebox sub-part toggles (fire
+cylinder/its end cap/outer shell/its end cap), per Janis's explicit
+request.
 Understructure (2026-07-21, v7): Janis's own DIRECT feedback, not a new CC
 prompt — real pointer bump wires v16's own firebox fixes into the full
 assembly. 1 real fix: rear fender REBUILT AGAIN — v6's own full-arc-from-

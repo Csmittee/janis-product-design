@@ -93,7 +93,58 @@
 // BBQ-understructure-v6.scad. See BBQ-understructure-v7.scad's own header
 // + cc_chat_log.md for full detail.
 
-include <BBQ-understructure-v7.scad>
+// 2026-07-21: include target updated v7->v8 (Janis's own SECOND round of
+// direct feedback on the same day — 2 real chamber defects the v7 round's
+// own fixes introduced/left unaddressed, plus a real pre-existing
+// understructure bug found this round: (1) the outer shell's own flange
+// (v16 TASK C's own octagon-clip) was found via a real CGAL probe to
+// solid-fill ~48.5mm of the chamber's own real hollow interior bore — a
+// genuine, un-asked-for wall blocking the chamber's interior, confirmed
+// non-empty via `intersection()` against the chamber's own real hollow
+// cavity solid. (2) that same octagon-clip was ALSO found, via re-
+// rendering before shipping, to carve a real hole with NO material from
+// either part wherever the firebox's own 580mm square exceeds the
+// octagon's real width — matching Janis's own separate "missing...end
+// cap that should stretch to fuse with the chamber shell" finding. Both
+// fixed via one real redesign in BBQ-chambers-v17.scad: the flange's own
+// OUTER boundary is now always the full continuous square (matches the
+// main body everywhere, zero notches) with ONLY the chamber's own real
+// hollow-bore shape cut out of it (not clipped to the octagon's outer
+// edge at all) — re-verified via CGAL: EMPTY vs the chamber's own hollow
+// cavity (2mm real margin), NON-EMPTY vs the chamber's own real wall
+// material. (3) `prep_shelves()`'s own right-side shelf used `mirror()`
+// AFTER an already-applied `translate()`, reflecting the pre-positioned
+// geometry back around Y=0 instead of onto the opposite side — both
+// shelves landed on the same (left) side (real Y-extent [-610,0],
+// confirmed via a real STL vertex probe), matching Janis's own "bad tray
+// stack in each other" — fixed in BBQ-understructure-v8.scad by dropping
+// the unnecessary mirror() and translating directly to the chamber's own
+// right edge. Also NEW this round: 4 real firebox sub-part toggles
+// (`show_fire_cylinder`/`show_fire_cylinder_end_cap`/`show_outer_shell`/
+// `show_outer_shell_end_cap`) per Janis's own explicit request, so future
+// issues can be isolated and reported precisely. v7 kept unchanged, on
+// record, as BBQ-understructure-v7.scad. See BBQ-understructure-v8.scad's
+// own header + cc_chat_log.md for full detail.
+
+// 2026-07-21: include target updated v8->v9 (pure pointer bump, Janis's own
+// SAME-DAY QA-simulation round following the new "Dual End-Cap
+// Independence Convention" governance lock in rules-bbq-fab.md — v9's own
+// understructure geometry UNCHANGED from v8, its `include` bumped to
+// BBQ-chambers-v18.scad, whose own real fix rebuilds
+// outer_shell_flange_footprint_2d() via `union()` (square + true octagon
+// profile, then subtract the chamber's own real hollow-cavity hole) —
+// NOT the `intersection()` v16 originally tried (created a real missing-
+// material gap, since the chamber has zero material outside the octagon's
+// own true edge) nor v17's own always-plain-square dodge (avoided the two
+// known CGAL-confirmed bugs but never actually satisfied Rule 1's own
+// "meets the octagon face" requirement). Confirmed via a direct walkthrough
+// of Janis's own 4-step QA simulation, then re-verified via CGAL: EMPTY vs
+// the chamber's own hollow cavity, NON-EMPTY vs the chamber's own real
+// wall material. v8 kept unchanged, on record, as
+// BBQ-understructure-v8.scad. See BBQ-chambers-v18.scad's own header +
+// cc_chat_log.md for full detail.
+
+include <BBQ-understructure-v9.scad>
 
 // ASSEMBLY — the included file already calls both its own geometry AND
 // (transitively) the chamber's, at include time (see each file's own

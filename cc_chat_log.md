@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-21 | Rule 1 QA simulation + real fix | DONE — v18 chambers, outer_shell_flange_footprint_2d() rebuilt to actually satisfy Dual End-Cap Convention Rule 1
+
+STATUS: PR #138 was NOT merged yet (Janis's own explicit hold) when Janis ran their own 4-step QA simulation against it. Result: Steps 1-3 (cylinder, cylinder end cap, 580³+50mm outer shell) all correct. Step 4 (outer shell's own end cap) FAILED — v17's fix kept the footprint always-plain-square to dodge 2 known bugs, but never actually let the top zone "meet the octagon face" per the new rules-bbq-fab.md Rule 1 (locked same day, same session).
+REAL FIX (BBQ-chambers-v18.scad): outer_shell_flange_footprint_2d() rebuilt via union(plain square, true_octagon_profile()) then subtract the chamber's own real hollow-cavity hole — NOT intersection() (v16's own mistake, creates the missing-material gap). REAL BUG CAUGHT BEFORE SHIPPING (STL bbox probe, not assumed clean): the raw union pulled in octagon material all the way to the chamber's own RIDGE height (1381mm world Z) since true_octagon_profile() isn't height-bounded on its own — fixed by intersecting with a real height-bound mask matching the flange's own physical range first. Re-verified: footprint bbox now exactly [-228.665,351.335] (was [-610,351.335]), outer_shell()'s own real Z range now exactly [420,1000] (firebox_z0/z1, no ridge overreach). Real CGAL: EMPTY vs chamber hollow cavity, NON-EMPTY vs chamber real wall material. Full assembly Simple:yes.
+Understructure v9: pure pointer bump only, zero geometry change.
+NEXT: standardizing this so future rounds take 1 pass, not 5+ — see the same-day conversation turn for the concrete proposal (reusable QA-simulation playbook + a named CSG recipe module + mandatory CGAL probe checklist tied to the new governance rule).
+
 ### 2026-07-21 | bbq-governance-dual-endcap-convention | DONE — docs-only, new locked section in rules-bbq-fab.md
 
 New "Dual End-Cap Independence Convention" section appended to bbq-offset-smoker/rules-bbq-fab.md (v1.2->1.3, X.Y detail bump, after "Regular Octagon Requirement", before "v1 Judgment Calls"), transcribed verbatim per Janis's own stated Rule 1 (outer shell end cap: square everywhere except top zone follows chamber's real profile, min 50mm tuck, ONE continuous surface no step) + Rule 2 (inner end cap: does not derive/reshape the passage, cuts the SAME shared hole-profile as the chamber wall). Zero .scad files touched, confirmed via git diff. Zero existing rule content in rules-bbq-fab.md reworded/renumbered.

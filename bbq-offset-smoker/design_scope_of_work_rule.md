@@ -1,5 +1,21 @@
 # BBQ Offset Smoker — Design Scope of Work
-> Version 1.12 — 2026-07-21
+> Version 1.13 — 2026-07-21
+> Changes: Janis's own 4-step QA simulation, run against unmerged PR #138
+> (v17) before merging, alongside the new rules-bbq-fab.md "Dual End-Cap
+> Independence Convention" locked the same session. Found v17's own
+> flange/end-cap footprint (always-plain-square) dodged the 2 known real
+> bugs (wall-blocks-interior, missing-material gap) without ever
+> satisfying the new Rule 1 ("the top part follows the chamber's own real
+> profile", "meets the octagon face"). Include bumped v17->
+> BBQ-chambers-v18.scad / v8->BBQ-understructure-v9.scad (pure pointer
+> bump). Envelope's Firebox entry: rebuilt via `union(plain square, true
+> octagon profile)` minus the chamber's own real hollow-bore hole, bounded
+> by a real height mask (a real bug caught before shipping via an STL
+> bbox probe: a bare union reached the chamber's own ridge height) — real
+> CGAL/STL re-verified: EMPTY vs the hollow cavity, NON-EMPTY vs the real
+> wall material, `outer_shell()`'s own world-Z range confirmed exactly
+> [420,1000].
+> Previous: 1.12 — 2026-07-21
 > Changes: Janis's own SECOND direct-feedback round the same day, on the
 > just-pushed v16/v7 fixes. Include bumped v16->BBQ-chambers-v17.scad /
 > v7->BBQ-understructure-v8.scad. Envelope's Firebox entry: the outer

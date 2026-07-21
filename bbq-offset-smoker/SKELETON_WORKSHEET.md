@@ -1,9 +1,20 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.21 — 2026-07-21
-> Changes: Janis's own SECOND direct-feedback round the same day, on the
-> just-pushed v16/v7 fixes. This file's own `include` bumped v16->
-> BBQ-chambers-v17.scad, source-of-truth pointer bumped v7->
-> BBQ-understructure-v8.scad. No DATUM/anchor values moved this round
+> Version 1.22 — 2026-07-21
+> Changes: Janis ran their own 4-step QA simulation against unmerged PR
+> #138 (v17), alongside the new rules-bbq-fab.md "Dual End-Cap
+> Independence Convention" (locked same session) — found v17's
+> `outer_shell_flange_footprint_2d()` (always-plain-square) dodged the 2
+> known bugs without satisfying Rule 1's own "meets the octagon face"
+> requirement. This file's own `include` bumped v17->BBQ-chambers-v18.scad,
+> source-of-truth pointer bumped v8->BBQ-understructure-v9.scad (pure
+> pointer bump, zero geometry change). REAL FIX (out of this file's own
+> datum/skeleton scope, see PART_MANIFEST.md/BBQ-chambers-v18.scad's own
+> header for the full geometric detail): footprint now
+> `union(square, true_octagon_profile())` minus the chamber's own real
+> hollow-cavity hole, bounded by a real height mask (a real bug caught
+> before shipping: a bare union pulled octagon material to the chamber's
+> own ridge height) — real, confirmed `outer_shell()` world-Z range now
+> exactly [420,1000], no ridge overreach. No DATUM/anchor values moved this round
 > (chamber_floor_z/firebox_floor_z/DATUM_X_REAR etc. all untouched) — 2
 > real SHAPE-DERIVATION fixes only. Part B's Firebox section: the
 > outer shell's own flange/end-cap footprint mechanism REBUILT again —

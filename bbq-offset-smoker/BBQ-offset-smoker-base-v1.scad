@@ -126,7 +126,25 @@
 // record, as BBQ-understructure-v7.scad. See BBQ-understructure-v8.scad's
 // own header + cc_chat_log.md for full detail.
 
-include <BBQ-understructure-v8.scad>
+// 2026-07-21: include target updated v8->v9 (pure pointer bump, Janis's own
+// SAME-DAY QA-simulation round following the new "Dual End-Cap
+// Independence Convention" governance lock in rules-bbq-fab.md — v9's own
+// understructure geometry UNCHANGED from v8, its `include` bumped to
+// BBQ-chambers-v18.scad, whose own real fix rebuilds
+// outer_shell_flange_footprint_2d() via `union()` (square + true octagon
+// profile, then subtract the chamber's own real hollow-cavity hole) —
+// NOT the `intersection()` v16 originally tried (created a real missing-
+// material gap, since the chamber has zero material outside the octagon's
+// own true edge) nor v17's own always-plain-square dodge (avoided the two
+// known CGAL-confirmed bugs but never actually satisfied Rule 1's own
+// "meets the octagon face" requirement). Confirmed via a direct walkthrough
+// of Janis's own 4-step QA simulation, then re-verified via CGAL: EMPTY vs
+// the chamber's own hollow cavity, NON-EMPTY vs the chamber's own real
+// wall material. v8 kept unchanged, on record, as
+// BBQ-understructure-v8.scad. See BBQ-chambers-v18.scad's own header +
+// cc_chat_log.md for full detail.
+
+include <BBQ-understructure-v9.scad>
 
 // ASSEMBLY — the included file already calls both its own geometry AND
 // (transitively) the chamber's, at include time (see each file's own

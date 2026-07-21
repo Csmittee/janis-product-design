@@ -1,5 +1,31 @@
 # BBQ Offset Smoker — Design Scope of Work
-> Version 1.10 — 2026-07-20
+> Version 1.11 — 2026-07-21
+> Changes: Janis's own DIRECT feedback round (not a new CC prompt) on 7 real
+> defects across the firebox and understructure, explicitly flagged "told
+> chat many time to fix but dont effectively fixed". Include bumped v15->
+> BBQ-chambers-v16.scad / v6->BBQ-understructure-v7.scad. Envelope's Firebox
+> entry: FLANGE_LEN 20mm->50mm (Janis's explicit spec change, stronger
+> structural tuck-under support) — confirmed STAYS ADDITIVE, does not trim
+> FIREBOX_L's own 580mm interior depth (FIREBOX_SHELL_L=630mm, was 600mm).
+> Fire passage/end-cap/flange shape logic REBUILT (not a datum move):
+> passage now sized/positioned from the real available octagon material at
+> the chamber's rear wall (a real vertical-band calc against the cylinder's
+> own clear-bore overlap), not an independent fire-volume-area formula —
+> real root cause of the previous "visible hole"/"rat hole" defect: the old
+> circle had 33.233mm of its own bottom sitting below chamber_floor_z with
+> zero real material to begin with. fire_cylinder_end_cap()/outer_shell's
+> own flange footprint both rebuilt two-zone (octagon-clipped above
+> chamber_floor_z, native circle/square below) per Janis's own explicit
+> shape spec. Rear fender rebuilt again (Envelope's Rear fender entry): a
+> real flat plate (from the firebox wall to directly above the wheel
+> center) + curved flare (from there down past the wheel's outboard tangent
+> edge) — grounded in the ORIGINAL v5-round prompt's own written spec text,
+> replacing v6's full-arc-from-the-wall design which was still the wrong
+> shape per Janis's direct feedback. 3 items from the same feedback round
+> explicitly OUT OF SCOPE this version (flagged, pending a reference image/
+> clarification from Janis): prep tray/shelf location, front wheel axle
+> center bracket ("T bar puller") shape.
+> Previous: 1.10 — 2026-07-20
 > Changes: bbq-understructure-v6-fitment-fixes. TASK 0 bumps this file's
 > own `include` to BBQ-chambers-v15.scad, wiring v15's real square-shell/
 > cylinder firebox redesign into the full assembly for the first time. 4
@@ -274,6 +300,52 @@ architecture.
 Grate-height-above-true-ground target (900-1000mm, locked prior round) —
 still an OPEN ITEM, still not resolved (this round's own understructure
 work is track-width/fender/T-bar scoped, does not touch grate height).
+Understructure (2026-07-21, v7): Janis's own DIRECT feedback, not a new CC
+prompt — real pointer bump wires v16's own firebox fixes into the full
+assembly. 1 real fix: rear fender REBUILT AGAIN — v6's own full-arc-from-
+the-wall design was STILL the wrong shape per Janis's direct feedback.
+Real root cause found by re-reading the ORIGINAL v5-round prompt's own
+written spec text (not re-guessed): a FLAT plate over most of the run,
+curving down ONLY after clearing the wheel's own outer edge — v6 had
+overcorrected into a full arc with zero real flat run. FIX: real flat
+plate from the firebox wall to directly above the wheel's own center (the
+real geometric tangent point to the flare's own inner radius), then the
+existing curved-flare mechanism continues from there down past the
+wheel's own outboard tangent edge. Real CGAL: clears the wheel (empty),
+clears the rear axle/struts (empty), real weld contact with the outer
+shell (non-empty) — re-rendered visually, confirmed a real wraparound
+hood shape (flat top + curved outboard flare), not a side-mounted wing.
+Firebox (2026-07-21, v16): 4 real fixes to defects Janis flagged as "told
+chat many time to fix but dont effectively fixed". FLANGE_LEN 20->50mm
+(Janis's explicit spec change, stronger structural tuck-under support) —
+confirmed STAYS ADDITIVE (FIREBOX_SHELL_L=630mm, was 600mm; FIREBOX_L's
+own 580mm interior depth untouched). Rear passage REBUILT: real root
+cause found via CGAL+echo diagnostics — the v15 circle (194.898mm dia)
+was sized purely from the fire cylinder's own 0.008-fire-volume target-
+area rule, with ZERO reference to real chamber material, leaving 33.233mm
+of its own bottom below chamber_floor_z entirely (a literal hole through
+nothing, matching Janis's screenshot exactly — "the hole shape is dictate
+by the cut on the chamber, nothing else"). FIX: size/position now DERIVED
+from the real vertical band where the cylinder's own clear bore overlaps
+the chamber's real octagon material (15mm real margins both ends), built
+as `intersection(candidate circle, real chamber material)` — real new
+radius 65.335mm (was 97.449mm). Real CGAL: now fully contained in real
+chamber material AND fully clear of the cylinder's own bore wall.
+fire_cylinder_end_cap() and the outer shell's own flange/end-cap footprint
+BOTH rebuilt two-zone (octagon-clipped above chamber_floor_z, native
+circle/square below) per Janis's own explicit shape spec — the flange's
+own two-zone shape had been flattened to a plain square back in v14.1 to
+fix a different, real visible-step defect at the time; that flattening is
+now retired specifically at the flange/end-cap (not at the door-end
+partition, which still correctly uses the plain square, no chamber
+reference there). Combined with the passage fix, real material now sits
+behind wherever the passage hole is cut through the flange — resolves the
+"rat hole"/unsupported-opening look Janis flagged. 3 items from the same
+feedback round explicitly OUT OF SCOPE this version (flagged, pending a
+reference image/clarification from Janis): prep tray/shelf location,
+front wheel axle center bracket ("T bar puller") shape; the wheel-to-
+firebox 100mm gap reconfirmed via echo as already exactly 100mm,
+unchanged (not a defect).
 Understructure (2026-07-20, v6): real pointer bump wires v15's own square-
 shell/cylinder firebox into the full assembly for the first time. 4 real
 fitment fixes from Janis's live desktop review of v5: prep shelf now 3

@@ -1,5 +1,15 @@
 # BBQ Offset Smoker — Design Scope of Work
-> Version 1.14 — 2026-07-21
+> Version 1.15 — 2026-07-21
+> Changes: Janis toggled the outer shell's own end-cap visibility off and
+> still saw a wall — real cause: the outer shell's own tuck-under flange
+> was built as a SOLID block since v14, never questioned, creating two
+> redundant wall-like surfaces instead of one real cap closing a hollow
+> tube. Also a real, standing inconsistency with this product's own thin-
+> sheet-metal construction method. Fixed: flange rebuilt hollow (wall_t
+> thick, same construction as the rest of the shell). Include bumped
+> v19->BBQ-chambers-v20.scad / v10->BBQ-understructure-v11.scad (pure
+> pointer bump).
+> Previous: 1.14 — 2026-07-21
 > Changes: Janis's own closer visual inspection of v18, looking INSIDE the
 > built cylinder, found a real remaining hole in the inner cylinder's own
 > end cap — same failure class as the outer shell's own Rule 1 defect,

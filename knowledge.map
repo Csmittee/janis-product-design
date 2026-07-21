@@ -1,5 +1,25 @@
 # knowledge.map
-# Version: v77 — 2026-07-21
+# Version: v78 — 2026-07-21
+# Changes: Janis toggled `show_outer_shell_end_cap` off and still saw a
+# wall — bbq-offset-smoker/ row updated: chambers now
+# BBQ-chambers-v20.scad (source v19), understructure now
+# BBQ-understructure-v11.scad (source v10, pure pointer bump).
+# Real cause: `outer_shell()`'s own flange (the 50mm tuck-under) was
+# built as a SOLID 50mm block since v14 ("SOLID, no interior cavity",
+# never questioned) — two redundant wall-like surfaces (the solid
+# block's own far face, plus the real end-cap plate stacked against it)
+# where there should be exactly one. Also a real, standing inconsistency
+# with this project's own thin-sheet-metal Construction Method. FIX: the
+# flange is now HOLLOW, wall_t thick, built with the SAME real technique
+# as the main hollow body. `outer_shell_end_cap()` UNCHANGED — now
+# genuinely the ONE real cap; toggling it off shows straight through the
+# flange's own hollow interior to the chamber's own material. Real
+# CGAL/STL: non-empty weld contact preserved, empty vs the chamber's own
+# hollow interior (2mm margin), empty in the flange's own mid-wall
+# interior (confirmed genuinely hollow), passage cut still passes
+# cleanly through. `rules-bbq-fab.md` Rule 1 (v1.4->1.5) amended to
+# explicitly require this for future rounds. Full assembly Simple:yes.
+# Previous: v77 — 2026-07-21
 # Changes: Janis's own closer visual inspection of v18 (looking INSIDE the
 # built cylinder) — bbq-offset-smoker/ row updated: chambers now
 # BBQ-chambers-v19.scad (source v18), understructure now

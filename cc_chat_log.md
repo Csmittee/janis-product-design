@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-21 | v20 chambers: flange rebuilt hollow (was solid since v14) | DONE — Rule 1 clarified too
+
+Janis toggled show_outer_shell_end_cap off and still saw a wall — real cause: outer_shell()'s own flange (the 50mm tuck-under) was built as a SOLID 50mm block since v14 ("SOLID, no interior cavity", never questioned), not a thin wall — two redundant wall-like surfaces (the solid block's own far face + the real end-cap plate stacked against it) where there should be exactly one. Also a real, standing inconsistency with this project's own thin-sheet-metal Construction Method.
+FIX (BBQ-chambers-v20.scad): flange rebuilt hollow, wall_t thick, same real technique as the main hollow body (outer boundary minus inset-by-wall_t inner cavity). outer_shell_end_cap() UNCHANGED — it's now genuinely the ONE cap. Real CGAL: non-empty weld contact with chamber wall preserved, empty vs chamber's hollow interior (2mm margin, still not blocked), empty in the flange's own mid-wall interior (confirmed truly hollow), passage cut still passes cleanly through.
+rules-bbq-fab.md Rule 1 amended (v1.4->1.5) to explicitly require the tuck-under extension be hollow, never solid — closes this exact class of mistake for future rounds.
+BBQ-understructure-v11.scad: pure pointer bump, zero geometry change. Full assembly Simple:yes.
+
 ### 2026-07-21 | v19 chambers: cylinder end-cap hole fixed + ash_tray removed | DONE — 2 real fixes, RULE 4 pattern reused (1-pass this time)
 
 Janis found (own visual inspection, from INSIDE the built cylinder) a real remaining hole in fire_cylinder_end_cap_2d() that v18's own QA Step 2 said "pass" on — same failure class as v16's original outer-shell mistake (intersection(circle,octagon) clips the circle down wherever the octagon is locally narrower, real math confirmed: octagon half-width 126.335mm < circle half-width 219.6mm at chamber_floor_z), just never checked on THIS end cap specifically. Fixed by directly reusing the just-written Dual End-Cap Footprint Pattern (RULE 4): union(circle, octagon) bounded by the cylinder's own real diameter box (new fire_cylinder_end_cap_bound_2d()), minus the shared passage cut. Real CGAL/STL: end cap now always >= native circle (2mm margin, confirmed empty residual), real weld contact preserved, own bbox exactly matches the cylinder's diameter envelope — no overreach, no re-derivation needed, the rule paid for itself same-day.

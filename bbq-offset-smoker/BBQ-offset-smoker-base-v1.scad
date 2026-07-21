@@ -80,7 +80,20 @@
 // See BBQ-understructure-v6.scad's own header + cc_chat_log.md for full
 // detail.
 
-include <BBQ-understructure-v6.scad>
+// 2026-07-21: include target updated v6->v7 (Janis's own DIRECT feedback
+// round, not a new CC prompt — real fixes to 4 firebox defects (v7's own
+// include bumps to BBQ-chambers-v16.scad: passage shape now derived from
+// the chamber's real available octagon material instead of an independent
+// circle formula, fire_cylinder_end_cap()/outer_shell flange rebuilt
+// two-zone octagon-top/native-shape-bottom, FLANGE_LEN 20->50mm additive)
+// plus a real rear-fender rebuild (flat plate + tangent-arc flare,
+// grounded in the ORIGINAL v5 prompt's own written spec text — v6's own
+// full-arc-from-the-wall design was still the wrong shape per Janis's
+// direct annotated feedback). v6 kept unchanged, on record, as
+// BBQ-understructure-v6.scad. See BBQ-understructure-v7.scad's own header
+// + cc_chat_log.md for full detail.
+
+include <BBQ-understructure-v7.scad>
 
 // ASSEMBLY — the included file already calls both its own geometry AND
 // (transitively) the chamber's, at include time (see each file's own

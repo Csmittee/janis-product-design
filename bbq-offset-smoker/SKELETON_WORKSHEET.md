@@ -1,5 +1,28 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.19 — 2026-07-20
+> Version 1.20 — 2026-07-21
+> Changes: Janis's own DIRECT feedback round (not a new CC prompt) on 7
+> real defects, explicitly flagged "told chat many time to fix but dont
+> effectively fixed". This file's own `include` bumped v15->
+> BBQ-chambers-v16.scad, source-of-truth pointer bumped v6->
+> BBQ-understructure-v7.scad. Part B's Firebox section: FLANGE_LEN
+> 20->50mm (Janis's explicit spec change, stronger structural tuck-under
+> support) — STAYS ADDITIVE, FIREBOX_SHELL_L=FIREBOX_L(580mm interior
+> depth, untouched)+FLANGE_LEN=630mm (was 600mm), confirmed via echo not
+> assumed. The passage/end-cap/flange datums themselves (chamber_floor_z,
+> firebox_floor_z, DATUM_X_REAR etc.) did NOT move this round — only the
+> SHAPE-DERIVATION logic changed (passage now sized from real available
+> octagon material via a new real vertical-band calc, not an independent
+> area formula; end-cap/flange footprints now real two-zone octagon-top/
+> native-shape-bottom constructions) — see BBQ-chambers-v16.scad's own
+> header + PART_MANIFEST.md for the full geometric detail (out of this
+> file's own datum/skeleton scope). Part A's Rear fender entry: real
+> shape rebuilt again (flat plate tangent to a curved flare, replacing
+> v6's full-arc-from-the-wall design) — grounded in the ORIGINAL v5
+> prompt's own written spec text, not a re-guess. 3 items from the same
+> feedback round explicitly NOT addressed this version (flagged, pending
+> a reference image/clarification): prep tray/shelf location, front wheel
+> axle center bracket ("T bar puller") shape.
+> Previous: 1.19 — 2026-07-20
 > Changes: bbq-understructure-v6-fitment-fixes. TASK 0 bumps this file's
 > own `include` to BBQ-chambers-v15.scad, wiring v15's real square-shell/
 > cylinder firebox redesign into the full assembly chain for the first
@@ -441,8 +464,10 @@ BBQ Offset Smoker V9 (top assembly)
 ├── Firebox (v15 REDESIGN — TWO fully independent welded assemblies, NO
 │   │   shared end-cap plate [SAME real architecture v14 established,
 │   │   reused not reinvented]. FIREBOX_L=580mm [fire cylinder's own
-│   │   interior depth, was 460mm] vs FIREBOX_SHELL_L=600mm [outer shell's
-│   │   own physical length, was 480mm, +20mm additive flange] — two
+│   │   interior depth, UNCHANGED] vs FIREBOX_SHELL_L=630mm [outer shell's
+│   │   own physical length, v16: was 600mm, +50mm additive flange, Janis's
+│   │   explicit spec change from +20mm — the 50mm is a pure EXTENSION,
+│   │   FIREBOX_L's own 580mm interior depth is NOT touched by it] — two
 │   │   separate, never-confused numbers. REAL, NECESSARY FORMULA
 │   │   CORRECTION found before shipping: firebox_x0 repinned directly at
 │   │   its own real weld position [913.5mm, unchanged value] instead of a
@@ -629,6 +654,17 @@ wheel support's own bracket — fixed weldment, the caster's swivel IS the
 independently kinetic beyond what's listed — they get a `show_*`
 isolation toggle only (Toggle-Completeness Rule), not a dual-view kinetic
 state.
+
+## Toggle-Completeness count (2026-07-21, v1.20)
+
+BBQ-understructure-v7.scad ASSEMBLY: 4 modules called (`rear_axle`, `rear_
+fenders`, `front_wheel_support`, `prep_shelves`) — all 4 have a real
+`show_*` toggle, UNCHANGED count from v6 (only `rear_fenders()`'s own
+internal shape logic changed this round). BBQ-chambers-v16.scad ASSEMBLY:
+8 modules called, all 8 toggled, UNCHANGED count from v15 (this round's 4
+fixes rebuilt shape-derivation logic inside existing modules, no new
+top-level module added/removed). 12/12 compliant across the full assembly,
+0 gaps, 0 safety-critical exceptions needed.
 
 ## Toggle-Completeness count (2026-07-20, v1.19)
 

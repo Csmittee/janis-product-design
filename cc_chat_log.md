@@ -4,6 +4,12 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-21 | standardization follow-up (docs-only) | DONE — QA checklist + reusable pattern locked, per Janis's own explicit ask
+
+Janis: "let me know how i could standardize this method to ensure just one round fix." Real cause of the v16/v17/v18 churn: CGAL "Simple:yes, no collision" is NOT the same as "satisfies the written rule" — v17 passed every collision probe and still failed Rule 1, caught only by Janis's own manual 4-step simulation.
+2 docs-only additions (zero .scad touched): (1) rules-bbq-fab.md v1.3->1.4 — new "Dual End-Cap QA Simulation Checklist" transcribes Janis's own 4-step method verbatim as a standing, mandatory checklist for ANY future firebox/chamber round, plus the 3 specific CGAL/STL probes that actually catch this failure class. (2) .claude/SKILL_joint_construction.md v1.0->1.1 — new RULE 4 "Dual End-Cap Footprint Pattern": the real, verified CSG recipe (union of native+reference shape, bounded by a real height mask, minus the interior cavity — NOT intersection(), which creates the missing-material gap) so the next product hitting this exact shape-matching problem reuses it instead of re-deriving from scratch. rules-codes.md v1.14->1.15 cross-references it.
+Both files' own real failure history (what NOT to do, why) captured alongside the rule itself, not just the final answer.
+
 ### 2026-07-21 | Rule 1 QA simulation + real fix | DONE — v18 chambers, outer_shell_flange_footprint_2d() rebuilt to actually satisfy Dual End-Cap Convention Rule 1
 
 STATUS: PR #138 was NOT merged yet (Janis's own explicit hold) when Janis ran their own 4-step QA simulation against it. Result: Steps 1-3 (cylinder, cylinder end cap, 580³+50mm outer shell) all correct. Step 4 (outer shell's own end cap) FAILED — v17's fix kept the footprint always-plain-square to dodge 2 known bugs, but never actually let the top zone "meet the octagon face" per the new rules-bbq-fab.md Rule 1 (locked same day, same session).

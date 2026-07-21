@@ -1,5 +1,16 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.23 — 2026-07-21
+> Version 1.24 — 2026-07-21
+> Changes: Janis toggled `show_outer_shell_end_cap` off and still saw a
+> wall — real cause: `outer_shell()`'s own flange (50mm tuck-under) was
+> built as a SOLID block since v14, never questioned, creating two
+> redundant wall-like surfaces instead of one real cap. Fixed: flange
+> rebuilt HOLLOW (wall_t thick, same technique as the main hollow body).
+> `rules-bbq-fab.md` Rule 1 amended to require this explicitly for future
+> rounds. This file's own `include` bumped v19->BBQ-chambers-v20.scad,
+> source-of-truth pointer bumped v10->BBQ-understructure-v11.scad (pure
+> pointer bump). No DATUM/anchor values moved — see PART_MANIFEST.md/
+> BBQ-chambers-v20.scad's own header for full geometric detail.
+> Previous: 1.23 — 2026-07-21
 > Changes: Janis's own closer visual inspection of v18 (looking INSIDE the
 > built cylinder) found a real remaining hole in `fire_cylinder_end_cap_2d()`
 > — same failure class as the outer shell's own Rule 1 defect, just never

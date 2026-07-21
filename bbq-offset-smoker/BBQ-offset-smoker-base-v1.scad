@@ -167,7 +167,24 @@
 // BBQ-understructure-v9.scad. See BBQ-chambers-v19.scad's own header +
 // cc_chat_log.md for full detail.
 
-include <BBQ-understructure-v10.scad>
+// 2026-07-21: include target updated v10->v11 (pure pointer bump — Janis's
+// own direct finding: toggling `show_outer_shell_end_cap` off still left
+// a visible wall, because `outer_shell()`'s own flange was built as a
+// SOLID 50mm block (v14's own original choice, never revisited) instead
+// of a thin hollow wall — a real, standing inconsistency with this
+// project's own "thin uniform-thickness sheet metal" fabrication
+// convention, creating two redundant wall-like surfaces where there
+// should be exactly one (the real `outer_shell_end_cap()` capping a
+// genuinely hollow tube). Fixed: the flange is now hollow, wall_t thick,
+// built with the same real technique as the main hollow body. Real CGAL:
+// non-empty weld contact with the chamber's own wall material preserved,
+// empty vs the chamber's own hollow interior (2mm margin, still doesn't
+// block it), empty in the flange's own mid-wall interior (confirmed
+// genuinely hollow, not solid), passage cut still passes cleanly through.
+// v10 kept unchanged, on record, as BBQ-understructure-v10.scad. See
+// BBQ-chambers-v20.scad's own header + cc_chat_log.md for full detail.
+
+include <BBQ-understructure-v11.scad>
 
 // ASSEMBLY — the included file already calls both its own geometry AND
 // (transitively) the chamber's, at include time (see each file's own

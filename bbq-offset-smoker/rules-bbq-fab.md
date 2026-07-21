@@ -1,5 +1,14 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.4 — 2026-07-21
+> Version 1.5 — 2026-07-21
+> Changes: Rule 1 clarified (docs-only, zero .scad files touched) — a
+> real defect found via Janis's own direct visual check: the outer
+> shell's own tuck-under flange had been built as a SOLID block since v14
+> (never revisited), creating two redundant wall-like surfaces instead of
+> one real end cap capping a hollow tube. Rule 1 now explicitly states the
+> tuck-under extension itself must be HOLLOW (wall_t thick), never a
+> solid fill, regardless of "stronger structural support" reasoning.
+> Detail addition, not new document structure — X.Y bump.
+> Previous: 1.4 — 2026-07-21
 > Changes: standardization follow-up to the Dual End-Cap Independence
 > Convention (docs-only, zero .scad files touched) — Janis's own request,
 > after running a manual 4-step QA simulation against unmerged PR #138
@@ -150,7 +159,17 @@ convention doesn't hardcode "octagon", it means "whatever
 end cap must tuck under the chamber body at a MINIMUM of 50mm. The
 face is ONE CONTINUOUS SURFACE from the tuck zone down to the bottom —
 no step, no zone-clipped transition between two differently-derived
-shapes.
+shapes. **The tuck-under extension itself is HOLLOW (wall_t thick,
+same real construction as the rest of the outer shell) — NEVER a solid
+fill**, even in the name of "stronger structural support": a solid
+block there is a real, standing inconsistency with this project's own
+`rules-bbq-fab.md` Construction Method (formed panels are thin uniform-
+thickness shells, not solid billets) and produces two redundant wall-
+like surfaces (the solid block's own far face, plus the real end-cap
+plate stacked against it) where there must be exactly one real cap
+closing a genuinely hollow tube (found the hard way: v14 through v19 all
+built this extension solid, unquestioned, until a direct visual check
+found the redundant wall).
 
 **Rule 2 — Inner (true firebox) end cap:** whatever its own shape
 (circle, square, or any future entity shape), it attaches to the

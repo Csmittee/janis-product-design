@@ -1,5 +1,40 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.20 — 2026-07-21
+> Version 1.21 — 2026-07-21
+> Changes: Janis's own SECOND direct-feedback round the same day, on the
+> just-pushed v16/v7 fixes. This file's own `include` bumped v16->
+> BBQ-chambers-v17.scad, source-of-truth pointer bumped v7->
+> BBQ-understructure-v8.scad. No DATUM/anchor values moved this round
+> (chamber_floor_z/firebox_floor_z/DATUM_X_REAR etc. all untouched) — 2
+> real SHAPE-DERIVATION fixes only. Part B's Firebox section: the
+> outer shell's own flange/end-cap footprint mechanism REBUILT again —
+> the prior round's real octagon-clip (v16 TASK C) was found, via CGAL
+> and re-rendering before this round shipped, to have 2 real defects: (1)
+> it solid-filled ~48.5mm of the chamber's own real hollow interior bore
+> (a genuine wall blocking the chamber's interior, Janis: "i didnt ask for
+> this wall!", confirmed via a real non-empty CGAL probe against the
+> chamber's own hollow-cavity solid); (2) it also carved a real hole with
+> NO material from either part wherever the firebox's own 580mm square
+> exceeds the octagon's real width (the chamber has zero material outside
+> its own true boundary) — matching Janis's own separate "missing...end
+> cap that should stretch to fuse with the chamber shell" finding. Both
+> fixed by one redesign: the flange's own outer boundary is now always the
+> full continuous 580mm square (flush with the main body everywhere, zero
+> notches), with only the chamber's own real hollow-bore shape cut out of
+> it — real CGAL: EMPTY vs the chamber's own hollow cavity (2mm real
+> margin), NON-EMPTY vs the chamber's own real wall material. Also new:
+> 4 real firebox sub-part toggles, Janis's own explicit request, so future
+> issues can be isolated and reported precisely (out of this file's own
+> datum/skeleton scope — see PART_MANIFEST.md for the toggle list).
+> Part A's Prep shelves entry: real pre-existing bug found+fixed —
+> `prep_shelves()`'s own right-side shelf applied `mirror()` after an
+> already-applied `translate()`, landing both shelves on the same side
+> (Janis: "bad tray stack in each other") — fixed via a direct
+> `translate([0,chamber_W,0])`, no mirror needed; real, confirmed via an
+> STL vertex-extent probe. Rear fender: re-investigated (Janis's own
+> screenshot showed a "coiled" look) — CODE UNCHANGED, a real matching-
+> angle F6 render reproduces the same clean shape, strong evidence of an
+> F5 Preview rendering artifact, flagged for Janis to re-check via F6.
+> Previous: 1.20 — 2026-07-21
 > Changes: Janis's own DIRECT feedback round (not a new CC prompt) on 7
 > real defects, explicitly flagged "told chat many time to fix but dont
 > effectively fixed". This file's own `include` bumped v15->
@@ -654,6 +689,17 @@ wheel support's own bracket — fixed weldment, the caster's swivel IS the
 independently kinetic beyond what's listed — they get a `show_*`
 isolation toggle only (Toggle-Completeness Rule), not a dual-view kinetic
 state.
+
+## Toggle-Completeness count (2026-07-21, v1.21)
+
+BBQ-understructure-v8.scad ASSEMBLY: 4 modules called, UNCHANGED count from
+v7 (only `prep_shelves()`'s own internal placement math changed this
+round). BBQ-chambers-v17.scad ASSEMBLY: 8 top-level modules called,
+UNCHANGED count from v16 — but real toggle GRANULARITY increased inside
+`firebox()`: 4 of its own sub-parts now have independent `show_*` toggles
+(Janis's own explicit request), so 15 real toggles now gate the chambers
+block (was 8). 12/12 top-level modules still compliant, 0 gaps on anything
+asked for, 0 safety-critical exceptions needed.
 
 ## Toggle-Completeness count (2026-07-21, v1.20)
 

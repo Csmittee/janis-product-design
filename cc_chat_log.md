@@ -4,6 +4,12 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-21 | v19 chambers: cylinder end-cap hole fixed + ash_tray removed | DONE — 2 real fixes, RULE 4 pattern reused (1-pass this time)
+
+Janis found (own visual inspection, from INSIDE the built cylinder) a real remaining hole in fire_cylinder_end_cap_2d() that v18's own QA Step 2 said "pass" on — same failure class as v16's original outer-shell mistake (intersection(circle,octagon) clips the circle down wherever the octagon is locally narrower, real math confirmed: octagon half-width 126.335mm < circle half-width 219.6mm at chamber_floor_z), just never checked on THIS end cap specifically. Fixed by directly reusing the just-written Dual End-Cap Footprint Pattern (RULE 4): union(circle, octagon) bounded by the cylinder's own real diameter box (new fire_cylinder_end_cap_bound_2d()), minus the shared passage cut. Real CGAL/STL: end cap now always >= native circle (2mm margin, confirmed empty residual), real weld contact preserved, own bbox exactly matches the cylinder's diameter envelope — no overreach, no re-derivation needed, the rule paid for itself same-day.
+ash_tray() RETIRED entirely (module + ASH_TRAY_* constants + ash_tray_out_pct threading) per Janis's own explicit, direct instruction ("just remove this tray, keep cylinder clean") — flagged as asked "4-5 versions ago" and never done; R-009 confirmed zero remaining consumers before removing.
+Full assembly Simple:yes (6 volumes, was 7 — ash_tray's own removal). BBQ-chambers-v19.scad / BBQ-understructure-v10.scad (pure pointer bump).
+
 ### 2026-07-21 | standardization follow-up (docs-only) | DONE — QA checklist + reusable pattern locked, per Janis's own explicit ask
 
 Janis: "let me know how i could standardize this method to ensure just one round fix." Real cause of the v16/v17/v18 churn: CGAL "Simple:yes, no collision" is NOT the same as "satisfies the written rule" — v17 passed every collision probe and still failed Rule 1, caught only by Janis's own manual 4-step simulation.

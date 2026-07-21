@@ -4,7 +4,27 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.21 — 2026-07-21 (Rule 1 QA simulation on unmerged PR #138):
+# Version: 1.22 — 2026-07-21 (Janis's own closer visual inspection of v18):
+# chambers table REBUILT — source now BBQ-chambers-v19.scad. 2 real fixes:
+# (1) `fire_cylinder_end_cap_2d()` had a real remaining hole — same
+# failure class as v16's original outer-shell mistake
+# (`intersection(circle,octagon)` clips down wherever the octagon is
+# locally narrower; real math confirmed octagon half-width 126.335mm <
+# circle half-width 219.6mm at chamber_floor_z) — v18's own QA Step 2
+# never actually checked this specific end cap. FIX: directly reused the
+# just-written Dual End-Cap Footprint Pattern (RULE 4,
+# `.claude/SKILL_joint_construction.md`) — `union(circle, octagon)`
+# bounded by a new `fire_cylinder_end_cap_bound_2d()` (the cylinder's own
+# real diameter box), minus the shared passage cut. Real CGAL/STL:
+# end cap now always >= the native circle (2mm real margin, confirmed
+# empty residual), real weld contact preserved, own bbox exactly matches
+# the cylinder's diameter envelope. (2) `ash_tray()` RETIRED entirely
+# (module + `ASH_TRAY_*` constants + `ash_tray_out_pct` parameter
+# threading through `firebox()`/DEBUG TOGGLES) per Janis's own explicit,
+# direct instruction — R-009, zero remaining consumers confirmed via grep.
+# Understructure table: source now BBQ-understructure-v10.scad, pure
+# pointer bump, zero geometry change.
+# Previous: 1.21 — 2026-07-21 (Rule 1 QA simulation on unmerged PR #138):
 # chambers table REBUILT — source now BBQ-chambers-v18.scad. Janis ran
 # their own 4-step QA simulation against v17 before merging (per Janis's
 # own explicit hold) and, alongside the new rules-bbq-fab.md "Dual End-Cap
@@ -419,7 +439,7 @@
 # toggle, per the Toggle-Completeness Rule (cc_rules.md). "(none — always
 # on, safety-critical)" is the ONLY other permitted value.
 
-## BBQ-chambers-v18.scad
+## BBQ-chambers-v19.scad
 
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
@@ -428,17 +448,16 @@
 | `firebox_passage()` | v16 TASK A REBUILT — Janis's own words: "the hole shape is dictate by the cut on the chamber, nothing else". Real root cause of v15's own defect: `firebox_passage_profile()` sized its circle (194.898mm dia) purely from the cylinder's own 0.008-fire-volume target-area rule, with ZERO reference to real chamber material — 33.233mm of its own bottom sat BELOW chamber_floor_z entirely (a literal hole through nothing, confirmed via CGAL+echo, matching Janis's screenshot). FIX: size/position now DERIVED from the real vertical band where the cylinder's own clear bore (225mm) overlaps the chamber's real octagon material at the rear wall (`CYL_WALL_MARGIN`=15mm/`CHAMBER_EDGE_MARGIN`=15mm real insets both ends) — built as `intersection(candidate circle, real chamber material)`, so the final shape is, by construction, always the real chamber cut. Real new `PASSAGE_R`=65.335mm (was 97.449mm — genuinely smaller, a real consequence of deriving from actual available space, not a defect). Real CGAL: passage now FULLY contained in real chamber material (zero residual outside it, confirmed via a real `difference()` probe) AND fully clear of the cylinder's own bore wall (confirmed empty overlap) | a placeholder — both the target radius derivation and the belt-and-suspenders real-material intersection are load-bearing, not decorative | (none — sub-part of `chamber_shell()`, no separate toggle) |
 | `lid(lid_open_deg)` | UNCHANGED CODE. Clamshell lid, 3 flat panels, hinged along the ridge midpoint | | `show_lid` |
 | `lid_hardware(lid_open_deg)` | UNCHANGED code, stale, still deferred | | `show_lid_hardware` — still FALSE by default |
-| `firebox(firebox_door_open_deg, ash_tray_out_pct)` | TWO fully independent welded assemblies (fire cylinder + outer shell, see next rows). v17 NEW: 4 real sub-part toggles (`show_fire_cylinder`/`show_fire_cylinder_end_cap`/`show_outer_shell`/`show_outer_shell_end_cap`), Janis's own explicit request ("Can you make the inner shell of the fire box and outer shell of the fire box can be toggle...both back end cap...toggle on off too") — each independent of `show_firebox` below (which still gates the whole assembly). `fire_cylinder_partition()`/`ash_tray()`/`firebox_door()` NOT separately toggled (not part of this round's ask) | one shared assembly — deliberately two separate, non-touching solids | `show_firebox` |
-| `fire_cylinder()` / `fire_cylinder_end_cap()` | Round, 456mm diameter (62mm wall clearance vs the outer shell), full `FIREBOX_L`(580mm) span, open both ends. `fire_cylinder_end_cap_2d()` two-zone: for world Z>=chamber_floor_z clips to the real octagon (`chamber_octagon_or_open_below_2d()` mask, UNCHANGED this round — a cap plate SHOULD be a solid disc, no interior to keep clear, unlike the flange below); below that keeps its native full circle. Own end cap welds DIRECTLY to the chamber's own octagon end cap. Real CGAL seal-weld: non-empty contact vs the chamber's own solid wall; zero-contact vs `outer_shell()` EMPTY. v17 NEW: independently toggleable (`show_fire_cylinder`/`show_fire_cylinder_end_cap`) | connected to or touching the outer shell anywhere — confirmed via a real mandatory zero-contact CGAL check | `show_fire_cylinder` / `show_fire_cylinder_end_cap` |
+| `firebox(firebox_door_open_deg)` | TWO fully independent welded assemblies (fire cylinder + outer shell, see next rows). 4 real sub-part toggles (`show_fire_cylinder`/`show_fire_cylinder_end_cap`/`show_outer_shell`/`show_outer_shell_end_cap`), Janis's own explicit request — each independent of `show_firebox` below (which still gates the whole assembly). `fire_cylinder_partition()`/`firebox_door()` NOT separately toggled (not part of that round's ask). v19: `ash_tray_out_pct` parameter DROPPED (`ash_tray()` itself retired, see below — zero remaining consumers) | one shared assembly — deliberately two separate, non-touching solids | `show_firebox` |
+| `fire_cylinder()` / `fire_cylinder_end_cap()` | Round, 456mm diameter (62mm wall clearance vs the outer shell), full `FIREBOX_L`(580mm) span, open both ends. `fire_cylinder_end_cap_2d()` v19 REBUILT via the Dual End-Cap Footprint Pattern (RULE 4, `.claude/SKILL_joint_construction.md`) — REPLACING the old `intersection(circle, chamber_octagon_or_open_below_2d())` construction (RETIRED, real confirmed defect: Janis found a real remaining hole by looking inside the built cylinder — the octagon's own real half-width at chamber_floor_z, 126.335mm, is LESS than the circle's own real half-width there, 219.6mm, so the intersection clipped the circle down and the chamber has zero material outside its own true edge to fill what got clipped away — same failure class as v16's original outer-shell mistake, just never checked on this specific end cap until this round). FIX: `union(circle, true_octagon_profile())`, bounded by new `fire_cylinder_end_cap_bound_2d()` (the cylinder's own real diameter box — without it a bare union would pull in unlimited octagon material, the same overreach bug already found once this session on the outer shell), minus the shared passage cut. Real CGAL/STL: end cap now always >= the native circle (2mm real margin, confirmed empty residual, not just an exact-boundary touch), real weld contact with the chamber's own wall material preserved (non-empty), own real bbox exactly matches the cylinder's own diameter envelope (no overreach). Independently toggleable (`show_fire_cylinder`/`show_fire_cylinder_end_cap`, UNCHANGED) | connected to or touching the outer shell anywhere — confirmed via a real mandatory zero-contact CGAL check | `show_fire_cylinder` / `show_fire_cylinder_end_cap` |
 | `fire_cylinder_partition()` | Square end plate (matches `outer_shell_footprint_2d()`'s own real 580x580 exterior footprint, plain/unclipped) minus a circle matching the cylinder's own real diameter (+2e real clearance) — physically locates the cylinder within the square outer shell. Positioned at the door/front end (X=[firebox_x1-wall_t-e,firebox_x1-e]). Real CGAL: non-empty contact vs `outer_shell()`'s own wall, EMPTY vs the cylinder and the door | welded/fused to the cylinder itself — a separate locating collar, real clearance not material overlap | (none — sub-part of `firebox()`, no separate toggle) |
 | `outer_shell()` / `outer_shell_end_cap()` | Real 580x580x580 CUBE. Flange/end-cap footprint v18 REBUILT AGAIN to actually satisfy rules-bbq-fab.md's new "Dual End-Cap Independence Convention, Rule 1" (locked same session) — confirmed via Janis's own 4-step QA simulation run against v17 BEFORE merging: v17's fix (always-plain-square footprint) dodged the 2 known CGAL bugs but never let the top zone "meet the octagon face" as Rule 1 requires. FIX: `outer_shell_flange_footprint_2d()` now `union(outer_shell_footprint_2d(), true_octagon_profile())`, intersected with a real height-bound mask (`flange_height_bound_2d()`, NEW — a real bug caught before shipping: the raw union pulled octagon material all the way to the chamber's own ridge height, since `true_octagon_profile()` isn't height-bounded on its own), then minus the chamber's own real hollow-bore shape (`chamber_hollow_cavity_2d()`, UNCHANGED from v17). Real result: footprint is ALWAYS >= the plain square (no step, one continuous surface, satisfies "no gap") AND matches the octagon exactly wherever the octagon is wider (satisfies "meets the octagon face"), bounded to the flange's own real physical Z-range. Real CGAL/STL re-verified: EMPTY vs the chamber's own hollow cavity (2mm margin), NON-EMPTY vs the chamber's own real wall material, `outer_shell()`'s own real world-Z range confirmed exactly [420,1000] (no ridge overreach). `FLANGE_LEN`=50mm (UNCHANGED), STAYS ADDITIVE. Independently toggleable (`show_outer_shell`/`show_outer_shell_end_cap`, UNCHANGED from v17) | a redesigned cube — same cube, only the flange/end-cap's own footprint mechanism changed again (3rd real attempt, this one satisfies the written rule) | `show_outer_shell` / `show_outer_shell_end_cap` |
 | `exhaust_room()` | UNCHANGED CODE, UNCHANGED position this round (chamber_floor_z untouched) | | `show_exhaust_room` |
 | `chimney_pipe()` | UNCHANGED CODE | | `show_chimney_pipe` |
 | `grill_grate()` | UNCHANGED CODE, UNCHANGED position this round (chamber_floor_z/GRATE_Z untouched) | | `show_grate` |
 | `floor_drains()` | UNCHANGED CODE | | `show_drains` |
-| `ash_tray(ash_tray_out_pct)` | v15 REQUIRED real fix (R-009 consequence of retiring the rectangular duct's own DUCT_W/DUCT_Y_CENTER). Real width now governed by the fire cylinder's own real chord width at the tray's own FARTHEST-from-center face — REAL BUG FOUND+FIXED VIA CGAL: the first pass (150mm, checking only the tray's TOP corner) found a real, substantial 49,100mm³ overlap with the cylinder's own solid wall — the tray's BOTTOM face is actually farther from center (220mm vs the top's 208mm) and is the true binding constraint (94.34mm safe max, not 171.6mm). Fixed: ASH_TRAY_W=80mm, real margin, re-verified empty. Length grows automatically to 534mm (was 414mm) with the longer cylinder | still 150mm/514mm-class wide like the old rectangular-duct version — the round cylinder's own real geometry is much more constraining | (none — sub-part of `firebox()`, no separate toggle) |
 
-## BBQ-understructure-v9.scad
+## BBQ-understructure-v10.scad
 
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|

@@ -144,7 +144,30 @@
 // BBQ-understructure-v8.scad. See BBQ-chambers-v18.scad's own header +
 // cc_chat_log.md for full detail.
 
-include <BBQ-understructure-v9.scad>
+// 2026-07-21: include target updated v9->v10 (pure pointer bump — Janis's
+// own closer visual inspection of v18/v9 found 2 real remaining issues:
+// (1) fire_cylinder_end_cap_2d() still had a real, visible hole — same
+// failure class as the outer shell's own Rule 1 fix (intersection() with
+// the octagon clips the circle down wherever the octagon is locally
+// narrower, and the chamber has zero material outside its own true edge
+// to fill what gets clipped away) — v18's own QA Step 2 never actually
+// checked this specific end cap for the same defect. Fixed via the SAME
+// Dual End-Cap Footprint Pattern (rules-codes.md/.claude/SKILL_joint_
+// construction.md RULE 4): union(circle, octagon) bounded by the
+// cylinder's own real diameter box, minus the shared passage cut — real
+// CGAL/STL re-verified: end cap now always ≥ the native circle (2mm real
+// margin), real weld contact with the chamber's own wall material
+// preserved, own real bbox exactly matches the cylinder's own diameter
+// envelope (no overreach). (2) `ash_tray()` RETIRED entirely, per Janis's
+// own explicit instruction ("just remove this tray, keep cylinder
+// clean") — R-009, zero remaining consumers confirmed via grep before
+// removing (module + its own ASH_TRAY_* constants + the
+// `ash_tray_out_pct` parameter threading through firebox()/DEBUG TOGGLES,
+// all retired together). v9 kept unchanged, on record, as
+// BBQ-understructure-v9.scad. See BBQ-chambers-v19.scad's own header +
+// cc_chat_log.md for full detail.
+
+include <BBQ-understructure-v10.scad>
 
 // ASSEMBLY — the included file already calls both its own geometry AND
 // (transitively) the chamber's, at include time (see each file's own

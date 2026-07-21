@@ -1,5 +1,18 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.22 — 2026-07-21
+> Version 1.23 — 2026-07-21
+> Changes: Janis's own closer visual inspection of v18 (looking INSIDE the
+> built cylinder) found a real remaining hole in `fire_cylinder_end_cap_2d()`
+> — same failure class as the outer shell's own Rule 1 defect, just never
+> checked on this specific end cap. Fixed by directly reusing the Dual
+> End-Cap Footprint Pattern (RULE 4) already written this session — no
+> re-derivation needed, confirming the standardization work paid off
+> same-day. `ash_tray()` also RETIRED entirely per Janis's own explicit
+> instruction. This file's own `include` bumped v18->BBQ-chambers-v19.scad,
+> source-of-truth pointer bumped v9->BBQ-understructure-v10.scad (pure
+> pointer bump, zero geometry change). No DATUM/anchor values moved this
+> round — see PART_MANIFEST.md/BBQ-chambers-v19.scad's own header for the
+> full geometric detail (out of this file's own datum/skeleton scope).
+> Previous: 1.22 — 2026-07-21
 > Changes: Janis ran their own 4-step QA simulation against unmerged PR
 > #138 (v17), alongside the new rules-bbq-fab.md "Dual End-Cap
 > Independence Convention" (locked same session) — found v17's
@@ -567,16 +580,11 @@ BBQ Offset Smoker V9 (top assembly)
 │   │   against the door — pulled back by a real e=0.01mm epsilon,
 │   │   re-verified Simple:yes/empty. Real CGAL: non-empty contact vs the
 │   │   outer shell's own wall, EMPTY vs the cylinder and the door)
-│   ├── Ash tray (slide-out — v15 REQUIRED real fix: width now governed by
-│   │   the fire cylinder's own real chord width at the tray's own
-│   │   FARTHEST-from-center face. REAL BUG FOUND+FIXED VIA CGAL: the first
-│   │   pass [150mm, checking only the tray's TOP corner] found a real,
-│   │   substantial 49,100mm³ overlap with the cylinder's own solid wall —
-│   │   the tray's BOTTOM face is actually farther from center [220mm vs
-│   │   the top's 208mm] and is the true binding constraint [94.34mm safe
-│   │   max, not 171.6mm]. Fixed: ASH_TRAY_W=80mm [was 514mm under the old
-│   │   rectangular duct], real margin, re-verified empty. Length grows
-│   │   automatically to 534mm [was 414mm] with the longer cylinder)
+│   ├── Ash tray — RETIRED v19 (module + ASH_TRAY_* constants +
+│   │   ash_tray_out_pct parameter all removed, R-009 zero remaining
+│   │   consumers) per Janis's own explicit, direct instruction: "just
+│   │   remove this tray, keep cylinder clean" (flagged as asked "4-5
+│   │   versions ago" previously, never actually done until this round)
 │   └── Firebox door (hinged, joggle-step joint — UNCHANGED CODE, real
 │       dimensions stay 580mm wide [FIREBOX_W unchanged], now mounted on a
 │       taller 580mm-high shell [was 428.6mm], flagged real consequence)
@@ -686,7 +694,6 @@ verified via real CGAL render this session (not just the default state
 |---|---|---|---|
 | Lid | closed (`lid_open_deg=0`) | open (`lid_open_deg` up to 120, real CGAL-confirmed ceiling, re-verified after the v3 mirror — stays clean well past that too, 120 chosen as a practical usable-design max, not a hard collision limit) | v3: ridge-hinged, full-length, rotate([-deg,0,0]) about an X-axis line — SIGN FLIPPED from v2's rotate([+deg,0,0]) since the lid is now mirrored to the opposite (Y=0) side; verified via real CGAL bounding-box check, not assumed from symmetry |
 | Firebox door | closed (`firebox_door_open_deg=0`) | open (up to ~110) | Continuous angle, unchanged from v1 (DO NOT TOUCH this session). *** REAL DEFECT FLAGGED, STILL NOT FIXED *** (found during understructure v5's own kinetic sweep, RE-CONFIRMED identically this round, v15): real CGAL-confirmed non-manifold (Simple:no) at roughly >90-95deg open, reproduced identically on standalone BBQ-chambers-v14/v14.1/v14.2/v15 — pre-existing in the frozen firebox_door() code across every version tested, NOT introduced by v15's own real cube-shell/cylinder redesign (a real, deliberate re-check this round, not assumed still true). Needs a future chambers-scoped round |
-| Ash tray | in (`ash_tray_out_pct=0`) | out (`ash_tray_out_pct=1`) | Full-out only physically valid with door open — same accepted door-dependency pattern as VM-02's `tray_out_pct`, not a bug. Unchanged from v1 |
 | Chimney (fold) | REMOVED v2 | REMOVED v2 | v1's foldable chimney/drop-tube replaced by a fixed exhaust room + pipe (v2 TASK 2) — no fold mechanism in this version, flagged as a real scope change, not silently dropped |
 | Prep shelves | deployed (`shelf_deployed=true`, horizontal) | stowed (`shelf_deployed=false`, vertical) | Discrete boolean, unchanged from v1 |
 | Tow handle (v6 TASK 6) | towing/use (`handle_fold_deg=0`, horizontal) | folded vertical storage (`handle_fold_deg=90`, UNCHANGED default from v5) | Continuous angle. `TRIANGLE_Z`=`FRONT_AXLE_Z` directly now (228.6mm, was `FRONT_AXLE_Z+100`=328.6mm floating above the axle plane — Janis's own annotated finding, fixed) + new curved gusset fillet bridging the plate to the stub axle. `TBAR_LEN` UNCHANGED (1102.735mm). Real, flagged side effect of the `TRIANGLE_Z` fix (not the goal of TASK 6): tip Z at the 90deg default is now 50mm BELOW the roof (was 50mm above under v5) — the v5-flagged roof-overshoot resolves as a welcome consequence, confirmed via echo. `steer_deg` UNCHANGED mechanism, re-verified via a real CGAL sweep at the new narrower track — still a SEPARATE parameter from fold, not its own dual-view row |

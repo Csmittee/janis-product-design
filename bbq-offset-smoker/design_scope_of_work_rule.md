@@ -1,5 +1,16 @@
 # BBQ Offset Smoker — Design Scope of Work
-> Version 1.13 — 2026-07-21
+> Version 1.14 — 2026-07-21
+> Changes: Janis's own closer visual inspection of v18, looking INSIDE the
+> built cylinder, found a real remaining hole in the inner cylinder's own
+> end cap — same failure class as the outer shell's own Rule 1 defect,
+> just never checked on this specific end cap. Fixed by directly reusing
+> the Dual End-Cap Footprint Pattern (RULE 4) written earlier the same
+> session — no re-derivation needed. Also: `ash_tray()` retired entirely
+> per Janis's own explicit, direct instruction ("just remove this tray,
+> keep cylinder clean") — flagged as asked several versions ago and never
+> done. Include bumped v18->BBQ-chambers-v19.scad / v9->
+> BBQ-understructure-v10.scad (pure pointer bump).
+> Previous: 1.13 — 2026-07-21
 > Changes: Janis's own 4-step QA simulation, run against unmerged PR #138
 > (v17) before merging, alongside the new rules-bbq-fab.md "Dual End-Cap
 > Independence Convention" locked the same session. Found v17's own
@@ -543,10 +554,11 @@ yet Janis-reconfirmed in this exact wording (see flag above)
 7. Foldable chimney with internal drop-tube (smoke circulates low
    across food, not a short-circuit top vent)
 8. Adjustable firebox air-intake damper
-9. Slide-out ash tray below the firebox's internal fuel cylinder (2026-07-17:
-   firebox's old internal fire grate REMOVED, replaced by a cylindrical
-   fuel vessel — see Envelope above; ash tray height reduced to fit the
-   real clearance beneath it, flagged for review)
+9. ~~Slide-out ash tray~~ — REMOVED 2026-07-21 per Janis's own explicit,
+   direct instruction ("just remove this tray, keep cylinder clean") —
+   flagged as asked several versions prior and never actually done until
+   this round; fire cylinder interior is now clean/empty, no ash-handling
+   feature in the current scope
 10. Toggle-clamp lid latches x2+
 11. Dome thermometer port (placeholder)
 12. Hybrid fuel — wood or charcoal

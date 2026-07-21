@@ -1,5 +1,16 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.3 — 2026-07-21
+> Version 1.4 — 2026-07-21
+> Changes: standardization follow-up to the Dual End-Cap Independence
+> Convention (docs-only, zero .scad files touched) — Janis's own request,
+> after running a manual 4-step QA simulation against unmerged PR #138
+> (v17) caught a real Rule 1 violation that CGAL's own "Simple:yes, no
+> collision" checks had NOT caught (manifold-clean is not the same as
+> rule-compliant). New "Dual End-Cap QA Simulation Checklist" section
+> added — transcribes Janis's own 4-step manual method verbatim as a
+> standing, numbered checklist, so any future firebox/chamber round runs
+> it BEFORE calling the work done, instead of it existing only in a chat
+> transcript. Detail addition, not new document structure — X.Y bump.
+> Previous: 1.3 — 2026-07-21
 > Changes: bbq-governance-dual-endcap-convention (docs-only, zero .scad
 > files touched). New "Dual End-Cap Independence Convention" section
 > added — locks the standing architectural relationship between a
@@ -167,6 +178,67 @@ must implement the passage/hole cut as ONE shared 2D profile module
 reused across every surface it passes through (chamber wall, inner
 end cap, and any other assembly it crosses) — never independently
 re-derived per-surface.
+---
+
+---
+**Dual End-Cap QA Simulation Checklist (locked 2026-07-21)**
+
+WHY THIS EXISTS: a real, CGAL-confirmed "Simple: yes, no collision" result
+is NOT the same thing as "satisfies the Dual End-Cap Independence
+Convention above." Round v17 was manifold-clean and passed every
+collision/containment probe run against it, and STILL failed Rule 1 —
+CGAL only proves a shape is well-formed and doesn't intersect what it
+shouldn't; it says nothing about whether the shape is the RIGHT shape.
+Janis's own manual 4-step walkthrough caught what the CGAL suite alone
+did not. This checklist transcribes that method verbatim so it is a
+standing, repeatable step — run it, every round, for ANY change that
+touches a firebox/chamber's own end-cap or passage geometry (new entity
+shape, new outer shell shape, or a fix to either) — BEFORE reporting the
+work done, not something re-derived or improvised per round.
+
+1. **Draw the inner (true firebox) entity** at its own real diameter/
+   length, pushed to touch the chamber's own end-cap face at the
+   location where the passage hole is already cut through the chamber
+   wall.
+2. **Check the inner entity's own end cap, at the back, under the
+   chamber**: does it seal the entity's own space with NO hole left
+   except the one shared passage cut (Rule 2)? Confirm it is the SAME
+   shared 2D profile module as the chamber wall's own cut, not an
+   independently-derived approximation.
+3. **Draw the outer shell** at its own real dimensions, plus its own
+   real tuck-under length on the length axis (Rule 1's own minimum
+   50mm), pushed to touch the chamber's own end-cap face above/around
+   the inner entity — confirm its own real top lands at the chamber's
+   own fixed top datum.
+4. **Check UNDER the chamber, on the outer shell's own end-cap panel**:
+   does it close every real gap — top zone MEETS the chamber's own real
+   profile (not clipped short of it, not avoiding it by staying its own
+   native shape), bottom zone is the shell's own simple native cross-
+   section, ONE continuous surface, no step? This is the step v17 failed
+   — re-check it specifically, do not assume a shape that dodges known
+   bugs automatically satisfies this step too.
+
+Mechanical CGAL/STL probes that must accompany Step 4 specifically
+(these are what actually catch the failure modes found across v16/v17/
+v18, not general-purpose sanity checks — see rules-codes.md's own "Dual
+End-Cap Footprint Pattern" for the construction these probes verify):
+- `intersection()` of the outer shell vs. the chamber's own real hollow
+  interior cavity (shrunk by a real margin, not just an exact-touch
+  test) — must be EMPTY.
+- `intersection()` of the outer shell vs. the chamber's own real wall
+  material (the true octagon profile minus its own wall-thickness
+  offset) — must be NON-EMPTY (real structural contact, not a floating
+  part).
+- A real STL/bounding-box probe of the outer shell's own end-cap
+  footprint and of the assembled outer shell itself — confirm neither
+  extends past the shell's OWN real physical height range (the failure
+  mode that shipped inside this same round's own first attempt at the
+  Rule 1 fix, caught only because this specific probe was run before
+  presenting the result).
+
+This section applies to ALL future BBQ firebox/chamber work — run it
+against ANY new prompt/round that touches this territory, and treat a
+clean CGAL manifold/collision result alone as necessary, not sufficient.
 ---
 
 ## v1 Judgment Calls (technical, cc-made, flagged per R-009/general

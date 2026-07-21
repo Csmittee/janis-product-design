@@ -1,5 +1,23 @@
 # knowledge.map
-# Version: v75 — 2026-07-21
+# Version: v76 — 2026-07-21
+# Changes: standardization follow-up (docs-only, zero .scad files touched),
+# Janis's own explicit request after the v16/v17/v18 churn — real cause:
+# CGAL "Simple:yes, no collision" is not the same as "satisfies the
+# written rule", confirmed by v17 passing every collision probe while
+# still failing Rule 1 (caught only by Janis's own manual QA simulation).
+# bbq-offset-smoker/rules-bbq-fab.md (v1.3->1.4): new "Dual End-Cap QA
+# Simulation Checklist" — Janis's own 4-step method transcribed verbatim
+# as a standing, mandatory checklist for any future firebox/chamber round,
+# plus the 3 specific CGAL/STL probes that actually catch this failure
+# class (not general sanity checks). .claude/SKILL_joint_construction.md
+# (v1.0->1.1): new RULE 4 "Dual End-Cap Footprint Pattern" — the real,
+# verified CSG recipe (union of native+reference shape bounded by a real
+# height mask, minus the interior cavity — NOT intersection(), which
+# creates a real missing-material gap) so future products reuse this
+# pattern instead of re-deriving it. .claude/rules-codes.md (v1.14->1.15)
+# cross-references it. bbq-offset-smoker/ row otherwise UNCHANGED (no
+# .scad geometry touched this entry).
+# Previous: v75 — 2026-07-21
 # Changes: Janis ran their own 4-step QA simulation against unmerged PR
 # #138 (v17), applying the new rules-bbq-fab.md "Dual End-Cap Independence
 # Convention" (v74 entry, locked earlier the same session) — bbq-offset-

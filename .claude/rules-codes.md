@@ -1,5 +1,13 @@
 # Janis Product Design — OpenSCAD Coding Rules
-> Version 1.14 — 2026-07-05
+> Version 1.15 — 2026-07-21
+> Changes: bbq-governance-dual-endcap-convention standardization follow-up
+> — `.claude/SKILL_joint_construction.md` bumped to 1.1, new RULE 4 (Dual
+> End-Cap Footprint Pattern: a flat panel widening to match whichever of
+> two shapes is locally wider, same position, no gap — `union()` bounded
+> by a real height mask, then subtract the interior cavity; NOT
+> `intersection()`, which creates a real missing-material gap). Pointer
+> below updated to route this specific shape-matching case to that rule.
+> Previous: 1.14 — 2026-07-05
 > Changes: VM-01-door-datum-rebuild-v43 — added `FOOT_BASE_H` to the VM-01
 > Z-datums block (explicit foot/leg-height term, no longer folded into
 > DATUM_LEG_TOP's label) and documented the hinge-center datum
@@ -21,7 +29,12 @@ All units: MM. All rules below are mandatory for every SCAD file in this project
 
 **Joint/cross-section transition issues:** read
 `.claude/SKILL_joint_construction.md` before writing any fix involving a
-T-junction or a transition between mismatched cross-section shapes.
+T-junction or a transition between mismatched cross-section shapes. If
+the actual problem is a FLAT end-cap/footprint panel that must widen to
+match a wider parent-body reference profile at the SAME position (not a
+loft between two different positions) — e.g. an outer shell's own end cap
+tucking under a wider chamber body — go straight to that file's own RULE
+4 (Dual End-Cap Footprint Pattern), not RULE 2's loft.
 
 **New module geometry design or joint/seam fix:** read
 `.claude/SKILL_local_render.md` before writing any cc prompt.

@@ -370,7 +370,18 @@ Cook chamber 915mm L x 610mm flat-to-flat cross-section (UNCHANGED,
 chamber's own shape frozen).
 Apex A / chamber body reference: EXACTLY 950mm world Z (REAL, BUILT,
 2026-07-18 — `chamber_floor_z` is now `950-chamfer`, algebraically exact).
-Supersedes the prior 900mm value (2026-07-17 round).
+Supersedes the prior 900mm value (2026-07-17 round). Chamber datum itself
+UNCHANGED as of 2026-07-22 (v21) — only the fixed/lid MATERIAL split
+above it moved, see the lid/fixed parting-line entry below.
+Lid/fixed parting line (2026-07-22, v21): real +50mm shift on the Y=0
+side only — the lid's own real opening material now starts at world
+Z=1000mm (was 950mm/apex A). The reclaimed 50mm band (world Z=[950,1000],
+full chamber_L length, Y=0) is genuine FIXED, non-moving material —
+real structural weld base for the relocated prep tray's hinges (see
+Compartment Map below). Chamber body/apex-A/`chamber_floor_z`/`chamfer`
+all UNCHANGED — real, live CGAL-confirmed (new band NON-EMPTY vs the
+existing fixed shell; lid's own real swept volume EMPTY vs the band at
+every angle from 0.5° to 120°).
 Grill grate: still independently, TEMPORARILY fixed at 1000mm — UNCHANGED
 this round. Real gap above apex A is now 50mm (was 100mm), an automatic
 consequence of the chamber's own reanchor, not a separate edit. Same
@@ -569,9 +580,16 @@ yet Janis-reconfirmed in this exact wording (see flag above)
   real plane with a curved gusset at chimney end
 - ~~Prep Shelves x2 — fold-up (vertical stowed / horizontal deployed),
   left + right, front of chamber~~ — REMOVED from Understructure
-  2026-07-22 (v12), RELOCATING to a separate accessories file
-  (BBQ-offset-smoker-base-v2.scad) in the immediately-following round —
-  not gone from the product concept, see Functional Features below
+  2026-07-22 (v12)
+- Accessories — NEW branch, 2026-07-22 (v21/base-v2): the relocated prep
+  tray now lives here (`BBQ-offset-smoker-base-v2.scad`, this file's own
+  FIRST real content). 2 trays (457.5mm x300mm x2mm plate each, 5mm real
+  additive gap), mounted Y=0 side only, hinged to the chamber's own NEW
+  fixed band (world Z=[950,1000], see Envelope above) at real Z=980mm.
+  Own independent fold parameters (`tray0_angle_deg`/`tray1_angle_deg`,
+  -90° stowed / 0° deployed). A lid counterbalance/fulcrum mechanism is
+  the planned NEXT addition here (Janis still developing the concept, not
+  designed this round)
 
 ## Functional Features — per addendum Section 3a, see flag above
 1. Full-length counterbalanced lid — lever + weight, target ~85-90%
@@ -581,10 +599,11 @@ yet Janis-reconfirmed in this exact wording (see flag above)
 4. Firebox door — lockable, off-shelf spiral-wire heat-safe handle
 5. Laser-cut steel grill grate, 3-4 removable segments on internal
    support ledge
-6. 2 fold-up prep shelves (vertical stowed / horizontal deployed) —
-   RELOCATING 2026-07-22 (v12) from Understructure to a separate
-   accessories file (BBQ-offset-smoker-base-v2.scad), see the
-   immediately-following bbq-chamber-parting-shift-and-tray-init round
+6. 2 fold-up prep trays (vertical stowed / horizontal deployed) —
+   RELOCATED 2026-07-22 from Understructure (v12, removed) to the new
+   Accessories branch (`BBQ-offset-smoker-base-v2.scad`, v21 round),
+   hinged to the chamber's own new fixed band (see Envelope) instead of
+   the chassis
 7. Foldable chimney with internal drop-tube (smoke circulates low
    across food, not a short-circuit top vent)
 8. Adjustable firebox air-intake damper

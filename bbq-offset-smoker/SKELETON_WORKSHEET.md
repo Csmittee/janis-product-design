@@ -512,9 +512,25 @@ BBQ Offset Smoker V9 (top assembly)
 │   │       confirmed numerically] — matches Janis's "look through the
 │   │       door" description, see BBQ-chambers-v13.scad header for the
 │   │       full verification record)
+│   │   └── NEW fixed band (v21 TASK 1 — real lid/fixed parting-line
+│   │       shift +50mm, Y=0 side only: `fixed_side_wedge()`'s own shared
+│   │       vertex moved from apex A to a new real point on the SAME
+│   │       octagon wall edge [world Z=1000mm, was 950mm] — reuses the
+│   │       LOCKED `chamber_outer_tube()` construction directly, R-014,
+│   │       not a new insert. Real, live-confirmed final band: world
+│   │       Z=[950,1000], full chamber_L length, genuinely FIXED [never
+│   │       moves with the lid] — real structural weld base for the
+│   │       relocated tray's hinges below. Real CGAL: NON-EMPTY vs the
+│   │       existing fixed shell [genuine structural continuity])
 │   ├── Lid (ridge-hinged, 3 flat panels: half-ridge+chamfer+wall — v3
 │   │   MIRRORED to Y=0 side, was Y=chamber_W side in v2; v6: margin
-│   │   widened to 100mm each end, LID_LENGTH=715, was 895)
+│   │   widened to 100mm each end, LID_LENGTH=715, was 895; v21 TASK 1:
+│   │   own vertical Y=0 panel shortened by exactly 50mm to match the new
+│   │   fixed band above — top edge [real octagon top-left corner]
+│   │   UNCHANGED, real live CGAL: lid[closed] vs the new band NON-EMPTY
+│   │   [intentional ~3mm weld overlap, confirms zero gap at the seam],
+│   │   lid's real swept volume vs the band EMPTY at 9 angles checked
+│   │   [0.5°/1°/5°/15°/30°/45°/60°/90°/120°])
 │   │   ├── Lift handle rail (2 standoff posts) — still DISABLED, stale positions
 │   │   ├── Toggle-clamp latches x2 (BUY, off-shelf placeholder) — still DISABLED
 │   │   ├── Dome thermometer (BUY, off-shelf placeholder) — still DISABLED
@@ -686,6 +702,43 @@ BBQ Offset Smoker V9 (top assembly)
         immediately-following bbq-chamber-parting-shift-and-tray-init
         round, parented to that round's own new fixed-band datum — not a
         removal from the product concept, see design_scope_of_work_rule.md
+└── Accessories (v21/base-v2 — NEW branch, 2026-07-22. FIRST entry:
+    the relocated prep tray. `BBQ-offset-smoker-base-v2.scad`'s own
+    `include` points DIRECTLY at `BBQ-chambers-v21.scad`, NOT through
+    Understructure [frozen at v20 this round, DO NOT TOUCH] — a real,
+    stated architecture decision avoiding a double-render of two
+    different chamber versions. Planned NEXT addition: a lid
+    counterbalance/fulcrum mechanism, Janis still developing the concept
+    — deliberately NOT designed this round, header note only, zero code)
+    └── Prep trays x2 (Parent: the Cook Chamber's own NEW fixed band,
+        above — real hinge weld point, not an independently-derived
+        datum. 457.5mm long [X, `chamber_L/2`] x300mm deep [Y, deployed]
+        x2mm plate each, 5mm gap CONFIRMED ADDITIVE [920mm real total
+        span, 5mm more than chamber_L, not shrunk to fit]. Mounted ONLY
+        on the Y=0 side [confirmed by construction]. 2 hinges each, real
+        weld to the fixed band at HINGE_Z=980mm [read live,
+        NEW_SPLIT_Z-20, not hardcoded]. 2 REAL BUGS FOUND+FIXED VIA LIVE
+        CGAL SWEEPS BEFORE SHIPPING: (1) an early draft deployed the
+        plate toward +Y [into the chamber's own DATUM_Y_CENTER
+        territory] — a real, confirmed collision vs
+        `front_wheel_support()` at -30°/-60° — fixed to deploy toward -Y
+        [outward, per the Standing Orientation Convention]. (2) pivoting
+        exactly at the wall face made the plate's own 2mm thickness
+        sweep into real wall material at intermediate angles
+        [`Simple: no` at 0°] — fixed via a real 5mm `HINGE_PIVOT_OFFSET`
+        hinge-knuckle standoff. Also: `HINGE_OFFSET` 60->90mm [tray1's
+        far hinge bisected-confirmed to overlap the firebox's own real
+        flange material below X=858mm]. Real live CGAL, all re-verified
+        after fixes: full angle sweep [-90° to 0°, 9 steps] vs the
+        chamber shell/closed lid/current understructure geometry
+        [wheels, front bracket]/firebox all EMPTY; both trays deployed
+        vs each other EMPTY [5mm real margin]; hinges vs the fixed band
+        NON-EMPTY [real weld contact]; hinges vs the lid's own full
+        opening sweep EMPTY at every angle checked
+        ├── Kinetic: tray0_angle_deg — real range -90°[stowed,vertical]
+        │   to 0°[deployed,horizontal], own independent parameter
+        └── Kinetic: tray1_angle_deg — same real range, independent from
+            tray0_angle_deg [not shared, per spec]
 ```
 
 ## PART C — Kinetic Dual-View Table
@@ -702,6 +755,8 @@ verified via real CGAL render this session (not just the default state
 | Firebox door | closed (`firebox_door_open_deg=0`) | open (up to ~110) | Continuous angle, unchanged from v1 (DO NOT TOUCH this session). *** REAL DEFECT FLAGGED, STILL NOT FIXED *** (found during understructure v5's own kinetic sweep, RE-CONFIRMED identically this round, v15): real CGAL-confirmed non-manifold (Simple:no) at roughly >90-95deg open, reproduced identically on standalone BBQ-chambers-v14/v14.1/v14.2/v15 — pre-existing in the frozen firebox_door() code across every version tested, NOT introduced by v15's own real cube-shell/cylinder redesign (a real, deliberate re-check this round, not assumed still true). Needs a future chambers-scoped round |
 | Chimney (fold) | REMOVED v2 | REMOVED v2 | v1's foldable chimney/drop-tube replaced by a fixed exhaust room + pipe (v2 TASK 2) — no fold mechanism in this version, flagged as a real scope change, not silently dropped |
 | ~~Prep shelves~~ | REMOVED v12 | REMOVED v12 | Module + `shelf_deployed` parameter REMOVED entirely from Understructure (2026-07-22) — relocating to a separate accessories file next round, own new kinetic parameter(s) to be established there, not carried over |
+| Prep tray 0 (base-v2, NEW) | stowed (`tray0_angle_deg=-90`, vertical) | deployed (`tray0_angle_deg=0`, horizontal, default) | Continuous angle, own independent parameter. Real live CGAL: full sweep (9 steps) vs chamber shell/closed lid/understructure/firebox all EMPTY (2 real bugs found+fixed first, see PART B) |
+| Prep tray 1 (base-v2, NEW) | stowed (`tray1_angle_deg=-90`, vertical) | deployed (`tray1_angle_deg=0`, horizontal, default) | Continuous angle, own independent parameter (NOT shared with tray 0, per spec) — same real verification as tray 0, plus both-deployed-simultaneously vs each other EMPTY (5mm real margin) |
 | Tow handle (v6 TASK 6) | towing/use (`handle_fold_deg=0`, horizontal) | folded vertical storage (`handle_fold_deg=90`, UNCHANGED default from v5) | Continuous angle. `TRIANGLE_Z`=`FRONT_AXLE_Z` directly now (228.6mm, was `FRONT_AXLE_Z+100`=328.6mm floating above the axle plane — Janis's own annotated finding, fixed) + new curved gusset fillet bridging the plate to the stub axle. `TBAR_LEN` UNCHANGED (1102.735mm). Real, flagged side effect of the `TRIANGLE_Z` fix (not the goal of TASK 6): tip Z at the 90deg default is now 50mm BELOW the roof (was 50mm above under v5) — the v5-flagged roof-overshoot resolves as a welcome consequence, confirmed via echo. `steer_deg` UNCHANGED mechanism, re-verified via a real CGAL sweep at the new narrower track — still a SEPARATE parameter from fold, not its own dual-view row |
 
 Static/removable parts (Grill grate segments — *** TEMPORARILY,
@@ -713,6 +768,15 @@ wheel support's own bracket — fixed weldment, the caster's swivel IS the
 independently kinetic beyond what's listed — they get a `show_*`
 isolation toggle only (Toggle-Completeness Rule), not a dual-view kinetic
 state.
+
+## Toggle-Completeness count (2026-07-22, v1.23)
+
+BBQ-offset-smoker-base-v2.scad ASSEMBLY (NEW file): 1 module called
+(`trays`), 1 real toggle (`show_trays`) — 0 gaps. BBQ-chambers-v21.scad
+ASSEMBLY UNCHANGED count/toggles from v20 (still 15) — TASK 1 modified 2
+existing masks + 1 existing panel construction, not a new ASSEMBLY-called
+module. BBQ-understructure-v12.scad UNCHANGED this round (frozen, DO NOT
+TOUCH). Combined total: 19 real toggles across all 3 files (was 18).
 
 ## Toggle-Completeness count (2026-07-22, v1.22)
 

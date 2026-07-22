@@ -1,5 +1,17 @@
 # Claude Web — Chat Rules
-# Version: v3.12 — 2026-07-13
+# Version: v3.13 — 2026-07-21
+# Changes: Prompt Writing section gets 3 new bullets from R-014 (RULES.md,
+# the BBQ firebox/chamber dual-end-cap retrospective — same module
+# touched 6 real times, CGAL passed clean at multiple points while the
+# actual written design intent stayed wrong until a locked, named
+# convention existed to check against). New bullets: reference locked
+# conventions by NAME rather than re-describing geometry in fresh prose;
+# state the specific real verification expected, not just "confirm no
+# collision"; treat an owner statement that something was asked before
+# and not delivered as confirmed intent for direct execution, never a
+# fresh request needing re-confirmation. Detail addition to an existing
+# section, not new structure — X.Y bump.
+# Previous: v3.12 — 2026-07-13
 # Changes: governance-inline-content-and-predelivery-check. Prompt Writing
 # section gets one new bullet — never write "pull from chat/session/
 # discussion" into a cc prompt, transcribe confirmed content directly (new
@@ -125,6 +137,26 @@ Before searching for cc_chat_log, inspect the CHAT_HANDOFF body:
 - Never write "pull from chat/session/discussion" into a cc prompt — cc
   cannot see the Claude Web <-> Janis conversation under any circumstance.
   Transcribe confirmed content directly, every time. See RULES.md R-012.
+- If a locked, named convention already covers the area a prompt touches
+  (check the product's own fabrication-rules file, e.g.
+  `rules-bbq-fab.md`'s own locked sections, and general reusable patterns
+  in `.claude/SKILL_joint_construction.md`), REFERENCE IT BY NAME in the
+  prompt text ("apply the Dual End-Cap Independence Convention, Rule 1"
+  / "use the Dual End-Cap Footprint Pattern, RULE 4") — do not re-describe
+  the geometry in fresh prose from memory. A precise name routes cc
+  straight to the already-verified pattern; a fresh description invites a
+  fresh, possibly-incompatible reinterpretation. See RULES.md R-014.
+- Every prompt requiring a geometry fix must state the SPECIFIC real
+  verification expected — never just "confirm no collision" or "make it
+  manifold." Pull the exact probes from the relevant locked convention's
+  own QA section if one exists (e.g. rules-bbq-fab.md's "Dual End-Cap QA
+  Simulation Checklist"). Manifold-clean is necessary, not sufficient —
+  see R-014.
+- If Janis states a fix was asked before and not delivered, the next
+  prompt (or direct-cc instruction) must treat that as CONFIRMED intent
+  and instruct DIRECT execution — never re-litigate, never ask Janis to
+  reconfirm what was already asked. Still flag in the prompt that this is
+  closing a previously-open ask, so the gap is on record.
 
 ---
 

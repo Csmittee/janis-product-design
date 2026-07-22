@@ -1,5 +1,22 @@
 # Claude Code (cc) Rules
-# Version: v9 — 2026-07-07
+# Version: v10 — 2026-07-21
+# Changes: Added Verification Discipline Rule — root cause fix for the BBQ
+# firebox/chamber dual-end-cap saga (BBQ-chambers-v15 through v20, the
+# SAME module touched 6 real times): CGAL "Simple: yes, no collision"
+# passed at multiple points while the actual written design intent was
+# still wrong (v17 dodged 2 known bugs without satisfying the written
+# rule; a solid-vs-hollow flange defect shipped 5 versions unquestioned).
+# The loop only closed once a locked, named convention
+# (rules-bbq-fab.md's Dual End-Cap Independence Convention) and a reusable
+# CSG pattern (.claude/SKILL_joint_construction.md RULE 4) existed for cc
+# to check against and reuse directly, instead of re-deriving a fix from
+# scratch each round. New rule formalizes: manifold-clean is necessary,
+# not sufficient; locked conventions must be read and their named patterns
+# reused, not re-derived; cc must self-trigger R-010's own "question the
+# design" escalation in direct-cc sessions, since R-010's own trigger
+# point (Claude Web noticing repeat-touch) never fires when cc is working
+# directly with Janis. Detail addition, not new section structure.
+# Previous: v9 — 2026-07-07
 # Changes: One-line addition to the existing NEW product line gate — the
 # same read-and-confirm requirement now also covers
 # SKILL_product_design_skeleton.md's BOM Subassembly Tree and Kinetic
@@ -102,6 +119,59 @@ versions, made it impossible to isolate/inspect independently, and it
 sat wrong-referenced against the shell's exterior corner the entire time
 without anyone noticing. See PART_MANIFEST.md for the plain-language part
 identity this rule pairs with.
+
+---
+
+## Verification Discipline Rule (added 2026-07-21)
+
+**1. Manifold-clean is necessary, not sufficient.** A real CGAL
+`Simple: yes` result and an empty collision probe prove the geometry
+doesn't self-intersect or overlap what it shouldn't — they prove NOTHING
+about whether it's the shape actually asked for. Before reporting any fix
+done, state explicitly what real, named check confirms it matches the
+written intent (a locked convention's own QA section if one exists, or
+the prompt/owner's own stated requirement) — not just "renders clean."
+
+**2. If a locked, named convention exists for the area being touched,
+read it FIRST and reuse its own named pattern — never re-derive.** Check
+the product's own fabrication-rules file (e.g. `rules-bbq-fab.md`) for a
+locked section covering this construction before writing new geometry
+logic. If a reusable CSG pattern exists for it (e.g.
+`.claude/SKILL_joint_construction.md`'s numbered RULEs), apply it
+directly and cite it by name in the commit/cc_chat_log entry. Two
+independently-invented fixes for the same real problem (as happened
+across BBQ-chambers-v16 and v18, before the pattern was written down) is
+itself a signal the convention should have been written down sooner —
+write it down the FIRST time a real, non-obvious construction technique
+is found, don't wait for a third occurrence.
+
+**3. Self-trigger R-010 in direct-cc sessions.** R-010 (RULES.md) requires
+a "question the underlying design, not just the bug" task once the same
+module/feature has been the subject of 3+ separate fix rounds — but its
+own trigger assumes Claude Web is tracking rounds and inserting that task.
+In a direct-cc session (R-011), no one else is watching for this. cc must
+count its own real touches to the same module/feature (checking
+cc_chat_log's own recent entries, not memory) and, on the 3rd real round,
+explicitly ask "is the underlying construction technique right, not just
+this specific instance" BEFORE writing another patch — same bar as R-010,
+self-applied.
+
+**4. A prior ask that wasn't delivered is confirmed intent, not a fresh
+request.** If Janis states something was asked before and not done
+(check cc_chat_log for the real prior mention when possible), execute it
+directly — do not ask for re-confirmation. DO flag prominently in
+cc_chat_log that this closes a previously-open ask, so the gap itself
+(why it wasn't done the first time) is on record, not just the fix.
+
+Root cause this prevents: the BBQ firebox/chamber dual-end-cap saga
+(BBQ-chambers-v15 through v20) — the same module was touched 6 real
+times, CGAL passed clean at multiple intermediate points while the
+actual written design intent was still wrong, and a solid-vs-hollow
+flange defect shipped unquestioned for 5 versions before a direct visual
+check (not a CGAL check) found it. The loop only closed once
+`rules-bbq-fab.md`'s "Dual End-Cap Independence Convention" + QA
+Simulation Checklist and `.claude/SKILL_joint_construction.md` RULE 4
+existed to check against and reuse directly.
 
 ---
 

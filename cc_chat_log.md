@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-21 | BBQ dual-end-cap retrospective -> cross-project governance | DONE — R-014 + rule updates in cc_rules.md/RULES.md/chat_rules.md, docs-only
+
+Janis: "I hope all the governance files we created become a strong hold to resist any mistake... any chat doing this work from now on will know how to handle it properly." Root cause captured as R-014 (RULES.md, v4.0->5.0): CGAL manifold-clean passed at multiple points across the BBQ-chambers-v15->v20 saga (same module touched 6 real times) while the actual written design intent stayed wrong — the loop only closed once a locked, named convention + reusable pattern existed to check against.
+cc_rules.md (v9->v10): new "Verification Discipline Rule" — manifold-clean is necessary not sufficient; read+reuse locked conventions by name, never re-derive; cc self-triggers R-010's "question the design" escalation on its own 3rd real touch of the same module in direct-cc sessions (R-010's own trigger assumes Claude Web is watching, which doesn't happen direct); a prior undelivered ask is confirmed intent, execute directly.
+chat_rules.md (v3.12->3.13): 3 new Prompt Writing bullets — reference locked conventions BY NAME not fresh prose, state the SPECIFIC real verification expected not just "no collision," treat "asked before, not done" as confirmed intent.
+Zero .scad files touched. This entry itself IS the mechanism — next session (any product) reads cc_rules.md/RULES.md/chat_rules.md at session start per their own existing "always read" rules, no separate onboarding needed.
+
 ### 2026-07-21 | v20 chambers: flange rebuilt hollow (was solid since v14) | DONE — Rule 1 clarified too
 
 Janis toggled show_outer_shell_end_cap off and still saw a wall — real cause: outer_shell()'s own flange (the 50mm tuck-under) was built as a SOLID 50mm block since v14 ("SOLID, no interior cavity", never questioned), not a thin wall — two redundant wall-like surfaces (the solid block's own far face + the real end-cap plate stacked against it) where there should be exactly one. Also a real, standing inconsistency with this project's own thin-sheet-metal Construction Method.

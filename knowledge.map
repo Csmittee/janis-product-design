@@ -1,5 +1,19 @@
 # knowledge.map
-# Version: v78 — 2026-07-21
+# Version: v79 — 2026-07-21
+# Changes: cross-project governance update, docs-only, zero .scad files
+# touched — root-level rules files updated (purposes UNCHANGED, still
+# accurately described in the File Index table below, no structural
+# change to this map itself): `cc_rules.md` (v9->v10, new "Verification
+# Discipline Rule" — manifold-clean is necessary not sufficient, reuse
+# locked conventions by name, self-trigger R-010 in direct-cc sessions,
+# treat a prior undelivered ask as confirmed intent); `RULES.md` (v4.0-
+# >5.0, new R-014, the canonical record of the same); `chat_rules.md`
+# (v3.12->3.13, 3 new Prompt Writing bullets operationalizing R-014 for
+# Claude Web's own prompt drafting). Root cause: the BBQ firebox/chamber
+# dual-end-cap saga (BBQ-chambers-v15 through v20, same module touched 6
+# real times) — Janis's own explicit request to make this knowledge
+# durable across ANY future product/session, not just re-stated in chat.
+# Previous: v78 — 2026-07-21
 # Changes: Janis toggled `show_outer_shell_end_cap` off and still saw a
 # wall — bbq-offset-smoker/ row updated: chambers now
 # BBQ-chambers-v20.scad (source v19), understructure now

@@ -1,6 +1,14 @@
 # RULES.md
 # Janis Product Design — Numbered Rules Log
-# Version: 4.0 — 2026-07-13
+# Version: 5.0 — 2026-07-21
+# Changes: Added R-014, from the BBQ firebox/chamber dual-end-cap
+# retrospective (BBQ-chambers-v15 through v20, same module touched 6 real
+# times across a single extended direct-cc session — CGAL manifold checks
+# passed clean at multiple intermediate points while the actual written
+# design intent was still wrong). New structural content (new numbered
+# rule), not a detail-only change — X.0 bump per the Document Versioning
+# Rule. R-001-R-013 untouched.
+# Previous: 4.0 — 2026-07-13
 # Changes: Added R-012/R-013, from the governance-inline-content-and-
 # predelivery-check retrospective on the BBQ v1-init session (the original
 # prompt referenced Claude Web <-> Janis chat content cc cannot access,
@@ -53,6 +61,48 @@ Examples: PR-01-base-rail-joint-v1.stl / VM-01-frame-corner-v2.scad
 ---
 
 ## Numbered Rules — Newest First
+
+## R-014 — Manifold-Clean Is Not Rule-Compliant; Reuse Named Patterns, Don't Re-Derive
+Date: 2026-07-21
+A real CGAL `Simple: yes` result and an empty collision/containment probe
+prove geometry doesn't self-intersect or overlap what it shouldn't — they
+prove NOTHING about whether it is the shape actually asked for. Any fix
+reported as done must state the specific real check that confirms it
+matches the WRITTEN intent (a locked convention's own QA section, or the
+prompt/owner's own stated requirement), not just that it renders clean.
+
+When a locked, named convention already exists for the area being
+touched (a product's own fabrication-rules file, e.g. `rules-bbq-fab.md`,
+or a general reusable pattern in `.claude/SKILL_joint_construction.md`),
+it must be read and its own named pattern reused directly — not
+re-derived from scratch. If a real, non-obvious construction technique is
+found while fixing something, write it down as a locked convention THE
+FIRST TIME, not after a second independent fix for the same underlying
+problem ships.
+
+In a direct-cc session (R-011), cc itself must self-trigger R-010's own
+"question the underlying design" escalation once it notices it has
+touched the same module/feature for the 3rd real time (check
+cc_chat_log's own recent entries, don't rely on memory) — R-010's own
+trigger assumes Claude Web is tracking rounds and inserting that task,
+which does not happen when cc is working directly with Janis.
+
+If Janis states a fix was asked before and not delivered, treat it as
+CONFIRMED intent and execute directly — never ask for re-confirmation —
+but flag prominently in cc_chat_log that this closes a previously-open
+ask, so the gap itself is on record, not just the fix.
+
+Root cause of: the BBQ firebox/chamber dual-end-cap saga
+(BBQ-chambers-v15 through v20) — the same module was touched 6 real
+times in one extended direct-cc session; CGAL passed clean at multiple
+intermediate points while the actual written design intent was still
+wrong (v17 dodged 2 known real bugs without satisfying the convention
+that was written specifically to prevent them); a solid-vs-hollow flange
+defect shipped unquestioned for 5 versions until a direct visual check
+(not a CGAL check) found it. The loop only closed once
+`rules-bbq-fab.md`'s "Dual End-Cap Independence Convention" + QA
+Simulation Checklist and `.claude/SKILL_joint_construction.md` RULE 4
+existed as a locked, named reference to check against and reuse.
 
 ## R-013 — Pre-Delivery Self-Check Runs on EVERY cc Prompt, No Exceptions
 Date: 2026-07-13

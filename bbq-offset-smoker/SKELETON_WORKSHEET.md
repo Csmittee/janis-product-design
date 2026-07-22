@@ -620,27 +620,26 @@ BBQ Offset Smoker V9 (top assembly)
     │   each side [was 150mm, firebox insulated, wheel sits closer].
     │   REAR_BRACKET_H recomputes AUTOMATICALLY via v15's new
     │   firebox_floor_z [191.4mm, was 342.8mm] — TASK 4, zero code change.
-    │   No kinetic parameter — static)
+    │   v12 TASK 3: TRACK_WIDTH now 880mm [was 980mm, TRACK_WIDTH_FIREBOX_
+    │   GAP 100->50mm], REAR_WHEEL_Y_LEFT/RIGHT = -135/745mm [was
+    │   -185/795mm]. No kinetic parameter — static)
     │   ├── Rear spacers x2 (construction UNCHANGED — real lengths change
     │   │   automatically from the new REAR_WHEEL_Y_LEFT/RIGHT)
-    │   └── Rear fenders x2 (TASK 3 REBUILT as a short flared wing — was
-    │       "a long straight panel," Janis's live review finding. Real
-    │       cause: the flat mounting portion spanned the ENTIRE distance
-    │       to the wheel's own vertical centerline [250mm flat run] before
-    │       curving. Fixed: flat portion now a genuinely SHORT weld tab
-    │       [1.5mm, unchanged] — the arc starts almost immediately, at the
-    │       real angle [a_start=acos(d/FENDER_R_IN), live-computed,
-    │       symmetric both sides — 58.11deg left/121.89deg right at the
-    │       new 980mm track] where it naturally reaches the firebox wall.
-    │       Real arc sweep now ~147deg [was 115deg]. *** REAL BUG
-    │       FOUND+FIXED VIA CGAL ***: this wider sweep broke the inherited
-    │       3-point wedge-mask technique [chord between the 2 far points
-    │       cut INSIDE the ring at this wider angle, producing two
-    │       disconnected thin slivers instead of a band, confirmed via
-    │       real render not assumed] — fixed with a real multi-point fan
-    │       mask, robust to any sweep angle, re-verified as a clean
-    │       continuous band. FENDER_GAP[150mm]/FENDER_T[4mm]/FENDER_W
-    │       [240mm]/FENDER_ARC_PAST_EDGE[25deg] all UNCHANGED)
+    │   └── Rear fenders x2 (v12 REBUILT to Janis's own precise real spec,
+    │       rear wheels ONLY — the v6-v11 wraparound-hood/flared-wing
+    │       construction RETIRED entirely. NEW: flat rectangular deck
+    │       plate, 300mm real fixed outward extension from the firebox
+    │       outer shell's own wall [not re-derived from a formula],
+    │       548.64mm long [WHEEL_D*1.2, centered on REAR_AXLE_X], 15mm
+    │       droop at each 54.864mm [10%] end via hull() between identical
+    │       rectangular cross-sections. fender_z[underside]=472.2mm
+    │       [REAR_AXLE_Z+WHEEL_R+15] live-confirmed. Real live OpenSCAD
+    │       CGAL [isolated via toggle override, not the full-assembly
+    │       aggregate]: EMPTY vs tire [real bisected margin = exactly
+    │       15mm: 14.9mm clean/15.0mm exact tangency/15.1mm real overlap],
+    │       EMPTY vs axle/struts, NON-EMPTY vs outer_shell [24 real
+    │       facets, genuine weld contact via FENDER_WELD_OVERLAP=1.5mm,
+    │       UNCHANGED value])
     ├── Front wheel support (bracket's own MAIN SHAPE UNCHANGED. LEG_DROP's
     │   own FORMULA UNCHANGED from v5 but real value recomputes
     │   AUTOMATICALLY via v15's new firebox_floor_z [351.335mm, was
@@ -680,17 +679,13 @@ BBQ Offset Smoker V9 (top assembly)
     │       └── Kinetic: steer_deg — UNCHANGED mechanism, re-verified via a
     │           real CGAL sweep (0/+-22.5/+-45/90) at the new narrower
     │           track + lowered gusset assembly, confirmed empty throughout
-    └── Prep shelves x2 (TASK 1 REBUILT mounting — kinematics UNCHANGED
-        [rotate([deg,0,0]) about the X-axis was already a proper hinge-LINE
-        rotation for every X along the shelf, not just a point]. Real
-        problem was PHYSICAL SUPPORT: only ONE mounting bracket existed
-        near the shelf's own near end while the shelf spans ~320mm — a
-        real ~290mm unsupported cantilevered far end [Janis's live review
-        finding]. Fixed: 3 real brackets [judgment call, flagged] evenly
-        spread across the shelf's own real X span, same hinge line, real
-        distributed weld support [confirmed via CGAL, all 3 individually
-        contact real chamber material] — sits level/flush when folded down
-        instead of drooping under its own cantilever)
+    └── ~~Prep shelves x2~~ — REMOVED v12 (2026-07-22) from this branch
+        entirely (module + mounting brackets + exclusive constants,
+        R-009 confirmed zero remaining callers). RELOCATING to a separate
+        accessories file (BBQ-offset-smoker-base-v2.scad) in the
+        immediately-following bbq-chamber-parting-shift-and-tray-init
+        round, parented to that round's own new fixed-band datum — not a
+        removal from the product concept, see design_scope_of_work_rule.md
 ```
 
 ## PART C — Kinetic Dual-View Table
@@ -706,7 +701,7 @@ verified via real CGAL render this session (not just the default state
 | Lid | closed (`lid_open_deg=0`) | open (`lid_open_deg` up to 120, real CGAL-confirmed ceiling, re-verified after the v3 mirror — stays clean well past that too, 120 chosen as a practical usable-design max, not a hard collision limit) | v3: ridge-hinged, full-length, rotate([-deg,0,0]) about an X-axis line — SIGN FLIPPED from v2's rotate([+deg,0,0]) since the lid is now mirrored to the opposite (Y=0) side; verified via real CGAL bounding-box check, not assumed from symmetry |
 | Firebox door | closed (`firebox_door_open_deg=0`) | open (up to ~110) | Continuous angle, unchanged from v1 (DO NOT TOUCH this session). *** REAL DEFECT FLAGGED, STILL NOT FIXED *** (found during understructure v5's own kinetic sweep, RE-CONFIRMED identically this round, v15): real CGAL-confirmed non-manifold (Simple:no) at roughly >90-95deg open, reproduced identically on standalone BBQ-chambers-v14/v14.1/v14.2/v15 — pre-existing in the frozen firebox_door() code across every version tested, NOT introduced by v15's own real cube-shell/cylinder redesign (a real, deliberate re-check this round, not assumed still true). Needs a future chambers-scoped round |
 | Chimney (fold) | REMOVED v2 | REMOVED v2 | v1's foldable chimney/drop-tube replaced by a fixed exhaust room + pipe (v2 TASK 2) — no fold mechanism in this version, flagged as a real scope change, not silently dropped |
-| Prep shelves | deployed (`shelf_deployed=true`, horizontal) | stowed (`shelf_deployed=false`, vertical) | Discrete boolean, unchanged from v1 |
+| ~~Prep shelves~~ | REMOVED v12 | REMOVED v12 | Module + `shelf_deployed` parameter REMOVED entirely from Understructure (2026-07-22) — relocating to a separate accessories file next round, own new kinetic parameter(s) to be established there, not carried over |
 | Tow handle (v6 TASK 6) | towing/use (`handle_fold_deg=0`, horizontal) | folded vertical storage (`handle_fold_deg=90`, UNCHANGED default from v5) | Continuous angle. `TRIANGLE_Z`=`FRONT_AXLE_Z` directly now (228.6mm, was `FRONT_AXLE_Z+100`=328.6mm floating above the axle plane — Janis's own annotated finding, fixed) + new curved gusset fillet bridging the plate to the stub axle. `TBAR_LEN` UNCHANGED (1102.735mm). Real, flagged side effect of the `TRIANGLE_Z` fix (not the goal of TASK 6): tip Z at the 90deg default is now 50mm BELOW the roof (was 50mm above under v5) — the v5-flagged roof-overshoot resolves as a welcome consequence, confirmed via echo. `steer_deg` UNCHANGED mechanism, re-verified via a real CGAL sweep at the new narrower track — still a SEPARATE parameter from fold, not its own dual-view row |
 
 Static/removable parts (Grill grate segments — *** TEMPORARILY,
@@ -718,6 +713,15 @@ wheel support's own bracket — fixed weldment, the caster's swivel IS the
 independently kinetic beyond what's listed — they get a `show_*`
 isolation toggle only (Toggle-Completeness Rule), not a dual-view kinetic
 state.
+
+## Toggle-Completeness count (2026-07-22, v1.22)
+
+BBQ-understructure-v12.scad ASSEMBLY: 3 modules called (`rear_axle`,
+`rear_fenders`, `front_wheel_support`), UNCHANGED from v11 minus
+`prep_shelves()` (REMOVED, TASK 1 — relocating next round). All 3
+remaining modules have a real `show_*` toggle — 0 gaps. BBQ-chambers-v20
+ASSEMBLY UNCHANGED, out of scope this round (still 15 real toggles).
+Combined total: 18 real toggles (was 19).
 
 ## Toggle-Completeness count (2026-07-21, v1.21)
 

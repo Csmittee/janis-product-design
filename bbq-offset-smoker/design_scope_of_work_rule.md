@@ -529,6 +529,24 @@ identically on this round's own new v15 geometry, same defect flagged in
 the prior (understructure v5) round, NOT a v15 regression.
 Far end of the internal duct/cylinder remains an explicit OPEN ITEM —
 Janis: "let me see how it looks then I'll explain the adjustment."
+Understructure (2026-07-22, v12): bbq-understructure-v12-tray-removal-
+fender-trackwidth. TASK 1: prep tray/shelves REMOVED entirely from this
+file — relocating to a separate accessories file
+(BBQ-offset-smoker-base-v2.scad) in the immediately-following
+bbq-chamber-parting-shift-and-tray-init round, not gone from the product
+concept (see Compartment Map/Functional Features below). TASK 2:
+rear_fenders() rebuilt to Janis's own precise real spec (rear wheels
+ONLY, no front fender) — flat 548.64mm x 300mm deck plate, 300mm real
+fixed outward extension from the firebox outer shell's own wall, 15mm
+droop at each 54.864mm end, fender_z(underside)=472.2mm. Real live
+OpenSCAD CGAL: EMPTY vs tire (exactly 15mm real margin, bisected), EMPTY
+vs axle/struts, NON-EMPTY vs firebox outer shell (real weld contact).
+TASK 3: TRACK_WIDTH_FIREBOX_GAP 100->50mm, TRACK_WIDTH=880mm (was
+980mm), real wheel Y=-135mm/745mm — real front-wheel-vs-bracket
+collision re-checked fresh at this narrower width (the opposite
+direction from the v5 fix that originally resolved it), confirmed EMPTY.
+Chamber body/apex-A/grate-height items above all UNCHANGED this round
+(chambers frozen, out of scope).
 
 ---
 
@@ -543,14 +561,17 @@ yet Janis-reconfirmed in this exact wording (see flag above)
 - Chimney — front shoulder mount, foldable, internal drop-tube down to
   grate level
 - Understructure — corner-tube wheeled frame, 2 fixed + 2 swivel casters
-  (18"/457.2mm wheels, FINAL as of 2026-07-17), shared 980mm track width
-  front+rear (2026-07-20, v6, was 1080mm — resolves the standing
-  front-wheel/bracket collision, re-confirmed at this round's own
-  geometry), short flared-wing rear fenders (v6, was a long panel under
-  v5), T-bar tow handle mounted at the front axle's own real plane with a
-  curved gusset (v6, was floating 100mm above it) at chimney end
-- Prep Shelves x2 — fold-up (vertical stowed / horizontal deployed),
-  left + right, front of chamber
+  (18"/457.2mm wheels, FINAL as of 2026-07-17), shared 880mm track width
+  front+rear (2026-07-22, v12, was 980mm — 50mm firebox-to-wheel gap,
+  Janis's own real spec update), flat rectangular deck-plate rear fenders
+  ONLY, welds to the firebox outer shell (v12, was a short flared-wing
+  hood shape v6-v11), T-bar tow handle mounted at the front axle's own
+  real plane with a curved gusset at chimney end
+- ~~Prep Shelves x2 — fold-up (vertical stowed / horizontal deployed),
+  left + right, front of chamber~~ — REMOVED from Understructure
+  2026-07-22 (v12), RELOCATING to a separate accessories file
+  (BBQ-offset-smoker-base-v2.scad) in the immediately-following round —
+  not gone from the product concept, see Functional Features below
 
 ## Functional Features — per addendum Section 3a, see flag above
 1. Full-length counterbalanced lid — lever + weight, target ~85-90%
@@ -560,7 +581,10 @@ yet Janis-reconfirmed in this exact wording (see flag above)
 4. Firebox door — lockable, off-shelf spiral-wire heat-safe handle
 5. Laser-cut steel grill grate, 3-4 removable segments on internal
    support ledge
-6. 2 fold-up prep shelves (vertical stowed / horizontal deployed)
+6. 2 fold-up prep shelves (vertical stowed / horizontal deployed) —
+   RELOCATING 2026-07-22 (v12) from Understructure to a separate
+   accessories file (BBQ-offset-smoker-base-v2.scad), see the
+   immediately-following bbq-chamber-parting-shift-and-tray-init round
 7. Foldable chimney with internal drop-tube (smoke circulates low
    across food, not a short-circuit top vent)
 8. Adjustable firebox air-intake damper

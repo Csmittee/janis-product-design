@@ -4,7 +4,24 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.23 — 2026-07-21 (Janis toggled show_outer_shell_end_cap off,
+# Version: 1.24 — 2026-07-22 (bbq-understructure-v12-tray-removal-fender-
+# trackwidth): understructure table REBUILT — source now
+# BBQ-understructure-v12.scad. TASK 1: prep_shelf()/prep_shelves()/
+# tray_mount_bracket()/tray_mount_brackets() rows REMOVED — module deleted
+# entirely (relocating to a separate accessories file, next round), R-009
+# confirmed zero remaining callers (SHELF_D/SHELF_T/LEG_INSET real
+# consumers all tray-exclusive; CASTER_CLEARANCE/leg_h also removed — REAL
+# FINDING: already orphaned before this round, unrelated to the tray).
+# TASK 2: rear_fenders() row REBUILT — Janis's own precise real spec (rear
+# wheels only): flat 548.64mm x 300mm deck plate, 15mm droop each
+# 54.864mm end via hull(), fender_z=472.2mm. Real live OpenSCAD CGAL:
+# EMPTY vs tire (15mm real margin, bisected), EMPTY vs axle/struts,
+# NON-EMPTY vs firebox outer shell (real weld contact). TASK 3:
+# TRACK_WIDTH 980->880mm (TRACK_WIDTH_FIREBOX_GAP 100->50mm) — real
+# front-wheel-vs-bracket re-check at the new narrower width: live CGAL
+# EMPTY, re-confirmed not assumed. Chambers table UNCHANGED (still
+# BBQ-chambers-v20.scad, out of scope this round).
+# Previous: 1.23 — 2026-07-21 (Janis toggled show_outer_shell_end_cap off,
 # still saw a wall): chambers table REBUILT — source now
 # BBQ-chambers-v20.scad. Real cause: `outer_shell()`'s own flange (the
 # 50mm tuck-under) was built as a SOLID 50mm block since v14 ("SOLID, no
@@ -472,15 +489,30 @@
 | `grill_grate()` | UNCHANGED CODE, UNCHANGED position this round (chamber_floor_z/GRATE_Z untouched) | | `show_grate` |
 | `floor_drains()` | UNCHANGED CODE | | `show_drains` |
 
-## BBQ-understructure-v11.scad
+## BBQ-understructure-v12.scad
 
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
-| `rear_axle()` | UNCHANGED this round. WHEEL_D/WHEEL_R/TREAD_W (457.2/228.6/200). REAR_WHEEL_Y_LEFT/RIGHT via `TRACK_WIDTH`(980mm) = -185/795mm — real, reconfirmed via echo: exactly 100mm gap to the firebox's own outer-shell edge each side (Janis's feedback point re-checked as a spec confirmation, not a defect — no code change needed) | a swivel/steerable mechanism — static, no kinetic parameter | `show_rear_axle` |
-| `rear_fenders()` | v7 REBUILT AGAIN — Janis's own words: "The fender or mudguard is wrong shape", after v6's own full-arc-from-the-wall rebuild was ALSO wrong. Real root cause found by re-reading the ORIGINAL v5 prompt's own written spec text (not re-guessed): "flat steel panel...straight off the firebox side...curving down after clearing the wheel's outer edge" — a FLAT plate over most of the run, curving down ONLY at the outboard end. v6 had overcorrected into a full semicircular arc starting almost immediately at the firebox wall (zero real flat run), which doesn't match that text either. FIX: real flat plate from the firebox wall to DIRECTLY ABOVE the wheel's own center (`flat_z`=REAR_AXLE_Z+FENDER_R_IN=607.2mm — the one point where a flat plane is geometrically TANGENT to FENDER_R_IN's own circle, forced by tangent-continuity, not a judgment call; matches the spec's own "~150mm gap above the wheel" read as clearance above the wheel's own top point), then the existing curved-flare mechanism (`fender_arc_2d()`, UNCHANGED, multi-point fan mask from the v6 bugfix) continues from there down past the wheel's own outboard tangent edge (UNCHANGED `FENDER_ARC_PAST_EDGE`=25deg). `FENDER_GAP`(150mm)/`FENDER_T`(4mm)/`FENDER_W`(240mm) all UNCHANGED. Real CGAL: EMPTY vs `rear_wheels()`, EMPTY vs `rear_axle_bracket()` (struts/spacers), NON-EMPTY vs `outer_shell()` (real weld contact) — re-rendered visually (isometric), confirmed a real wraparound hood shape (flat top + curved outboard flare), not a side-mounted wing. v8 RE-INVESTIGATED (Janis's OpenSCAD-desktop screenshot showed a "coiled" look) — CODE UNCHANGED this round: a real matching-angle F6 (--render, full CGAL boolean) render reproduces the SAME clean flat+curved band with zero coiling, strong evidence Janis's own screenshot was an F5 Preview (OpenCSG, unresolved-overlap) artifact, not a real geometry defect — flagged for Janis to re-check specifically via F6 (Render), not re-guessed at further without a rendered (not previewed) screenshot | a full wheel-well enclosure — a single flat+curved panel per side, open underneath | `show_rear_fenders` |
-| `front_wheel_support(steer_deg, handle_fold_deg)` | `front_bracket()`'s own MAIN SHAPE UNCHANGED. `LEG_DROP`'s own FORMULA UNCHANGED from v5 but real value recomputes AUTOMATICALLY via v15's new firebox_floor_z (351.335mm, was 199.935mm) — TASK 5, zero code change beyond TASK 0's pointer bump; leg bottom still lands EXACTLY at firebox_floor_z(420mm). `front_caster_plate()`/`FRONT_SPACER_LEN` recompute automatically too (185.4mm, was 336.8mm). *** REAL, CGAL-CONFIRMED: THE FRONT-WHEEL/BRACKET COLLISION RE-CHECK AT THIS ROUND'S OWN FURTHER-CHANGED GEOMETRY (TASK 8) STILL CONFIRMS EMPTY *** — not assumed resolved because the numbers moved in a plausible direction, re-verified via a real `intersection()` probe at the new 980mm track/351.335mm LEG_DROP/lowered TRIANGLE_Z | still colliding — re-verified at THIS round's own geometry, not carried forward from v5's own resolution unchanged | `show_front_wheel_support` |
-| `tow_triangle()` / `tow_bracket_gusset()` / `tow_handle(handle_fold_deg)` | TASK 6 REBUILT mount + TASK 7 (length, re-verified unaffected). `TRIANGLE_Z` = `FRONT_AXLE_Z` directly (228.6mm, was `FRONT_AXLE_Z+100`=328.6mm floating above the axle's own real plane, a v3-era carryover, Janis's own annotated finding). NEW `tow_bracket_gusset()`: real curved fillet (`GUSSET_R`=30mm, judgment call, flagged — no reference photo directly available this session) via `hull()` of two spheres, bridging the flat triangle plate's own underside to the round stub axle's own surface at their shared mounting point — real CGAL: genuine volume overlap vs BOTH the plate and the axle, confirmed (not just a touching face). `TBAR_LEN` UNCHANGED VALUE (1102.735mm, `DATUM_Z_RIDGE`/`WHEEL_R` both untouched by v15) — real, flagged side effect of the `TRIANGLE_Z` fix: tip Z at the 90deg default is now 50mm BELOW the roof (was 50mm above under v5), the v5-flagged roof-overshoot resolves as a welcome consequence, not the goal of TASK 6 | independent of the front caster — still rigidly coupled, unchanged | (none — sub-parts of `front_wheel_support()`'s own `front_swivel_assembly()`, no separate toggle) |
-| `prep_shelves(shelf_deployed)` | v8 REAL BUG FOUND+FIXED (Janis: "bad tray stack in each other"). Real root cause, confirmed via a real STL vertex-extent probe (not assumed): the right-side call applied `mirror([0,1,0])` AFTER an already-applied `translate()`, reflecting the pre-positioned geometry back around Y=0 instead of onto the chamber's opposite side — real measured consequence: both shelves landed on the SAME (left) side (combined Y-extent [-610,0]) instead of one per side. FIX: dropped the unnecessary `mirror()` (`prep_shelf()`'s own stow rotation is already symmetric about its own hinge line, no reflection needed) — right shelf now a direct `translate([0,chamber_W,0]) prep_shelf(0,...)`, real confirmed Y-extent now [-300,0]/[610,910], one per side. `tray_mount_brackets()`'s own 3-bracket distributed mount (TASK 1, prior round) UNCHANGED — those were never the bug, only the shelf PANEL's own right-side placement was | a kinematic/rotation fix — the stow rotation itself was already correct, this is a placement-math fix only | `show_shelves` |
+| `rear_axle()` | UNCHANGED this round. WHEEL_D/WHEEL_R/TREAD_W (457.2/228.6/200). REAR_WHEEL_Y_LEFT/RIGHT via `TRACK_WIDTH`(880mm, v12, was 980mm) = -135/745mm — real, live-recomputed: exactly 50mm gap to the firebox's own outer-shell edge each side (TASK 3, Janis's own real spec update) | a swivel/steerable mechanism — static, no kinetic parameter | `show_rear_axle` |
+| `rear_fenders()` | v12 REBUILT to Janis's own precise real spec (rear wheels ONLY — confirmed no front fender exists or was added). v7-v11's wraparound-hood construction (`fender_wedge_2d()`/`fender_arc_2d()`, RETIRED) replaced by a flat rectangular deck plate: 300mm real outward extension (fixed literal, measured from the firebox outer shell's own real side wall — covers the new 50mm firebox-wheel gap + 200mm tire + 50mm real margin, confirmed via live Y-extent), 548.64mm long (`WHEEL_D*1.2`, centered on `REAR_AXLE_X`), front/rear 10% (54.864mm each) tapering 15mm down via `hull()` between two identical rectangular cross-sections. `fender_z`(underside)=472.2mm live-confirmed (`REAR_AXLE_Z+WHEEL_R+15`). Real live OpenSCAD CGAL probes (isolated via toggle override, not the aggregate full-assembly count): EMPTY vs `rear_wheels()` (real bisected margin = exactly 15mm: 14.9mm lift clean, 15.0mm exact tangency, 15.1mm real overlap), EMPTY vs `rear_axle_bracket()` (struts/spacers, ~200mm+ real margin, no X/Y overlap by construction), NON-EMPTY vs `outer_shell()` (24 real facets, genuine weld contact via `FENDER_WELD_OVERLAP`=1.5mm, UNCHANGED value) | a wraparound hood/wheel-well enclosure (v7-v11's own shape) — a flat deck plate only, open on all sides except the weld edge | `show_rear_fenders` |
+| `front_wheel_support(steer_deg, handle_fold_deg)` | UNCHANGED this round (chambers/firebox_floor_z untouched, no automatic recompute triggered). `LEG_DROP`=351.335mm, `FRONT_SPACER_LEN`=185.4mm, both stable. TASK 3's own narrower `TRACK_WIDTH`(880mm, was 980mm) moves both front wheels 50mm CLOSER to center each side (`front_wheels()`/`front_stub_axle()` share the same constant) — real, live-verified re-risk of the standing front-wheel/bracket collision (narrower is the OPPOSITE direction from the v5 fix that originally resolved it): a fresh OpenSCAD CGAL `intersection()` probe at this round's own 880mm width confirms EMPTY, not carried forward from the 980mm-width resolution | still colliding at the new narrower width — freshly re-verified, not assumed | `show_front_wheel_support` |
+| `tow_triangle()` / `tow_bracket_gusset()` / `tow_handle(handle_fold_deg)` | UNCHANGED this round — real structural tow-hitch/handle assembly, confirmed NOT a fender (per this round's own file-header note, in case any front-end geometry is misread as one) | a front-wheel fender — no such part exists in this file | (none — sub-parts of `front_wheel_support()`'s own `front_swivel_assembly()`, no separate toggle) |
+
+Prep tray/shelf REMOVED entirely this round (TASK 1) — `prep_shelf()`/
+`prep_shelves()`/`tray_mount_bracket()`/`tray_mount_brackets()` and their
+exclusive constants deleted (R-009, zero remaining callers confirmed via
+grep). Relocating to a separate accessories file
+(`BBQ-offset-smoker-base-v2.scad`) in the immediately-following
+bbq-chamber-parting-shift-and-tray-init round — NOT gone from the
+product, just no longer built in this file.
+
+## Toggle-completeness count (2026-07-22, v1.24)
+
+3 top-level ASSEMBLY-called modules in `BBQ-understructure-v12.scad` (was
+4 — `prep_shelves()` removed with the tray, TASK 1), ALL 3 toggled
+(`show_rear_axle`/`show_rear_fenders`/`show_front_wheel_support`) — 0
+gaps. Chambers side UNCHANGED (still 15 real toggles, v20). Combined
+total: 18 real toggles across both ASSEMBLY blocks (was 19).
 
 ## Toggle-completeness count (2026-07-21, v1.20)
 

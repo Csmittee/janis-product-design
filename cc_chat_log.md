@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-22 | bbq-understructure-v12-tray-removal-fender-trackwidth | DONE — v12, real prep-tray removal + rear-fender rebuild + track-width recompute, all 4 real OpenSCAD CGAL probes run live (not assumed)
+
+Files: BBQ-understructure-v12.scad (new, source v11). Chambers (v20) UNCHANGED, out of scope. TASK 1: prep_shelf()/prep_shelves()/tray_mount_bracket()/tray_mount_brackets() REMOVED entirely (relocating to a separate accessories file, next round). R-009 real grep check: SHELF_D/SHELF_T/LEG_INSET each had exactly one real consumer (all tray-exclusive) — removed. REAL FINDING: CASTER_CLEARANCE's inherited "still a real consumer via prep_shelf()" claim was stale — its only real consumer (`leg_h`) was ALREADY orphaned before this round, unrelated to the tray — both removed too. Final count: 3 ASSEMBLY modules, 3 toggles, 0 gaps.
+TASK 2: rear_fender() REBUILT per Janis's precise spec (rear wheels only) — flat 548.64mm x 300mm deck plate, 15mm droop at each 54.864mm end via hull(), fender_z=472.2mm live-confirmed. Real live OpenSCAD CGAL probes (isolated via toggle override, not the full-assembly aggregate): vs tire EMPTY (bisected real margin = exactly 15mm — 14.9mm lift clean, 15.0mm exact tangency/non-manifold, 15.1mm real overlap), vs rear axle/struts EMPTY, vs firebox outer shell NON-EMPTY (24 facets, real weld contact). Confirmed no front fender exists.
+TASK 3: TRACK_WIDTH_FIREBOX_GAP 100->50mm, TRACK_WIDTH=880mm (was 980mm), wheel Y = -135mm/745mm (∓440 from DATUM_Y_CENTER, as expected). REAL RE-CHECK (narrower track re-risks the old collision, not assumed resolved): front-wheel vs front_bracket/caster_plate/tow_triangle at 880mm — live CGAL probe confirmed EMPTY.
+QA: full assembly Simple:yes (4321 facets, 6 volumes), zero warnings; steer_deg×handle_fold_deg full-range sweep (5×2) + lid_open_deg×firebox_door_open_deg sweep (3×2) all Simple:yes; 5 screenshots to /renders/ (iso/front/side/rear/fender-closeup).
+
 ### 2026-07-21 | BBQ dual-end-cap retrospective -> cross-project governance | DONE — R-014 + rule updates in cc_rules.md/RULES.md/chat_rules.md, docs-only
 
 Janis: "I hope all the governance files we created become a strong hold to resist any mistake... any chat doing this work from now on will know how to handle it properly." Root cause captured as R-014 (RULES.md, v4.0->5.0): CGAL manifold-clean passed at multiple points across the BBQ-chambers-v15->v20 saga (same module touched 6 real times) while the actual written design intent stayed wrong — the loop only closed once a locked, named convention + reusable pattern existed to check against.

@@ -184,7 +184,19 @@
 // v10 kept unchanged, on record, as BBQ-understructure-v10.scad. See
 // BBQ-chambers-v20.scad's own header + cc_chat_log.md for full detail.
 
-include <BBQ-understructure-v11.scad>
+// 2026-07-22: include target updated v11->v12 (bbq-understructure-v12-
+// tray-removal-fender-trackwidth — prep tray removed entirely (relocating
+// to a separate accessories file in the bbq-chamber-parting-shift-and-
+// tray-init round, run immediately after this one), rear fender rebuilt
+// to Janis's own precise spec (rear wheels only — 300mm real outward
+// extension from the firebox outer shell, 548.64mm long, 15mm curve-down
+// end zones, 472.2mm elevation), TRACK_WIDTH recomputed to 880mm (50mm
+// firebox-to-wheel gap, was 100mm). Chambers file (v20) UNCHANGED, out of
+// scope this round. v11 kept unchanged, on record, as
+// BBQ-understructure-v11.scad. See BBQ-understructure-v12.scad's own
+// header + cc_chat_log.md for full detail.
+
+include <BBQ-understructure-v12.scad>
 
 // ASSEMBLY — the included file already calls both its own geometry AND
 // (transitively) the chamber's, at include time (see each file's own

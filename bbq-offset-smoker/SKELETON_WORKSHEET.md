@@ -706,7 +706,34 @@ BBQ Offset Smoker V9 (top assembly)
     │       PRESERVED, real margin actually INCREASED not decreased —
     │       the shell extended further down toward the fender's own
     │       fixed Z, not away from it]; vs tire EMPTY [exact 15mm margin
-    │       re-bisected, byte-identical result]; vs axle/struts EMPTY)
+    │       re-bisected, byte-identical result]; vs axle/struts EMPTY).
+    │       v15 (2026-07-22, bbq-rear-fender-arch-redesign): REAL PROFILE
+    │       REDESIGN, not a linkage/datum change — the flat-plate-with-
+    │       droop-zone cross-section RETIRED entirely, replaced by a real
+    │       wheel-arch (flat roof + 2 straight sloped shoulders) solved
+    │       from WHEEL_R via a real numeric bisection (theta converges to
+    │       24.3358° at WHEEL_R=228.6mm, self-check confirmed against the
+    │       expected ~24.3°). Real Step 2 values: roof_z=328.6mm,
+    │       roof_half_w=148.616mm, R_tip=360.645mm, arch_end_x=203.419mm,
+    │       arch_end_z=297.801mm. 300mm outward extension (world Y) and
+    │       1.5mm weld overlap UNCHANGED. REAL, FLAGGED FINDING: the true
+    │       global minimum clearance (live CGAL bisection, 95.9mm empty/
+    │       96.0mm real contact) occurs at the flat roof's own UNDERSIDE
+    │       center, NOT near the shoulder ends as the prompt anticipated
+    │       — real value = FENDER_ARCH_TOP_CLEARANCE(100) - FENDER_T(4) =
+    │       96mm exactly (the panel's own real thickness reduces the
+    │       nominal 100mm design clearance); the solve/build-swing angle
+    │       gap instead governs a separate real quantity (the shoulder
+    │       endpoint's own 25.181mm pull-back from the wheel's vertical
+    │       tangent line, WHEEL_R minus arch_end_x) — both real numbers
+    │       stated, not conflated. Real live CGAL: EMPTY vs tire (96mm
+    │       real margin, at the roof underside), EMPTY vs axle/struts,
+    │       NON-EMPTY vs outer_shell (378 real facets, weld contact
+    │       preserved). Construction verified via a local render
+    │       prototype before shipping (per SKILL_local_render.md). New
+    │       "Wheel-Radius-Derived Fender Arch Convention" locked into
+    │       rules-bbq-fab.md — a reusable, WHEEL_R-parametric formula for
+    │       any future wheel size)
     ├── Front wheel support (bracket's own MAIN SHAPE UNCHANGED. v14
     │   (2026-07-22, bbq-understructure-level-drop-companion): REAL
     │   FINDING, stated not silently absorbed — LEG_DROP stays UNCHANGED

@@ -543,9 +543,14 @@ Janis: "let me see how it looks then I'll explain the adjustment."
 Understructure (2026-07-22, v12): bbq-understructure-v12-tray-removal-
 fender-trackwidth. TASK 1: prep tray/shelves REMOVED entirely from this
 file — relocating to a separate accessories file
-(BBQ-offset-smoker-base-v2.scad) in the immediately-following
-bbq-chamber-parting-shift-and-tray-init round, not gone from the product
-concept (see Compartment Map/Functional Features below). TASK 2:
+(BBQ-offset-smoker-base-v2.scad, later superseded by
+BBQ-offset-smoker-base-v3.scad — bbq-base-chain-recalibration,
+2026-07-22, linkage-only, zero content change to the tray itself) in the
+immediately-following bbq-chamber-parting-shift-and-tray-init round, not
+gone from the product concept (see Compartment Map/Functional Features
+below). Understructure itself superseded by BBQ-understructure-v13.scad
+same round (pure pointer-only bump to BBQ-chambers-v21.scad, zero
+geometry change). TASK 2:
 rear_fenders() rebuilt to Janis's own precise real spec (rear wheels
 ONLY, no front fender) — flat 548.64mm x 300mm deck plate, 300mm real
 fixed outward extension from the firebox outer shell's own wall, 15mm
@@ -577,19 +582,25 @@ yet Janis-reconfirmed in this exact wording (see flag above)
   Janis's own real spec update), flat rectangular deck-plate rear fenders
   ONLY, welds to the firebox outer shell (v12, was a short flared-wing
   hood shape v6-v11), T-bar tow handle mounted at the front axle's own
-  real plane with a curved gusset at chimney end
+  real plane with a curved gusset at chimney end. Active file:
+  `BBQ-understructure-v13.scad` (2026-07-22, bbq-base-chain-
+  recalibration — pure pointer-only bump from v12 to
+  `BBQ-chambers-v21.scad`, zero geometry change)
 - ~~Prep Shelves x2 — fold-up (vertical stowed / horizontal deployed),
   left + right, front of chamber~~ — REMOVED from Understructure
   2026-07-22 (v12)
-- Accessories — NEW branch, 2026-07-22 (v21/base-v2): the relocated prep
-  tray now lives here (`BBQ-offset-smoker-base-v2.scad`, this file's own
-  FIRST real content). 2 trays (457.5mm x300mm x2mm plate each, 5mm real
-  additive gap), mounted Y=0 side only, hinged to the chamber's own NEW
-  fixed band (world Z=[950,1000], see Envelope above) at real Z=980mm.
-  Own independent fold parameters (`tray0_angle_deg`/`tray1_angle_deg`,
-  -90° stowed / 0° deployed). A lid counterbalance/fulcrum mechanism is
-  the planned NEXT addition here (Janis still developing the concept, not
-  designed this round)
+- Accessories — NEW branch, 2026-07-22 (v21/base). Active file:
+  `BBQ-offset-smoker-base-v3.scad` (2026-07-22, bbq-base-chain-
+  recalibration — LINKAGE-ONLY FIX; supersedes `BBQ-offset-smoker-base-
+  v2.scad`, whose own direct chambers include bypassed the wheels
+  entirely; tray content copied forward verbatim, zero geometry change).
+  The relocated prep tray lives here: 2 trays (457.5mm x300mm x2mm plate
+  each, 5mm real additive gap), mounted Y=0 side only, hinged to the
+  chamber's own NEW fixed band (world Z=[950,1000], see Envelope above)
+  at real Z=980mm. Own independent fold parameters
+  (`tray0_angle_deg`/`tray1_angle_deg`, -90° stowed / 0° deployed). A lid
+  counterbalance/fulcrum mechanism is the planned NEXT addition here
+  (Janis still developing the concept, not designed this round)
 
 ## Functional Features — per addendum Section 3a, see flag above
 1. Full-length counterbalanced lid — lever + weight, target ~85-90%
@@ -601,9 +612,9 @@ yet Janis-reconfirmed in this exact wording (see flag above)
    support ledge
 6. 2 fold-up prep trays (vertical stowed / horizontal deployed) —
    RELOCATED 2026-07-22 from Understructure (v12, removed) to the new
-   Accessories branch (`BBQ-offset-smoker-base-v2.scad`, v21 round),
-   hinged to the chamber's own new fixed band (see Envelope) instead of
-   the chassis
+   Accessories branch (`BBQ-offset-smoker-base-v3.scad`, current active
+   file as of the bbq-base-chain-recalibration round), hinged to the
+   chamber's own new fixed band (see Envelope) instead of the chassis
 7. Foldable chimney with internal drop-tube (smoke circulates low
    across food, not a short-circuit top vent)
 8. Adjustable firebox air-intake damper

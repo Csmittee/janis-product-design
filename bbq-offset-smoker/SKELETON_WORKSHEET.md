@@ -697,19 +697,25 @@ BBQ Offset Smoker V9 (top assembly)
     │           track + lowered gusset assembly, confirmed empty throughout
     └── ~~Prep shelves x2~~ — REMOVED v12 (2026-07-22) from this branch
         entirely (module + mounting brackets + exclusive constants,
-        R-009 confirmed zero remaining callers). RELOCATING to a separate
-        accessories file (BBQ-offset-smoker-base-v2.scad) in the
-        immediately-following bbq-chamber-parting-shift-and-tray-init
-        round, parented to that round's own new fixed-band datum — not a
+        R-009 confirmed zero remaining callers). RELOCATED to the
+        Accessories branch (BBQ-offset-smoker-base-v3.scad, below),
+        parented to the Cook Chamber's own new fixed-band datum — not a
         removal from the product concept, see design_scope_of_work_rule.md
-└── Accessories (v21/base-v2 — NEW branch, 2026-07-22. FIRST entry:
-    the relocated prep tray. `BBQ-offset-smoker-base-v2.scad`'s own
-    `include` points DIRECTLY at `BBQ-chambers-v21.scad`, NOT through
-    Understructure [frozen at v20 this round, DO NOT TOUCH] — a real,
-    stated architecture decision avoiding a double-render of two
-    different chamber versions. Planned NEXT addition: a lid
-    counterbalance/fulcrum mechanism, Janis still developing the concept
-    — deliberately NOT designed this round, header note only, zero code)
+└── Accessories (v21/base-v3 — NEW branch, 2026-07-22. FIRST entry: the
+    relocated prep tray. LINKAGE FIX (bbq-base-chain-recalibration,
+    2026-07-22, zero geometry changed): `BBQ-offset-smoker-base-v3.scad`'s
+    own `include` is now ONLY `BBQ-understructure-v13.scad` [pure
+    pointer-only bump to `BBQ-chambers-v21.scad`, R-009-confirmed
+    zero-consequence for understructure's own geometry] — single path
+    restored (base-v2's own direct chambers include, a real but temporary
+    workaround from the immediately-prior round, NOT carried forward).
+    Real, CGAL-confirmed: fender+wheels+lid-shift+trays ALL present
+    together in ONE unified render [4377 facets, 6 volumes], zero
+    double-rendered chamber geometry [confirmed via facet arithmetic: 4317
+    understructure+chambers + 60 tray facets = 4377 exactly]. Planned NEXT
+    addition: a lid counterbalance/fulcrum mechanism, Janis still
+    developing the concept — deliberately NOT designed this round, header
+    note only, zero code)
     └── Prep trays x2 (Parent: the Cook Chamber's own NEW fixed band,
         above — real hinge weld point, not an independently-derived
         datum. 457.5mm long [X, `chamber_L/2`] x300mm deep [Y, deployed]
@@ -734,7 +740,13 @@ BBQ Offset Smoker V9 (top assembly)
         [wheels, front bracket]/firebox all EMPTY; both trays deployed
         vs each other EMPTY [5mm real margin]; hinges vs the fixed band
         NON-EMPTY [real weld contact]; hinges vs the lid's own full
-        opening sweep EMPTY at every angle checked
+        opening sweep EMPTY at every angle checked. RE-VERIFIED
+        2026-07-22 (bbq-base-chain-recalibration, linkage-only fix) in
+        the REAL unified assembly (BBQ-offset-smoker-base-v3.scad) — the
+        understructure geometry check above now runs against the
+        NOW-PRESENT real wheels/front bracket in the SAME file, not a
+        separate standalone probe (PR #143's own real gap) — EMPTY at
+        all 9 swept angles, confirmed
         ├── Kinetic: tray0_angle_deg — real range -90°[stowed,vertical]
         │   to 0°[deployed,horizontal], own independent parameter
         └── Kinetic: tray1_angle_deg — same real range, independent from
@@ -768,6 +780,16 @@ wheel support's own bracket — fixed weldment, the caster's swivel IS the
 independently kinetic beyond what's listed — they get a `show_*`
 isolation toggle only (Toggle-Completeness Rule), not a dual-view kinetic
 state.
+
+## Toggle-Completeness count (2026-07-22, v1.24)
+
+LINKAGE-ONLY FIX (bbq-base-chain-recalibration) — NO toggle count change.
+BBQ-offset-smoker-base-v3.scad ASSEMBLY: 1 module (`trays`), 1 toggle
+(`show_trays`) — same as base-v2's own count, content copied forward
+verbatim. BBQ-understructure-v13.scad: 3 modules/3 toggles, UNCHANGED
+from v12 (pure pointer-only bump). BBQ-chambers-v21.scad: 15 toggles,
+UNCHANGED. Combined total: still 19 real toggles — this round reconnects
+files, it does not add/remove any ASSEMBLY-called module.
 
 ## Toggle-Completeness count (2026-07-22, v1.23)
 

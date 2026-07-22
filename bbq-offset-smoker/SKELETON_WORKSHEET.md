@@ -440,6 +440,34 @@ MASTER ORIGIN: (0, 0, 0) at floor level, front-left corner of the product
   footprint (chimney/tow-handle end = front, firebox end = rear) — matches
   rules-dimensions.md's global "front-left at floor" convention.
 
+PRIMARY DATUM:   `GRATE_Z` (2026-07-22, v22 — REAL CORRECTION, not a new
+                 decision: the grill grate is RESTORED as the project's
+                 actual master/reference datum, per Janis's own explicit
+                 statement that this is how the original Skeleton file/
+                 scope of work always intended it. The entry immediately
+                 below this one, describing `chamber_floor_z` as PRIMARY
+                 with the grate as a "separate, temporarily-decoupled
+                 thing," was itself the v13-era workaround being
+                 corrected — kept below as real history, not deleted).
+                 `GRATE_Z` is a plain top-level constant (900mm real,
+                 current — was 1000mm before v22's own -100mm level
+                 drop). `APEX_A_Z = GRATE_Z - 50` (850mm real, current)
+                 is now the derived formula (renamed from this file's own
+                 old, confusingly-named `GRATE_Z` variable, which was
+                 actually apex A's value). `chamber_floor_z = APEX_A_Z -
+                 chamfer` (671.335mm real, current) is now DERIVED from
+                 the grate, the reverse of the v13-era direction. Firebox
+                 (`FIREBOX_TOP_Z_FIXED`, REAL FIX this round — was an
+                 independent literal with zero formula link to the grate,
+                 re-pointed to `GRATE_Z` directly), the lid/fixed parting
+                 line (`NEW_SPLIT_Z`, now an exact algebraic identity with
+                 `GRATE_Z`), and every other real consumer all now follow
+                 `GRATE_Z` through this one restored master chain.
+                 Understructure (BBQ-understructure-v14.scad, companion
+                 round) absorbs the resulting -100mm shift structurally.
+
+v13-era entry, PRIMARY DATUM = chamber_floor_z (kept as real history, the
+workaround now corrected above, not deleted):
 PRIMARY DATUM:   chamber_floor_z (horizontal plane — v13: now a LIVE
                  FORMULA, `900 - chamfer` = 721.335mm real, was a
                  hardcoded 600mm literal through v12) — locks Z. Chosen
@@ -464,8 +492,15 @@ TERTIARY DATUM:  DATUM_Y_CENTER (chamber's lateral centerline, Y=305mm) —
                  DATUM_Y_CENTER (centered on the chamber's own width).
 
 MAJOR SUB-ASSEMBLIES:
-  Grill Grate      — Parent: DATUM_GRATE_Z (now itself Parent: chamber_floor_z) — offset: (0,0,0), fixed
-  Cook Chamber      — Parent: chamber_floor_z              — offset: (0,0,0), fixed (v8 — chamber_floor_z is now the direct anchor, was dZ=-100 off DATUM_GRATE_Z)
+  Grill Grate      — Parent: `GRATE_Z` directly (2026-07-22, v22 — the
+                     restored real master; was Parent: DATUM_GRATE_Z/
+                     chamber_floor_z, the v13-era inverted chain) —
+                     offset: (0,0,0), fixed
+  Cook Chamber      — Parent: `GRATE_Z` transitively, via `chamber_floor_z
+                     = APEX_A_Z - chamfer` where `APEX_A_Z = GRATE_Z - 50`
+                     (2026-07-22, v22 — real, restored direction; was
+                     Parent: an independent chamber_floor_z literal, the
+                     v13-era workaround) — offset: (0,0,0), fixed
   Lid               — Parent: Cook Chamber's ridge midpoint — offset: length-wise hinge at (-, DATUM_Y_CENTER, DATUM_Z_RIDGE); opens toward Y=0 (v3 mirror, was Y=chamber_W in v2) per the Standing Orientation Convention (rules-bbq-fab.md); margin widened v6 (LID_X0=100/LID_X1=815, was 10/905)
   Firebox           — Parent: Cook Chamber's rear wall (chamber's own real weld-overlap position, X=913.5mm — v15: REPINNED as a direct fixed anchor, was a derived side-effect of a historical-midpoint formula that would have drifted with FIREBOX_L, see file header) — offset: v15 REDESIGN, TWO independent welded assemblies, no shared Parent chain between them. Fire cylinder (REPLACES Inner duct/rectangular design entirely, RETIRED) — Parent: chamber's own octagon end cap (welds DIRECTLY, own end cap module, real CIRCULAR hole matching the passage — v15 TASK 3: passage rebuilt as a circle, 194.898mm dia, target-area-sized, real CGAL: 88.7% of its area genuinely cut through real material, ~11.3% a real confirmed chord since the cylinder's own true center now sits below chamber_floor_z), 456mm dia (62mm wall clearance), FIREBOX_L=580mm interior (was 460mm, TASK 2). Outer shell — Parent: chamber's rear wall via a 20mm additive structural flange (UNCHANGED construction/code), v15 TASK 1: rebuilt as a true 580x580x580 CUBE (FIREBOX_H 428.6->580mm, all 3 dims equal), firebox_floor_z now 420mm (was 571.4mm, top pinned at 1000mm instead). NEW fire_cylinder_partition() end plate locates the cylinder within the shell (Parent: outer_shell_footprint_2d()'s own real exterior boundary, reused). The two assemblies share NO Parent/contact point with each other (real, mandatory CGAL zero-contact RE-CONFIRMED at the new cube/cylinder geometry) — same architecture v14 established, reused not redesigned
   Exhaust room      — Parent: Cook Chamber's front end-cap (DATUM_X_FRONT) — offset: welded flush at X=0; RESIZED v3 (360mm dia x 100mm height, was 200/200 v2)
@@ -626,8 +661,13 @@ BBQ Offset Smoker V9 (top assembly)
     │   REAR_BRACKET_H/CASTER_PLATE_BOTTOM_Z/FRONT_SPACER_LEN all recompute
     │   AUTOMATICALLY via their own unchanged live formulas the instant
     │   this pointer moves — zero additional code change needed)
-    ├── Rear axle (fixed, non-swivel. WHEEL_D/WHEEL_R/TREAD_W UNCHANGED
-    │   457.2/228.6/200. REAR_AXLE_Z UNCHANGED [=WHEEL_R=228.6]. REAR_AXLE_X
+    ├── Rear axle (fixed, non-swivel. v14 (2026-07-22,
+    │   bbq-understructure-level-drop-companion): REAR_AXLE_Z stays fixed
+    │   to true ground Z=0 [=WHEEL_R=228.6, UNCHANGED by design] while the
+    │   companion chambers-v22 round's own -100mm level drop shrinks
+    │   REAR_BRACKET_H automatically [191.4->91.4mm, real, live-measured].
+    │   WHEEL_D/WHEEL_R/TREAD_W UNCHANGED
+    │   457.2/228.6/200. REAR_AXLE_X
     │   formula UNCHANGED but real value shifts +60mm [1203.5, was 1143.5]
     │   since v15's own firebox_x1 grew while firebox_x0 stayed pinned —
     │   real, flagged, automatic consequence. REAR_WHEEL_Y_LEFT/RIGHT now
@@ -655,12 +695,34 @@ BBQ Offset Smoker V9 (top assembly)
     │       15mm: 14.9mm clean/15.0mm exact tangency/15.1mm real overlap],
     │       EMPTY vs axle/struts, NON-EMPTY vs outer_shell [24 real
     │       facets, genuine weld contact via FENDER_WELD_OVERLAP=1.5mm,
-    │       UNCHANGED value])
-    ├── Front wheel support (bracket's own MAIN SHAPE UNCHANGED. LEG_DROP's
-    │   own FORMULA UNCHANGED from v5 but real value recomputes
+    │       UNCHANGED value]. v14 (2026-07-22,
+    │       bbq-understructure-level-drop-companion): fender_z/15mm
+    │       tire-clearance formula left completely UNCHANGED per Janis's
+    │       own clearance-priority decision — neither fender nor tire
+    │       moves with the companion chambers-v22 round's own -100mm
+    │       drop. Real re-verified CGAL at the new elevation: vs
+    │       outer_shell [now 100mm lower, real Z-range [320,900] was
+    │       [420,1000]] NON-EMPTY [378 real facets, genuine weld contact
+    │       PRESERVED, real margin actually INCREASED not decreased —
+    │       the shell extended further down toward the fender's own
+    │       fixed Z, not away from it]; vs tire EMPTY [exact 15mm margin
+    │       re-bisected, byte-identical result]; vs axle/struts EMPTY)
+    ├── Front wheel support (bracket's own MAIN SHAPE UNCHANGED. v14
+    │   (2026-07-22, bbq-understructure-level-drop-companion): REAL
+    │   FINDING, stated not silently absorbed — LEG_DROP stays UNCHANGED
+    │   [351.335mm] under the companion chambers-v22 round's own -100mm
+    │   drop, because it measures the span between chamber_floor_z and
+    │   firebox_floor_z, which BOTH drop together (the leg's own physical
+    │   length is invariant, it just sits 100mm lower as a rigid unit —
+    │   real mount contact vs chamber_shell() re-verified NON-EMPTY at the
+    │   new elevation, 94 facets). FRONT_SPACER_LEN [the swivel-caster
+    │   post] DOES shrink, real -100mm, live-measured [185.4->85.4mm] —
+    │   this is where the drop is actually absorbed on the front side.
+    │   LEG_DROP's own FORMULA UNCHANGED from v5 but real value recomputed
     │   AUTOMATICALLY via v15's new firebox_floor_z [351.335mm, was
     │   199.935mm] — TASK 5, zero code change beyond the pointer bump; leg
-    │   bottom still lands EXACTLY at firebox_floor_z[420mm]. Caster
+    │   bottom still lands EXACTLY at firebox_floor_z[420mm, now 320mm
+    │   under v14's own drop]. Caster
     │   top-plate/front spacer recompute automatically too [185.4mm, was
     │   336.8mm]. *** REAL, CGAL-CONFIRMED: THE FRONT-WHEEL/BRACKET
     │   COLLISION RE-CHECK AT THIS ROUND'S OWN FURTHER-CHANGED GEOMETRY

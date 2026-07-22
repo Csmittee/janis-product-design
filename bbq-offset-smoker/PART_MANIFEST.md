@@ -4,7 +4,27 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.25 — 2026-07-22 (bbq-chamber-parting-shift-and-tray-init):
+# Version: 1.26 — 2026-07-22 (bbq-base-chain-recalibration): LINKAGE-ONLY
+# FIX, zero geometry/module content changed from either PR #143 round.
+# Real file now: BBQ-understructure-v13.scad (pure pointer-only bump,
+# source v12, `include` now BBQ-chambers-v21.scad — R-009 confirmed every
+# real consumed datum byte-identical between v20/v21, understructure-only
+# isolated render confirmed pixel-identical, 3188 vertices/3364 facets/5
+# volumes both versions) + BBQ-offset-smoker-base-v3.scad (source: v2's
+# real tray content copied forward verbatim/diffed byte-identical + v1's
+# original single-include-path structure — includes ONLY
+# BBQ-understructure-v13.scad, chambers now reached transitively, v2's own
+# direct chambers include NOT carried forward). Real cause fixed: PR #143
+# shipped BBQ-understructure-v12.scad (still wired to chambers-v20) and
+# BBQ-offset-smoker-base-v2.scad (chambers-v21 directly, bypassing
+# understructure/wheels) as two separate valid-but-disconnected chains,
+# each Simple:yes alone, never merged into one real assembly. Full unified
+# assembly now real and CGAL-confirmed: fender+wheels+lid-shift+trays ALL
+# present together (4377 facets, 6 volumes), zero double-rendered chamber
+# geometry (confirmed via facet arithmetic), tray sweep re-verified EMPTY
+# against the NOW-PRESENT real understructure geometry in the same file.
+# v12/base-v1/base-v2 all kept, unmodified, on record.
+# Previous: 1.25 — 2026-07-22 (bbq-chamber-parting-shift-and-tray-init):
 # chambers table REBUILT — source now BBQ-chambers-v21.scad. TASK 1: real
 # lid/fixed parting-line shift +50mm on the Y=0 side only —
 # fixed_side_wedge()/lid_side_wedge()'s own shared vertex moved from apex
@@ -510,7 +530,14 @@
 | `grill_grate()` | UNCHANGED CODE, UNCHANGED position this round (chamber_floor_z/GRATE_Z untouched) | | `show_grate` |
 | `floor_drains()` | UNCHANGED CODE | | `show_drains` |
 
-## BBQ-understructure-v12.scad
+## BBQ-understructure-v13.scad
+
+v13 is a PURE POINTER-ONLY BUMP from v12 (`include` now
+`BBQ-chambers-v21.scad`, was `BBQ-chambers-v20.scad`) — zero module
+content below changed, R-009 confirmed every real consumed datum
+byte-identical between v20/v21 (bbq-base-chain-recalibration,
+2026-07-22). Table below (unchanged from v12) still accurately describes
+v13's real content.
 
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
@@ -519,27 +546,35 @@
 | `front_wheel_support(steer_deg, handle_fold_deg)` | UNCHANGED this round (chambers/firebox_floor_z untouched, no automatic recompute triggered). `LEG_DROP`=351.335mm, `FRONT_SPACER_LEN`=185.4mm, both stable. TASK 3's own narrower `TRACK_WIDTH`(880mm, was 980mm) moves both front wheels 50mm CLOSER to center each side (`front_wheels()`/`front_stub_axle()` share the same constant) — real, live-verified re-risk of the standing front-wheel/bracket collision (narrower is the OPPOSITE direction from the v5 fix that originally resolved it): a fresh OpenSCAD CGAL `intersection()` probe at this round's own 880mm width confirms EMPTY, not carried forward from the 980mm-width resolution | still colliding at the new narrower width — freshly re-verified, not assumed | `show_front_wheel_support` |
 | `tow_triangle()` / `tow_bracket_gusset()` / `tow_handle(handle_fold_deg)` | UNCHANGED this round — real structural tow-hitch/handle assembly, confirmed NOT a fender (per this round's own file-header note, in case any front-end geometry is misread as one) | a front-wheel fender — no such part exists in this file | (none — sub-parts of `front_wheel_support()`'s own `front_swivel_assembly()`, no separate toggle) |
 
-Prep tray/shelf REMOVED entirely this round (TASK 1) — `prep_shelf()`/
+Prep tray/shelf REMOVED entirely (TASK 1, v12) — `prep_shelf()`/
 `prep_shelves()`/`tray_mount_bracket()`/`tray_mount_brackets()` and their
 exclusive constants deleted (R-009, zero remaining callers confirmed via
-grep). Relocating to a separate accessories file
-(`BBQ-offset-smoker-base-v2.scad`) in the immediately-following
-bbq-chamber-parting-shift-and-tray-init round — NOT gone from the
-product, just no longer built in this file.
+grep). Relocated to the Accessories branch
+(`BBQ-offset-smoker-base-v3.scad`, below) — NOT gone from the product,
+just no longer built in this file.
 
-## BBQ-offset-smoker-base-v2.scad
+## BBQ-offset-smoker-base-v3.scad
 
-FIRST real content ever added to this file (was a pure assembly-includer,
-base-v1 kept UNCHANGED on record). Real architecture decision: this
-file's own `include` points DIRECTLY at `BBQ-chambers-v21.scad`, NOT
-through `BBQ-understructure-v12.scad` (frozen at v20 this round, per DO
-NOT TOUCH) — avoids double-rendering two different real chamber versions
-simultaneously. The mandatory tray-vs-understructure CGAL checks ran via
-a separate standalone verification probe (not a shipped project file).
+Real file now (LINKAGE-ONLY FIX, bbq-base-chain-recalibration,
+2026-07-22 — see PART_MANIFEST.md's own version header for the full real
+cause/fix). Single-include-path structure restored:
+`BBQ-offset-smoker-base-v3.scad` → `BBQ-understructure-v13.scad` →
+`BBQ-chambers-v21.scad`, ONE path, chambers reached transitively — this
+file's own `include` is ONLY `BBQ-understructure-v13.scad` now (base-v2's
+own direct `include <BBQ-chambers-v21.scad>` NOT carried forward).
+Tray module content below (TASK 2 from the parting-shift round) copied
+forward from `BBQ-offset-smoker-base-v2.scad` VERBATIM — confirmed via a
+real line-range diff, zero content changed, only the surrounding
+file/include structure. Real cause this fixes: base-v2's own direct
+chambers include bypassed understructure/wheels entirely (no updated
+understructure existed yet to build on when base-v2 was written) — the
+mandatory tray-vs-understructure CGAL checks below now run against the
+REAL, PRESENT understructure geometry in this same file, not a separate
+standalone probe (PR #143's own gap).
 
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
-| `trays()` / `tray(x0, angle_deg)` / `tray_hinges(x0)` | The relocated prep tray (TASK 2), 2 trays, `chamber_L/2`=457.5mm long (X) each, 300mm deep (Y) when deployed, 2mm plate (thin-shell, per rules-bbq-fab.md Construction Method), 5mm gap between them — real, CONFIRMED ADDITIVE (`TRAY_TOTAL_SPAN`=920mm, 5mm MORE than chamber_L, not shrunk to fit). Mounted ONLY on the Y=0 side (confirmed by construction — no Y=chamber_W-side geometry exists). Hinges (2 per tray) weld to TASK 1's new fixed band at `HINGE_Z`=980mm (read live, `NEW_SPLIT_Z-20`). Own independent kinetic parameters `tray0_angle_deg`/`tray1_angle_deg`, real range -90°(stowed)/0°(deployed). 2 REAL BUGS FOUND+FIXED VIA LIVE CGAL SWEEPS: (1) an early draft deployed the plate toward +Y (into the chamber, confirmed real collision vs `front_wheel_support()` at -30°/-60°) — fixed, now deploys toward -Y (outward, per the Standing Orientation Convention). (2) pivoting exactly at the wall face made the plate's own 2mm thickness sweep into real wall material at intermediate angles (`Simple: no` at 0°) — fixed via a real 5mm `HINGE_PIVOT_OFFSET` hinge-knuckle standoff. Also found+fixed: `HINGE_OFFSET` 60->90mm (tray1's far hinge originally overlapped the firebox's own real flange material, bisected the real boundary to X=858mm via CGAL). Real live CGAL, all re-verified after fixes: tray sweep (9 angles, -90° to 0°) vs `chamber_shell()`+closed `lid()` EMPTY (beyond the intentional hinge weld contact), vs `BBQ-understructure-v12.scad`'s wheels/front bracket EMPTY, vs `firebox()` EMPTY; both trays deployed vs each other EMPTY (5mm real margin, confirmed via CGAL not just arithmetic); hinges vs new fixed band NON-EMPTY (real weld contact); hinges vs lid sweep EMPTY at every angle checked | the OLD `prep_shelf()`/`prep_shelves()` construction (removed from Understructure v12) — a genuinely different mount point, hinge mechanism, and kinetic range | `show_trays` |
+| `trays()` / `tray(x0, angle_deg)` / `tray_hinges(x0)` | The relocated prep tray (TASK 2), 2 trays, `chamber_L/2`=457.5mm long (X) each, 300mm deep (Y) when deployed, 2mm plate (thin-shell, per rules-bbq-fab.md Construction Method), 5mm gap between them — real, CONFIRMED ADDITIVE (`TRAY_TOTAL_SPAN`=920mm, 5mm MORE than chamber_L, not shrunk to fit). Mounted ONLY on the Y=0 side (confirmed by construction — no Y=chamber_W-side geometry exists). Hinges (2 per tray) weld to TASK 1's new fixed band at `HINGE_Z`=980mm (read live, `NEW_SPLIT_Z-20`). Own independent kinetic parameters `tray0_angle_deg`/`tray1_angle_deg`, real range -90°(stowed)/0°(deployed). 2 REAL BUGS FOUND+FIXED VIA LIVE CGAL SWEEPS: (1) an early draft deployed the plate toward +Y (into the chamber, confirmed real collision vs `front_wheel_support()` at -30°/-60°) — fixed, now deploys toward -Y (outward, per the Standing Orientation Convention). (2) pivoting exactly at the wall face made the plate's own 2mm thickness sweep into real wall material at intermediate angles (`Simple: no` at 0°) — fixed via a real 5mm `HINGE_PIVOT_OFFSET` hinge-knuckle standoff. Also found+fixed: `HINGE_OFFSET` 60->90mm (tray1's far hinge originally overlapped the firebox's own real flange material, bisected the real boundary to X=858mm via CGAL). Real live CGAL, all re-verified after fixes: tray sweep (9 angles, -90° to 0°) vs `chamber_shell()`+closed `lid()` EMPTY (beyond the intentional hinge weld contact), vs `firebox()` EMPTY; both trays deployed vs each other EMPTY (5mm real margin, confirmed via CGAL not just arithmetic); hinges vs new fixed band NON-EMPTY (real weld contact); hinges vs lid sweep EMPTY at every angle checked. RE-VERIFIED 2026-07-22 (bbq-base-chain-recalibration) against the REAL, NOW-PRESENT understructure geometry in this same unified file (`rear_axle()`/`rear_fenders()`/`front_wheel_support()`, not a separate standalone probe) — EMPTY at all 9 swept angles. Full unified assembly Simple:yes (4377 facets, 6 volumes), zero double-rendered chamber geometry confirmed via facet arithmetic | the OLD `prep_shelf()`/`prep_shelves()` construction (removed from Understructure v12) — a genuinely different mount point, hinge mechanism, and kinetic range | `show_trays` |
 
 Lid counterbalance/fulcrum mechanism (TASK 3): deliberately NOT designed
 this round (Janis still developing the concept) — zero module/stub/

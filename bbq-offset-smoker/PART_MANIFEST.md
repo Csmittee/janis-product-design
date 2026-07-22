@@ -4,7 +4,28 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.28 — 2026-07-22 (bbq-understructure-level-drop-companion):
+# Version: 1.29 — 2026-07-22 (bbq-rear-fender-arch-redesign): understructure
+# table REBUILT — source now BBQ-understructure-v15.scad (source v14). Real
+# PROFILE redesign of rear_fender() — NOT a linkage/datum change. Replaces
+# the flat-plate-with-curve-down-zone cross-section with a real wheel-arch
+# shape (flat roof + two straight sloped shoulders), solved directly from
+# WHEEL_R via a real numeric bisection: theta converges to 24.3358° at
+# WHEEL_R=228.6mm (self-check confirmed against expected ~24.3°). Real
+# Step 2 values: roof_z=328.6mm, roof_half_w=148.616mm, R_tip=360.645mm,
+# arch_end_x=203.419mm, arch_end_z=297.801mm. REAL, FLAGGED FINDING: the
+# true global minimum clearance (live CGAL bisection, 95.9mm empty/96.0mm
+# contact) occurs at the flat roof's own underside center, NOT near the
+# shoulder ends as the prompt anticipated — real value =
+# FENDER_ARCH_TOP_CLEARANCE(100) - FENDER_T(4) = 96mm exactly; the solve/
+# build-swing angle gap instead governs a separate real quantity (the
+# shoulder endpoint's own 25.181mm pull-back from the wheel's vertical
+# tangent line). Real CGAL: vs tire EMPTY (96mm margin), vs axle/struts
+# EMPTY, vs firebox outer shell NON-EMPTY (378 facets, real weld contact).
+# New "Wheel-Radius-Derived Fender Arch Convention" locked into
+# rules-bbq-fab.md (v1.5->1.6). Base assembly table: new
+# BBQ-offset-smoker-base-v5.scad (pure pointer-only bump from v4, tray
+# content byte-identical). Chambers table UNCHANGED this entry.
+# Previous: 1.28 — 2026-07-22 (bbq-understructure-level-drop-companion):
 # understructure table REBUILT — source now BBQ-understructure-v14.scad
 # (source v13, `include` bumped v21->v22). Companion round absorbing
 # chambers-v22's own real -100mm level drop structurally.
@@ -580,25 +601,26 @@ restructure + drop).
 | `grill_grate()` | UNCHANGED CODE, UNCHANGED position this round (chamber_floor_z/GRATE_Z untouched) | | `show_grate` |
 | `floor_drains()` | UNCHANGED CODE | | `show_drains` |
 
-## BBQ-understructure-v14.scad
+## BBQ-understructure-v15.scad
 
-v14 (bbq-understructure-level-drop-companion, 2026-07-22): `include`
-bumped v21->v22 (companion chambers round's own real -100mm level drop).
-Module CODE below UNCHANGED from v13 — every real value changes only via
-the live formula chain (`REAR_BRACKET_H`/`FRONT_SPACER_LEN`/`TBAR_LEN`
-all confirmed -100mm via live measurement; `LEG_DROP` correctly
-UNCHANGED, see PART_MANIFEST.md's own version header for the real
-reasoning; fender Z/tire-clearance formula deliberately UNCHANGED,
-re-verified real weld contact with the now-100mm-lower firebox shell).
-v13 (`include` still `BBQ-chambers-v21.scad`) is itself a PURE
-POINTER-ONLY BUMP from v12 — zero module content changed, R-009
-confirmed every real consumed datum byte-identical between v20/v21
-(bbq-base-chain-recalibration, 2026-07-22).
+v15 (bbq-rear-fender-arch-redesign, 2026-07-22): `rear_fender()` PROFILE
+REBUILT — see the `rear_fenders()` row below for the full real formula/
+verification detail. Everything else in this file UNCHANGED from v14.
+v14 (bbq-understructure-level-drop-companion): `include` bumped v21->v22
+(companion chambers round's own real -100mm level drop). Module CODE at
+that round UNCHANGED from v13 — every real value changed only via the
+live formula chain (`REAR_BRACKET_H`/`FRONT_SPACER_LEN`/`TBAR_LEN` all
+confirmed -100mm via live measurement; `LEG_DROP` correctly UNCHANGED,
+see PART_MANIFEST.md's own version header for the real reasoning). v13
+(`include` still `BBQ-chambers-v21.scad`) is itself a PURE POINTER-ONLY
+BUMP from v12 — zero module content changed, R-009 confirmed every real
+consumed datum byte-identical between v20/v21 (bbq-base-chain-
+recalibration, 2026-07-22).
 
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
 | `rear_axle()` | Module code UNCHANGED. WHEEL_D/WHEEL_R/TREAD_W (457.2/228.6/200). REAR_WHEEL_Y_LEFT/RIGHT via `TRACK_WIDTH`(880mm, v12, was 980mm) = -135/745mm — real, live-recomputed: exactly 50mm gap to the firebox's own outer-shell edge each side (TASK 3, Janis's own real spec update). v14: `REAR_BRACKET_H` (rear strut/beam height) recomputes automatically to 91.4mm (was 191.4mm, real -100mm, live-measured) via the companion chambers-v22 round's own level drop — `REAR_AXLE_Z` itself UNCHANGED (228.6mm, wheels stay fixed to true ground Z=0) | a swivel/steerable mechanism — static, no kinetic parameter | `show_rear_axle` |
-| `rear_fenders()` | v12 REBUILT to Janis's own precise real spec (rear wheels ONLY — confirmed no front fender exists or was added). v7-v11's wraparound-hood construction (`fender_wedge_2d()`/`fender_arc_2d()`, RETIRED) replaced by a flat rectangular deck plate: 300mm real outward extension (fixed literal, measured from the firebox outer shell's own real side wall — covers the new 50mm firebox-wheel gap + 200mm tire + 50mm real margin, confirmed via live Y-extent), 548.64mm long (`WHEEL_D*1.2`, centered on `REAR_AXLE_X`), front/rear 10% (54.864mm each) tapering 15mm down via `hull()` between two identical rectangular cross-sections. `fender_z`(underside)=472.2mm live-confirmed (`REAR_AXLE_Z+WHEEL_R+15`) — UNCHANGED v14 per Janis's own clearance-priority decision (neither fender nor tire moves with the chamber/firebox drop). Real live OpenSCAD CGAL probes (isolated via toggle override, not the aggregate full-assembly count): EMPTY vs `rear_wheels()` (real bisected margin = exactly 15mm: 14.9mm lift clean, 15.0mm exact tangency, 15.1mm real overlap — byte-identical result re-confirmed at v14's own new elevation), EMPTY vs `rear_axle_bracket()` (struts/spacers), NON-EMPTY vs `outer_shell()` (378 real facets at v14's new 100mm-lower shell position — genuine weld contact PRESERVED, real margin actually INCREASED since the shell now extends further down, not away from the fender) | a wraparound hood/wheel-well enclosure (v7-v11's own shape) — a flat deck plate only, open on all sides except the weld edge | `show_rear_fenders` |
+| `rear_fenders()` | v15 REAL PROFILE REDESIGN (rear wheels ONLY, confirmed no front fender exists or was added; 300mm outward extension/world Y and 1.5mm weld overlap UNCHANGED). v10-v14's flat-rectangular-plate-with-10%-curve-down-zone cross-section (`fender_slab()`, RETIRED) replaced by a real wheel-arch (flat roof + two straight sloped shoulders), solved directly from `WHEEL_R` via a real numeric bisection — see rules-bbq-fab.md's own "Wheel-Radius-Derived Fender Arch Convention" for the full, reusable, parametric formula. Real solved `FENDER_ARCH_THETA`=24.3358° at `WHEEL_R`=228.6mm (self-check confirmed against the expected ~24.3°). Real Step 2 values: `roof_z`=328.6mm, `roof_half_w`=148.616mm, `R_tip`=360.645mm, `arch_end_x`=203.419mm, `arch_end_z`=297.801mm. Built as ONE closed 2D polygon (uniform vertical thickness, a real stated simplification not a true perpendicular offset), extruded via a plain `linear_extrude()` (no `hull()`-loft needed, the cross-section doesn't change along the 300mm Y-reach) — verified via a local render prototype before shipping. REAL, FLAGGED FINDING: the true global minimum clearance (live CGAL bisection, 95.9mm empty/96.0mm real contact) occurs at the flat roof's own UNDERSIDE center, NOT near the shoulder ends as the prompt anticipated — real value = `FENDER_ARCH_TOP_CLEARANCE`(100) - `FENDER_T`(4) = 96mm exactly (the roof's own real thickness reduces the nominal 100mm design clearance); the solve/build-swing angle gap instead governs a separate real quantity (the shoulder endpoint's own 25.181mm pull-back from the wheel's vertical tangent line, `WHEEL_R` minus `arch_end_x`) — both real numbers stated, not conflated. Real live OpenSCAD CGAL: EMPTY vs `rear_wheels()` (96mm real bisected margin, at the roof underside, not the shoulder ends), EMPTY vs `rear_axle_bracket()`, NON-EMPTY vs `outer_shell()` (378 real facets, genuine weld contact preserved) | a wraparound hood/wheel-well enclosure (v7-v11's own shape) or the v10-v14 flat-plate-with-droop-zones design — a real wheel-arch, formula-derived from WHEEL_R | `show_rear_fenders` |
 | `front_wheel_support(steer_deg, handle_fold_deg)` | Module code UNCHANGED. `LEG_DROP`=351.335mm — v14 REAL FINDING: stays UNCHANGED (not a missed consumer) since it measures the span between `chamber_floor_z`/`firebox_floor_z`, which both drop together with the companion chambers-v22 round. `FRONT_SPACER_LEN` recomputes automatically to 85.4mm (was 185.4mm, real -100mm, live-measured) — the front swivel-caster post absorbs the drop. TASK 3's own narrower `TRACK_WIDTH`(880mm, was 980mm) moves both front wheels 50mm CLOSER to center each side (`front_wheels()`/`front_stub_axle()` share the same constant) — real, live-verified re-risk of the standing front-wheel/bracket collision (narrower is the OPPOSITE direction from the v5 fix that originally resolved it): a fresh OpenSCAD CGAL `intersection()` probe at this round's own 880mm width confirms EMPTY, not carried forward from the 980mm-width resolution. v14: `front_bracket()` vs `chamber_shell()` real mount contact re-verified NON-EMPTY (94 facets) at the new elevation | still colliding at the new narrower width — freshly re-verified, not assumed | `show_front_wheel_support` |
 | `tow_triangle()` / `tow_bracket_gusset()` / `tow_handle(handle_fold_deg)` | UNCHANGED this round — real structural tow-hitch/handle assembly, confirmed NOT a fender (per this round's own file-header note, in case any front-end geometry is misread as one) | a front-wheel fender — no such part exists in this file | (none — sub-parts of `front_wheel_support()`'s own `front_swivel_assembly()`, no separate toggle) |
 
@@ -609,11 +631,17 @@ grep). Relocated to the Accessories branch
 (`BBQ-offset-smoker-base-v3.scad`, below) — NOT gone from the product,
 just no longer built in this file.
 
-## BBQ-offset-smoker-base-v4.scad
+## BBQ-offset-smoker-base-v5.scad
 
-v4 (bbq-understructure-level-drop-companion, 2026-07-22): PURE
-POINTER-ONLY BUMP from v3 — `include` bumped `BBQ-understructure-v13.scad`
--> `BBQ-understructure-v14.scad` (companion round's own real -100mm level
+v5 (bbq-rear-fender-arch-redesign, 2026-07-22): PURE POINTER-ONLY BUMP
+from v4 — `include` bumped `BBQ-understructure-v14.scad` ->
+`BBQ-understructure-v15.scad` (that round's own real fender profile
+redesign). Tray module content below UNCHANGED, byte-identical to v4
+(confirmed via diff).
+
+v4 (bbq-understructure-level-drop-companion): PURE POINTER-ONLY BUMP
+from v3 — `include` bumped `BBQ-understructure-v13.scad` ->
+`BBQ-understructure-v14.scad` (companion round's own real -100mm level
 drop absorption). Tray module content below UNCHANGED, byte-identical to
 v3 (confirmed via diff).
 
@@ -640,6 +668,13 @@ Lid counterbalance/fulcrum mechanism (TASK 3): deliberately NOT designed
 this round (Janis still developing the concept) — zero module/stub/
 toggle exists, per the prompt's own explicit instruction. Header note
 present in the file, not code.
+
+## Toggle-completeness count (2026-07-22, v1.27)
+
+NO CHANGE (bbq-rear-fender-arch-redesign) — a pure profile redesign of
+one existing module (`rear_fender()`), zero ASSEMBLY-called modules
+added or removed. `show_rear_fenders` unchanged. Combined total: still
+19 real toggles across all 3 active files.
 
 ## Toggle-completeness count (2026-07-22, v1.26)
 

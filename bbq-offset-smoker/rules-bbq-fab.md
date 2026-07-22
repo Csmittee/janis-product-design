@@ -1,5 +1,15 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.5 — 2026-07-21
+> Version 1.6 — 2026-07-22
+> Changes: bbq-rear-fender-arch-redesign. New "Wheel-Radius-Derived Fender
+> Arch Convention" section added — locks the rear fender's real wheel-arch
+> cross-section (flat roof + two straight sloped shoulders) as a reusable,
+> `WHEEL_R`-parametric formula (not today's specific numbers), per Janis's
+> own explicit request that future builds with different wheel sizes must
+> re-derive this automatically. Replaces the prior flat-rectangular-plate-
+> with-curve-down-zone fender design (BBQ-understructure-v10/v12), which
+> had no reusable formula of its own. Detail addition, not new document
+> structure — X.Y bump.
+> Previous: 1.5 — 2026-07-21
 > Changes: Rule 1 clarified (docs-only, zero .scad files touched) — a
 > real defect found via Janis's own direct visual check: the outer
 > shell's own tuck-under flange had been built as a SOLID block since v14
@@ -258,6 +268,86 @@ End-Cap Footprint Pattern" for the construction these probes verify):
 This section applies to ALL future BBQ firebox/chamber work — run it
 against ANY new prompt/round that touches this territory, and treat a
 clean CGAL manifold/collision result alone as necessary, not sufficient.
+---
+
+**Wheel-Radius-Derived Fender Arch Convention (locked 2026-07-22)**
+
+Applies to ANY future rear-wheel fender build on this project, for ANY
+`WHEEL_R` — this is a reusable, parametric formula, not a one-off number
+set. A future wheel-size change re-solves this formula fresh; it must
+NEVER be manually estimated or copy-pasted with a guessed replacement
+angle for a different `WHEEL_R`.
+
+Real cross-section: a flat roof (Zone C) directly above the wheel, with
+two straight sloped shoulders (Zone A/B) — NOT arcs — descending from
+each roof edge. Extruded uniformly along the fender's own outward
+(world Y) reach (a plain `linear_extrude()`, since the cross-section
+itself does not change shape along that extrusion).
+
+Named tuning constants (declare as real top-level constants, never
+inline literals):
+- `FENDER_ARCH_TOP_CLEARANCE` — real mm the flat roof sits above wheel
+  center: `roof_z = WHEEL_R + FENDER_ARCH_TOP_CLEARANCE`
+- `FENDER_ARCH_SOLVE_SWING_DEG` — reference swing angle used ONLY to
+  solve for the roof half-angle (Step 1 below), never the built angle
+- `FENDER_ARCH_BUILD_SWING_DEG` — the REAL swing angle the A/B shoulders
+  are built at, strictly less than `FENDER_ARCH_SOLVE_SWING_DEG` (pulls
+  the real built edge back from the solve-swing's own tangent reference,
+  for margin)
+
+**Step 1 — solve for the roof half-angle θ.** No closed form exists; a
+real numeric solve is required (bisection or equivalent real iterative
+method — do not hardcode a literal angle for a new `WHEEL_R`):
+```
+find θ such that:
+  (WHEEL_R + FENDER_ARCH_TOP_CLEARANCE) * sin(θ + FENDER_ARCH_SOLVE_SWING_DEG)
+    / cos(θ)  =  WHEEL_R
+```
+The left-hand side, at any θ, is `R_tip * sin(θ + FENDER_ARCH_SOLVE_SWING_DEG)`
+where `R_tip = (WHEEL_R + FENDER_ARCH_TOP_CLEARANCE) / cos(θ)` — i.e. the
+real X-coordinate of a point at radius `R_tip` from the wheel center, at
+angle `(θ + FENDER_ARCH_SOLVE_SWING_DEG)` from vertical. The equation
+finds the θ where that specific point lands exactly on the wheel's own
+real vertical tangent line (`X = WHEEL_R`) — a safe, conservative
+reference line (always outside or exactly touching the real wheel
+circle). The function is monotonically increasing in θ over a real
+search range (e.g. 5°–45°), confirmed via echo before implementing —
+a real sign-based bisection converges reliably; verified in
+BBQ-understructure-v15.scad to 24.3358° at `WHEEL_R=228.6mm` against
+this convention's own self-check (θ≈24.3°).
+
+**Step 2 — construct the profile from the solved θ**:
+- Roof height: `roof_z = WHEEL_R + FENDER_ARCH_TOP_CLEARANCE`
+- Roof half-width: `roof_half_w = roof_z * tan(θ)`
+- Roof tip radius from wheel center: `R_tip = roof_z / cos(θ)`
+- Zone C (roof): flat segment from `(-roof_half_w, roof_z)` to
+  `(roof_half_w, roof_z)` (local X-Z, relative to wheel center)
+- Zone A/B (shoulders): STRAIGHT lines (not arcs) from each roof tip to
+  a point at the SAME radius `R_tip` (not re-solved), at angle
+  `(θ + FENDER_ARCH_BUILD_SWING_DEG)`:
+  `end_x = R_tip * sin(θ + FENDER_ARCH_BUILD_SWING_DEG)`,
+  `end_z = R_tip * cos(θ + FENDER_ARCH_BUILD_SWING_DEG)`
+
+**Real, verified finding on where the true minimum clearance actually
+occurs** (BBQ-understructure-v15.scad, confirmed via a live CGAL
+bisection, not assumed from the formula alone): the profile's own
+GLOBAL minimum clearance to the tire is NOT at the shoulder ends — it
+is at the flat roof's own UNDERSIDE center, equal to
+`FENDER_ARCH_TOP_CLEARANCE` minus the panel's own real thickness (e.g.
+100mm − 4mm = 96mm at `WHEEL_R=228.6mm`, panel thickness 4mm). The
+`FENDER_ARCH_SOLVE_SWING_DEG`/`FENDER_ARCH_BUILD_SWING_DEG` gap governs
+a DIFFERENT, separate real quantity — how far the shoulder's own built
+endpoint pulls back (in X) from the wheel's vertical tangent line, NOT
+the profile's own overall closest-approach margin. Any future build
+using this convention must independently CGAL-verify its own real
+global minimum (a bisected radius-scan test against the actual tire,
+same method as BBQ-understructure-v15.scad's own verification) — do not
+assume the roof-underside location or the 96mm number carries over to a
+different `WHEEL_R`/`FENDER_T`/`FENDER_ARCH_TOP_CLEARANCE` combination.
+
+This convention applies to ALL future BBQ rear-fender work on this
+product — do not re-derive the construction technique from scratch, and
+do not skip the real numeric solve for a new wheel size.
 ---
 
 ## v1 Judgment Calls (technical, cc-made, flagged per R-009/general

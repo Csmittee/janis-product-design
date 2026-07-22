@@ -602,26 +602,31 @@ yet Janis-reconfirmed in this exact wording (see flag above)
 - Understructure — corner-tube wheeled frame, 2 fixed + 2 swivel casters
   (18"/457.2mm wheels, FINAL as of 2026-07-17), shared 880mm track width
   front+rear (2026-07-22, v12, was 980mm — 50mm firebox-to-wheel gap,
-  Janis's own real spec update), flat rectangular deck-plate rear fenders
-  ONLY, welds to the firebox outer shell (v12, was a short flared-wing
-  hood shape v6-v11), T-bar tow handle mounted at the front axle's own
-  real plane with a curved gusset at chimney end. Active file:
-  `BBQ-understructure-v14.scad` (2026-07-22, bbq-understructure-level-
-  drop-companion — absorbs the companion chambers round's own real
-  -100mm level drop structurally: rear strut/beam height 191.4->91.4mm,
-  front swivel-caster post 185.4->85.4mm, T-bar upright 1102.735->
-  1002.735mm, all real, live-measured. Wheels/axles stay fixed to true
-  ground Z=0, unchanged. Fender Z/15mm-tire-clearance formula left
-  completely UNCHANGED per Janis's own clearance-priority decision — real
-  weld contact with the firebox outer shell re-verified at the new,
-  100mm-lower shell position)
+  Janis's own real spec update), rear fenders ONLY, welds to the firebox
+  outer shell, real wheel-arch cross-section per rules-bbq-fab.md's
+  **Wheel-Radius-Derived Fender Arch Convention** (2026-07-22, v15 —
+  flat roof + two straight sloped shoulders, a reusable WHEEL_R-
+  parametric formula, not a fixed number set; replaces the flat-plate-
+  with-curve-down-zone design v10-v14), T-bar tow handle mounted at the
+  front axle's own real plane with a curved gusset at chimney end.
+  Active file: `BBQ-understructure-v15.scad` (2026-07-22, bbq-rear-
+  fender-arch-redesign — see rules-bbq-fab.md's own convention for the
+  full real formula; that same file's own header states the real solved
+  values at the current WHEEL_R and the real CGAL-confirmed clearance
+  margins). Previous round: `BBQ-understructure-v14.scad`
+  (bbq-understructure-level-drop-companion — absorbs the companion
+  chambers round's own real -100mm level drop structurally: rear strut/
+  beam height 191.4->91.4mm, front swivel-caster post 185.4->85.4mm,
+  T-bar upright 1102.735->1002.735mm, all real, live-measured. Wheels/
+  axles stay fixed to true ground Z=0, unchanged)
 - ~~Prep Shelves x2 — fold-up (vertical stowed / horizontal deployed),
   left + right, front of chamber~~ — REMOVED from Understructure
   2026-07-22 (v12)
 - Accessories — NEW branch, 2026-07-22 (v21/base). Active file:
-  `BBQ-offset-smoker-base-v4.scad` (2026-07-22, bbq-understructure-level-
-  drop-companion — pure pointer-only bump from v3, tray content
-  byte-identical). Supersedes `BBQ-offset-smoker-base-v2.scad`, whose own
+  `BBQ-offset-smoker-base-v5.scad` (2026-07-22, bbq-rear-fender-arch-
+  redesign — pure pointer-only bump from v4, tray content byte-
+  identical, real change is the understructure fender profile it now
+  points to). Supersedes `BBQ-offset-smoker-base-v2.scad`, whose own
   direct chambers include bypassed the wheels entirely. The relocated
   prep tray lives here: 2 trays (457.5mm x300mm x2mm plate each, 5mm real
   additive gap), mounted Y=0 side only, hinged to the chamber's own fixed

@@ -382,14 +382,37 @@ Compartment Map below). Chamber body/apex-A/`chamber_floor_z`/`chamfer`
 all UNCHANGED — real, live CGAL-confirmed (new band NON-EMPTY vs the
 existing fixed shell; lid's own real swept volume EMPTY vs the band at
 every angle from 0.5° to 120°).
-Grill grate: still independently, TEMPORARILY fixed at 1000mm — UNCHANGED
-this round. Real gap above apex A is now 50mm (was 100mm), an automatic
-consequence of the chamber's own reanchor, not a separate edit. Same
-future-reinforcement-frame re-merge plan as before, still NOT permanent
-architecture.
-Grate-height-above-true-ground target (900-1000mm, locked prior round) —
-still an OPEN ITEM, still not resolved (this round's own understructure
-work is track-width/fender/T-bar scoped, does not touch grate height).
+Grill grate (2026-07-22, v22 — REAL CORRECTION, not a new decision): RESTORED
+as the project's actual master/reference datum, per Janis's own explicit
+statement that this is how the original Skeleton file/scope of work always
+intended it. The "grate independently, TEMPORARILY fixed, decoupled from the
+chamber body" description immediately below (2026-07-18 era) was itself the
+time-pressure workaround now being undone — kept as real history, not deleted.
+Real chain now: `GRATE_Z` (master, real top-level constant) -> `APEX_A_Z =
+GRATE_Z - 50` (derived) -> `chamber_floor_z = APEX_A_Z - chamfer` (derived) ->
+every other chamber/firebox datum. Same real -100mm level drop applied this
+round: `GRATE_Z` 1000mm->900mm, `APEX_A_Z`/apex-A 950mm->850mm, entire
+chamber+firebox assembly shifts -100mm (real, verified via bounding-box/
+vertex check — zero shape distortion). Grate-height-above-true-ground target
+(900-1000mm, locked prior round): the companion understructure round
+(BBQ-understructure-v14.scad, bbq-understructure-level-drop-companion,
+same day) confirms wheels/axles stay fixed to true ground Z=0 — the real
+grate height above true ground is therefore now EXACTLY `GRATE_Z`=900mm
+(the restored master itself), the bottom edge of the locked 900-1000mm
+target range. Both rounds together are a deliberate, real step toward a
+SHORTER, more flexible overall structure built on one restored master
+datum (Janis's own stated goal) — flagged for Janis's own confirmation
+that 900mm (not a value elsewhere in the 900-1000 range) is the intended
+real target, not assumed closed automatically by this round.
+2026-07-18-era entry, kept as real history (the workaround now corrected
+above, not deleted):
+Apex A / chamber body reference: EXACTLY 950mm world Z (REAL, BUILT,
+2026-07-18 — `chamber_floor_z` is now `950-chamfer`, algebraically exact).
+Supersedes the prior 900mm value (2026-07-17 round). Grill grate: still
+independently, TEMPORARILY fixed at 1000mm — UNCHANGED this round. Real gap
+above apex A is now 50mm (was 100mm), an automatic consequence of the
+chamber's own reanchor, not a separate edit. Same future-reinforcement-
+frame re-merge plan as before, still NOT permanent architecture.
 Understructure (2026-07-21, v8): Janis's own SECOND direct-feedback round
 the same day. Real pre-existing bug found+fixed: prep_shelves()'s own
 right-side shelf applied mirror() AFTER an already-applied translate(),
@@ -583,21 +606,27 @@ yet Janis-reconfirmed in this exact wording (see flag above)
   ONLY, welds to the firebox outer shell (v12, was a short flared-wing
   hood shape v6-v11), T-bar tow handle mounted at the front axle's own
   real plane with a curved gusset at chimney end. Active file:
-  `BBQ-understructure-v13.scad` (2026-07-22, bbq-base-chain-
-  recalibration — pure pointer-only bump from v12 to
-  `BBQ-chambers-v21.scad`, zero geometry change)
+  `BBQ-understructure-v14.scad` (2026-07-22, bbq-understructure-level-
+  drop-companion — absorbs the companion chambers round's own real
+  -100mm level drop structurally: rear strut/beam height 191.4->91.4mm,
+  front swivel-caster post 185.4->85.4mm, T-bar upright 1102.735->
+  1002.735mm, all real, live-measured. Wheels/axles stay fixed to true
+  ground Z=0, unchanged. Fender Z/15mm-tire-clearance formula left
+  completely UNCHANGED per Janis's own clearance-priority decision — real
+  weld contact with the firebox outer shell re-verified at the new,
+  100mm-lower shell position)
 - ~~Prep Shelves x2 — fold-up (vertical stowed / horizontal deployed),
   left + right, front of chamber~~ — REMOVED from Understructure
   2026-07-22 (v12)
 - Accessories — NEW branch, 2026-07-22 (v21/base). Active file:
-  `BBQ-offset-smoker-base-v3.scad` (2026-07-22, bbq-base-chain-
-  recalibration — LINKAGE-ONLY FIX; supersedes `BBQ-offset-smoker-base-
-  v2.scad`, whose own direct chambers include bypassed the wheels
-  entirely; tray content copied forward verbatim, zero geometry change).
-  The relocated prep tray lives here: 2 trays (457.5mm x300mm x2mm plate
-  each, 5mm real additive gap), mounted Y=0 side only, hinged to the
-  chamber's own NEW fixed band (world Z=[950,1000], see Envelope above)
-  at real Z=980mm. Own independent fold parameters
+  `BBQ-offset-smoker-base-v4.scad` (2026-07-22, bbq-understructure-level-
+  drop-companion — pure pointer-only bump from v3, tray content
+  byte-identical). Supersedes `BBQ-offset-smoker-base-v2.scad`, whose own
+  direct chambers include bypassed the wheels entirely. The relocated
+  prep tray lives here: 2 trays (457.5mm x300mm x2mm plate each, 5mm real
+  additive gap), mounted Y=0 side only, hinged to the chamber's own fixed
+  band at real Z=980mm (read live from the chamber's own restored master
+  datum, see Envelope above). Own independent fold parameters
   (`tray0_angle_deg`/`tray1_angle_deg`, -90° stowed / 0° deployed). A lid
   counterbalance/fulcrum mechanism is the planned NEXT addition here
   (Janis still developing the concept, not designed this round)

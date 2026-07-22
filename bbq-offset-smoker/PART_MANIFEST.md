@@ -4,7 +4,48 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.26 — 2026-07-22 (bbq-base-chain-recalibration): LINKAGE-ONLY
+# Version: 1.28 — 2026-07-22 (bbq-understructure-level-drop-companion):
+# understructure table REBUILT — source now BBQ-understructure-v14.scad
+# (source v13, `include` bumped v21->v22). Companion round absorbing
+# chambers-v22's own real -100mm level drop structurally.
+# REAR_BRACKET_H/FRONT_SPACER_LEN/TBAR_LEN all confirmed via live
+# measurement to shrink exactly -100mm each; wheels/axles stay fixed to
+# true ground Z=0 (unchanged, by design). REAL FINDING: LEG_DROP stays
+# UNCHANGED (351.335mm) — correct, not a missed consumer, since it
+# measures the span between chamber_floor_z/firebox_floor_z, which both
+# drop together. Real mount-point CGAL: front_bracket() vs
+# chamber_shell() NON-EMPTY, rear_axle_bracket() vs firebox() NON-EMPTY.
+# Fender Z/15mm-tire-clearance formula UNCHANGED per Janis's own
+# clearance-priority decision — re-verified real CGAL: vs outer_shell()
+# (now 100mm lower) NON-EMPTY (real margin increased), vs tire EMPTY
+# (exact 15mm re-confirmed via bisection), vs axle/struts EMPTY. Base
+# assembly table: new BBQ-offset-smoker-base-v4.scad (pure pointer-only
+# bump from v3, tray content byte-identical). Chambers table UNCHANGED
+# this entry (see 1.27 below for the chambers-v22 round itself).
+# Previous: 1.27 — 2026-07-22 (bbq-chambers-grate-master-datum-restore-and-
+# level-drop): chambers table REBUILT — source now BBQ-chambers-v22.scad.
+# TASK 1: grate RESTORED as the project's real master/reference datum
+# (Janis's own explicit statement — undoes a v13-era time-pressure
+# workaround that had pinned the grate independently and pushed the
+# chamber's own anchor to compensate). `GRATE_Z` (renamed from
+# `GRATE_Z_FIXED`) is now the real master; `APEX_A_Z = GRATE_Z - 50`
+# (renamed from this file's own old, misleadingly-named `GRATE_Z`
+# variable) is now derived; `chamber_floor_z = APEX_A_Z - chamfer` is now
+# derived too (was a hardcoded `950-chamfer` literal). REAL FIX found
+# during the consumer sweep: `FIREBOX_TOP_Z_FIXED` was an independent
+# literal with zero formula link to the grate (only numerically
+# coincidental) — re-pointed to `GRATE_Z` so the firebox genuinely
+# follows future drops. `grill_grate()` re-pointed to `GRATE_Z` directly,
+# old duplicate `GRATE_Z_FIXED` retired (R-009). Verified pixel-identical
+# to v21 at current values via a real vertex-multiset STL comparison.
+# TASK 2: real -100mm level drop, `GRATE_Z` 1000->900 — every consumer
+# confirmed auto-following via live echo. Real bounding-box check
+# confirms the whole assembly shifted exactly -100mm; one tessellated
+# vertex (of 3556) differs at a complex circle-octagon boolean
+# intersection — investigated, assessed as a benign CGAL floating-point
+# triangulation artifact, flagged not silently absorbed. Understructure/
+# base tables UNCHANGED this round (companion round absorbs the shift).
+# Previous: 1.26 — 2026-07-22 (bbq-base-chain-recalibration): LINKAGE-ONLY
 # FIX, zero geometry/module content changed from either PR #143 round.
 # Real file now: BBQ-understructure-v13.scad (pure pointer-only bump,
 # source v12, `include` now BBQ-chambers-v21.scad — R-009 confirmed every
@@ -511,7 +552,16 @@
 # toggle, per the Toggle-Completeness Rule (cc_rules.md). "(none — always
 # on, safety-critical)" is the ONLY other permitted value.
 
-## BBQ-chambers-v21.scad
+## BBQ-chambers-v22.scad
+
+v22 TASK 1/2 (bbq-chambers-grate-master-datum-restore-and-level-drop):
+grate restored as real master datum (`GRATE_Z`, renamed from
+`GRATE_Z_FIXED`), apex A now derived (`APEX_A_Z = GRATE_Z - 50`, renamed
+from this file's own old `GRATE_Z`), `chamber_floor_z` now derived from
+that. Real -100mm drop applied (`GRATE_Z` 1000->900) — every module
+below moves automatically via this restored chain; table content
+otherwise UNCHANGED from v21 (zero shape/dimension edits, pure Z-datum
+restructure + drop).
 
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
@@ -521,7 +571,7 @@
 | `firebox_passage()` | v16 TASK A REBUILT — Janis's own words: "the hole shape is dictate by the cut on the chamber, nothing else". Real root cause of v15's own defect: `firebox_passage_profile()` sized its circle (194.898mm dia) purely from the cylinder's own 0.008-fire-volume target-area rule, with ZERO reference to real chamber material — 33.233mm of its own bottom sat BELOW chamber_floor_z entirely (a literal hole through nothing, confirmed via CGAL+echo, matching Janis's screenshot). FIX: size/position now DERIVED from the real vertical band where the cylinder's own clear bore (225mm) overlaps the chamber's real octagon material at the rear wall (`CYL_WALL_MARGIN`=15mm/`CHAMBER_EDGE_MARGIN`=15mm real insets both ends) — built as `intersection(candidate circle, real chamber material)`, so the final shape is, by construction, always the real chamber cut. Real new `PASSAGE_R`=65.335mm (was 97.449mm — genuinely smaller, a real consequence of deriving from actual available space, not a defect). Real CGAL: passage now FULLY contained in real chamber material (zero residual outside it, confirmed via a real `difference()` probe) AND fully clear of the cylinder's own bore wall (confirmed empty overlap) | a placeholder — both the target radius derivation and the belt-and-suspenders real-material intersection are load-bearing, not decorative | (none — sub-part of `chamber_shell()`, no separate toggle) |
 | `lid(lid_open_deg)` | UNCHANGED CODE. Clamshell lid, 3 flat panels, hinged along the ridge midpoint | | `show_lid` |
 | `lid_hardware(lid_open_deg)` | UNCHANGED code, stale, still deferred | | `show_lid_hardware` — still FALSE by default |
-| `firebox(firebox_door_open_deg)` | TWO fully independent welded assemblies (fire cylinder + outer shell, see next rows). 4 real sub-part toggles (`show_fire_cylinder`/`show_fire_cylinder_end_cap`/`show_outer_shell`/`show_outer_shell_end_cap`), Janis's own explicit request — each independent of `show_firebox` below (which still gates the whole assembly). `fire_cylinder_partition()`/`firebox_door()` NOT separately toggled (not part of that round's ask). v19: `ash_tray_out_pct` parameter DROPPED (`ash_tray()` itself retired, see below — zero remaining consumers) | one shared assembly — deliberately two separate, non-touching solids | `show_firebox` |
+| `firebox(firebox_door_open_deg)` | TWO fully independent welded assemblies (fire cylinder + outer shell, see next rows). 4 real sub-part toggles (`show_fire_cylinder`/`show_fire_cylinder_end_cap`/`show_outer_shell`/`show_outer_shell_end_cap`), Janis's own explicit request — each independent of `show_firebox` below (which still gates the whole assembly). `fire_cylinder_partition()`/`firebox_door()` NOT separately toggled (not part of that round's ask). v19: `ash_tray_out_pct` parameter DROPPED (`ash_tray()` itself retired, see below — zero remaining consumers). v22 REAL FIX: `FIREBOX_TOP_Z_FIXED` (governs `firebox_floor_z`/`firebox_z0`/`firebox_z1`/`CYL_Z_CENTER`) was an INDEPENDENT hardcoded literal (1000) with zero formula link to the chamber's own grate/apex-A datum chain — only numerically coincidental. Re-pointed to the restored master `GRATE_Z` so the entire firebox genuinely follows the grate-master-datum-restore-and-level-drop round's own -100mm drop (confirmed via live echo: firebox_floor_z 420->320, firebox_z1 1000->900) | a shell that automatically tracked the chamber body before this round — it did NOT, confirmed via grep, this was a real, silent gap now closed | `show_firebox` |
 | `fire_cylinder()` / `fire_cylinder_end_cap()` | Round, 456mm diameter (62mm wall clearance vs the outer shell), full `FIREBOX_L`(580mm) span, open both ends. `fire_cylinder_end_cap_2d()` v19 REBUILT via the Dual End-Cap Footprint Pattern (RULE 4, `.claude/SKILL_joint_construction.md`) — REPLACING the old `intersection(circle, chamber_octagon_or_open_below_2d())` construction (RETIRED, real confirmed defect: Janis found a real remaining hole by looking inside the built cylinder — the octagon's own real half-width at chamber_floor_z, 126.335mm, is LESS than the circle's own real half-width there, 219.6mm, so the intersection clipped the circle down and the chamber has zero material outside its own true edge to fill what got clipped away — same failure class as v16's original outer-shell mistake, just never checked on this specific end cap until this round). FIX: `union(circle, true_octagon_profile())`, bounded by new `fire_cylinder_end_cap_bound_2d()` (the cylinder's own real diameter box — without it a bare union would pull in unlimited octagon material, the same overreach bug already found once this session on the outer shell), minus the shared passage cut. Real CGAL/STL: end cap now always >= the native circle (2mm real margin, confirmed empty residual, not just an exact-boundary touch), real weld contact with the chamber's own wall material preserved (non-empty), own real bbox exactly matches the cylinder's own diameter envelope (no overreach). Independently toggleable (`show_fire_cylinder`/`show_fire_cylinder_end_cap`, UNCHANGED) | connected to or touching the outer shell anywhere — confirmed via a real mandatory zero-contact CGAL check | `show_fire_cylinder` / `show_fire_cylinder_end_cap` |
 | `fire_cylinder_partition()` | Square end plate (matches `outer_shell_footprint_2d()`'s own real 580x580 exterior footprint, plain/unclipped) minus a circle matching the cylinder's own real diameter (+2e real clearance) — physically locates the cylinder within the square outer shell. Positioned at the door/front end (X=[firebox_x1-wall_t-e,firebox_x1-e]). Real CGAL: non-empty contact vs `outer_shell()`'s own wall, EMPTY vs the cylinder and the door | welded/fused to the cylinder itself — a separate locating collar, real clearance not material overlap | (none — sub-part of `firebox()`, no separate toggle) |
 | `outer_shell()` / `outer_shell_end_cap()` | Real 580x580x580 CUBE. v20 REAL FIX: the flange (50mm tuck-under) was built as a SOLID block since v14 ("SOLID, no interior cavity", never questioned) — Janis toggled `show_outer_shell_end_cap` off and still saw a wall, because the solid block's own far face is a SECOND real wall-like surface distinct from the actual end-cap plate — two redundant surfaces where there should be exactly one, also a real, standing inconsistency with this project's own thin-sheet-metal Construction Method. FIX: the flange is now HOLLOW, wall_t thick, built with the SAME real technique as the main hollow body (outer boundary via `outer_shell_flange_cut_2d()` minus an inset-by-`wall_t` inner cavity via `offset(delta=-wall_t) outer_shell_flange_footprint_2d()`). `outer_shell_end_cap()` UNCHANGED position/role — now genuinely the ONE real cap; toggling it off shows straight through the flange's own real hollow interior to the chamber's own material. Real CGAL/STL: non-empty weld contact with the chamber's own wall material preserved, empty vs the chamber's own hollow interior (2mm margin, still not blocked), empty in the flange's own mid-wall interior (confirmed genuinely hollow), passage cut still passes cleanly through (confirmed empty/open). Footprint mechanism itself (`outer_shell_flange_footprint_2d()`, union-based, satisfies Rule 1's "meets the octagon face") UNCHANGED from v18. `FLANGE_LEN`=50mm UNCHANGED, STAYS ADDITIVE. Independently toggleable (`show_outer_shell`/`show_outer_shell_end_cap`, UNCHANGED) | a redesigned cube — same cube, only the flange's own SOLID-vs-HOLLOW construction changed (4th real attempt on this module, this one closes the redundant-wall defect) | `show_outer_shell` / `show_outer_shell_end_cap` |
@@ -530,20 +580,26 @@
 | `grill_grate()` | UNCHANGED CODE, UNCHANGED position this round (chamber_floor_z/GRATE_Z untouched) | | `show_grate` |
 | `floor_drains()` | UNCHANGED CODE | | `show_drains` |
 
-## BBQ-understructure-v13.scad
+## BBQ-understructure-v14.scad
 
-v13 is a PURE POINTER-ONLY BUMP from v12 (`include` now
-`BBQ-chambers-v21.scad`, was `BBQ-chambers-v20.scad`) — zero module
-content below changed, R-009 confirmed every real consumed datum
-byte-identical between v20/v21 (bbq-base-chain-recalibration,
-2026-07-22). Table below (unchanged from v12) still accurately describes
-v13's real content.
+v14 (bbq-understructure-level-drop-companion, 2026-07-22): `include`
+bumped v21->v22 (companion chambers round's own real -100mm level drop).
+Module CODE below UNCHANGED from v13 — every real value changes only via
+the live formula chain (`REAR_BRACKET_H`/`FRONT_SPACER_LEN`/`TBAR_LEN`
+all confirmed -100mm via live measurement; `LEG_DROP` correctly
+UNCHANGED, see PART_MANIFEST.md's own version header for the real
+reasoning; fender Z/tire-clearance formula deliberately UNCHANGED,
+re-verified real weld contact with the now-100mm-lower firebox shell).
+v13 (`include` still `BBQ-chambers-v21.scad`) is itself a PURE
+POINTER-ONLY BUMP from v12 — zero module content changed, R-009
+confirmed every real consumed datum byte-identical between v20/v21
+(bbq-base-chain-recalibration, 2026-07-22).
 
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
-| `rear_axle()` | UNCHANGED this round. WHEEL_D/WHEEL_R/TREAD_W (457.2/228.6/200). REAR_WHEEL_Y_LEFT/RIGHT via `TRACK_WIDTH`(880mm, v12, was 980mm) = -135/745mm — real, live-recomputed: exactly 50mm gap to the firebox's own outer-shell edge each side (TASK 3, Janis's own real spec update) | a swivel/steerable mechanism — static, no kinetic parameter | `show_rear_axle` |
-| `rear_fenders()` | v12 REBUILT to Janis's own precise real spec (rear wheels ONLY — confirmed no front fender exists or was added). v7-v11's wraparound-hood construction (`fender_wedge_2d()`/`fender_arc_2d()`, RETIRED) replaced by a flat rectangular deck plate: 300mm real outward extension (fixed literal, measured from the firebox outer shell's own real side wall — covers the new 50mm firebox-wheel gap + 200mm tire + 50mm real margin, confirmed via live Y-extent), 548.64mm long (`WHEEL_D*1.2`, centered on `REAR_AXLE_X`), front/rear 10% (54.864mm each) tapering 15mm down via `hull()` between two identical rectangular cross-sections. `fender_z`(underside)=472.2mm live-confirmed (`REAR_AXLE_Z+WHEEL_R+15`). Real live OpenSCAD CGAL probes (isolated via toggle override, not the aggregate full-assembly count): EMPTY vs `rear_wheels()` (real bisected margin = exactly 15mm: 14.9mm lift clean, 15.0mm exact tangency, 15.1mm real overlap), EMPTY vs `rear_axle_bracket()` (struts/spacers, ~200mm+ real margin, no X/Y overlap by construction), NON-EMPTY vs `outer_shell()` (24 real facets, genuine weld contact via `FENDER_WELD_OVERLAP`=1.5mm, UNCHANGED value) | a wraparound hood/wheel-well enclosure (v7-v11's own shape) — a flat deck plate only, open on all sides except the weld edge | `show_rear_fenders` |
-| `front_wheel_support(steer_deg, handle_fold_deg)` | UNCHANGED this round (chambers/firebox_floor_z untouched, no automatic recompute triggered). `LEG_DROP`=351.335mm, `FRONT_SPACER_LEN`=185.4mm, both stable. TASK 3's own narrower `TRACK_WIDTH`(880mm, was 980mm) moves both front wheels 50mm CLOSER to center each side (`front_wheels()`/`front_stub_axle()` share the same constant) — real, live-verified re-risk of the standing front-wheel/bracket collision (narrower is the OPPOSITE direction from the v5 fix that originally resolved it): a fresh OpenSCAD CGAL `intersection()` probe at this round's own 880mm width confirms EMPTY, not carried forward from the 980mm-width resolution | still colliding at the new narrower width — freshly re-verified, not assumed | `show_front_wheel_support` |
+| `rear_axle()` | Module code UNCHANGED. WHEEL_D/WHEEL_R/TREAD_W (457.2/228.6/200). REAR_WHEEL_Y_LEFT/RIGHT via `TRACK_WIDTH`(880mm, v12, was 980mm) = -135/745mm — real, live-recomputed: exactly 50mm gap to the firebox's own outer-shell edge each side (TASK 3, Janis's own real spec update). v14: `REAR_BRACKET_H` (rear strut/beam height) recomputes automatically to 91.4mm (was 191.4mm, real -100mm, live-measured) via the companion chambers-v22 round's own level drop — `REAR_AXLE_Z` itself UNCHANGED (228.6mm, wheels stay fixed to true ground Z=0) | a swivel/steerable mechanism — static, no kinetic parameter | `show_rear_axle` |
+| `rear_fenders()` | v12 REBUILT to Janis's own precise real spec (rear wheels ONLY — confirmed no front fender exists or was added). v7-v11's wraparound-hood construction (`fender_wedge_2d()`/`fender_arc_2d()`, RETIRED) replaced by a flat rectangular deck plate: 300mm real outward extension (fixed literal, measured from the firebox outer shell's own real side wall — covers the new 50mm firebox-wheel gap + 200mm tire + 50mm real margin, confirmed via live Y-extent), 548.64mm long (`WHEEL_D*1.2`, centered on `REAR_AXLE_X`), front/rear 10% (54.864mm each) tapering 15mm down via `hull()` between two identical rectangular cross-sections. `fender_z`(underside)=472.2mm live-confirmed (`REAR_AXLE_Z+WHEEL_R+15`) — UNCHANGED v14 per Janis's own clearance-priority decision (neither fender nor tire moves with the chamber/firebox drop). Real live OpenSCAD CGAL probes (isolated via toggle override, not the aggregate full-assembly count): EMPTY vs `rear_wheels()` (real bisected margin = exactly 15mm: 14.9mm lift clean, 15.0mm exact tangency, 15.1mm real overlap — byte-identical result re-confirmed at v14's own new elevation), EMPTY vs `rear_axle_bracket()` (struts/spacers), NON-EMPTY vs `outer_shell()` (378 real facets at v14's new 100mm-lower shell position — genuine weld contact PRESERVED, real margin actually INCREASED since the shell now extends further down, not away from the fender) | a wraparound hood/wheel-well enclosure (v7-v11's own shape) — a flat deck plate only, open on all sides except the weld edge | `show_rear_fenders` |
+| `front_wheel_support(steer_deg, handle_fold_deg)` | Module code UNCHANGED. `LEG_DROP`=351.335mm — v14 REAL FINDING: stays UNCHANGED (not a missed consumer) since it measures the span between `chamber_floor_z`/`firebox_floor_z`, which both drop together with the companion chambers-v22 round. `FRONT_SPACER_LEN` recomputes automatically to 85.4mm (was 185.4mm, real -100mm, live-measured) — the front swivel-caster post absorbs the drop. TASK 3's own narrower `TRACK_WIDTH`(880mm, was 980mm) moves both front wheels 50mm CLOSER to center each side (`front_wheels()`/`front_stub_axle()` share the same constant) — real, live-verified re-risk of the standing front-wheel/bracket collision (narrower is the OPPOSITE direction from the v5 fix that originally resolved it): a fresh OpenSCAD CGAL `intersection()` probe at this round's own 880mm width confirms EMPTY, not carried forward from the 980mm-width resolution. v14: `front_bracket()` vs `chamber_shell()` real mount contact re-verified NON-EMPTY (94 facets) at the new elevation | still colliding at the new narrower width — freshly re-verified, not assumed | `show_front_wheel_support` |
 | `tow_triangle()` / `tow_bracket_gusset()` / `tow_handle(handle_fold_deg)` | UNCHANGED this round — real structural tow-hitch/handle assembly, confirmed NOT a fender (per this round's own file-header note, in case any front-end geometry is misread as one) | a front-wheel fender — no such part exists in this file | (none — sub-parts of `front_wheel_support()`'s own `front_swivel_assembly()`, no separate toggle) |
 
 Prep tray/shelf REMOVED entirely (TASK 1, v12) — `prep_shelf()`/
@@ -553,24 +609,28 @@ grep). Relocated to the Accessories branch
 (`BBQ-offset-smoker-base-v3.scad`, below) — NOT gone from the product,
 just no longer built in this file.
 
-## BBQ-offset-smoker-base-v3.scad
+## BBQ-offset-smoker-base-v4.scad
 
-Real file now (LINKAGE-ONLY FIX, bbq-base-chain-recalibration,
-2026-07-22 — see PART_MANIFEST.md's own version header for the full real
-cause/fix). Single-include-path structure restored:
-`BBQ-offset-smoker-base-v3.scad` → `BBQ-understructure-v13.scad` →
-`BBQ-chambers-v21.scad`, ONE path, chambers reached transitively — this
-file's own `include` is ONLY `BBQ-understructure-v13.scad` now (base-v2's
-own direct `include <BBQ-chambers-v21.scad>` NOT carried forward).
-Tray module content below (TASK 2 from the parting-shift round) copied
-forward from `BBQ-offset-smoker-base-v2.scad` VERBATIM — confirmed via a
-real line-range diff, zero content changed, only the surrounding
-file/include structure. Real cause this fixes: base-v2's own direct
-chambers include bypassed understructure/wheels entirely (no updated
-understructure existed yet to build on when base-v2 was written) — the
-mandatory tray-vs-understructure CGAL checks below now run against the
-REAL, PRESENT understructure geometry in this same file, not a separate
-standalone probe (PR #143's own gap).
+v4 (bbq-understructure-level-drop-companion, 2026-07-22): PURE
+POINTER-ONLY BUMP from v3 — `include` bumped `BBQ-understructure-v13.scad`
+-> `BBQ-understructure-v14.scad` (companion round's own real -100mm level
+drop absorption). Tray module content below UNCHANGED, byte-identical to
+v3 (confirmed via diff).
+
+v3 (LINKAGE-ONLY FIX, bbq-base-chain-recalibration, 2026-07-22 — see
+PART_MANIFEST.md's own version header for the full real cause/fix).
+Single-include-path structure restored: base file → understructure →
+chambers, ONE path, chambers reached transitively — this file's own
+`include` is ONLY the understructure file (base-v2's own direct chambers
+include NOT carried forward). Tray module content below (TASK 2 from the
+parting-shift round) copied forward from `BBQ-offset-smoker-base-v2.scad`
+VERBATIM — confirmed via a real line-range diff, zero content changed,
+only the surrounding file/include structure. Real cause this fixes:
+base-v2's own direct chambers include bypassed understructure/wheels
+entirely (no updated understructure existed yet to build on when base-v2
+was written) — the mandatory tray-vs-understructure CGAL checks below now
+run against the REAL, PRESENT understructure geometry in this same file,
+not a separate standalone probe (PR #143's own gap).
 
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
@@ -580,6 +640,15 @@ Lid counterbalance/fulcrum mechanism (TASK 3): deliberately NOT designed
 this round (Janis still developing the concept) — zero module/stub/
 toggle exists, per the prompt's own explicit instruction. Header note
 present in the file, not code.
+
+## Toggle-completeness count (2026-07-22, v1.26)
+
+NO CHANGE (bbq-understructure-level-drop-companion + bbq-chambers-grate-
+master-datum-restore-and-level-drop) — both rounds are pure Z-datum
+restructures/pointer bumps, zero ASSEMBLY-called modules added or
+removed. Combined total: still 19 real toggles across all 3 active files
+(BBQ-chambers-v22.scad, BBQ-understructure-v14.scad,
+BBQ-offset-smoker-base-v4.scad).
 
 ## Toggle-completeness count (2026-07-22, v1.25)
 

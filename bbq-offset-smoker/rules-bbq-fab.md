@@ -1,5 +1,18 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.6 — 2026-07-22
+> Version 1.7 — 2026-07-24
+> Changes: bbq-lid-hinge-three-rib-v2. New "Three-Rib Lid Counterbalance
+> System" section added — locks the reusable STRUCTURAL pattern behind
+> this round's real lid hinge/handle/counterbalance mechanism (3 identical
+> ribs, ONE counterbalance arm first, real Python moment-balance physics
+> with a round-trip coordinate self-check, combined stopper/holder,
+> minimum-not-fixed rib profile, fixed-references-first construction
+> order, 20mm apex-clearance rule) — generalized so a future product
+> line's own lid mechanism can be requested and built in ONE prompt
+> instead of the multi-session derivation this one took. Cross-referenced
+> from design_scope_of_work_rule.md's own counterbalanced-lid feature
+> entry, per this file's existing cross-reference convention. Detail
+> addition, not new document structure — X.Y bump.
+> Previous: 1.6 — 2026-07-22
 > Changes: bbq-rear-fender-arch-redesign. New "Wheel-Radius-Derived Fender
 > Arch Convention" section added — locks the rear fender's real wheel-arch
 > cross-section (flat roof + two straight sloped shoulders) as a reusable,
@@ -348,6 +361,86 @@ different `WHEEL_R`/`FENDER_T`/`FENDER_ARCH_TOP_CLEARANCE` combination.
 This convention applies to ALL future BBQ rear-fender work on this
 product — do not re-derive the construction technique from scratch, and
 do not skip the real numeric solve for a new wheel size.
+---
+
+**Three-Rib Lid Counterbalance System (locked 2026-07-24)**
+
+Applies to ANY future product line's lid hinge/counterbalance mechanism —
+this is a reusable STRUCTURAL pattern, not this round's specific numbers.
+A future product's own chamber geometry produces its own real values via
+the same method.
+
+- **Pattern**: 3 identical ribs (not a differentiated center rib) — each
+  carries three real control points: a grab handle, a pivot axle, and a
+  single counterbalance arm (CB1). Start with ONE counterbalance arm;
+  only add a second (differentiated on one rib) if a real moment-balance
+  calculation proves one arm cannot meet the target force range — do not
+  default to a two-arm design as a first attempt.
+- **Physics method**: real Python moment-balance model (not OpenSCAD),
+  using each mass's real CG position and a rotation-formula round-trip
+  self-check (rotate a locked point into the other frame, then back, and
+  confirm you recover the original exactly) to catch coordinate-inverse
+  errors before any number is locked. Target the force at BOTH extremes
+  (closed and open) as the primary constraint — a mid-sweep sign change
+  is expected, not a defect, as long as both endpoints stay within a
+  comfortable range confirmed with the product owner.
+- **Combined stopper/holder**: the counterbalance pipe's own U-prong
+  holder doubles as the hard stop — a single localized contact point/edge
+  against the fixed structure, landed wherever the pipe's own
+  already-solved position makes it free (material-efficient), not at an
+  arbitrarily separate location. The holder wraps only HALF the pipe's
+  own circumference (a real clearance hole for the pipe, plus an
+  additional open-side material removal) — never a full collar — and its
+  two sides are not required to be the same length.
+- **Rib profile**: minimum width, not fixed — grows only at the real
+  transition zones (weld-contact, handle-wrap, counterbalance-branch),
+  connected by smooth free-form curves (a hull-of-circles/"capsule chain"
+  construction reuses this project's own "hull() for rounded shapes"
+  coding rule and gives continuous fillets for free). Ridge/top edge gets
+  one continuous large-radius arc spline. **A rib blade lying in the
+  hinge's own rotation plane (not a flat bracket bolted face-on to a
+  wall) satisfies a "weld-contact zone width" spec through the WELD RUN'S
+  OWN LENGTH along the wall, not by ballooning the blade's perpendicular
+  half-width there** — a real, found-this-round distinction: a wide
+  radius at a weld point that also sits near a wall shared with OTHER
+  hardware (e.g. a folding tray on the same face) needlessly intrudes
+  into that other hardware's own operating envelope. Check this before
+  widening any near-wall zone "for weld strength."
+- **Construction order**: fixed references (pivot axle position, handle
+  bore position, counterbalance-arm position at its OPEN/resting extreme)
+  placed first as real coordinates; the door-side arm built and
+  kinetically swept-tested BEFORE the counterbalance branch is drawn;
+  everything in ONE consistent closed-state/native reference frame — a
+  point specified in the OPEN frame (because that is the natural frame
+  for a stop/rest condition) must be converted to the native frame via
+  the SAME round-trip rotation functions used for the physics check
+  above, never freehanded.
+- **Convex-corner clearance is NOT automatic from a straight offset**: if
+  the counterbalance branch's own path is built by offseting a straight
+  reference edge outward by some margin, that margin is only guaranteed
+  along the FLAT part of the edge — at any convex corner the reference
+  contour turns through, a straight offset segment can swing back inside
+  the intended margin (confirmed this round: a naive straight branch
+  spine passed within 0.01mm of a real fixed corner it was supposed to
+  clear by 20mm). Trace a real arc (sampled, each point round-trip-
+  converted to native frame) around any such corner instead of a single
+  straight waypoint.
+- **Apex/corner clearance rule**: minimum 20mm real clearance, worst
+  case, across the FULL swept rotation (fine steps, not just the two
+  endpoints) — verify via a real numeric sweep (Python or equivalent),
+  not assumed from the construction method alone.
+- **Check shared-face interference explicitly, do not assume disjoint
+  Y/X territory protects you**: if this mechanism shares a face with
+  other kinetic hardware (trays, shelves, doors), sweep the FULL
+  combinatorial space (this mechanism's own angle × each other
+  mechanism's own angle) — a mechanism whose OWN geometry review looks
+  clean in isolation can still physically conflict with adjacent hardware
+  at their shared wall/weld zone, even at each mechanism's own default
+  rest state, not only during simultaneous motion. If found and not
+  resolvable within the round's own stated scope (e.g. the interfering
+  hardware is frozen/DO NOT TOUCH), flag it explicitly as a real,
+  unresolved cross-subsystem conflict — do not report the sweep as clean.
+
 ---
 
 ## v1 Judgment Calls (technical, cc-made, flagged per R-009/general

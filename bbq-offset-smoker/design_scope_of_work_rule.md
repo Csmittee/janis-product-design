@@ -1,5 +1,20 @@
 # BBQ Offset Smoker — Design Scope of Work
-> Version 1.15 — 2026-07-21
+> Version 1.16 — 2026-07-24
+> Changes: bbq-lid-hinge-three-rib-v2 — the lid's real hinge/handle/
+> counterbalance mechanism is now built (`BBQ-offset-smoker-base-v6.scad`,
+> Accessories branch), replacing the long-disabled `lid_hardware()` stub
+> (retired, `BBQ-chambers-v23.scad`). Functional Feature #1 rewritten:
+> "~85-90% self-balance" language replaced by the final locked single-arm
+> (CB1-only) design — see rules-bbq-fab.md's new "Three-Rib Lid
+> Counterbalance System" convention (cross-referenced below) for the
+> reusable structural pattern, and docs/lid-hinge-counterbalance-calc.md
+> for the full real derivation. REAL, FLAGGED, NOT YET RESOLVED: this
+> mechanism's own rib0/rib2 share the Y=0 face with the relocated prep
+> trays and have a real, confirmed geometric interference at their shared
+> weld zone (see that calc doc, Section 6) — this scope entry is NOT
+> revised to claim full compatibility; a follow-up decision from Janis is
+> still needed.
+> Previous: 1.15 — 2026-07-21
 > Changes: Janis toggled the outer shell's own end-cap visibility off and
 > still saw a wall — real cause: the outer shell's own tuck-under flange
 > was built as a SOLID block since v14, never questioned, creating two
@@ -632,13 +647,33 @@ yet Janis-reconfirmed in this exact wording (see flag above)
   additive gap), mounted Y=0 side only, hinged to the chamber's own fixed
   band at real Z=980mm (read live from the chamber's own restored master
   datum, see Envelope above). Own independent fold parameters
-  (`tray0_angle_deg`/`tray1_angle_deg`, -90° stowed / 0° deployed). A lid
-  counterbalance/fulcrum mechanism is the planned NEXT addition here
-  (Janis still developing the concept, not designed this round)
+  (`tray0_angle_deg`/`tray1_angle_deg`, -90° stowed / 0° deployed). The
+  lid counterbalance/fulcrum mechanism is now real (2026-07-24,
+  bbq-lid-hinge-three-rib-v2) — 3 identical ribs + handle rod + CB1 pipe,
+  driven by this file's own `door_open_deg` (which also reassigns the
+  chambers file's own `lid_open_deg` after the include chain). Active
+  file: `BBQ-offset-smoker-base-v6.scad`. See Functional Feature #1 above
+  and docs/lid-hinge-counterbalance-calc.md for the full real derivation,
+  including a flagged, unresolved geometric interference with the trays
+  immediately above.
 
 ## Functional Features — per addendum Section 3a, see flag above
-1. Full-length counterbalanced lid — lever + weight, target ~85-90%
-   self-balance (slight self-closing bias, not full balance)
+1. Full-length counterbalanced lid — 3 identical ribs (handle + pivot
+   axle + a SINGLE counterbalance arm, CB1, each), no fill weight.
+   FINALIZED 2026-07-24 (bbq-lid-hinge-three-rib-v2, `BBQ-offset-smoker-
+   base-v6.scad`) — supersedes the old "~85-90% self-balance, lever +
+   weight" language: a real Python moment-balance model (mass/CG-based,
+   round-trip rotation self-check) found CB1 alone, repositioned
+   (170.8mm from apex D, 8.06kg, no fill), meets the real target —
+   comfortable force at both the closed and open extremes with an
+   expected mid-sweep sign change (push becomes pull), not a defect, per
+   Janis's own confirmed UX goal. See rules-bbq-fab.md's new "Three-Rib
+   Lid Counterbalance System" convention for the reusable structural
+   pattern and docs/lid-hinge-counterbalance-calc.md for the full
+   derivation. REAL, FLAGGED, UNRESOLVED: a real geometric interference
+   with the relocated prep trays (Feature #6 below) at their shared Y=0
+   weld zone — see the calc doc's own Section 6, a decision from Janis is
+   still needed (operating-sequence note vs. a follow-up redesign round).
 2. Full-width lift handle rail, 150mm standoff, 2+ mounting posts
 3. 2+ floor drain valves, spaced front-third / back-third of chamber
 4. Firebox door — lockable, off-shelf spiral-wire heat-safe handle

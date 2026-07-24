@@ -667,6 +667,22 @@ grep). Relocated to the Accessories branch
 (`BBQ-offset-smoker-base-v3.scad`, below) — NOT gone from the product,
 just no longer built in this file.
 
+## BBQ-offset-smoker-base-v6.1.scad — now the active file, see below
+
+v6.1 (direct-cc tuning pass, 2026-07-24, R-011 — Janis's own live review
+of a real v6 render, no new Claude Web prompt): 4 real fixes — kinetic
+params relocated to one block before ASSEMBLY; door-side arm's lower
+anchor moved from apex A to the real parting line (`NEW_SPLIT_Z`);
+`HANDLE_Y` -140->-110 (pulled back 30mm, flagged consequence: `R_HANDLE`
+551.9->534.3mm, force curve now stale); door-side spine pulled off the
+lid's own real surface via a new `DOOR_ARM_STANDOFF`(15mm). Everything
+else (CB1/stopper/prong/apex-D-arc/axle) UNCHANGED from v6 — Janis has
+explicitly deferred that review until the door can be opened. Full
+detail: docs/lid-hinge-counterbalance-calc.md Section 7,
+cc_chat_log.md. Module table below still describes v6's own content —
+only the specific points/constants named above actually changed; not
+re-tabulated line-by-line for this x.1 patch.
+
 ## BBQ-offset-smoker-base-v6.scad
 
 v6 (bbq-lid-hinge-three-rib-v2, 2026-07-24): `include` bumped

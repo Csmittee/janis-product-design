@@ -1,5 +1,24 @@
 # knowledge.map
-# Version: v86 — 2026-07-24
+# Version: v87 — 2026-07-24
+# Changes: bbq-lid-hinge-three-rib-v2 direct-cc tuning pass (R-011,
+# Janis's own live review of the real v6 render, no new Claude Web
+# prompt) — bbq-offset-smoker/ base assembly now
+# BBQ-offset-smoker-base-v6.1.scad (source v6, x.1 per Janis's own
+# instruction, not everything closed out yet). 4 real fixes: kinetic
+# params (`door_open_deg`/tray angles) relocated to one block before
+# ASSEMBLY (Janis couldn't find/drive them); door-side arm's lower anchor
+# moved from apex A (on the FIXED shell) to the real parting line
+# (`NEW_SPLIT_Z`); `HANDLE_Y` -140->-110 (pulled back 30mm, flagged
+# consequence: `R_HANDLE` 551.9->534.3mm, force curve now stale, not
+# recomputed); door-side spine pulled off the lid's own real surface via
+# a new `DOOR_ARM_STANDOFF`(15mm real outward-normal offset) — fixes
+# Janis's own reported "sunk into the door"/"ridge shorter than expected"
+# finding. No OpenSCAD in this execution environment — none of the 4
+# fixes independently re-rendered by cc. CB1/stopper/prong/apex-D-arc/
+# axle geometry UNCHANGED from v6 (Janis's own explicit deferral until
+# the door can be opened). Full detail: docs/lid-hinge-counterbalance-
+# calc.md Section 7, cc_chat_log.md.
+# Previous: v86 — 2026-07-24
 # Changes: bbq-lid-hinge-three-rib-v2 — bbq-offset-smoker/ row updated:
 # chambers now BBQ-chambers-v23.scad (source v22), understructure now
 # BBQ-understructure-v16.scad (source v15, PURE POINTER-ONLY BUMP —

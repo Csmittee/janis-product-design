@@ -245,7 +245,50 @@ cc_chat_log.md for the full matrix.
 
 ---
 
-## 7. Locked values used, for cross-check against the built geometry
+## 7. v6.1 update — direct-cc tuning pass (2026-07-24, Janis's own live render review)
+
+Janis reviewed a real v6 render and gave 4 real, direct instructions
+(R-011 direct-cc pass, no new Claude Web prompt — see
+`BBQ-offset-smoker-base-v6.1.scad`'s own header for full detail):
+
+1. Kinetic parameters (`door_open_deg`, `tray0_angle_deg`,
+   `tray1_angle_deg`) relocated to one block just before ASSEMBLY —
+   Janis could not find/drive them where v6 had put `door_open_deg`
+   (right after the include line) and reported the tray angle controls
+   missing too.
+2. **Real fix**: the door-side arm reached down to apex A, which sits
+   BELOW the real parting line (`NEW_SPLIT_Z`) — i.e. on the FIXED
+   shell, not the lid. The arm's own lower anchor is now the real
+   parting-line point on the same wall edge; the handle reaches out from
+   there, not from apex A.
+3. **Real fix**: `HANDLE_Y` -140 → -110 (pulled back 30mm) — Janis's own
+   direct instruction, the handle overhung too far outward from the
+   chamber in the real render. `HANDLE_Z` confirmed correct, unchanged.
+   **Flagged consequence**: `R_HANDLE` (radial pivot-to-handle distance)
+   changes 551.9mm → 534.3mm — the swept force curve in Section 3 above
+   assumed the OLD handle position and is now stale. NOT recomputed this
+   round (Janis has explicitly deferred the stopper/counterbalance
+   review until the door can be opened) — flagged here for that
+   follow-up.
+4. **Real fix**: the door-side spine points (previously centered exactly
+   ON the octagon's own real surface) are now pulled outward by a real
+   `DOOR_ARM_STANDOFF`(15mm) along each wall segment's own outward normal
+   — Janis's own direct report was that the rib looked "sunk into the
+   door" with a "shorter than expected" ridge, consistent with roughly
+   half the rib's own material being embedded in the lid's solid body
+   under the old (surface-centered) construction.
+
+No OpenSCAD available in this execution environment to independently
+confirm any of these visually — all 4 are real code changes responding
+directly to Janis's own live render observations, not independently
+re-verified by cc via a render of its own. Everything else (CB1/stopper/
+prong geometry, the apex-D corner-arc fix, axle/UCP204-12 placeholders)
+is UNCHANGED from v6 — Janis has explicitly deferred reviewing that area
+until the door can be opened.
+
+---
+
+## 8. Locked values used, for cross-check against the built geometry
 
 - CB1 mass: 8.06kg, no fill weight — UNCHANGED, matches
   `BBQ-offset-smoker-base-v6.scad`'s `CB1_MASS_KG`.

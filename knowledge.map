@@ -1,5 +1,46 @@
 # knowledge.map
-# Version: v85 — 2026-07-22
+# Version: v86 — 2026-07-24
+# Changes: bbq-lid-hinge-three-rib-v2 — bbq-offset-smoker/ row updated:
+# chambers now BBQ-chambers-v23.scad (source v22), understructure now
+# BBQ-understructure-v16.scad (source v15, PURE POINTER-ONLY BUMP —
+# v15 itself untouched, a real chain-break fix: v15's own `include`
+# pointed at v22 directly, which would have kept the retired stub in the
+# real render chain), base assembly now BBQ-offset-smoker-base-v6.scad
+# (source v5). TASK 7.5 (chambers): `lid_hardware()`/`LEVER_ARM`/
+# `COUNTERWEIGHT_KG`/`show_lid_hardware` all RETIRED (R-009 confirmed
+# dead, zero other content changed). TASK 3 (base, real): the lid's real
+# hinge/handle/counterbalance mechanism — 3 identical ribs, ONE CB1 arm
+# (8.06kg, 170.8mm from apex D along the D-E edge, 65.8mm standoff, no
+# fill weight), driven by a new `door_open_deg` Customizer param that
+# also reassigns the chambers file's own `lid_open_deg` after the include
+# chain (last-top-level-assignment-wins, empirically verified prior
+# session). Real Python moment-balance model (not OpenSCAD) — physics
+# LOCKED per the source prompt, not recomputed this round; full
+# derivation in new docs/lid-hinge-counterbalance-calc.md.
+# REAL, FLAGGED FINDINGS (not silently absorbed): (1) the source prompt's
+# own CB1-position formula and its own illustrative decimal disagree —
+# built from the formula (598.6,1207.1 open-state), not the decimal
+# (536.5,1269.2). (2) REAL BUG FOUND+FIXED VIA A ROUND-TRIP SWEEP CHECK
+# before shipping: a naive straight branch spine from the pivot to CB1
+# passes within 0.01mm of apex D at ~83° — fixed via a real 45mm-radius
+# arc around D (9 sampled points, each round-trip-converted to native
+# frame), re-verified: ~24.9mm real net clearance (target 20mm) across
+# the full 0-90° sweep. (3) REAL, SIGNIFICANT, UNRESOLVED: rib0 (X=250)/
+# rib2 (X=665) have a confirmed geometric interference with the existing
+# prep trays at their shared Y=0 weld zone (up to -35mm overlap, present
+# even at each mechanism's own default rest state) — reducing the
+# weld-zone's own width helped (45mm->22-25mm) but did not resolve it;
+# moving RIB_X doesn't help either (the trays' combined footprint leaves
+# only one ~5mm gap for 3 required ribs). Flagged for Janis: an
+# operating-sequence note vs. a follow-up redesign round — NOT silently
+# declared clean. No real OpenSCAD/CGAL available in this execution
+# environment — every check above is a real Python geometric/analytic
+# sweep (rotation round-trips, segment/rectangle and segment/circle
+# distance sweeps at fine angle steps), not a live F6 render; stated
+# explicitly, not claimed as a render pass. New "Three-Rib Lid
+# Counterbalance System" convention locked into rules-bbq-fab.md
+# (v1.6->1.7), generalized/reusable for future product lines.
+# Previous: v85 — 2026-07-22
 # Changes: bbq-rear-fender-arch-redesign — bbq-offset-smoker/ row updated:
 # understructure now BBQ-understructure-v15.scad (source v14), base
 # assembly now BBQ-offset-smoker-base-v5.scad (source v4, pure pointer-

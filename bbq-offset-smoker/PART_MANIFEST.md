@@ -4,7 +4,22 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.29 — 2026-07-22 (bbq-rear-fender-arch-redesign): understructure
+# Version: 1.30 — 2026-07-24 (bbq-lid-hinge-three-rib-v2): chambers table
+# REBUILT — source now BBQ-chambers-v23.scad (source v22). `lid_hardware()`
+# module + `LEVER_ARM`/`COUNTERWEIGHT_KG` constants + `show_lid_hardware`
+# toggle + its ASSEMBLY call all RETIRED (R-009 confirmed dead — zero other
+# content changed, byte-diffed against v22). Understructure table: new
+# BBQ-understructure-v16.scad row (PURE POINTER-ONLY BUMP from v15 — v15
+# itself untouched, a real chain-break fix, see that file's own header:
+# v15's own `include` pointed at v22 directly, which would have kept the
+# stale stub in the real render chain even with v23 created). Base assembly
+# table REBUILT — new BBQ-offset-smoker-base-v6.scad: the lid's real hinge/
+# handle/counterbalance mechanism (3 identical ribs, ONE CB1 arm, no fill
+# weight), replacing the retired chambers stub. REAL, FLAGGED, NOT RESOLVED:
+# rib0/rib2 have a confirmed geometric interference with the existing prep
+# trays at their shared Y=0 weld zone — see
+# docs/lid-hinge-counterbalance-calc.md.
+# Previous: 1.29 — 2026-07-22 (bbq-rear-fender-arch-redesign): understructure
 # table REBUILT — source now BBQ-understructure-v15.scad (source v14). Real
 # PROFILE redesign of rear_fender() — NOT a linkage/datum change. Replaces
 # the flat-plate-with-curve-down-zone cross-section with a real wheel-arch
@@ -573,7 +588,17 @@
 # toggle, per the Toggle-Completeness Rule (cc_rules.md). "(none — always
 # on, safety-critical)" is the ONLY other permitted value.
 
-## BBQ-chambers-v22.scad
+## BBQ-chambers-v23.scad
+
+v23 (bbq-lid-hinge-three-rib-v2, Section 7.5): `lid_hardware()` module +
+`LEVER_ARM`/`COUNTERWEIGHT_KG` constants + `show_lid_hardware` toggle +
+its ASSEMBLY call line all RETIRED (R-009 confirmed dead: zero real
+consumers, `show_lid_hardware=false` since the v2 ridge-hinge redesign —
+the real counterbalance mechanism now lives in
+`BBQ-offset-smoker-base-v6.scad`'s own Accessories branch, a genuine
+duplication risk with the stale stub still present). No other content
+changed — every other module/constant/value below is BYTE-IDENTICAL to
+v22 (confirmed via diff before committing).
 
 v22 TASK 1/2 (bbq-chambers-grate-master-datum-restore-and-level-drop):
 grate restored as real master datum (`GRATE_Z`, renamed from
@@ -591,7 +616,6 @@ restructure + drop).
 | `lid_territory_margin_fill()` | UNCHANGED CODE. Real, confirmed contact vs `outer_shell()`'s own flange at the chamber's rear-territory zone — SAME real weld contact as every version since v14 | a NEW conflict introduced by this round's firebox changes — confirmed unchanged/pre-existing, not a regression | (none — sub-part of `chamber_shell()`, no separate toggle) |
 | `firebox_passage()` | v16 TASK A REBUILT — Janis's own words: "the hole shape is dictate by the cut on the chamber, nothing else". Real root cause of v15's own defect: `firebox_passage_profile()` sized its circle (194.898mm dia) purely from the cylinder's own 0.008-fire-volume target-area rule, with ZERO reference to real chamber material — 33.233mm of its own bottom sat BELOW chamber_floor_z entirely (a literal hole through nothing, confirmed via CGAL+echo, matching Janis's screenshot). FIX: size/position now DERIVED from the real vertical band where the cylinder's own clear bore (225mm) overlaps the chamber's real octagon material at the rear wall (`CYL_WALL_MARGIN`=15mm/`CHAMBER_EDGE_MARGIN`=15mm real insets both ends) — built as `intersection(candidate circle, real chamber material)`, so the final shape is, by construction, always the real chamber cut. Real new `PASSAGE_R`=65.335mm (was 97.449mm — genuinely smaller, a real consequence of deriving from actual available space, not a defect). Real CGAL: passage now FULLY contained in real chamber material (zero residual outside it, confirmed via a real `difference()` probe) AND fully clear of the cylinder's own bore wall (confirmed empty overlap) | a placeholder — both the target radius derivation and the belt-and-suspenders real-material intersection are load-bearing, not decorative | (none — sub-part of `chamber_shell()`, no separate toggle) |
 | `lid(lid_open_deg)` | UNCHANGED CODE. Clamshell lid, 3 flat panels, hinged along the ridge midpoint | | `show_lid` |
-| `lid_hardware(lid_open_deg)` | UNCHANGED code, stale, still deferred | | `show_lid_hardware` — still FALSE by default |
 | `firebox(firebox_door_open_deg)` | TWO fully independent welded assemblies (fire cylinder + outer shell, see next rows). 4 real sub-part toggles (`show_fire_cylinder`/`show_fire_cylinder_end_cap`/`show_outer_shell`/`show_outer_shell_end_cap`), Janis's own explicit request — each independent of `show_firebox` below (which still gates the whole assembly). `fire_cylinder_partition()`/`firebox_door()` NOT separately toggled (not part of that round's ask). v19: `ash_tray_out_pct` parameter DROPPED (`ash_tray()` itself retired, see below — zero remaining consumers). v22 REAL FIX: `FIREBOX_TOP_Z_FIXED` (governs `firebox_floor_z`/`firebox_z0`/`firebox_z1`/`CYL_Z_CENTER`) was an INDEPENDENT hardcoded literal (1000) with zero formula link to the chamber's own grate/apex-A datum chain — only numerically coincidental. Re-pointed to the restored master `GRATE_Z` so the entire firebox genuinely follows the grate-master-datum-restore-and-level-drop round's own -100mm drop (confirmed via live echo: firebox_floor_z 420->320, firebox_z1 1000->900) | a shell that automatically tracked the chamber body before this round — it did NOT, confirmed via grep, this was a real, silent gap now closed | `show_firebox` |
 | `fire_cylinder()` / `fire_cylinder_end_cap()` | Round, 456mm diameter (62mm wall clearance vs the outer shell), full `FIREBOX_L`(580mm) span, open both ends. `fire_cylinder_end_cap_2d()` v19 REBUILT via the Dual End-Cap Footprint Pattern (RULE 4, `.claude/SKILL_joint_construction.md`) — REPLACING the old `intersection(circle, chamber_octagon_or_open_below_2d())` construction (RETIRED, real confirmed defect: Janis found a real remaining hole by looking inside the built cylinder — the octagon's own real half-width at chamber_floor_z, 126.335mm, is LESS than the circle's own real half-width there, 219.6mm, so the intersection clipped the circle down and the chamber has zero material outside its own true edge to fill what got clipped away — same failure class as v16's original outer-shell mistake, just never checked on this specific end cap until this round). FIX: `union(circle, true_octagon_profile())`, bounded by new `fire_cylinder_end_cap_bound_2d()` (the cylinder's own real diameter box — without it a bare union would pull in unlimited octagon material, the same overreach bug already found once this session on the outer shell), minus the shared passage cut. Real CGAL/STL: end cap now always >= the native circle (2mm real margin, confirmed empty residual, not just an exact-boundary touch), real weld contact with the chamber's own wall material preserved (non-empty), own real bbox exactly matches the cylinder's own diameter envelope (no overreach). Independently toggleable (`show_fire_cylinder`/`show_fire_cylinder_end_cap`, UNCHANGED) | connected to or touching the outer shell anywhere — confirmed via a real mandatory zero-contact CGAL check | `show_fire_cylinder` / `show_fire_cylinder_end_cap` |
 | `fire_cylinder_partition()` | Square end plate (matches `outer_shell_footprint_2d()`'s own real 580x580 exterior footprint, plain/unclipped) minus a circle matching the cylinder's own real diameter (+2e real clearance) — physically locates the cylinder within the square outer shell. Positioned at the door/front end (X=[firebox_x1-wall_t-e,firebox_x1-e]). Real CGAL: non-empty contact vs `outer_shell()`'s own wall, EMPTY vs the cylinder and the door | welded/fused to the cylinder itself — a separate locating collar, real clearance not material overlap | (none — sub-part of `firebox()`, no separate toggle) |
@@ -601,7 +625,19 @@ restructure + drop).
 | `grill_grate()` | UNCHANGED CODE, UNCHANGED position this round (chamber_floor_z/GRATE_Z untouched) | | `show_grate` |
 | `floor_drains()` | UNCHANGED CODE | | `show_drains` |
 
-## BBQ-understructure-v15.scad
+## BBQ-understructure-v16.scad
+
+v16 (bbq-lid-hinge-three-rib-v2, 2026-07-24): PURE POINTER-ONLY BUMP from
+v15 — `include` bumped `BBQ-chambers-v22.scad` -> `BBQ-chambers-v23.scad`
+(Section 7.5's stub retirement) only. v15 itself is NOT edited (kept
+byte-identical, on record) — this new file is a real, necessary chain-
+break fix: v15's own `include` pointed at v22 directly, so leaving
+base-v6 pointed at v15 unchanged would have kept the stale stub in the
+real render chain even after v23 was created (same failure class as the
+2026-07-22 bbq-base-chain-recalibration incident). R-009 real consumed-
+datum check (grep): every real chambers identifier this file references
+has the IDENTICAL declaration in v23 as in v22 — zero-consequence bump.
+Table content below UNCHANGED from v15.
 
 v15 (bbq-rear-fender-arch-redesign, 2026-07-22): `rear_fender()` PROFILE
 REBUILT — see the `rear_fenders()` row below for the full real formula/
@@ -631,7 +667,14 @@ grep). Relocated to the Accessories branch
 (`BBQ-offset-smoker-base-v3.scad`, below) — NOT gone from the product,
 just no longer built in this file.
 
-## BBQ-offset-smoker-base-v5.scad
+## BBQ-offset-smoker-base-v6.scad
+
+v6 (bbq-lid-hinge-three-rib-v2, 2026-07-24): `include` bumped
+`BBQ-understructure-v15.scad` -> `BBQ-understructure-v16.scad` (pure
+pointer bump, see that file's own header). NEW real content: the lid's
+hinge/handle/counterbalance mechanism (TASK 3, `lid_hinge_assembly()` —
+see its own row below), replacing the retired chambers stub. Tray module
+content (TASK 2) UNCHANGED, byte-identical to v5.
 
 v5 (bbq-rear-fender-arch-redesign, 2026-07-22): PURE POINTER-ONLY BUMP
 from v4 — `include` bumped `BBQ-understructure-v14.scad` ->
@@ -663,11 +706,22 @@ not a separate standalone probe (PR #143's own gap).
 | Module | What it IS | What it is NOT (only if real confusion risk exists) | Toggle |
 |---|---|---|---|
 | `trays()` / `tray(x0, angle_deg)` / `tray_hinges(x0)` | The relocated prep tray (TASK 2), 2 trays, `chamber_L/2`=457.5mm long (X) each, 300mm deep (Y) when deployed, 2mm plate (thin-shell, per rules-bbq-fab.md Construction Method), 5mm gap between them — real, CONFIRMED ADDITIVE (`TRAY_TOTAL_SPAN`=920mm, 5mm MORE than chamber_L, not shrunk to fit). Mounted ONLY on the Y=0 side (confirmed by construction — no Y=chamber_W-side geometry exists). Hinges (2 per tray) weld to TASK 1's new fixed band at `HINGE_Z`=980mm (read live, `NEW_SPLIT_Z-20`). Own independent kinetic parameters `tray0_angle_deg`/`tray1_angle_deg`, real range -90°(stowed)/0°(deployed). 2 REAL BUGS FOUND+FIXED VIA LIVE CGAL SWEEPS: (1) an early draft deployed the plate toward +Y (into the chamber, confirmed real collision vs `front_wheel_support()` at -30°/-60°) — fixed, now deploys toward -Y (outward, per the Standing Orientation Convention). (2) pivoting exactly at the wall face made the plate's own 2mm thickness sweep into real wall material at intermediate angles (`Simple: no` at 0°) — fixed via a real 5mm `HINGE_PIVOT_OFFSET` hinge-knuckle standoff. Also found+fixed: `HINGE_OFFSET` 60->90mm (tray1's far hinge originally overlapped the firebox's own real flange material, bisected the real boundary to X=858mm via CGAL). Real live CGAL, all re-verified after fixes: tray sweep (9 angles, -90° to 0°) vs `chamber_shell()`+closed `lid()` EMPTY (beyond the intentional hinge weld contact), vs `firebox()` EMPTY; both trays deployed vs each other EMPTY (5mm real margin, confirmed via CGAL not just arithmetic); hinges vs new fixed band NON-EMPTY (real weld contact); hinges vs lid sweep EMPTY at every angle checked. RE-VERIFIED 2026-07-22 (bbq-base-chain-recalibration) against the REAL, NOW-PRESENT understructure geometry in this same unified file (`rear_axle()`/`rear_fenders()`/`front_wheel_support()`, not a separate standalone probe) — EMPTY at all 9 swept angles. Full unified assembly Simple:yes (4377 facets, 6 volumes), zero double-rendered chamber geometry confirmed via facet arithmetic | the OLD `prep_shelf()`/`prep_shelves()` construction (removed from Understructure v12) — a genuinely different mount point, hinge mechanism, and kinetic range | `show_trays` |
+| `lid_hinge_assembly(door_open_deg)` | NEW (TASK 3, 2026-07-24): the lid's real hinge/handle/counterbalance mechanism — 3 identical ribs (`lid_rib_assembly()` x3 at `RIB0_X`/`RIB1_X`/`RIB2_X`=250/457.5/665mm), a handle rod + CB1 pipe (both rotate WITH the ribs via `lid_rib_rotate()`, the same transform), and a FIXED axle + 2 UCP204-12 pillow-block placeholders (does NOT rotate — Section 4's "fixed references first" rule). Real construction order followed: fixed refs placed first (axle at `fc`, handle bore at its closed position, CB1 at its OPEN-state position, all real coordinates); door-side arm (rib profile from handle through A/B/C to the pivot) built in native/closed frame; CB-side branch built via a real 45mm arc around apex D (converted to native frame via a round-trip rotation self-check) — REAL BUG FOUND+FIXED: a naive straight branch spine would have passed within 0.01mm of apex D at ~83° (see docs/lid-hinge-counterbalance-calc.md). CB1 position built from the source prompt's own LITERAL FORMULA (598.6,1207.1 open-state), not its own illustrative decimal (536.5,1269.2) — flagged mismatch, see calc doc. Real Python sweep confirms apex-D clearance ~24.9mm net (target 20mm). U-prong stopper/holder wraps only HALF the CB1 pipe (a full clearance hole + an extra open-side material removal, not a full collar), contact lands at CB1's own 170.8mm-from-D position. *** REAL, SIGNIFICANT FINDING, NOT RESOLVED THIS ROUND ***: rib0 (X=250, inside tray0's span) and rib2 (X=665, inside tray1's span) have a confirmed real geometric interference with `trays()` above at their shared Y=0 weld zone (up to -35mm overlap, present even at each mechanism's own default rest state) — reducing the weld-zone's own local width helped (45mm->22-25mm) but did not resolve it; moving RIB_X doesn't help either (the trays' combined footprint leaves only one ~5mm gap for 3 required ribs). Flagged in cc_chat_log.md and docs/lid-hinge-counterbalance-calc.md for Janis's decision — NOT silently absorbed | a differentiated center rib, or a 2-arm (CB1+CB2) design — both explicitly superseded this round, see the source prompt's own Section 2 | `show_lid_hinge` |
 
-Lid counterbalance/fulcrum mechanism (TASK 3): deliberately NOT designed
-this round (Janis still developing the concept) — zero module/stub/
-toggle exists, per the prompt's own explicit instruction. Header note
-present in the file, not code.
+Lid counterbalance/fulcrum mechanism (TASK 3): retired the "deliberately
+NOT designed" note above — real as of 2026-07-24, see the row above and
+docs/lid-hinge-counterbalance-calc.md for the full derivation.
+
+## Toggle-completeness count (2026-07-24, v1.30)
+
+BBQ-chambers-v23.scad ASSEMBLY: `show_lid_hardware` REMOVED (module +
+toggle + ASSEMBLY call all retired together, R-009 confirmed dead) — was
+15 real toggles, now 14. BBQ-offset-smoker-base-v6.scad ASSEMBLY: 1 new
+module called (`lid_hinge_assembly`), 1 new real toggle
+(`show_lid_hinge`) — 0 gaps; `trays`/`show_trays` UNCHANGED.
+BBQ-understructure-v16.scad UNCHANGED from v15 (pure pointer bump, zero
+toggle change). Combined total: 19 real toggles (was 19 — net zero, one
+retired + one added).
 
 ## Toggle-completeness count (2026-07-22, v1.27)
 

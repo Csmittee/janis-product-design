@@ -1,5 +1,17 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.24 — 2026-07-21
+> Version 1.25 — 2026-07-24
+> Changes: bbq-lid-hinge-three-rib-v2 — the lid's real hinge/handle/
+> counterbalance mechanism (3 identical ribs, ONE CB1 arm) is now built,
+> `BBQ-offset-smoker-base-v6.scad` (Accessories branch), replacing the
+> long-disabled `lid_hardware()` stub (retired, `BBQ-chambers-v23.scad`).
+> New PART B subtree entry + new PART C Kinetic Dual-View row
+> (`door_open_deg`). REAL, FLAGGED, NOT RESOLVED: a real geometric
+> interference between rib0/rib2 and the relocated prep trays at their
+> shared Y=0 weld zone — see docs/lid-hinge-counterbalance-calc.md.
+> `include` chain: base-v6 -> `BBQ-understructure-v16.scad` (pure pointer
+> bump, v15 itself untouched — a real chain-break fix, see that file's
+> own header) -> `BBQ-chambers-v23.scad`.
+> Previous: 1.24 — 2026-07-21
 > Changes: Janis toggled `show_outer_shell_end_cap` off and still saw a
 > wall — real cause: `outer_shell()`'s own flange (50mm tuck-under) was
 > built as a SOLID block since v14, never questioned, creating two
@@ -801,10 +813,10 @@ BBQ Offset Smoker V9 (top assembly)
     Real, CGAL-confirmed: fender+wheels+lid-shift+trays ALL present
     together in ONE unified render [4377 facets, 6 volumes], zero
     double-rendered chamber geometry [confirmed via facet arithmetic: 4317
-    understructure+chambers + 60 tray facets = 4377 exactly]. Planned NEXT
-    addition: a lid counterbalance/fulcrum mechanism, Janis still
-    developing the concept — deliberately NOT designed this round, header
-    note only, zero code)
+    understructure+chambers + 60 tray facets = 4377 exactly]. Lid hinge/
+    handle/counterbalance mechanism now REAL (2026-07-24,
+    bbq-lid-hinge-three-rib-v2, `BBQ-offset-smoker-base-v6.scad`) — see
+    its own subtree entry below)
     └── Prep trays x2 (Parent: the Cook Chamber's own NEW fixed band,
         above — real hinge weld point, not an independently-derived
         datum. 457.5mm long [X, `chamber_L/2`] x300mm deep [Y, deployed]
@@ -840,6 +852,36 @@ BBQ Offset Smoker V9 (top assembly)
         │   to 0°[deployed,horizontal], own independent parameter
         └── Kinetic: tray1_angle_deg — same real range, independent from
             tray0_angle_deg [not shared, per spec]
+    └── Lid hinge/handle/counterbalance (2026-07-24, bbq-lid-hinge-
+        three-rib-v2, `BBQ-offset-smoker-base-v6.scad` — real, replaces
+        the long-disabled `lid_hardware()` stub [retired same round,
+        `BBQ-chambers-v23.scad`, R-009 confirmed dead]. Parent: the
+        chamber's own real octagon vertices A-E + DATUM_Z_RIDGE/chamfer
+        [reused live, not redrawn]. 3 IDENTICAL RIBS [door-side arm traces
+        A-B/B-C, CB-side branch traces D-E offset 20mm outward via a real
+        45mm arc around apex D — REAL BUG FOUND+FIXED: a naive straight
+        spine passed within 0.01mm of D at ~83°, see
+        docs/lid-hinge-counterbalance-calc.md], at RIB_X=250/457.5/665mm.
+        ONE counterbalance arm [CB1, 8.06kg, 170.8mm from apex D along the
+        D-E edge, 65.8mm standoff, no fill weight — real Python
+        moment-balance model, force stays comfortable at both extremes
+        with an expected mid-sweep sign change]. REAL, FLAGGED FINDING:
+        the source prompt's own CB1-position formula and its own
+        illustrative decimal disagree — built from the formula, not the
+        decimal, see calc doc. Combined stopper/holder: a U-shaped prong
+        wraps HALF the CB1 pipe's own circumference, contact lands at the
+        pipe's own 170.8mm position [material-efficient]. Axle/UCP204-12
+        pillow blocks: FIXED reference geometry, does not rotate.
+        *** REAL, SIGNIFICANT FINDING, NOT RESOLVED THIS ROUND ***: rib0/
+        rib2 share the Y=0 face with Prep trays 0/1 above and have a
+        real, confirmed geometric interference at their shared weld zone
+        [up to -35mm overlap, present even at each mechanism's own
+        default rest state] — flagged for Janis, see calc doc Section 6
+        )
+        └── Kinetic: door_open_deg — real range 0°[closed] to 90°[open],
+            also reassigns the chambers file's own lid_open_deg after the
+            include chain (last-top-level-assignment-wins, empirically
+            verified prior session)
 ```
 
 ## PART C — Kinetic Dual-View Table
@@ -858,6 +900,7 @@ verified via real CGAL render this session (not just the default state
 | ~~Prep shelves~~ | REMOVED v12 | REMOVED v12 | Module + `shelf_deployed` parameter REMOVED entirely from Understructure (2026-07-22) — relocating to a separate accessories file next round, own new kinetic parameter(s) to be established there, not carried over |
 | Prep tray 0 (base-v2, NEW) | stowed (`tray0_angle_deg=-90`, vertical) | deployed (`tray0_angle_deg=0`, horizontal, default) | Continuous angle, own independent parameter. Real live CGAL: full sweep (9 steps) vs chamber shell/closed lid/understructure/firebox all EMPTY (2 real bugs found+fixed first, see PART B) |
 | Prep tray 1 (base-v2, NEW) | stowed (`tray1_angle_deg=-90`, vertical) | deployed (`tray1_angle_deg=0`, horizontal, default) | Continuous angle, own independent parameter (NOT shared with tray 0, per spec) — same real verification as tray 0, plus both-deployed-simultaneously vs each other EMPTY (5mm real margin) |
+| Lid hinge/handle/CB1 (base-v6, NEW, 2026-07-24) | closed (`door_open_deg=0`) | open (`door_open_deg=90`) | Continuous angle, real Customizer param — also reassigns the chambers file's own `lid_open_deg` after the include chain (last-top-level-assignment-wins), so the rib assembly + visual lid shell move together. Real Python sweep (0.01° steps): apex-D clearance ~24.9mm net (target 20mm, real corner-arc fix applied — see docs/lid-hinge-counterbalance-calc.md). *** REAL DEFECT FLAGGED, NOT FIXED THIS ROUND *** rib0/rib2 have a confirmed geometric interference with Prep tray 0/1 (above) at their shared Y=0 weld zone (up to -35mm overlap) — present even at each mechanism's own default rest state, not resolved by width/position tuning within this round's scope (trays frozen). Needs a follow-up decision/round |
 | Tow handle (v6 TASK 6) | towing/use (`handle_fold_deg=0`, horizontal) | folded vertical storage (`handle_fold_deg=90`, UNCHANGED default from v5) | Continuous angle. `TRIANGLE_Z`=`FRONT_AXLE_Z` directly now (228.6mm, was `FRONT_AXLE_Z+100`=328.6mm floating above the axle plane — Janis's own annotated finding, fixed) + new curved gusset fillet bridging the plate to the stub axle. `TBAR_LEN` UNCHANGED (1102.735mm). Real, flagged side effect of the `TRIANGLE_Z` fix (not the goal of TASK 6): tip Z at the 90deg default is now 50mm BELOW the roof (was 50mm above under v5) — the v5-flagged roof-overshoot resolves as a welcome consequence, confirmed via echo. `steer_deg` UNCHANGED mechanism, re-verified via a real CGAL sweep at the new narrower track — still a SEPARATE parameter from fold, not its own dual-view row |
 
 Static/removable parts (Grill grate segments — *** TEMPORARILY,
@@ -869,6 +912,17 @@ wheel support's own bracket — fixed weldment, the caster's swivel IS the
 independently kinetic beyond what's listed — they get a `show_*`
 isolation toggle only (Toggle-Completeness Rule), not a dual-view kinetic
 state.
+
+## Toggle-Completeness count (2026-07-24, v1.29)
+
+bbq-lid-hinge-three-rib-v2: BBQ-chambers-v23.scad ASSEMBLY: `show_lid_hardware`
+REMOVED (module + toggle + ASSEMBLY call all retired together, R-009
+confirmed dead) — was 15 real toggles, now 14. BBQ-offset-smoker-base-v6.scad
+ASSEMBLY: 1 new module called (`lid_hinge_assembly`), 1 new real toggle
+(`show_lid_hinge`) — 0 gaps; `trays`/`show_trays` UNCHANGED. Combined
+total: 19 real toggles (was 19 — net zero, one retired + one added).
+BBQ-understructure-v16.scad UNCHANGED from v15 (pure pointer bump, zero
+toggle change).
 
 ## Toggle-Completeness count (2026-07-22, v1.24)
 

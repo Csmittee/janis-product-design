@@ -708,3 +708,53 @@ convention — an honest consequence of how tight this corner geometry
 genuinely is at the real widths involved, not a false sense of safety.
 Re-verified: full `--render` (CGAL) `Simple: yes` at `door_open_deg`
 0°/45°/90°.
+
+## 14. v8 5th pass — REAL BUG in the 4th pass's own miter formula; correct formula applied; visual "floating" issue STILL NOT RESOLVED, architecture change proposed (2026-07-25)
+
+Janis, after seeing the v8 4th-pass renders cc sent: "why didnt you
+listen to me... From the image you show me not from the file, i still
+see the rib flying above the lid." cc re-examined its own sent images
+and confirmed this is correct — the 4th pass's own fix for the sink
+issue (Section 13) used a WRONG geometric formula for the corner
+offsets at B and C: averaging the two adjacent walls' own normals and
+pushing a FLAT chosen distance along that average direction does not
+account for the corner's own real angle. The TRUE perpendicular
+clearance from such a push is `d*cos(theta/2)`, not `d` — this is why
+the 4th pass's own first attempt (d=15mm) under-cleared (the sink), and
+the empirically-inflated fix (d=30-40mm) then overshot into a visibly
+disconnected gap.
+
+**Real fix applied**: the standard 2D polygon-offset miter-point
+formula, `miter_point = V + d*(n1+n2)/(1+n1.n2)` — this is the exact
+point that is perpendicular distance `d` from BOTH adjacent walls
+simultaneously (a real CAD/vector-graphics construction, not an
+approximation). New `miter_point()` function replaces the 4th pass's own
+`miter_norm()` + external multiply. Re-tuned via the same Python sweep:
+`B_STANDOFF`/`C_STANDOFF`=30mm (the real target perpendicular clearance,
+not a raw push distance), `RIDGE_ARM_STANDOFF`=50mm, `RIDGE_INSET`=50mm,
+all weld half-widths back at the project's own `MIN_HALF_W`=20mm floor
+(no below-floor exception needed with the corrected formula). Fine
+sweep result: worst-case clearance **+4.1mm**.
+
+**HONEST STATUS, NOT HIDDEN**: despite this being a real, verified
+mathematical improvement (the previous formula was genuinely wrong, this
+one is genuinely correct) and a real positive numeric clearance, a fresh
+render of this 5th-pass geometry STILL visually shows the same
+disconnected-looking gap between the rib and the door panel that Janis
+flagged. cc is not claiming this is fixed. This suggests either (a) the
+simplified 2D flat-panel model used for the Python sweep (approximating
+the lid's own real panels as flat rectangles/segments) misses some real
+geometric detail the actual chambers.scad solid has, or (b) "clears by a
+few mm" is numerically true but still visually reads as "floating" at
+this rendered scale, or both.
+
+**Path forward, Janis's own suggestion, cc agrees**: "should the rib be
+create in the chamber file better in that way the rib stay fix to the
+door, always? and then you find the pivot location in the rib later."
+Building the rib's own door-side profile as a genuine function of the
+chamber file's own real door/lid geometry (e.g. a real 2D offset of the
+lid's own actual closed-state outline) would GUARANTEE the rib hugs the
+real surface by construction, instead of the current approach's
+repeated, hard-to-get-right per-corner point math. Not yet implemented —
+proposed as the next real step, pending Janis's confirmation of the
+"side not the back" hinge-location point raised in the same message.

@@ -820,17 +820,32 @@ AB_NORM = [-1, 0];                                  // A-B wall is vertical at w
 BC_LEN  = norm([RIB_REF_C[0]-RIB_REF_B[0], RIB_REF_C[1]-RIB_REF_B[1]]);
 BC_DIR  = [(RIB_REF_C[0]-RIB_REF_B[0])/BC_LEN, (RIB_REF_C[1]-RIB_REF_B[1])/BC_LEN];   // (0.7071,0.7071)
 BC_NORM = [-BC_DIR[1], BC_DIR[0]];                  // (-0.7071,0.7071), outward -- confirmed points away from chamber interior
-function miter_norm(n1, n2) = let(b=[n1[0]+n2[0], n1[1]+n2[1]], l=norm(b)) [b[0]/l, b[1]/l];
-B_NORM = miter_norm(AB_NORM, BC_NORM);              // real corner-miter normal at apex B (AB wall + BC slant)
-C_NORM = miter_norm(BC_NORM, RIDGE_NORM);           // real corner-miter normal at apex C (BC slant + ridge-cap)
+// miter_point(V,n1,n2,d) -- v8 5th pass REAL FIX: the correct 2D polygon-
+// offset miter formula (standard CAD/vector-graphics construction, not a
+// guess), replacing the 4th pass's own WRONG "average the two normals,
+// then push a flat distance along that average direction" technique.
+// That technique does NOT account for the corner's own real angle -- the
+// TRUE perpendicular clearance from a straight average-direction push is
+// d*cos(theta/2), not d, so the same nominal "30mm standoff" silently
+// under-cleared at first (the original sink this file's own header
+// found) and, once corrected empirically to a large enough guessed
+// number, badly overshot -- Janis's own direct report, same day: "the
+// rib fly above the lid" was STILL visible in the rendered image even
+// after the sink was numerically fixed. The correct formula:
+// miter_point = V + d*(n1+n2)/(1+n1.n2) -- this is EXACTLY the point
+// that is perpendicular distance d from BOTH adjacent walls
+// simultaneously (derivable from the corner's own half-angle), not an
+// approximation. ───
+function miter_point(V,n1,n2,d) = let(dot=n1[0]*n2[0]+n1[1]*n2[1], k=d/(1+dot))
+    [V[0]+k*(n1[0]+n2[0]), V[1]+k*(n1[1]+n2[1])];
 
-SPLIT_STANDOFF = 25;                                // mm -- was 15mm, increased so a 20mm-half-width disc clears the AB wall at the anchor itself
-B_STANDOFF     = 30;                                // mm -- was 15mm (single AB_NORM), now a real corner-miter offset, clears BOTH adjacent panels
-C_STANDOFF     = 30;                                // mm -- was 15mm (single BC_NORM), now a real corner-miter offset, clears BOTH adjacent panels
+SPLIT_STANDOFF = 25;                                // mm -- unchanged, real >= its own width, no corner miter needed (single wall)
+B_STANDOFF     = 30;                                // mm -- real target perpendicular clearance from BOTH the AB wall and the BC slant, via the correct miter formula
+C_STANDOFF     = 30;                                // mm -- real target perpendicular clearance from BOTH the BC slant and the ridge-cap panel, via the correct miter formula
 
 RIB_SPLIT_OFFSET = [RIB_SPLIT_PT[0] + SPLIT_STANDOFF*AB_NORM[0], RIB_SPLIT_PT[1] + SPLIT_STANDOFF*AB_NORM[1]];
-RIB_B_OFFSET     = [RIB_REF_B[0]    + B_STANDOFF*B_NORM[0],      RIB_REF_B[1]    + B_STANDOFF*B_NORM[1]];
-RIB_C_OFFSET     = [RIB_REF_C[0]    + C_STANDOFF*C_NORM[0],      RIB_REF_C[1]    + C_STANDOFF*C_NORM[1]];
+RIB_B_OFFSET     = miter_point(RIB_REF_B, AB_NORM, BC_NORM, B_STANDOFF);
+RIB_C_OFFSET     = miter_point(RIB_REF_C, BC_NORM, RIDGE_NORM, C_STANDOFF);
 
 // ─── RIDGE_FLAT_PT -- v8 4th pass NEW waypoint, the real fix for "the
 // rib fly above the door" itself: with `RIDGE_SPLIT_Y` now 64mm from
@@ -842,7 +857,7 @@ RIB_C_OFFSET     = [RIB_REF_C[0]    + C_STANDOFF*C_NORM[0],      RIB_REF_C[1]   
 // found via the same fine multi-angle sweep above, not guessed) so the
 // arm follows the panel's own real profile before rising the rest of the
 // way to the pivot. ───
-RIDGE_ARM_STANDOFF = 40;                            // mm -- real Z rise above the ridge-cap panel, found via the sweep above
+RIDGE_ARM_STANDOFF = 50;                            // mm -- real Z rise above the ridge-cap panel, found via the sweep above (using the corrected miter_point() formula for B/C, this round's own re-fix)
 RIDGE_INSET        = 50;                            // mm -- real Y pull-back from RIDGE_SPLIT_Y, found via the sweep above
 RIDGE_FLAT_PT = [RIDGE_SPLIT_Y - RIDGE_INSET, DATUM_Z_RIDGE + RIDGE_ARM_STANDOFF];
 
@@ -863,26 +878,17 @@ RIB_SPINE = concat(
 
 RIB_T          = 3;      // 3mm laser-cut plate
 MIN_HALF_W     = 20;     // 40mm minimum width (Section 5)
-// WELD_HALF_W_SPLIT/B/C -- v8 4th pass: all set to MIN_HALF_W (20mm),
-// down from the prior 22-25mm convention. REAL, FLAGGED CONSEQUENCE
-// (this file's own header, RIDGE_FLAT_PT comment above): the real
-// available clearance at these corners, even with the new miter-normal
-// offsets, does not comfortably support a wider weld run without
-// re-opening the multi-panel sink found this round -- 20mm is the
-// project's own stated floor (Section 5, "40mm minimum width"), used
-// here as a real, checked, load-bearing value, not an arbitrary round
-// number.
+// WELD_HALF_W_SPLIT/B/C/RIDGE_FLAT -- v8 5th pass: all at MIN_HALF_W
+// (20mm), the project's own stated floor (Section 5, "40mm minimum
+// width"), used here as a real, checked, load-bearing value. With the
+// corrected `miter_point()` formula (this file's own header) and
+// re-tuned standoffs, 20mm now clears at every point on the real
+// multi-angle sweep -- the 4th pass's own flagged below-floor exception
+// at the ridge point is no longer needed.
 WELD_HALF_W_SPLIT = MIN_HALF_W;
 WELD_HALF_W_B  = MIN_HALF_W;
 WELD_HALF_W_C  = MIN_HALF_W;
-// RIDGE_FLAT_HALF_W -- v8 4th pass NEW: 15mm, BELOW the project's own
-// 20mm floor -- a real, flagged exception, not silently under the rule.
-// The fine multi-angle sweep (this file's own header) found this is the
-// narrowest point genuinely needed to clear the ridge-cap panel's own
-// real edge across the full 0-90° sweep at the tight real geometry this
-// round's pivot/parting-line numbers leave available; 20mm here re-opens
-// a real sink (confirmed via the same sweep, not assumed).
-RIDGE_FLAT_HALF_W = 15;
+RIDGE_FLAT_HALF_W = MIN_HALF_W;
 HANDLE_WRAP_R  = HANDLE_BORE_D/2 + 15;   // 31mm, >=15mm meat around the handle bore
 // AXLE_HALF_W -- UNCHANGED FORMULA (still >=15mm meat around the axle
 // bore, this project's own standing convention). v8: dist FC-D is now

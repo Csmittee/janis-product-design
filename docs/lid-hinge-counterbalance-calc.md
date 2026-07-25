@@ -708,3 +708,119 @@ convention — an honest consequence of how tight this corner geometry
 genuinely is at the real widths involved, not a false sense of safety.
 Re-verified: full `--render` (CGAL) `Simple: yes` at `door_open_deg`
 0°/45°/90°.
+
+## 14. v8 5th pass — REAL BUG in the 4th pass's own miter formula; correct formula applied; visual "floating" issue STILL NOT RESOLVED, architecture change proposed (2026-07-25)
+
+Janis, after seeing the v8 4th-pass renders cc sent: "why didnt you
+listen to me... From the image you show me not from the file, i still
+see the rib flying above the lid." cc re-examined its own sent images
+and confirmed this is correct — the 4th pass's own fix for the sink
+issue (Section 13) used a WRONG geometric formula for the corner
+offsets at B and C: averaging the two adjacent walls' own normals and
+pushing a FLAT chosen distance along that average direction does not
+account for the corner's own real angle. The TRUE perpendicular
+clearance from such a push is `d*cos(theta/2)`, not `d` — this is why
+the 4th pass's own first attempt (d=15mm) under-cleared (the sink), and
+the empirically-inflated fix (d=30-40mm) then overshot into a visibly
+disconnected gap.
+
+**Real fix applied**: the standard 2D polygon-offset miter-point
+formula, `miter_point = V + d*(n1+n2)/(1+n1.n2)` — this is the exact
+point that is perpendicular distance `d` from BOTH adjacent walls
+simultaneously (a real CAD/vector-graphics construction, not an
+approximation). New `miter_point()` function replaces the 4th pass's own
+`miter_norm()` + external multiply. Re-tuned via the same Python sweep:
+`B_STANDOFF`/`C_STANDOFF`=30mm (the real target perpendicular clearance,
+not a raw push distance), `RIDGE_ARM_STANDOFF`=50mm, `RIDGE_INSET`=50mm,
+all weld half-widths back at the project's own `MIN_HALF_W`=20mm floor
+(no below-floor exception needed with the corrected formula). Fine
+sweep result: worst-case clearance **+4.1mm**.
+
+**HONEST STATUS, NOT HIDDEN**: despite this being a real, verified
+mathematical improvement (the previous formula was genuinely wrong, this
+one is genuinely correct) and a real positive numeric clearance, a fresh
+render of this 5th-pass geometry STILL visually shows the same
+disconnected-looking gap between the rib and the door panel that Janis
+flagged. cc is not claiming this is fixed. This suggests either (a) the
+simplified 2D flat-panel model used for the Python sweep (approximating
+the lid's own real panels as flat rectangles/segments) misses some real
+geometric detail the actual chambers.scad solid has, or (b) "clears by a
+few mm" is numerically true but still visually reads as "floating" at
+this rendered scale, or both.
+
+**Path forward, Janis's own suggestion, cc agrees**: "should the rib be
+create in the chamber file better in that way the rib stay fix to the
+door, always? and then you find the pivot location in the rib later."
+Building the rib's own door-side profile as a genuine function of the
+chamber file's own real door/lid geometry (e.g. a real 2D offset of the
+lid's own actual closed-state outline) would GUARANTEE the rib hugs the
+real surface by construction, instead of the current approach's
+repeated, hard-to-get-right per-corner point math. Not yet implemented —
+proposed as the next real step, pending Janis's confirmation of the
+"side not the back" hinge-location point raised in the same message.
+
+## 15. v9 — real shared hinge pivot, Janis's own hands-on calculation (2026-07-25)
+
+The round that actually resolves the sink/float saga, after 5 v8 passes
+didn't. Full chat is the real record; summary of the real, load-bearing
+facts:
+
+**Hinge location, finally pinned down precisely.** Two real corrections
+from Janis, both confirmed with images before any code changed:
+1. cc's own diagram wrongly implied the door spans the full 915mm
+   chamber length. Real code check: `LID_X0`=100, `LID_X1`=815
+   (`LID_LENGTH`=715mm) — a real 100mm margin of solid, no-door material
+   exists at BOTH true ends. Janis named this the "end margin zone."
+2. The hinge bracket mounts INSIDE that end margin zone (its near edge
+   25mm from `LID_X0`/`LID_X1`, real UCP204-12 "A"=38mm foot width in X),
+   not on the ridge between the ribs, and not at the true X=0/915 ends
+   either. This is the key fact that unlocks everything else: AT THAT
+   X-POSITION, the CD face is fixed material regardless of Y or Z — no
+   door exists there to be "safely clear" of. That is why the pivot's
+   own real Y can sit EXACTLY on `RIDGE_SPLIT_Y` (no gap at all), a
+   placement that would have been unsafe anywhere inside the door's own
+   operating X-range.
+
+**Real UCP204-12 numbers, Janis's own literal spec, not re-derived**:
+L=127mm (foot width in Y, centered on the pivot), A=38mm (foot width in
+X), H0=64mm (pivot rise above the ridge). `RIDGE_SPLIT_Y` and the
+pivot's rise both reuse this same 64mm — Janis's own explicit
+instruction, both confirmed with a standalone isolated-hinge render
+before touching the full assembly.
+
+**Root cause of the whole saga, finally identified**: `lid()`
+(BBQ-chambers) and the rib assembly (base file) rotated about TWO
+DIFFERENT centers. Two rigid bodies rotating by the same angle about
+different centers necessarily drift apart — no per-corner standoff
+tuning can fix that, only avoid it. Fix: `BBQ-chambers-v26.scad`'s new
+`HINGE_PIVOT_Y`/`HINGE_PIVOT_Z` is now the ONE real source of truth,
+read live by both `lid()` and the base file's own `FC_Y`/`FC_Z`. With a
+shared center, the rib and door's relative geometry is identical at
+every angle by construction — confirmed visually at 0°/45°/90°, the rib
+now visibly tracks the door surface at every angle (screenshots sent to
+Janis), not just numerically "clears by a sweep-verified margin" like
+every v8 pass claimed.
+
+**Real, elegant confirmation found by direct calculation before writing
+any code**: apex B, apex C, and the new pivot are EXACTLY collinear
+(`HINGE_PIVOT_Y`-chamfer = 64 = `HINGE_PIVOT_Z`-`DATUM_Z_RIDGE`, matching
+the B-C wall's own real 45° chamfer slope). The door-side arm is
+therefore one straight run from B to the pivot; apex C needs no separate
+corner treatment at all. Per Janis's own explicit instruction ("get back
+the original rib you made"), the door-side spine reverted to v6.1's
+simpler single-normal standoff technique (`SPLIT_STANDOFF`=15mm,
+matching v6.1 exactly) plus the one real remaining corner (apex B, via
+the correct `miter_point()` formula, `B_STANDOFF`=20mm) — checked once
+at the closed state (a full multi-angle sweep is no longer needed, since
+there is no longer a sweep-dependent drift to check).
+
+**Deferred, explicitly, per Janis's own instruction**: CB1/counterbalance/
+stopper (unchanged, "let's talk about the counter balance side" next).
+Also deferred: the swept force curve (Section 3) was computed against a
+pivot assumption several rounds out of date — Janis's own explicit call:
+skip re-validating for now, fix any imbalance later with added/removed
+counterweight material, rather than block this round on a full physics
+recompute.
+
+Full `--render` (CGAL) confirms `Simple: yes` at `door_open_deg`
+0°/45°/90°.

@@ -1,4 +1,69 @@
 // BBQ Offset Smoker — Base Assembly
+// Version: v9
+// Date: 2026-07-25
+// Source: BBQ-offset-smoker-base-v8.scad
+// Changes: direct-cc, Janis's own real, hands-on hinge calculation --
+// the round that finally resolves the "sink into the door" / "float
+// above the door" saga v8's own 5 passes never fully fixed. Full detail:
+// docs/lid-hinge-counterbalance-calc.md Section 14. Summary:
+//
+// 1. REAL SHARED PIVOT. The hinge bracket mounts OUTSIDE the door's own
+//    real operating length (X < `LID_X0`=100 or X > `LID_X1`=815, the
+//    "end margin zone" -- a name cc proposed and Janis accepted) where
+//    the CD face is fixed material in every direction, door or no door.
+//    This is what makes it safe for the pivot's own real Y to sit
+//    EXACTLY on `RIDGE_SPLIT_Y` (no gap at all) -- every prior round this
+//    session tried to keep the pivot safely clear of the door's own edge
+//    while still living INSIDE the door's own X-span, which is a
+//    fundamentally harder (and, per this round's own real numbers,
+//    unnecessary) problem. Real UCP204-12 spec: L=127mm (foot width in
+//    Y, centered on the pivot), A=38mm (foot width in X), H0=64mm (pivot
+//    rise above the ridge) -- all Janis's own literal numbers, not
+//    re-derived. `BBQ-chambers-v26.scad`'s new `HINGE_PIVOT_Y`/
+//    `HINGE_PIVOT_Z` constants are now the ONE real source of truth for
+//    this pivot, read live by BOTH `lid()` there and this file's own rib
+//    assembly below -- previously these were two separate numbers
+//    (chambers' own lid rotation point vs this file's own FC), which is
+//    the real root cause of the whole sink/float saga: two rigid bodies
+//    rotating about DIFFERENT centers by the same angle necessarily
+//    drift apart, no matter how carefully the closed-state offset is
+//    tuned. With one shared center, their relative geometry is identical
+//    at every angle by construction.
+// 2. RIB REBUILT, SIMPLER. A real, elegant consequence of Janis's own
+//    exact numbers, confirmed by direct calculation before touching code:
+//    apex B, apex C, and the new pivot are EXACTLY collinear (same 45°
+//    line) -- `HINGE_PIVOT_Y`-`chamfer`(apex C's Y) = 64 =
+//    `HINGE_PIVOT_Z`-`DATUM_Z_RIDGE`(apex C's Z), matching the B-C wall's
+//    own 45° slope exactly. The door-side arm no longer needs the miter-
+//    offset corner treatment v8's later passes fought with at apex C --
+//    it is one straight run from B to the pivot, apex C sitting on it as
+//    a pass-through tapering point. Reverted to the simpler, "original"
+//    single-normal standoff style (v6.1's own convention) at the real
+//    remaining corner (apex B, between the AB wall and the B-pivot
+//    diagonal) -- per Janis's own explicit instruction ("get back the
+//    original rib you made").
+// 3. HANDLE-SIDE CLEANUP. Per Janis's own explicit spec ("dont let the
+//    rib exert from its door length any sharp turn, fill it with some
+//    nice spline or arc") -- see this file's own rib-spine section below
+//    for the real construction.
+// 4. CB1/COUNTERBALANCE/STOPPER: still explicitly deferred by Janis
+//    ("complete this first then we talk about the counter balance
+//    side"), unresolved, carried forward, not touched this round.
+// 5. REAL, FLAGGED CONSEQUENCE, STATED NOT HIDDEN: Janis's own direct
+//    question this round -- "did the earlier moment/force calculations
+//    really use this axis and coordinate?" -- the honest answer is NO:
+//    docs/lid-hinge-counterbalance-calc.md's own swept force curve
+//    (Section 3) was computed against a much earlier (and since
+//    superseded several times over) pivot assumption, not this one.
+//    Janis's own explicit instruction: skip re-validating that for now
+//    ("we can fix the unbalance later by adding or removing material"),
+//    real physics recompute deferred alongside the counterbalance/
+//    stopper work above, not silently declared valid.
+//
+// v8 kept unchanged, on record. v8's own original header follows,
+// UNCHANGED, kept as real history:
+//
+// BBQ Offset Smoker — Base Assembly
 // Version: v8
 // Date: 2026-07-25
 // Source: BBQ-offset-smoker-base-v7.2.scad
@@ -495,7 +560,7 @@
 // itself for the complete real record; every prior version kept
 // unchanged, on record.)
 
-include <BBQ-understructure-v18.scad>
+include <BBQ-understructure-v19.scad>
 
 // TASK 3 kinetic driver (`door_open_deg`) and the TASK 2 tray angles are
 // declared together in one consolidated KINETIC PARAMETERS block near
@@ -621,41 +686,20 @@ RIB_REF_C = [chamfer, DATUM_Z_RIDGE];
 RIB_REF_D = [chamber_W - chamfer, DATUM_Z_RIDGE];
 RIB_REF_E = [chamber_W, chamber_floor_z + chamber_H - chamfer];
 
-// ─── Pivot (fulcrum) -- v8 REAL REBUILD, per Janis's own "unify system"
-// redesign round (this file's own header). The pivot is no longer
-// measured as an offset from an octagon VERTEX (C or D, both of which
-// turned out to be the wrong kind of reference -- v7's apex-D was
-// topology-correct but physically wrong per Janis's real reference photo;
-// v7.2's apex-C+30 was physically-instructed but FAILED its own
-// fixed-side topology check, 208.665mm < the-then DATUM_Y_CENTER=305mm,
-// flagged at the time). This round's real fix: measure from the ridge's
-// own NEW real parting line (`RIDGE_SPLIT_Y`, BBQ-chambers-v25.scad) --
-// the SAME real quantity Janis's own reference photo shows the hinge
-// mounted relative to ("the feet of the hinge must not fly in the air so
-// push it in to stay in CD face"). `RIDGE_SPLIT_Y` was itself moved to
-// `chamfer+30` (208.665mm) this round -- CLOSER to apex C than the old
-// 305mm midpoint, per Janis's own explicit "Can do" permission -- which
-// is what finally makes a hinge "close to C" and "on the fixed side"
-// simultaneously achievable (impossible under every prior version, where
-// the ridge split was hardcoded at 305mm and C sat at 178.665mm, deep in
-// LID territory no matter what offset was tried).
-// `PIVOT_GAP`(20mm) is cc's own real reading of Janis's stated "15-25mm
-// gap" constraint -- the real physical clearance between the pivot PIN
-// and the door's own cut edge at `RIDGE_SPLIT_Y`, taken as the range's own
-// midpoint, confirmed still "ok" by Janis's own live-render feedback
-// this round ("hinge is good on y").
-// `BRACKET_RISE` -- v8 3rd pass: 25mm -> 64mm. Janis chose a REAL part
-// this round (a UCP204-12 pillow block, 3/4" bore, matches
-// `AXLE_STUB_OD`=19.05mm already used here since v6) and gave its own
-// real "H0" spec dimension (64mm) as the pivot's own real height above
-// the ridge -- replaces cc's own earlier 25mm placeholder guess.
-// FC_Y IS PROVABLY ON THE FIXED SIDE, a real checkable fact (not
-// re-guessed, not taken on faith): fixed zone is Y > RIDGE_SPLIT_Y per
-// `fixed_side_wedge()`'s own real boundary (BBQ-chambers-v25.scad). ───
-PIVOT_GAP    = 20;                        // mm -- midpoint of Janis's stated 15-25mm range, confirmed "ok on y" this round
-BRACKET_RISE = 64;                        // mm -- real UCP204-12 "H0" spec dimension, Janis's own explicit instruction, replaces cc's earlier 25mm placeholder
-FC_Y = RIDGE_SPLIT_Y + PIVOT_GAP;         // 262.665mm -- real gap from the door's own cut edge, fixed-side confirmed
-FC_Z = DATUM_Z_RIDGE + BRACKET_RISE;      // 1445.335mm -- real UCP204-12 H0 rise above the ridge surface
+// ─── Pivot (fulcrum) -- v9 REAL REBUILD, per Janis's own hands-on
+// calculation (this file's own header). `FC_Y`/`FC_Z` now read LIVE from
+// BBQ-chambers-v26.scad's own `HINGE_PIVOT_Y`/`HINGE_PIVOT_Z` -- the ONE
+// real source of truth for this pivot, shared with `lid()`'s own
+// rotation point there. No local offset/gap constants here anymore
+// (`PIVOT_GAP`/`BRACKET_RISE` RETIRED, R-009 confirmed zero other
+// consumers) -- the pivot's own real Y sits EXACTLY on `RIDGE_SPLIT_Y`
+// (no gap), safe because the hinge bracket itself mounts in the "end
+// margin zone" (X < LID_X0 or X > LID_X1), outside the door's own real
+// operating length, where this Y-Z location is fixed material
+// regardless of door position -- see BBQ-chambers-v26.scad's own header
+// for the full real reasoning. ───
+FC_Y = HINGE_PIVOT_Y;                     // 242.665mm -- live from BBQ-chambers-v26.scad, exactly on RIDGE_SPLIT_Y
+FC_Z = HINGE_PIVOT_Z;                     // 1445.335mm -- live from BBQ-chambers-v26.scad, real UCP204-12 H0 rise above the ridge
 
 // ─── Grab handle -- v6.1 REAL FIX: HANDLE_Y -140 -> -110 (pulled back
 // 30mm), Janis's own direct instruction after the real v6 render —
@@ -675,30 +719,34 @@ AXLE_ROD_OD  = 25.4;               // 1" solid rod
 AXLE_STUB_OD = 19.05;              // 3/4" machined stub, seats in the hinge bracket's own bore
 AXLE_BORE_D  = 27;                 // reuses this project's own 27mm-bore-over-25.4mm-rod convention (Section 3.4 of the source prompt)
 
-// ─── Hinge bracket -- v8 4th pass, REVERTS the 3rd pass's end-cap
-// mount. Janis's own direct correction, same day, with an annotated
-// screenshot: "i specifically ask to assembly on the top ridge not from
-// side and its locate near the door lid" -- the 3rd pass's own re-
-// reading of "near end cap" (mount AT the true end caps, X=0/915) was
-// WRONG; "near end cap" was describing the bracket's own X-position
-// preference (near the ribs' own end, not spread mid-span) while
-// STAYING on the ridge surface, not a literal instruction to move the
-// mounting SURFACE off the ridge. `FC_Y`/`FC_Z` (the pivot's own real
-// position) are UNCHANGED by this revert -- only the bracket's own
-// mounting surface/X-position moved back. Reuses the 2nd pass's own real
-// slender hull-of-spheres arm technique (confirmed correct shape via a
-// standalone render, not re-derived) -- foot flush on the ridge, fully
-// inside the fixed zone, positioned near the outer ribs (X close to the
-// door/lid, per Janis's own annotated screenshot) instead of far out at
-// the true end caps. ───
-BKT_W        = 38;                          // mm, boss/collar width along X -- reused from the retired UCP_A
-BKT_BOLT_D   = 10;                          // mm -- reused from the retired UCP_BOLT_D
-FOOT_DEPTH    = 40;                          // mm -- foot's own real footprint along Y, entirely on fixed ridge material
-FOOT_T        = 8;                           // mm -- foot plate thickness, sits flush ON the ridge surface (Z=DATUM_Z_RIDGE), NOT floating
-FOOT_Y0 = RIDGE_SPLIT_Y + 5;                 // 247.665mm -- foot's near edge, close to the door's own parting line, fixed side
-FOOT_Y1 = FOOT_Y0 + FOOT_DEPTH;              // 287.665mm -- real margin confirmed vs RIB_REF_D (431.335mm)
-HINGE_BOSS_R  = AXLE_STUB_OD/2 + 8;          // mm -- pivot boss radius, smaller than the retired pillow block's own HOUSING_R since this is a real short bracket, not a casting
-ARM_R = 8;                                   // mm -- slender arm/strap half-thickness, placeholder
+// ─── Hinge bracket -- v9 REAL REBUILD, mounts in the "end margin zone"
+// (X < LID_X0 or X > LID_X1 -- Janis's own confirmed real location,
+// this file's own header), NOT on the ridge between the ribs (v8's own
+// 4 earlier passes). Real UCP204-12 numbers, Janis's own hands-on
+// calculation, verified via an isolated standalone render before being
+// written here (per R-014): `FOOT_L`(127mm, the real "L" spec dimension)
+// is the foot's own width in Y, CENTERED on the pivot's own Y (`FC_Y`,
+// exactly `RIDGE_SPLIT_Y`) -- safe here because at this X location the
+// whole CD face cross-section is fixed material regardless of Y, unlike
+// every earlier attempt which tried to keep a Y-gap while still living
+// inside the door's own real X-span. `FOOT_A`(38mm, the real "A" spec
+// dimension) is the foot's own width in X; its near edge sits
+// `GAP_FROM_DOOR`(25mm) from the real door boundary (`LID_X0`/`LID_X1`),
+// extending AWAY from the door by that same 38mm. Simple bbox/cylinder/
+// hull placeholder (rules-bbq-fab.md Construction Method) -- Janis's own
+// explicit instruction: "dont make it fancy... as long as it contain the
+// right key figure, foot width, foot length, center location, thickness
+// it is accepted." ───
+FOOT_L         = 127;                       // mm -- real UCP204-12 "L" spec dimension, foot width in Y
+FOOT_A         = 38;                        // mm -- real UCP204-12 "A" spec dimension, foot width in X (also the boss/collar width)
+FOOT_T         = 8;                         // mm -- foot plate thickness, placeholder (no real spec given for this one)
+GAP_FROM_DOOR  = 25;                        // mm -- real gap from LID_X0/LID_X1 to the foot's own near edge, Janis's own explicit instruction
+BOLT_D         = 10;                        // mm -- placeholder bolt size
+HINGE_BOSS_R   = AXLE_STUB_OD/2 + 8;        // mm -- pivot boss radius, real short bracket, not a casting
+FRONT_NEAR_EDGE = LID_X0 - GAP_FROM_DOOR;   // 75mm
+FRONT_BOSS_X    = FRONT_NEAR_EDGE - FOOT_A/2; // 56mm
+REAR_NEAR_EDGE  = LID_X1 + GAP_FROM_DOOR;   // 840mm
+REAR_BOSS_X     = REAR_NEAR_EDGE + FOOT_A/2;  // 859mm
 
 // ─── CB1 -- 4" sq counterbalance pipe ───
 CB1_OD      = 101.6;
@@ -773,137 +821,79 @@ BRANCH_BOW_NATIVE = rib_closed_from_world(BOW_WORLD, 90);
 // anchor; the handle reaches out FROM there. ───
 RIB_SPLIT_PT = [0, NEW_SPLIT_Z];
 
-// ─── v6.1 REAL FIX -- door-side arm pulled OFF the lid's own real
-// surface: Janis's own direct report, the rib "looks sunk into the door"
-// and "the ridge looks shorter than expected." A spine point centered
-// exactly ON the octagon's own real surface (as v6 built it) has roughly
-// HALF its own material embedded inside the lid's solid body. FIX: a
-// real standoff pulls the split-point/B/C spine points outward along
-// each wall segment's own real outward normal (computed live, not
-// hardcoded) -- same real-judgment-call "standoff" pattern as this
-// project's own `HINGE_PIVOT_OFFSET` precedent.
-// ─── v8 4th pass REAL FIX -- Janis's own direct report, same day: "the
-// door is open fine but will never match with the rib, the rib fly
-// above the door which is wrong." Root cause, confirmed via a real
-// Python sweep (per R-014, not asserted without evidence) BEFORE this
-// round's own new RIDGE_SPLIT_Y/BRACKET_RISE values, comparing the rib's
-// own swept position (rotating about FC) against the LID's own real
-// panel geometry (rotating about its own, DIFFERENT center) at every
-// angle 0-90°, not just the closed state: TWO real, previously-uncaught
-// sink issues, present since v6.1 (not new this round, just never
-// checked this rigorously before):
-// 1. A single-normal offset (e.g. pure `AB_NORM` at apex B) does not
-//    account for the SECOND panel meeting at that same corner (the B-C
-//    slant) -- the rib's own real width at B extended back into the
-//    slant panel's own territory by ~13-16mm at various angles, a real
-//    sink, not just a naive-path artifact.
-// 2. ANY spine point offset by a standoff SMALLER than its own real
-//    half-width will overlap the wall it was offset from AT that very
-//    point (a disc of radius R > standoff D overlaps by R-D) --
-//    `RIB_SPLIT_OFFSET`'s own old 15mm standoff vs a 22mm width did
-//    exactly this. FIX: real corner MITER normals (average of both
-//    adjacent panels' own outward normals, normalized) at B and C
-//    instead of a single wall's own normal, plus standoffs increased to
-//    exceed their own point's real half-width. Self-checked via a fine
-//    sweep (0.02° steps, 0-90°, both open AND closed per Janis's own
-//    explicit QA ask) against all 3 real lid panels (Y=0 vertical, B-C
-//    slant, ridge-cap) -- worst-case real clearance now +2.3mm
-//    (deliberately excluding the ~30mm knuckle zone immediately around
-//    FC, where the rotating pad and the fixed boss are EXPECTED to sit
-//    close together by design, same accepted convention as every prior
-//    version's own pillow-block). This margin is THIN (well under this
-//    project's usual 15-20mm convention) -- a real, flagged consequence
-//    of how tight this corner geometry genuinely is at the real widths
-//    involved, not a false sense of safety. ───
-RIDGE_NORM = [0, 1];                                // ridge-cap panel's own outward normal (+Z, "up")
+// ─── v9 REAL REBUILD -- "get back the original rib" (Janis's own
+// explicit instruction, this file's own header). With the door and rib
+// now sharing ONE real rotation center (`HINGE_PIVOT_Y`/`HINGE_PIVOT_Z`,
+// BBQ-chambers-v26.scad), their relative geometry is identical at every
+// angle by construction -- the whole class of sweep-drift sink/float
+// bugs v8's later passes fought (miter formulas, multi-angle sweeps,
+// ridge-flat detour waypoints) no longer applies, so this round reverts
+// to v6.1's own original, simple single-normal standoff technique,
+// checked once at the closed state (not a full sweep -- there is no
+// longer a sweep-dependent risk to check).
+// REAL, ELEGANT CONSEQUENCE found by direct calculation before touching
+// this code (confirmed to Janis, not assumed): apex B, apex C, and the
+// new pivot are EXACTLY collinear -- `HINGE_PIVOT_Y`-chamfer = 64 =
+// `HINGE_PIVOT_Z`-`DATUM_Z_RIDGE`, matching the B-C wall's own real 45°
+// slope exactly (chamfer construction on a regular octagon is inherently
+// 45°). The door-side arm is therefore ONE straight run from B all the
+// way to the pivot -- apex C sits ON that line, needing no separate
+// corner treatment of its own; the only REAL corner left is at B
+// (between the vertical AB wall and this 45° diagonal). ───
 AB_NORM = [-1, 0];                                  // A-B wall is vertical at world Y=0 -- outward is pure -Y
 BC_LEN  = norm([RIB_REF_C[0]-RIB_REF_B[0], RIB_REF_C[1]-RIB_REF_B[1]]);
 BC_DIR  = [(RIB_REF_C[0]-RIB_REF_B[0])/BC_LEN, (RIB_REF_C[1]-RIB_REF_B[1])/BC_LEN];   // (0.7071,0.7071)
-BC_NORM = [-BC_DIR[1], BC_DIR[0]];                  // (-0.7071,0.7071), outward -- confirmed points away from chamber interior
-// miter_point(V,n1,n2,d) -- v8 5th pass REAL FIX: the correct 2D polygon-
-// offset miter formula (standard CAD/vector-graphics construction, not a
-// guess), replacing the 4th pass's own WRONG "average the two normals,
-// then push a flat distance along that average direction" technique.
-// That technique does NOT account for the corner's own real angle -- the
-// TRUE perpendicular clearance from a straight average-direction push is
-// d*cos(theta/2), not d, so the same nominal "30mm standoff" silently
-// under-cleared at first (the original sink this file's own header
-// found) and, once corrected empirically to a large enough guessed
-// number, badly overshot -- Janis's own direct report, same day: "the
-// rib fly above the lid" was STILL visible in the rendered image even
-// after the sink was numerically fixed. The correct formula:
-// miter_point = V + d*(n1+n2)/(1+n1.n2) -- this is EXACTLY the point
-// that is perpendicular distance d from BOTH adjacent walls
-// simultaneously (derivable from the corner's own half-angle), not an
-// approximation. ───
+BC_NORM = [-BC_DIR[1], BC_DIR[0]];                  // (-0.7071,0.7071), outward -- confirmed points away from chamber interior, SAME direction as B->pivot (collinear)
+// miter_point(V,n1,n2,d) -- the correct 2D polygon-offset miter formula
+// (kept from v8's own 5th-pass real fix, not the earlier wrong "average
+// direction, flat push" technique) -- used once, at apex B, the one real
+// remaining corner. miter_point = V + d*(n1+n2)/(1+n1.n2), the point
+// perpendicular distance d from BOTH adjacent walls simultaneously.
 function miter_point(V,n1,n2,d) = let(dot=n1[0]*n2[0]+n1[1]*n2[1], k=d/(1+dot))
     [V[0]+k*(n1[0]+n2[0]), V[1]+k*(n1[1]+n2[1])];
 
-SPLIT_STANDOFF = 25;                                // mm -- unchanged, real >= its own width, no corner miter needed (single wall)
-B_STANDOFF     = 30;                                // mm -- real target perpendicular clearance from BOTH the AB wall and the BC slant, via the correct miter formula
-C_STANDOFF     = 30;                                // mm -- real target perpendicular clearance from BOTH the BC slant and the ridge-cap panel, via the correct miter formula
+SPLIT_STANDOFF = 15;                                // mm -- back to v6.1's own original value
+B_STANDOFF     = 20;                                // mm -- real miter offset at the one remaining corner (AB wall + the B-pivot diagonal)
 
 RIB_SPLIT_OFFSET = [RIB_SPLIT_PT[0] + SPLIT_STANDOFF*AB_NORM[0], RIB_SPLIT_PT[1] + SPLIT_STANDOFF*AB_NORM[1]];
 RIB_B_OFFSET     = miter_point(RIB_REF_B, AB_NORM, BC_NORM, B_STANDOFF);
-RIB_C_OFFSET     = miter_point(RIB_REF_C, BC_NORM, RIDGE_NORM, C_STANDOFF);
 
-// ─── RIDGE_FLAT_PT -- v8 4th pass NEW waypoint, the real fix for "the
-// rib fly above the door" itself: with `RIDGE_SPLIT_Y` now 64mm from
-// apex C (was 30mm), the lid's own real ridge-cap panel is much longer
-// than before -- a naive straight shot from `RIB_C_OFFSET` to the pivot
-// cuts a chord that floats clear above this longer panel's own real
-// surface in the middle, instead of tracking along it. This waypoint
-// sits above the ridge-cap panel's own real surface (real inset/rise
-// found via the same fine multi-angle sweep above, not guessed) so the
-// arm follows the panel's own real profile before rising the rest of the
-// way to the pivot. ───
-RIDGE_ARM_STANDOFF = 50;                            // mm -- real Z rise above the ridge-cap panel, found via the sweep above (using the corrected miter_point() formula for B/C, this round's own re-fix)
-RIDGE_INSET        = 50;                            // mm -- real Y pull-back from RIDGE_SPLIT_Y, found via the sweep above
-RIDGE_FLAT_PT = [RIDGE_SPLIT_Y - RIDGE_INSET, DATUM_Z_RIDGE + RIDGE_ARM_STANDOFF];
-
-// ─── Full rib spine: handle -> split-point -> B -> C -> ridge-flat ->
-// pivot -> bow waypoint -> CB1 -> prong tip. Door-side arm traces the
-// real A-B/B-C contour (Section 5), pulled proud of the surface per the
-// fixes above, ending at the real parting line (not apex A) and now
-// reaching the fixed-side pivot near the door's own parting line via the
-// new ridge-flat waypoint, which tracks the lid's own real (now longer)
-// ridge-cap panel instead of floating above it. CB-side branch traces
-// from the pivot to CB1 via the single real bow waypoint above (v7,
-// replaces the old corner-arc). ───
+// ─── Full rib spine: handle -> split-point -> B -> pivot (apex C sits
+// ON this same straight line, a pass-through tapering point, not a
+// separate waypoint) -> bow waypoint -> CB1 -> prong tip. "dont let the
+// rib exert from its door length any sharp turn, fill it with some nice
+// spline or arc" (Janis's own explicit spec): the hull-of-circles
+// ("capsule chain") technique already fillets every consecutive pair of
+// spine points smoothly (reused directly, this project's own standing
+// convention) -- with apex C's own corner eliminated by the collinear
+// geometry above, the ONLY real direction change left on this whole arm
+// is at B, which the hull-of-circles naturally rounds. CB-side branch
+// unchanged, traces from the pivot to CB1 via the single real bow
+// waypoint (v7). ───
 RIB_SPINE = concat(
-    [[HANDLE_Y,HANDLE_Z], RIB_SPLIT_OFFSET, RIB_B_OFFSET, RIB_C_OFFSET, RIDGE_FLAT_PT, [FC_Y,FC_Z]],
+    [[HANDLE_Y,HANDLE_Z], RIB_SPLIT_OFFSET, RIB_B_OFFSET, [FC_Y,FC_Z]],
     [BRANCH_BOW_NATIVE],
     [CB1_CLOSED, CONTACT_CLOSED]
 );
 
 RIB_T          = 3;      // 3mm laser-cut plate
 MIN_HALF_W     = 20;     // 40mm minimum width (Section 5)
-// WELD_HALF_W_SPLIT/B/C/RIDGE_FLAT -- v8 5th pass: all at MIN_HALF_W
-// (20mm), the project's own stated floor (Section 5, "40mm minimum
-// width"), used here as a real, checked, load-bearing value. With the
-// corrected `miter_point()` formula (this file's own header) and
-// re-tuned standoffs, 20mm now clears at every point on the real
-// multi-angle sweep -- the 4th pass's own flagged below-floor exception
-// at the ridge point is no longer needed.
 WELD_HALF_W_SPLIT = MIN_HALF_W;
 WELD_HALF_W_B  = MIN_HALF_W;
-WELD_HALF_W_C  = MIN_HALF_W;
-RIDGE_FLAT_HALF_W = MIN_HALF_W;
 HANDLE_WRAP_R  = HANDLE_BORE_D/2 + 15;   // 31mm, >=15mm meat around the handle bore
 // AXLE_HALF_W -- UNCHANGED FORMULA (still >=15mm meat around the axle
-// bore, this project's own standing convention). v8: dist FC-D is now
-// 202.670mm (down slightly from v7.2's ~225.1mm, since the pivot moved
-// closer to the door parting line/apex C again this round) -- net pad
-// clearance ~174.2mm (202.670 - 28.5), still comfortably clear. The CB1
-// BRANCH's own clearance to D is the real open concern, explicitly
-// deferred by Janis (this file's own header, item 5).
+// bore, this project's own standing convention). v9: dist FC-D is now
+// 199.23mm (the pivot's own real new position, this file's own header)
+// -- net pad clearance ~170.7mm (199.23 - 28.5), still comfortably
+// clear. The CB1 BRANCH's own clearance to D is the real open concern,
+// explicitly deferred by Janis (this file's own header, item 4).
 AXLE_HALF_W    = AXLE_BORE_D/2 + 15;     // 28.5mm
 CB1_HALF_W     = CB1_OD/2 + 15;          // 65.8mm, >=15mm meat around the CB1 pipe
 PRONG_TIP_HALF_W = MIN_HALF_W;           // 20mm, prong tip reaching the stopper contact point
 BOW_HALF_W     = MIN_HALF_W;             // 20mm, the branch's own minimum width at the bow waypoint
 
 RIB_SPINE_R = concat(
-    [HANDLE_WRAP_R, WELD_HALF_W_SPLIT, WELD_HALF_W_B, WELD_HALF_W_C, RIDGE_FLAT_HALF_W, AXLE_HALF_W],
+    [HANDLE_WRAP_R, WELD_HALF_W_SPLIT, WELD_HALF_W_B, AXLE_HALF_W],
     [BOW_HALF_W],
     [CB1_HALF_W, PRONG_TIP_HALF_W]
 );
@@ -1024,57 +1014,58 @@ module cb1_pipe() {
     translate([cb1_x1-CB1_WALL, CB1_CLOSED[0]-CB1_OD/2, CB1_CLOSED[1]-CB1_OD/2]) cube([CB1_WALL, CB1_OD, CB1_OD]);
 }
 
-// ─── Axle + hinge brackets -- FIXED reference geometry (Section 4 Step
-// 1): does NOT rotate with door_open_deg, always at fc. Single continuous
-// shaft spanning all 3 ribs (unchanged code/concept since v6) -- Janis's
-// own "pass a shaft to all 3 ribs" was already satisfied; v8 4th pass
-// reverts the span back to hugging the outer ribs (was reaching the true
-// end caps in the 3rd pass, corrected). ───
-AXLE_SPAN_MARGIN = 30;
-axle_x0 = RIB0_X - AXLE_SPAN_MARGIN;
-axle_x1 = RIB2_X + RIB_T + AXLE_SPAN_MARGIN;
+// ─── Axle + hinge brackets -- v9 REAL REBUILD, mounted in the end
+// margin zone (this file's own header). The axle is ONE continuous shaft
+// (unchanged concept since v6 -- Janis's own "pass a shaft to all 3
+// ribs") now spanning between the two real hinge brackets themselves
+// (`FRONT_BOSS_X`..`REAR_BOSS_X`), which sit OUTSIDE the door's own
+// length entirely, comfortably past all 3 ribs on both ends. ───
+ARM_R = 8;   // mm -- slender riser half-thickness, placeholder
 module axle_rod() {
-    translate([axle_x0, FC_Y, FC_Z]) rotate([0,90,0])
-        cylinder(h=axle_x1-axle_x0, r=AXLE_ROD_OD/2, $fn=64);
+    translate([FRONT_BOSS_X, FC_Y, FC_Z]) rotate([0,90,0])
+        cylinder(h=REAR_BOSS_X-FRONT_BOSS_X, r=AXLE_ROD_OD/2, $fn=64);
 }
-// hinge_bracket() -- v8 4th pass, mounts back on the ridge surface (this
-// file's own header, reverts the 3rd pass's end-cap mount). Real foot
-// plate flush-mounted ON the ridge surface (Z=DATUM_Z_RIDGE), fully
-// inside the fixed zone (Y=[FOOT_Y0,FOOT_Y1], both > RIDGE_SPLIT_Y --
-// "the feet of the hinge must not fly in the air"), positioned near the
-// outer ribs in X (close to the door/lid, per Janis's own annotated
-// screenshot), connected to the pivot boss via a real hull-based
-// slender arm (hull of two small spheres, `ARM_R` -- v8 2nd pass's own
-// real fix, reused directly: a hull between the WHOLE foot slice and the
-// boss fills in a chunky wedge, not a slender arm). Simple bbox/
+// hinge_bracket(boss_x, near_edge_x, dir) -- real foot flush on the
+// ridge surface (Z=DATUM_Z_RIDGE), fully inside the end margin zone,
+// its own near edge `GAP_FROM_DOOR`(25mm) from the door's own real
+// boundary (`LID_X0`/`LID_X1`), extending AWAY from the door
+// (dir=+1: front, extends toward -X; dir=-1: rear, extends toward +X).
+// Connected to the pivot boss via a real hull-based riser (hull of two
+// small spheres) -- since the bearing eye's own Y is EXACTLY the foot's
+// own center Y (this file's own header), this riser comes out as a
+// plain vertical post, not a diagonal arm -- confirmed via an isolated
+// standalone render before being written here (per R-014), and per
+// Janis's own explicit instruction ("dont make it fancy... as long as
+// it contain the right key figure... it is accepted"). Simple bbox/
 // cylinder/hull placeholder, no supplier casting detail (rules-bbq-fab.md
-// Construction Method), real part dimensions still not fully known.
-module hinge_bracket(x_pos) {
-    foot_top = [x_pos, (FOOT_Y0+FOOT_Y1)/2, DATUM_Z_RIDGE+FOOT_T];
-    boss_pt  = [x_pos, FC_Y, FC_Z];
+// Construction Method).
+module hinge_bracket(boss_x, near_edge_x, dir) {
+    foot_x0 = dir > 0 ? near_edge_x - FOOT_A : near_edge_x;
+    foot_top = [foot_x0 + FOOT_A/2, FC_Y, DATUM_Z_RIDGE + FOOT_T];
+    boss_pt  = [boss_x, FC_Y, FC_Z];
     difference() {
         union() {
-            translate([x_pos-BKT_W/2, FOOT_Y0, DATUM_Z_RIDGE])
-                cube([BKT_W, FOOT_DEPTH, FOOT_T]);
+            translate([foot_x0, FC_Y - FOOT_L/2, DATUM_Z_RIDGE])
+                cube([FOOT_A, FOOT_L, FOOT_T]);
             hull() {
                 translate(foot_top) sphere(r=ARM_R, $fn=24);
                 translate(boss_pt)  sphere(r=ARM_R, $fn=24);
             }
-            translate([x_pos-BKT_W/2, FC_Y, FC_Z]) rotate([0,90,0])
-                cylinder(h=BKT_W, r=HINGE_BOSS_R, $fn=32);
+            translate([boss_x-FOOT_A/2, FC_Y, FC_Z]) rotate([0,90,0])
+                cylinder(h=FOOT_A, r=HINGE_BOSS_R, $fn=32);
         }
-        translate([x_pos-BKT_W/2-e, FC_Y, FC_Z]) rotate([0,90,0])
-            cylinder(h=BKT_W+2*e, r=AXLE_STUB_OD/2+0.5, $fn=32);
-        translate([x_pos, FOOT_Y0+10, DATUM_Z_RIDGE-e]) cylinder(h=FOOT_T+2*e, r=BKT_BOLT_D/2, $fn=16);
-        translate([x_pos, FOOT_Y1-10, DATUM_Z_RIDGE-e]) cylinder(h=FOOT_T+2*e, r=BKT_BOLT_D/2, $fn=16);
+        translate([boss_x-FOOT_A/2-e, FC_Y, FC_Z]) rotate([0,90,0])
+            cylinder(h=FOOT_A+2*e, r=AXLE_STUB_OD/2+0.5, $fn=32);
+        translate([foot_x0+FOOT_A/2, FC_Y-FOOT_L/2+15, DATUM_Z_RIDGE-e]) cylinder(h=FOOT_T+2*e, r=BOLT_D/2, $fn=16);
+        translate([foot_x0+FOOT_A/2, FC_Y+FOOT_L/2-15, DATUM_Z_RIDGE-e]) cylinder(h=FOOT_T+2*e, r=BOLT_D/2, $fn=16);
     }
 }
 
 // ─── Full lid-hinge assembly ───
 module lid_hinge_assembly(door_open_deg=0) {
     axle_rod();
-    hinge_bracket(RIB0_X);
-    hinge_bracket(RIB2_X + RIB_T);
+    hinge_bracket(FRONT_BOSS_X, FRONT_NEAR_EDGE, 1);
+    hinge_bracket(REAR_BOSS_X, REAR_NEAR_EDGE, -1);
     lid_rib_assembly(RIB0_X, door_open_deg);
     lid_rib_assembly(RIB1_X, door_open_deg);
     lid_rib_assembly(RIB2_X, door_open_deg);

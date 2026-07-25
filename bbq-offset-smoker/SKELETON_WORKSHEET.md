@@ -1,5 +1,27 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.27 — 2026-07-25
+> Version 1.28 — 2026-07-25
+> Changes: bbq-lid-hinge-v9, direct-cc, real shared hinge pivot round.
+> ROOT CAUSE of the whole v8 sink/float saga found: `lid()` (chambers) and
+> the rib assembly (base file) rotated about TWO DIFFERENT centers. Fixed
+> via new shared `HINGE_PIVOT_Y`/`HINGE_PIVOT_Z` in `BBQ-chambers-v26.scad`
+> (242.665mm/1445.335mm, real UCP204-12 numbers, exactly on
+> `RIDGE_SPLIT_Y`, no gap), read live by both `lid()`'s own rotation point
+> and the base file's `FC_Y`/`FC_Z`. Hinge bracket rebuilt to Janis's own
+> hands-on numbers inside the door's real "end margin zone" (near edge
+> 25mm from `LID_X0`/`LID_X1`, foot L=127mm/A=38mm, H0=64mm rise). PART
+> C's own `door_open_deg` row updated again: door-side rib spine
+> simplified — apex B/apex C/pivot found EXACTLY collinear (matches the
+> B-C wall's own 45° chamfer), one straight run B->pivot via the correct
+> `miter_point()` formula, no separate corner treatment at C. Full
+> `--render` (CGAL) `Simple: yes` at 0/45/90°, visually confirmed the rib
+> hugging the door surface at all 3 angles (first time this saga). CB1/
+> stopper/apex-D clearance and the Section-3 force curve both still
+> deferred, Janis's own explicit call.
+> `include` chain: base-v9 -> `BBQ-understructure-v19.scad` (pure pointer
+> bump) -> `BBQ-chambers-v26.scad` (new `HINGE_PIVOT_Y`/`HINGE_PIVOT_Z`,
+> `LID_HINGE_GAP` retired). Zero modules/toggles added or removed this
+> round.
+> Previous: 1.27 — 2026-07-25
 > Changes: bbq-lid-hinge-v8, direct-cc "unify system" redesign round.
 > PART C's own `door_open_deg` row updated again: axle/pivot (`FC_Y`/
 > `FC_Z`) rebuilt from the ridge's own new real parting line

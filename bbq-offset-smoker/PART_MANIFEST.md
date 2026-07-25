@@ -4,7 +4,33 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.31 — 2026-07-24 (bbq-lid-hinge-v7-sync-pivot-margin):
+# Version: 1.32 — 2026-07-25 (bbq-lid-hinge-v8, direct-cc "unify system"
+# redesign): chambers table pointer now BBQ-chambers-v25.scad (source v24)
+# — NEW `RIDGE_SPLIT_Y` (208.665mm, was hardcoded chamber_W/2=305mm), a
+# real tunable ridge fixed/lid parting line, replacing all 4 real
+# consumers (R-009 checked: `fixed_side_wedge()`, `lid_side_wedge()`,
+# `lid_closed_panels()`'s ridge-cap width, `lid()`'s own rotation point).
+# Understructure table pointer now BBQ-understructure-v18.scad (source
+# v17, pure pointer-only bump). Base assembly table pointer now
+# BBQ-offset-smoker-base-v8.scad (source v7.2) — pivot rebuilt from
+# `RIDGE_SPLIT_Y + HINGE_GAP`(20mm) instead of an octagon vertex, now a
+# real checkable fixed-side fact. `ucp_bearing()`/the UCP204-12 pillow
+# block RETIRED, replaced by `hinge_bracket()` — real foot plate flush on
+# the ridge surface, fully inside the fixed zone (Janis's own newly-chosen
+# reference part). REAL COLLISION FOUND (door-side arm vs the new
+# bracket's own foot, -19.07mm worst case) + FIXED this round
+# (`WELD_HALF_W_C` 40->25mm, new `DOOR_ARM_DETOUR` waypoint, re-verified
+# +12.79mm clearance) — self-checked via a real OpenSCAD `--render`
+# (CGAL) pass + a Python geometry sweep before committing, per R-014.
+# CB1/stopper/apex-D clearance still deferred, unresolved, carried
+# forward per Janis's own explicit sequencing. `R_HANDLE` 543.0->548.4mm
+# (pivot-driven). Full detail: docs/lid-hinge-counterbalance-calc.md
+# Section 12, cc_chat_log.md. Module table below still describes earlier
+# content in detail — only the specific points/constants/modules named
+# above actually changed structurally this round; not re-tabulated
+# line-by-line (same x.1-style pointer-update pattern as prior direct-cc
+# rounds).
+# Previous: 1.31 — 2026-07-24 (bbq-lid-hinge-v7-sync-pivot-margin):
 # chambers table pointer now BBQ-chambers-v24.scad (source v23, TASK 1
 # only: `lid_open_deg` moved into a `/* [Hidden] */` Customizer group,
 # zero other content changed). Understructure table pointer now

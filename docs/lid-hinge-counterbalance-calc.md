@@ -446,3 +446,97 @@ apex D at this pivot position). This is not represented as fixed or
 safe — real re-verification, likely requiring a genuinely different
 construction approach (not a local waypoint tweak), is needed before
 fabrication, in the same round CB1/stopper get reviewed.
+
+## 12. v8 update — "unify system" redesign: real `RIDGE_SPLIT_Y` ridge parting line, hinge bracket rebuilt, door-arm/foot collision found + fixed (2026-07-25)
+
+Janis's own direct message, quoted in full in `cc_chat_log.md`: "there is
+a mistake i gave you on the hinge location and the door concept that we
+might need to redo the design, including the the door parting line on
+face CD, this must calculate and go as one unify system." Full 6-point
+instruction list + QA checklist + Can-do/Cannot-do list, all executed
+this round in `BBQ-chambers-v25.scad` (new) and
+`BBQ-offset-smoker-base-v8.scad` (new).
+
+**1. `RIDGE_SPLIT_Y` (new, `BBQ-chambers-v25.scad`)** — the ridge's own
+real trim/seal/parting line is now a tunable design parameter,
+`chamfer+30` (208.665mm), replacing the old hardcoded `chamber_W/2` /
+`DATUM_Y_CENTER` ridge-midpoint (305mm) used by every prior version.
+R-009 duplication check confirmed exactly 4 real consumers:
+`fixed_side_wedge()`, `lid_side_wedge()`, `lid_closed_panels()`'s ridge-
+cap panel width, `lid()`'s own rotation point — all 4 updated.
+`DATUM_Y_CENTER` itself is UNCHANGED, still used for its own unrelated
+purposes (`exhaust_room()`/`chimney_pipe()`). Moving this line closer to
+apex C (was 305mm, now 208.665mm) is what finally makes a hinge "close to
+C" AND "on the fixed side" simultaneously achievable — impossible under
+every prior version, where C (178.665mm) sat deep inside a ridge split
+fixed at 305mm no matter what pivot offset was tried.
+
+**2. Pivot rebuilt from `RIDGE_SPLIT_Y`, not an octagon vertex.** cc's
+own real reading of Janis's stated "15-25mm gap"/"feet must not fly in
+the air" constraint: `FC_Y = RIDGE_SPLIT_Y + HINGE_GAP` (`HINGE_GAP`=20mm,
+midpoint of the stated range) = 228.665mm; `FC_Z = DATUM_Z_RIDGE +
+BRACKET_RISE` (`BRACKET_RISE`=25mm, short-bracket placeholder, replaces
+the retired UCP204-12's 33.3mm H) = 1406.335mm. This is now a REAL,
+CHECKABLE fixed-side fact (`FC_Y` > `RIDGE_SPLIT_Y`, confirmed against
+`fixed_side_wedge()`'s own real boundary), not a re-guess from octagon
+topology (v7's mistake) or an instruction taken on faith without a
+topology check (v7.2's gap: 208.665mm < the-then 305mm).
+
+**3. `hinge_bracket()` (new, replaces `ucp_bearing()`/the retired
+UCP204-12 pillow block).** Foot plate flush-mounted ON the ridge surface
+(Z=`DATUM_Z_RIDGE`), fully inside the fixed zone: `FOOT_Y0`=213.665mm,
+`FOOT_Y1`=258.665mm (both > `RIDGE_SPLIT_Y`=208.665mm — "the feet of the
+hinge must not fly in the air", satisfied by construction). Short hull-
+based riser/gusset connects the foot to the pivot boss, matching the
+reference photo's own short angled arm. Exact bracket dimensions are cc's
+own placeholder judgment calls (a photo, not a spec sheet) — flagged,
+pending the real part.
+
+**4. Axle bore location on the rib** — delegated explicitly by Janis
+("you are free to find the hole location"). cc kept it at `[FC_Y,FC_Z]`,
+the same convention every prior version has used (bore at the spine's own
+door-side terminus) — reused, not reinvented.
+
+**5. CB1/counterbalance/stopper-vs-apex-D** — explicitly deferred by
+Janis this round ("let the back cb and its arm collide first ignore it").
+NOT touched. Live-recomputed dist FC-to-D is now 202.670mm (down from
+v7.2's ~225.1mm) — still not independently verified to clear apex D by a
+real margin; the v7.2 finding (Section 11 above) stands, unresolved,
+carried forward.
+
+**REAL COLLISION FOUND + FIXED THIS ROUND (self-checked via a Python
+geometry sweep BEFORE committing, per R-014 — not asserted without
+evidence):** the naive door-side arm (`RIB_C_OFFSET` -> `FC` straight
+segment, at its old `WELD_HALF_W_C`=40mm half-width) swept directly
+through `hinge_bracket()`'s own foot plate at `door_open_deg`=0 (closed)
+— a real, unavoidable consequence of this round's pivot sitting much
+closer to the door's own parting line than any prior version (less room
+for the arm to clear the fixed foot). Worst-case penetration: -19.07mm
+(fine sweep, 0.02° steps, capsule-vs-box distance, excluding the ~30mm
+knuckle region immediately around FC where the rotating pad and the fixed
+boss/riser are EXPECTED to sit close together by design — same accepted
+simplification every prior version's own pillow-block placeholder has
+always had). FIX: `WELD_HALF_W_C` reduced 40mm -> 25mm (still ≥
+`MIN_HALF_W`=20mm), plus a new `DOOR_ARM_DETOUR` waypoint (same real
+"push the closest-approach point away from the obstacle by a fixed
+margin" technique already established for the CB-branch's own
+`BRANCH_BOW_NATIVE`, reused not reinvented) — a live midpoint between
+`RIB_C_OFFSET` and `FC`, pushed +25mm in world Z, at `MIN_HALF_W`=20mm.
+Re-verified after the fix: worst-case real clearance +12.79mm at
+`door_open_deg`=0, comfortably positive.
+
+**Self-check before presenting** (real OpenSCAD renders, per this
+project's own established `xvfb-run -a openscad` pipeline, not just the
+formulas): `--render` (full CGAL) at `door_open_deg`=0 and 90 both report
+`Simple: yes` (manifold-clean, 0 self-intersections); visual renders at
+0°/15°/45°/90° confirm the door and 3 ribs continue to move as one rigid
+unit (the v7.1/v7.2 sync mechanism is UNCHANGED code, so this was
+expected, not re-derived — confirmed anyway, not assumed). The door-side
+arm's own real collision (above) was caught by the geometry sweep, NOT by
+the visual render — flagged explicitly, since the bracket's own small
+size makes it hard to spot visually at the whole-assembly render scale.
+
+**R_HANDLE**: 543.0mm -> 548.4mm, pure consequence of the pivot's own
+real position (`HANDLE_Y`/`HANDLE_Z` unchanged). Swept force curve
+(Section 3) is stale YET AGAIN, still not recomputed (stopper/CB review
+still deferred, item 5 above).

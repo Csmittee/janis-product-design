@@ -1,5 +1,24 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.26 — 2026-07-24
+> Version 1.27 — 2026-07-25
+> Changes: bbq-lid-hinge-v8, direct-cc "unify system" redesign round.
+> PART C's own `door_open_deg` row updated again: axle/pivot (`FC_Y`/
+> `FC_Z`) rebuilt from the ridge's own new real parting line
+> (`RIDGE_SPLIT_Y`, new in `BBQ-chambers-v25.scad`) plus a real 15-25mm
+> gap, instead of an octagon vertex offset (v7's apex-D mistake, v7.2's
+> apex-C gap that failed its own fixed-side check). `ucp_bearing()`/the
+> UCP204-12 pillow block RETIRED, replaced by `hinge_bracket()` — a real
+> foot plate flush on the ridge surface, fully inside the fixed zone,
+> matching Janis's own newly-chosen reference part. REAL COLLISION FOUND
+> (door-side arm vs the new bracket's own foot) + FIXED this round
+> (`WELD_HALF_W_C` 40->25mm, new `DOOR_ARM_DETOUR` waypoint) — self-
+> checked via a real OpenSCAD `--render` pass + a Python geometry sweep
+> before committing. CB1/stopper/apex-D clearance still deferred,
+> unresolved, carried forward per Janis's own explicit sequencing.
+> `include` chain: base-v8 -> `BBQ-understructure-v18.scad` (pure pointer
+> bump) -> `BBQ-chambers-v25.scad` (new `RIDGE_SPLIT_Y`). Zero modules/
+> toggles added or removed this round (`ucp_bearing()` renamed/rebuilt as
+> `hinge_bracket()`, same real slot in the module table).
+> Previous: 1.26 — 2026-07-24
 > Changes: bbq-lid-hinge-v7-sync-pivot-margin, 3rd real round touching
 > the rib/pivot mechanism (R-010/R-014 self-triggered, see
 > cc_chat_log.md). PART C's own `door_open_deg` row updated: axle/pivot

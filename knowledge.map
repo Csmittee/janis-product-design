@@ -1,5 +1,31 @@
 # knowledge.map
-# Version: v88 — 2026-07-24
+# Version: v89 — 2026-07-25
+# Changes: bbq-lid-hinge-v8, direct-cc "unify system" redesign round —
+# active pointers now BBQ-offset-smoker-base-v8.scad (source v7.2) ->
+# BBQ-understructure-v18.scad (source v17, pure pointer bump) ->
+# BBQ-chambers-v25.scad (source v24). NEW `RIDGE_SPLIT_Y` (chambers v25):
+# the ridge (C-D face)'s own real trim/seal/parting line, now a tunable
+# design parameter (208.665mm, was hardcoded chamber_W/2=305mm),
+# replacing all 4 real consumers (R-009 checked). Pivot (`FC_Y`/`FC_Z`,
+# base v8) rebuilt from `RIDGE_SPLIT_Y + HINGE_GAP`(20mm) instead of an
+# octagon vertex — now a real, checkable fixed-side fact. `ucp_bearing()`/
+# the UCP204-12 pillow block RETIRED, replaced by `hinge_bracket()` — a
+# real foot plate flush on the ridge surface, fully inside the fixed
+# zone, matching Janis's own newly-chosen reference part. REAL COLLISION
+# FOUND (door-side arm vs the new bracket's own foot, -19.07mm worst
+# case) + FIXED this round (`WELD_HALF_W_C` 40->25mm, new
+# `DOOR_ARM_DETOUR` waypoint, +12.79mm re-verified clearance) — self-
+# checked via a real OpenSCAD `--render` (CGAL) pass + a Python geometry
+# sweep before committing, per R-014 (OpenSCAD now actually installed
+# this session, `apt-get install -y openscad` + `xvfb-run -a`, real
+# renders not just formulas). CB1/stopper/apex-D clearance still
+# deferred, unresolved, carried forward per Janis's own explicit
+# sequencing. Full detail: docs/lid-hinge-counterbalance-calc.md Section
+# 12, cc_chat_log.md. The bbq-offset-smoker/ row further below is legacy/
+# stale (last touched several rounds ago, pre-existing debt, not
+# rewritten this round) — this header is the current source of truth for
+# the active include chain.
+# Previous: v88 — 2026-07-24
 # Changes: bbq-lid-hinge-v7-sync-pivot-margin — bbq-offset-smoker/ row
 # updated: chambers now BBQ-chambers-v24.scad (source v23, TASK 1:
 # `lid_open_deg` moved into a `/* [Hidden] */` Customizer group so it no

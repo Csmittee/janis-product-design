@@ -4,7 +4,26 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.30 — 2026-07-24 (bbq-lid-hinge-three-rib-v2): chambers table
+# Version: 1.31 — 2026-07-24 (bbq-lid-hinge-v7-sync-pivot-margin):
+# chambers table pointer now BBQ-chambers-v24.scad (source v23, TASK 1
+# only: `lid_open_deg` moved into a `/* [Hidden] */` Customizer group,
+# zero other content changed). Understructure table pointer now
+# BBQ-understructure-v17.scad (source v16, pure pointer-only bump, v16
+# itself untouched). Base assembly table pointer now
+# BBQ-offset-smoker-base-v7.scad (source v6.1) — TASK 2 real structural
+# rebuild: axle/pivot (`FC_Y`/`FC_Z`) moved from apex C (was provably
+# LID-side) to apex D (provably fixed-side, real margin 111.335mm). TASK
+# 3: RIB0_X/RIB2_X inset 150->100mm. REAL, PROVABLE FINDING: new pivot
+# sits only 36.522mm from apex D — a hard ceiling on any branch's own
+# clearance there; max achievable net clearance at the pivot's own
+# structural pad is 8.022mm, provably short of the 20mm apex rule,
+# flagged not resolved. `R_HANDLE` 534.3->685.8mm (pivot-driven, HANDLE_Y/
+# Z themselves unchanged). Full detail: docs/lid-hinge-counterbalance-
+# calc.md Section 9, cc_chat_log.md. Module table below still describes
+# earlier content in detail — only the specific points/constants named
+# above actually changed structurally this round; not re-tabulated
+# line-by-line (same x.1-style pointer-update pattern as the v6.1 entry).
+# Previous: 1.30 — 2026-07-24 (bbq-lid-hinge-three-rib-v2): chambers table
 # REBUILT — source now BBQ-chambers-v23.scad (source v22). `lid_hardware()`
 # module + `LEVER_ARM`/`COUNTERWEIGHT_KG` constants + `show_lid_hardware`
 # toggle + its ASSEMBLY call all RETIRED (R-009 confirmed dead — zero other
@@ -588,6 +607,17 @@
 # toggle, per the Toggle-Completeness Rule (cc_rules.md). "(none — always
 # on, safety-critical)" is the ONLY other permitted value.
 
+## BBQ-chambers-v24.scad — now the active file, see below
+
+v24 (bbq-lid-hinge-v7-sync-pivot-margin, 2026-07-24, TASK 1): ONE real
+change — `lid_open_deg`'s top-level default moved into a `/* [Hidden] */`
+Customizer group (root cause: Customizer auto-generated a competing `-D`
+override for it, which could silently defeat `BBQ-offset-smoker-base-
+v7.scad`'s own reassignment regardless of textual order). Default value
+itself UNCHANGED (0) — this file still renders standalone. No other
+content changed (confirmed via diff). Module table below still describes
+v23's own content, unaffected by this change.
+
 ## BBQ-chambers-v23.scad
 
 v23 (bbq-lid-hinge-three-rib-v2, Section 7.5): `lid_hardware()` module +
@@ -624,6 +654,17 @@ restructure + drop).
 | `chimney_pipe()` | UNCHANGED CODE | | `show_chimney_pipe` |
 | `grill_grate()` | UNCHANGED CODE, UNCHANGED position this round (chamber_floor_z/GRATE_Z untouched) | | `show_grate` |
 | `floor_drains()` | UNCHANGED CODE | | `show_drains` |
+
+## BBQ-understructure-v17.scad — now the active file, see below
+
+v17 (bbq-lid-hinge-v7-sync-pivot-margin, 2026-07-24): PURE POINTER-ONLY
+BUMP from v16 — `include` bumped `BBQ-chambers-v23.scad` ->
+`BBQ-chambers-v24.scad` only. v16 itself NOT edited. Same real necessity
+as the v15->v16 chain-break fix, now hit a 3rd time (flagged as a
+recurring pattern in cc_chat_log.md — a future round should consider
+whether this "bump understructure in lockstep with chambers" step needs
+to become an explicit, permanent rule rather than being caught ad hoc
+each time). Table content below UNCHANGED from v16.
 
 ## BBQ-understructure-v16.scad
 
@@ -667,7 +708,32 @@ grep). Relocated to the Accessories branch
 (`BBQ-offset-smoker-base-v3.scad`, below) — NOT gone from the product,
 just no longer built in this file.
 
-## BBQ-offset-smoker-base-v6.1.scad — now the active file, see below
+## BBQ-offset-smoker-base-v7.scad — now the active file, see below
+
+v7 (bbq-lid-hinge-v7-sync-pivot-margin, 2026-07-24, 3rd real round
+touching the rib/pivot mechanism — R-010/R-014 self-triggered, see
+cc_chat_log.md): `include` bumped `BBQ-understructure-v16.scad` ->
+`BBQ-understructure-v17.scad`. TASK 2 real structural rebuild: `FC_Y`/
+`FC_Z` (axle/pivot) moved from apex C (was provably LID-side, root cause
+of the embedded-bearing symptom) to apex D (provably fixed-side, real
+margin 111.335mm vs `DATUM_Y_CENTER`). TASK 3: `RIB0_X`/`RIB2_X` inset
+150mm->100mm (200/715mm). REAL, PROVABLE FINDING: the new pivot sits
+only 36.522mm from apex D — a hard ceiling on any branch's own clearance
+there (the pivot never moves); max achievable net clearance at the
+pivot's own structural pad (15mm-meat convention) is 8.022mm, provably
+short of the 20mm apex rule — flagged, not resolved. The old 45mm
+corner-arc-around-D construction (v6/v6.1) is RETIRED — re-tested
+against the new closer pivot it made clearance WORSE — replaced by a
+single precisely-placed bow waypoint reaching the true 36.522mm ceiling.
+`R_HANDLE` 534.3->685.8mm (pivot-driven; `HANDLE_Y`/`HANDLE_Z` themselves
+UNCHANGED, Section 5 DO NOT TOUCH). CB1 pipe/U-prong/stopper geometry
+UNCHANGED. Full detail: docs/lid-hinge-counterbalance-calc.md Section 9,
+cc_chat_log.md. Module table below still describes v6/v6.1's own
+content — only the specific points/constants named above actually
+changed; not re-tabulated line-by-line (same x.1/x.y-style pointer-update
+pattern as the v6.1 entry below).
+
+## BBQ-offset-smoker-base-v6.1.scad
 
 v6.1 (direct-cc tuning pass, 2026-07-24, R-011 — Janis's own live review
 of a real v6 render, no new Claude Web prompt): 4 real fixes — kinetic

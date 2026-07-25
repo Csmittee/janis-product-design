@@ -288,13 +288,93 @@ until the door can be opened.
 
 ---
 
-## 8. Locked values used, for cross-check against the built geometry
+## 9. v7 update — Janis's own direct diagnosis, pivot moved from apex C to apex D (2026-07-24)
+
+Janis reviewed the real v6.1 render and root-caused 3 real problems
+against the actual code (not re-guessed) — see
+`BBQ-offset-smoker-base-v7.scad`'s own header for the full detail. This
+section covers the parts that affect the numbers in this doc.
+
+**Problem 2 — the pivot was on the LID, not the fixed shell.** `FC_Y`/
+`FC_Z` were derived from apex C (178.665mm) — LESS than
+`DATUM_Y_CENTER`(305mm), i.e. on the lid's own half of the ridge, not the
+fixed half. This is why the bearing housing rendered embedded in the
+door. FIX: `FC_Y = RIB_REF_D[0] - 15` (416.335mm, real margin vs
+`DATUM_Y_CENTER`: 111.335mm, comfortably fixed-side), `FC_Z =
+RIB_REF_D[1] + 33.3` (1314.635mm, same numeric value as before since C
+and D share the same ridge height — only the reference point moved).
+
+**Consequence 1 — R_HANDLE changes again.** `HANDLE_Y`/`HANDLE_Z`
+themselves are UNCHANGED (Section 5 DO NOT TOUCH, still -110/875) — but
+since `R_HANDLE` is the radial distance from the PIVOT to the handle, and
+the pivot moved substantially, `R_HANDLE` changes from 534.3mm (v6.1,
+C-based pivot) to **685.8mm** (v7, D-based pivot). The swept force curve
+in Section 3 above is now stale a second time — NOT recomputed this
+round (Janis's own stopper/counterbalance review is still deferred).
+
+**Consequence 2 — CB1's own closed-frame coordinate changes.** CB1's
+real, locked inputs (170.8mm from apex D, 65.8mm standoff, 8.06kg, no
+fill weight) are completely UNCHANGED — CB1's own OPEN-state world
+coordinate is therefore also unchanged (598.6, 1207.1, same as Section 4
+above). But since `CB1_CLOSED` is CB1's position expressed in the
+pivot's own native/closed frame, and the pivot moved, `CB1_CLOSED`
+changes from (301.2, 1719.6) under the old C-based pivot to **(523.9,
+1496.9)** under the new D-based pivot — a pure, mechanical consequence of
+the round-trip rotation formula, not a re-tuning of CB1 itself.
+
+**Consequence 3 — a real, PROVABLE clearance ceiling at the pivot.** The
+new pivot sits only **36.522mm from apex D** (was ~419mm under the old
+pivot). Since the pivot is a mandatory, non-moving point on every branch
+built from it, NO construction technique can make that branch's own
+centerline clear D by more than the pivot's own fixed 36.522mm distance
+— a hard, provable ceiling, not a construction shortfall. With this
+project's own 15mm-meat-around-every-bore convention (the pivot bore
+alone needs 28.5mm real half-width), the maximum ACHIEVABLE net clearance
+at the pivot's own structural pad is **36.522 - 28.5 = 8.022mm** —
+provably short of rules-bbq-fab.md's own 20mm apex-clearance rule. A real
+full-spine sweep (0.01° steps, full 0-90°) confirms this genuinely IS the
+global worst case for the whole assembly (occurring at the door-side
+arm's own C-to-pivot segment, at `door_open_deg=0`) — every other zone
+(the CB-branch via its new bow waypoint, the CB1 pipe surface itself)
+clears with real margin. See `BBQ-offset-smoker-base-v7.scad`'s own
+header for the full numeric derivation, including why the OLD 45mm
+corner-arc-around-D technique was retired (re-tested against the new,
+closer pivot, it made clearance WORSE, not better) and replaced with a
+single, precisely-placed bow waypoint that reaches the true 36.522mm
+ceiling.
+
+**Real, flagged, unresolved**: this ceiling is a direct, unavoidable
+consequence of TASK 2's own given `FC_Y = RIB_REF_D[0]-15` formula —
+resolving it would require either moving the pivot further from D
+(contradicts the given formula) or reducing the axle bore's own required
+meat below this project's 15mm convention (trades one flagged violation
+for another). Flagged for Janis's own decision, same disposition pattern
+as the tray-interference finding in Section 6.
+
+**Root-cause pattern across 2 of these 3 rounds** (R-010/R-014
+self-trigger, this being the 3rd real round touching this mechanism):
+both v6.1's apex-A-vs-parting-line mistake and this round's apex-C-vs-
+apex-D mistake are the SAME class of error — an octagon vertex chosen by
+visual proximity to "roughly the right corner," without an explicit
+numeric check against the real fixed/lid split. Written down as a locked
+amendment to rules-bbq-fab.md's own "Three-Rib Lid Counterbalance
+System" convention (v1.7->1.8) so a future product doesn't repeat this a
+3rd time.
+
+---
+
+## 10. Locked values used, for cross-check against the built geometry
 
 - CB1 mass: 8.06kg, no fill weight — UNCHANGED, matches
-  `BBQ-offset-smoker-base-v6.scad`'s `CB1_MASS_KG`.
+  `BBQ-offset-smoker-base-v7.scad`'s `CB1_MASS_KG`.
 - CB1 position: 170.8mm from apex D along the D-E edge, 65.8mm standoff —
-  UNCHANGED, matches `CB1_EDGE_DIST`/`CB1_STANDOFF`. Resulting world
-  coordinate corrected per Section 4 above (598.6, 1207.1 open /
-  301.2, 1719.6 closed — NOT the prompt's own illustrative decimal).
-- Handle mass: 0.957kg, position (-140, 875) closed — UNCHANGED.
-- R_handle: 551.9mm — confirmed via independent recomputation (551.916mm).
+  UNCHANGED, matches `CB1_EDGE_DIST`/`CB1_STANDOFF`. Open-state world
+  coordinate UNCHANGED (598.6, 1207.1 — NOT the prompt's own illustrative
+  decimal, see Section 4). Closed-state (native-frame) coordinate is
+  PIVOT-DEPENDENT and changed in v7: (523.9, 1496.9), was (301.2, 1719.6)
+  under v6/v6.1's own C-based pivot — see Section 9.
+- Handle mass: 0.957kg, position (-110, 875) closed — UNCHANGED from
+  v6.1 (Section 5 DO NOT TOUCH, this round). `R_HANDLE` is
+  PIVOT-DEPENDENT: 685.8mm in v7 (was 534.3mm in v6.1, 551.9mm in v6,
+  the original prompt's own locked value under the very first, C-based
+  pivot) — see Section 9.

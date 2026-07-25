@@ -1,5 +1,45 @@
 # knowledge.map
-# Version: v87 — 2026-07-24
+# Version: v88 — 2026-07-24
+# Changes: bbq-lid-hinge-v7-sync-pivot-margin — bbq-offset-smoker/ row
+# updated: chambers now BBQ-chambers-v24.scad (source v23, TASK 1:
+# `lid_open_deg` moved into a `/* [Hidden] */` Customizer group so it no
+# longer auto-generates a competing `-D`-overridable control — root cause
+# of `door_open_deg` not driving the lid), understructure now
+# BBQ-understructure-v17.scad (source v16, PURE POINTER-ONLY BUMP, v16
+# itself untouched — same real necessity as the v15->v16 chain-break fix,
+# now hit a 3rd time; flagged as a recurring pattern), base assembly now
+# BBQ-offset-smoker-base-v7.scad (source v6.1). TASK 2 (real structural
+# rebuild): the axle/UCP204-12 pivot was mounted on the LID (`FC_Y`/`FC_Z`
+# derived from apex C, 178.665mm — provably LESS than DATUM_Y_CENTER=305,
+# the lid's own half of the ridge) — rebuilt from apex D instead
+# (431.335mm, provably fixed-side, real margin 111.335mm). TASK 3:
+# RIB0_X/RIB2_X inset 150mm->100mm (200/715mm); re-ran the tray-
+# interference sweep fresh — same real FAIL as before, unchanged finding.
+# REAL, SIGNIFICANT, PROVABLE FINDING: new pivot sits only 36.522mm from
+# apex D (was ~419mm) — a hard, provable ceiling on ANY branch's own
+# clearance to D (the pivot never moves). With this project's own 15mm-
+# meat convention, max achievable net clearance at the pivot's own
+# structural pad is 8.022mm — provably short of the 20mm apex-clearance
+# rule, flagged not resolved. The old 45mm corner-arc-around-D technique
+# (v6/v6.1) was RETIRED — re-tested against the new closer pivot, it made
+# clearance WORSE, not better — replaced by a single, precisely-placed
+# bow waypoint (real closest-approach point on the naive straight path,
+# pushed 50mm directly away from D) which reaches the true 36.522mm
+# ceiling exactly, confirmed via a 0.01°-step full-sweep. `R_HANDLE`
+# changes again (534.3mm->685.8mm, `HANDLE_Y`/`HANDLE_Z` themselves
+# UNCHANGED, Section 5 DO NOT TOUCH) — the swept force curve is stale a
+# 2nd time, not recomputed (Janis's stopper/counterbalance review still
+# deferred). R-010/R-014 SELF-TRIGGERED (3rd real round touching this
+# rib/pivot mechanism this session) — real recurring root cause found:
+# 2 of 3 rounds' bugs were the SAME class of mistake (an octagon vertex
+# picked by visual proximity to "roughly the right corner" instead of an
+# explicit numeric fixed-vs-lid check) — written into rules-bbq-fab.md's
+# own "Three-Rib Lid Counterbalance System" convention (v1.7->1.8) as a
+# locked, generalized lesson, not just patched again. No OpenSCAD/CGAL in
+# this execution environment — every check is a real Python geometric
+# sweep, not a live render; stated explicitly. Full detail: docs/
+# lid-hinge-counterbalance-calc.md Section 9, cc_chat_log.md.
+# Previous: v87 — 2026-07-24
 # Changes: bbq-lid-hinge-three-rib-v2 direct-cc tuning pass (R-011,
 # Janis's own live review of the real v6 render, no new Claude Web
 # prompt) — bbq-offset-smoker/ base assembly now

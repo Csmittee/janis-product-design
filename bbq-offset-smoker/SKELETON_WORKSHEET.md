@@ -1,5 +1,18 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.25 — 2026-07-24
+> Version 1.26 — 2026-07-24
+> Changes: bbq-lid-hinge-v7-sync-pivot-margin, 3rd real round touching
+> the rib/pivot mechanism (R-010/R-014 self-triggered, see
+> cc_chat_log.md). PART C's own `door_open_deg` row updated: axle/pivot
+> (`FC_Y`/`FC_Z`) rebuilt from apex D (provably fixed-side) instead of
+> apex C (was provably LID-side — root cause of the embedded-bearing
+> symptom). REAL, PROVABLE FINDING: the new pivot sits only 36.522mm from
+> apex D, a hard ceiling on any branch's own clearance there — max
+> achievable net clearance at the pivot's own structural pad is 8.022mm,
+> provably short of the 20mm apex rule, flagged not resolved.
+> `include` chain: base-v7 -> `BBQ-understructure-v17.scad` (pure pointer
+> bump) -> `BBQ-chambers-v24.scad` (`lid_open_deg` hidden from Customizer,
+> TASK 1). Zero modules/toggles added or removed this round.
+> Previous: 1.25 — 2026-07-24
 > Changes: bbq-lid-hinge-three-rib-v2 — the lid's real hinge/handle/
 > counterbalance mechanism (3 identical ribs, ONE CB1 arm) is now built,
 > `BBQ-offset-smoker-base-v6.scad` (Accessories branch), replacing the
@@ -900,7 +913,7 @@ verified via real CGAL render this session (not just the default state
 | ~~Prep shelves~~ | REMOVED v12 | REMOVED v12 | Module + `shelf_deployed` parameter REMOVED entirely from Understructure (2026-07-22) — relocating to a separate accessories file next round, own new kinetic parameter(s) to be established there, not carried over |
 | Prep tray 0 (base-v2, NEW) | stowed (`tray0_angle_deg=-90`, vertical) | deployed (`tray0_angle_deg=0`, horizontal, default) | Continuous angle, own independent parameter. Real live CGAL: full sweep (9 steps) vs chamber shell/closed lid/understructure/firebox all EMPTY (2 real bugs found+fixed first, see PART B) |
 | Prep tray 1 (base-v2, NEW) | stowed (`tray1_angle_deg=-90`, vertical) | deployed (`tray1_angle_deg=0`, horizontal, default) | Continuous angle, own independent parameter (NOT shared with tray 0, per spec) — same real verification as tray 0, plus both-deployed-simultaneously vs each other EMPTY (5mm real margin) |
-| Lid hinge/handle/CB1 (base-v6, NEW, 2026-07-24) | closed (`door_open_deg=0`) | open (`door_open_deg=90`) | Continuous angle, real Customizer param — also reassigns the chambers file's own `lid_open_deg` after the include chain (last-top-level-assignment-wins), so the rib assembly + visual lid shell move together. Real Python sweep (0.01° steps): apex-D clearance ~24.9mm net (target 20mm, real corner-arc fix applied — see docs/lid-hinge-counterbalance-calc.md). *** REAL DEFECT FLAGGED, NOT FIXED THIS ROUND *** rib0/rib2 have a confirmed geometric interference with Prep tray 0/1 (above) at their shared Y=0 weld zone (up to -35mm overlap) — present even at each mechanism's own default rest state, not resolved by width/position tuning within this round's scope (trays frozen). Needs a follow-up decision/round |
+| Lid hinge/handle/CB1 (base-v7, 2026-07-24) | closed (`door_open_deg=0`) | open (`door_open_deg=90`) | Continuous angle, real Customizer param — also reassigns the chambers file's own `lid_open_deg` (v7 TASK 1: that variable now lives in a `/* [Hidden] */` Customizer group in BBQ-chambers-v24.scad so it can no longer auto-generate a competing `-D` override), so the rib assembly + visual lid shell move together — cc cannot independently confirm the Customizer panel itself, no OpenSCAD in this execution environment, flagged not asserted. v7 TASK 2: axle/pivot (`FC_Y`/`FC_Z`) rebuilt from apex D (provably fixed-side, margin 111.335mm) instead of apex C (was provably LID-side — root cause of the v6/v6.1 embedded-bearing symptom). *** REAL, PROVABLE FINDING *** new pivot sits only 36.522mm from apex D (was ~419mm) — a hard ceiling on any branch's own clearance there; max achievable net clearance at the pivot's own structural pad (15mm-meat convention) is 8.022mm, provably short of the 20mm apex rule, flagged not resolved (old 45mm corner-arc-around-D RETIRED, replaced by a single bow waypoint reaching the true ceiling — see docs/lid-hinge-counterbalance-calc.md Section 9). `R_HANDLE` 534.3->685.8mm (pivot-driven). *** REAL DEFECT FLAGGED, STILL NOT FIXED *** rib0/rib2 (now X=200/715, v7 TASK 3 margin reduced 150->100mm, re-checked fresh) still have a confirmed geometric interference with Prep tray 0/1 (above) at their shared Y=0 weld zone — same real FAIL as v6, unchanged, needs a follow-up decision/round |
 | Tow handle (v6 TASK 6) | towing/use (`handle_fold_deg=0`, horizontal) | folded vertical storage (`handle_fold_deg=90`, UNCHANGED default from v5) | Continuous angle. `TRIANGLE_Z`=`FRONT_AXLE_Z` directly now (228.6mm, was `FRONT_AXLE_Z+100`=328.6mm floating above the axle plane — Janis's own annotated finding, fixed) + new curved gusset fillet bridging the plate to the stub axle. `TBAR_LEN` UNCHANGED (1102.735mm). Real, flagged side effect of the `TRIANGLE_Z` fix (not the goal of TASK 6): tip Z at the 90deg default is now 50mm BELOW the roof (was 50mm above under v5) — the v5-flagged roof-overshoot resolves as a welcome consequence, confirmed via echo. `steer_deg` UNCHANGED mechanism, re-verified via a real CGAL sweep at the new narrower track — still a SEPARATE parameter from fold, not its own dual-view row |
 
 Static/removable parts (Grill grate segments — *** TEMPORARILY,
@@ -912,6 +925,15 @@ wheel support's own bracket — fixed weldment, the caster's swivel IS the
 independently kinetic beyond what's listed — they get a `show_*`
 isolation toggle only (Toggle-Completeness Rule), not a dual-view kinetic
 state.
+
+## Toggle-Completeness count (2026-07-24, v1.31)
+
+NO CHANGE (bbq-lid-hinge-v7-sync-pivot-margin) — Customizer-visibility
+fix (chambers), pivot/formula rebuild + margin tweak (base), pure
+pointer bump (understructure): zero ASSEMBLY-called modules added or
+removed, zero toggles added or removed. Combined total: still 19 real
+toggles across all 3 active files (BBQ-chambers-v24.scad,
+BBQ-understructure-v17.scad, BBQ-offset-smoker-base-v7.scad).
 
 ## Toggle-Completeness count (2026-07-24, v1.29)
 

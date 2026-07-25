@@ -1,5 +1,19 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.7 — 2026-07-24
+> Version 1.8 — 2026-07-24
+> Changes: bbq-lid-hinge-v7-sync-pivot-margin. R-010/R-014 self-trigger
+> (3rd real round touching the rib/pivot mechanism in this same direct-cc
+> session — v6, v6.1, v7): amended the "Three-Rib Lid Counterbalance
+> System" section (below) with a new, real, recurring-root-cause lesson —
+> TWO of the three rounds' real bugs were the SAME class of mistake (an
+> octagon vertex used as a reference point from visual proximity to
+> "roughly the right corner," without explicitly checking which side of
+> the real fixed/lid split it's actually on: apex A vs. the real parting
+> line in v6.1, apex C vs. apex D in v7). Also added the real, provable-
+> ceiling finding from v7's own pivot relocation (a pivot's own fixed
+> distance from a corner sets a hard, provable maximum on any branch/arm
+> built from it — no construction technique can push past it). Detail
+> addition to the existing section, not new document structure — X.Y bump.
+> Previous: 1.7 — 2026-07-24
 > Changes: bbq-lid-hinge-three-rib-v2. New "Three-Rib Lid Counterbalance
 > System" section added — locks the reusable STRUCTURAL pattern behind
 > this round's real lid hinge/handle/counterbalance mechanism (3 identical
@@ -415,20 +429,62 @@ the same method.
   for a stop/rest condition) must be converted to the native frame via
   the SAME round-trip rotation functions used for the physics check
   above, never freehanded.
-- **Convex-corner clearance is NOT automatic from a straight offset**: if
-  the counterbalance branch's own path is built by offseting a straight
+- **Convex-corner clearance is NOT automatic from a straight offset, AND
+  an arc-around-the-corner fix is not universally correct either** — it
+  depends on how close the pivot itself sits to that corner. If the
+  counterbalance branch's own path is built by offsetting a straight
   reference edge outward by some margin, that margin is only guaranteed
   along the FLAT part of the edge — at any convex corner the reference
   contour turns through, a straight offset segment can swing back inside
-  the intended margin (confirmed this round: a naive straight branch
-  spine passed within 0.01mm of a real fixed corner it was supposed to
-  clear by 20mm). Trace a real arc (sampled, each point round-trip-
-  converted to native frame) around any such corner instead of a single
-  straight waypoint.
+  the intended margin (found round 1 of this pattern: a naive straight
+  branch spine passed within 0.01mm of a real fixed corner it was
+  supposed to clear by 20mm; fixed with a sampled arc around the corner,
+  each point round-trip-converted to native frame). BUT if a LATER round
+  moves the pivot much closer to that same corner, RE-TEST the arc
+  technique fresh before reusing it — found round 2 (bbq-lid-hinge-v7):
+  with the pivot relocated to only 36.5mm from the corner, the SAME
+  arc-around-the-corner technique made clearance WORSE (near-zero at
+  several angles), because arc waypoints placed close to the corner swing
+  even closer to it when rotated about a pivot that's already close by.
+  The general, real fix in that case: find the single closest-approach
+  point on the NAIVE straight path (via a real sweep, not guessed), and
+  push just that one point directly away from the corner — cheaper and
+  more robust than a multi-point arc once the pivot itself is the
+  dominant proximity constraint.
+- **A pivot's own fixed distance from a corner is a PROVABLE CEILING on
+  clearance, not just a starting risk** — since the pivot is a mandatory,
+  non-moving point on every branch/arm built from it, no construction
+  technique (arc, bow, or otherwise) can push that branch/arm's own
+  centerline clearance to a nearby fixed corner past the pivot's own
+  static distance to that corner. Combined with this project's own
+  15mm-meat-around-every-bore convention, this can make the formal
+  20mm apex-clearance rule genuinely UNACHIEVABLE at the pivot's own
+  structural pad if the pivot sits close enough to the corner — compute
+  and state this ceiling explicitly (pivot-to-corner distance minus the
+  bore's own required half-width) rather than iterating construction
+  techniques indefinitely trying to reach an impossible number. Flag it
+  as a real, provable finding for the product owner instead.
+- **Any reference point pulled from the chamber's own octagon MUST have
+  its fixed-vs-lid side explicitly checked against the real split (the
+  ridge's own `DATUM_Y_CENTER` midpoint, or the real parting line
+  elsewhere on the wall), not assumed from which corner looks
+  "roughly right."** Root cause of TWO separate real bugs across this
+  mechanism's own build history: apex A used as a spine anchor when the
+  real parting line (not apex A) is the true fixed/lid boundary on that
+  wall edge (bbq-lid-hinge v6.1); apex C used as the pivot reference when
+  apex C is provably on the LID's own half of the ridge, not the fixed
+  half (bbq-lid-hinge v7) — both are the SAME class of mistake, an
+  octagon vertex chosen by visual proximity rather than an explicit
+  fixed/lid check. Before using ANY octagon vertex as a fixed-structure
+  reference point, state the real numeric comparison (e.g. "431.335mm >
+  DATUM_Y_CENTER(305mm), fixed side, margin 126.335mm") — do not assume
+  it from the vertex's name or its rough position in a sketch.
 - **Apex/corner clearance rule**: minimum 20mm real clearance, worst
   case, across the FULL swept rotation (fine steps, not just the two
   endpoints) — verify via a real numeric sweep (Python or equivalent),
-  not assumed from the construction method alone.
+  not assumed from the construction method alone. See the "provable
+  ceiling" bullet above for what to do when this target is genuinely
+  unreachable given a locked pivot position.
 - **Check shared-face interference explicitly, do not assume disjoint
   Y/X territory protects you**: if this mechanism shares a face with
   other kinetic hardware (trays, shelves, doors), sweep the FULL

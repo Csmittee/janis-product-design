@@ -824,3 +824,18 @@ recompute.
 
 Full `--render` (CGAL) confirms `Simple: yes` at `door_open_deg`
 0°/45°/90°.
+
+## 16. Locked reference extracted to its own file (2026-07-25)
+
+The shared-pivot mechanism above (Section 15) and the real hinge
+location are now also written up as a standalone, doc-reload-proof
+reference: `docs/hinge-construction.md`. That file additionally records
+the "open-then-freeze" construction method (build against the door's
+TRUE open-world position, then convert back to native frame) and a real
+bug it caught the same day: the CB1 counterbalance pipe's position
+formula (unchanged since v6, always marked "LOCKED — do not recompute")
+was applying a spurious extra rotation, landing CB1 at a physically
+wrong closed-frame position. The corrected math is recorded there; the
+`.scad` fix itself is still pending, alongside a full rebuild of the
+door-side rib spine (flagged stale this same round — see
+`cc_chat_log.md`, 2026-07-25).

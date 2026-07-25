@@ -1,5 +1,11 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.10 — 2026-07-25
+> Version 1.11 — 2026-07-25
+> Changes: added a one-line pointer to new docs/hinge-construction.md
+> (the full worked reference for the shared-pivot/end-margin-zone
+> lessons below, plus the "open-then-freeze" method for positioning rib/
+> link points against a real physical target). Detail addition, not new
+> structure — X.Y bump.
+> Previous: 1.10 — 2026-07-25
 > Changes: bbq-lid-hinge-v9, real shared hinge pivot round. Amended the
 > "Three-Rib Lid Counterbalance System" section with 2 new real, locked
 > lessons: (1) two parts that must move together as one rigid assembly
@@ -584,6 +590,11 @@ the same method.
   X-position falls inside this zone before deciding whether a Y/Z gap is
   required at all — it can eliminate an otherwise-real constraint
   entirely rather than just shrinking it.
+- **Full worked reference for both lessons above, plus the "open-then-
+  freeze" construction method for positioning any rib/link point against
+  a real physical target on the door surface**: `docs/hinge-
+  construction.md` (new 2026-07-25) — read it before touching
+  `HINGE_PIVOT_Y`/`HINGE_PIVOT_Z` or any `FC_Y`/`FC_Z`-derived point.
 
 ---
 

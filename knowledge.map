@@ -1,5 +1,14 @@
 # knowledge.map
-# Version: v90 — 2026-07-25
+# Version: v91 — 2026-07-25
+# Changes: new docs/hinge-construction.md — locked reference for the BBQ
+# lid hinge (shared rotation center + real UCP204-12 hinge location +
+# the "open-then-freeze" construction method for any rib/link point).
+# Written mid-session, direct-cc, so this confirmed-correct knowledge
+# survives a context reload separate from the still-unresolved rib
+# construction (flagged stale, needs a full rebuild — see cc_chat_log.md
+# 2026-07-25). Read this file BEFORE touching BBQ-chambers-v26.scad's
+# HINGE_PIVOT_Y/Z or any base-file FC_Y/FC_Z-derived point.
+# Previous: v90 — 2026-07-25
 # Changes: bbq-lid-hinge-v9, direct-cc, real shared hinge pivot round —
 # active pointers now BBQ-offset-smoker-base-v9.scad (source v8) ->
 # BBQ-understructure-v19.scad (source v18, pure pointer bump) ->

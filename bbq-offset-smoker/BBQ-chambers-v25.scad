@@ -1044,7 +1044,13 @@ DATUM_Z_RIDGE    = chamber_floor_z + chamber_H;                  // 1381.335mm (
 // DATUM_Y_CENTER itself is UNCHANGED and still used for its own unrelated
 // purposes (exhaust_room()/chimney_pipe() PIPE_HOLE_Y etc.) -- do not
 // confuse the two.
-RIDGE_SPLIT_Y    = chamfer + 30;                                // 208.665mm -- 30mm from apex C along the ridge, per Janis's own real-world-verified number
+// RIDGE_SPLIT_Y -- v25 2nd pass: 30mm -> 64mm from apex C, per Janis's
+// own real chosen part: a UCP204-12 pillow block bearing (3/4" bore),
+// whose own real "H0" spec dimension is 64mm -- Janis's own explicit
+// instruction reuses that same real number both as the rc-to-rcs
+// (door-side arm to pivot) length AND as this parting line's own
+// distance from apex C. NOT re-derived by cc, executed literally.
+RIDGE_SPLIT_Y    = chamfer + 64;                                // 242.665mm -- 64mm from apex C along the ridge, real UCP204-12 H0 dimension, Janis's own explicit instruction
 
 // ───────────────────────────────
 // FIREBOX DATUMS — v15 TASK 1/2: outer shell rebuilt as a true cube, inner

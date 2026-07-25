@@ -572,3 +572,69 @@ Re-verified after both fixes: full `--render` (CGAL) pass at
 `FOOT_Y0`); `FC_Y`/`FC_Z`/`HINGE_GAP`/`BRACKET_RISE` (the pivot's own real
 position, the actual hard constraint) are UNCHANGED — only the fixed
 bracket's own visual/structural shape moved, not the pivot itself.
+
+**REAL BUG FOUND + FIXED, SAME DAY — "everything disappeared" when
+Janis opened v8** (a real render, not the CLI's own no-`-D` default,
+which never reproduced it — flagged, not silently glossed over: this
+means the bug only manifests under the OpenSCAD GUI's own Customizer
+behavior, not a plain compile, the SAME class of gap that caused the
+original `lid_open_deg`/v7 bug). Root cause, confirmed via a full
+top-level-variable duplication sweep across the flattened include chain
+(`BBQ-chambers-v25.scad` + `BBQ-understructure-v18.scad` +
+`BBQ-offset-smoker-base-v8.scad`, per R-009): cc's own new `HINGE_GAP`
+constant (this round's lid-pivot gap, =20mm) COLLIDED with a
+pre-existing, unrelated `HINGE_GAP`=0.5mm already declared in
+`BBQ-chambers-v25.scad` (`firebox_door()`'s own real hinge-line
+clearance gap, nothing to do with the lid mechanism). Because OpenSCAD
+resolves same-named top-level variables via one global "last assignment
+wins" rule across the ENTIRE flattened file, cc's own later `HINGE_GAP
+=20` silently overwrote the firebox door's own intended 0.5mm value
+(and/or the GUI Customizer's own auto-generated control for the
+duplicate name resolved to the wrong one) — a 40x-larger value where a
+tiny 0.5mm clearance was expected badly corrupts `firebox_door()`'s own
+geometry, consistent with the catastrophic-looking broken render Janis
+saw. FIX: renamed cc's own constant `HINGE_GAP` -> `PIVOT_GAP`
+throughout `BBQ-offset-smoker-base-v8.scad` (confirmed collision-free via
+the same duplication sweep) — no value or formula changed, pure rename.
+Re-verified: full `--render` (CGAL) `Simple: yes` at 0°/90°, same facet/
+vertex counts as before the rename (confirms zero geometric change).
+**Lesson for this project's own governance** (candidate for a future
+rules-bbq-fab.md amendment): before introducing ANY new top-level
+constant name in a direct-cc session, run the same duplication sweep
+this fix used (grep every top-level `NAME =` assignment across the
+flattened include chain) — not just for the specific names being edited,
+but for every NEW name being introduced. cc did this for `BKT_W`/
+`BKT_BOLT_D` this same round (after the user's own earlier reminder) but
+not for `HINGE_GAP`, `BRACKET_RISE`, `FOOT_*`, or `ARM_R` when they were
+first introduced — this specific miss should have been caught by
+applying the SAME discipline uniformly, not selectively.
+
+**REAL DESIGN CORRECTION, SAME DAY — hinge mounting moved from the
+ridge to the chamber's own TRUE end caps**, per Janis's own direct
+question: "why cant you put it on the side near end cap? ... we pass a
+shaft to all 3 ribs, and with both end to the hinge which sit on the fix
+side of the frame near the door parting." This is a real, checkable
+re-reading of the ORIGINAL "Cannot do" constraint ("the hinge must stay
+at the fix side near end cap") — both of cc's first 2 passes this round
+under-weighted "near end cap" as loose/descriptive language rather than
+literal (mount at `DATUM_X_FRONT`=0/`DATUM_X_REAR`=915, not distributed
+along the ridge between the ribs). `FC_Y`/`FC_Z`/`PIVOT_GAP`/
+`BRACKET_RISE` (the pivot's own real position, tied to `RIDGE_SPLIT_Y`)
+are UNCHANGED — Janis's own "close to the hinge door parting line on the
+top ridge" confirms the pivot's own Y-Z location was always right, only
+the bracket's own mounting SURFACE and X-position were wrong. New
+`BKT0_X`/`BKT1_X` (20mm/895mm, a real `BKT_X_MARGIN`=20mm inset from each
+true end cap for weld/bolt access) replace the old RIB0_X/RIB2_X-flanking
+positions. `hinge_bracket()` rebuilt: foot now mounts flush against the
+real end-cap material (`octagon_ring()`'s own `cap_x0`/`cap_x1` wall_t
+plate, BBQ-chambers-v25.scad) instead of the ridge surface, extending
+inward into the chamber's own interior (not floating), positioned close
+to the ridge/door parting line in Y-Z (`FOOT_Y0`=RIDGE_SPLIT_Y+5,
+`FOOT_Z1`=DATUM_Z_RIDGE). `axle_rod()` — already a single continuous
+shaft spanning all 3 ribs before this round, unchanged code — now spans
+`BKT0_X` to `BKT1_X` instead of hugging the outer ribs. REAL CHECK: the
+rear bracket's own X-range (907-915mm) overlaps in X with the firebox
+(`firebox_x0`=913.5mm) but NOT in Z — firebox tops out at Z=1000mm,
+the bracket sits at Z=1336-1381mm (335mm+ clear) — confirmed via the
+chambers file's own real `firebox_z1`/`FOOT_Z0` values, not assumed.
+Re-verified: full `--render` (CGAL) `Simple: yes` at 0°/90°.

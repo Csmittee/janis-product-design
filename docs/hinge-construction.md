@@ -1,5 +1,10 @@
 # Hinge Construction — Locked Reference (BBQ Offset Smoker)
-> Version 1.0 — 2026-07-25
+> Version 1.1 — 2026-07-25
+> Changes: added Section 6, the explicit delete-vs-keep rebuild checklist
+> Janis and cc confirmed together in chat — written here so it doesn't
+> depend on that specific chat turn being remembered. Detail addition,
+> not new structure — X.Y bump.
+> Previous: 1.0 — 2026-07-25
 > Changes: new file. Extracted from the bbq-lid-hinge-v9/v10 direct-cc
 > session so the two real, hard-won, CONFIRMED-CORRECT results of that
 > session survive a context reload — separate from the rib construction,
@@ -129,6 +134,36 @@ fixed structure — Section 2's shared-pivot fix only guarantees rib-vs-
 LID-surface consistency across the sweep, NOT rib-vs-FIXED-structure
 consistency, since the fixed structure doesn't rotate at all. This is a
 real, separate, still-open question, flagged here so it isn't lost.
+
+## 6. Concrete rebuild checklist (delete vs. keep)
+
+Confirmed with Janis 2026-07-25, after this doc's first draft — written
+here explicitly so it doesn't depend on that chat turn being remembered:
+
+**DELETE (both are re-derived guesswork, not real geometry):**
+- Door side: `RIB_SPLIT_PT`, `RIB_B_OFFSET`, `SPLIT_STANDOFF`,
+  `B_STANDOFF`, and the `miter_point()` CALL at apex B (the function
+  itself is fine — see KEEP below).
+- CB1/hinge side: the current `CB1_OPEN`/`CONTACT_OPEN` formula (the one
+  with the rotation bug, Section 4), and the `RIDGE_HOVER`/`D_HOVER` link
+  points built on top of it in `v10.scad`.
+
+**KEEP (locked, real, do not re-derive):**
+- `HINGE_PIVOT_Y`/`HINGE_PIVOT_Z` and `FC_Y`/`FC_Z` — the shared pivot
+  itself (Sections 2-3).
+- The real octagon reference points (`RIB_REF_B`, `RIB_REF_C`,
+  `RIB_REF_D`, `RIB_REF_E`) — real chamber geometry, not placeholders;
+  the new rib traces FROM these, it doesn't replace them.
+- The `miter_point()` FUNCTION — a correct, reusable formula. Re-apply
+  it to the real traced shape instead of arbitrary offset points.
+- The corrected CB1 value from Section 4 (598.64, 1307.09) — this
+  replaces the deleted formula's output, derived via the open-then-
+  freeze method, not re-guessed.
+
+Net effect: this is not "start from zero" — it's "delete the two
+guessed constructions, keep the two locked reference systems (the pivot,
+and the chamber's own real geometry), rebuild the rib as a direct trace
+between them."
 
 ## References
 

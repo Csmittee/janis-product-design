@@ -375,6 +375,74 @@ System" convention (v1.7->1.8) so a future product doesn't repeat this a
   under v6/v6.1's own C-based pivot — see Section 9.
 - Handle mass: 0.957kg, position (-110, 875) closed — UNCHANGED from
   v6.1 (Section 5 DO NOT TOUCH, this round). `R_HANDLE` is
-  PIVOT-DEPENDENT: 685.8mm in v7 (was 534.3mm in v6.1, 551.9mm in v6,
-  the original prompt's own locked value under the very first, C-based
-  pivot) — see Section 9.
+  PIVOT-DEPENDENT: 543.0mm in v7.2 (was 685.8mm in v7, 534.3mm in v6.1,
+  551.9mm in v6, the original prompt's own locked value under the very
+  first, C-based pivot) — see Section 11.
+
+---
+
+## 11. v7.2 update — Janis's own real-world correction, PLUS a serious, unresolved verification finding (2026-07-25)
+
+Janis reviewed the v7 render and corrected it against a real,
+physically-built reference product (photo of an actual smoker's hinge):
+the v7 pivot relocation (apex C → apex D) was WRONG despite being
+geometrically defensible. Real hinge hardware mounts via a bracket
+bolted to fixed material, which can hold the actual pivot pin at almost
+any (Y,Z) that bracket reaches — the "pivot point itself must sit past
+`DATUM_Y_CENTER`" test (v7's own reasoning) checks a different, stricter
+question (does a bore AT that exact point have fixed material around it)
+than whether a bracket anchored to fixed material can reach that point.
+Janis's own real-world reference takes precedence.
+
+**Pivot rebuilt from apex C again**, Janis's own direct instruction,
+executed literally: `FC_Y = RIB_REF_C[0] + 30` (208.665mm, offset
+increased from the original v6/v6.1 value of 15mm), `FC_Z =
+RIB_REF_C[1] + 33.3` (UNCHANGED value and formula structure — Janis's
+own explicit instruction, "Z remains the same"). This point does NOT
+pass v7's own "Y > DATUM_Y_CENTER" fixed-side test (208.665mm <
+305mm) — stated explicitly, not silently dropped; not being re-derived
+by cc, this is Janis's own confirmed instruction.
+
+**A second axis (the source prompt's earlier "40mm in x direction away
+from the door") was NOT implemented as a separate offset.** After
+back-and-forth, Janis simplified to "30mm... and apex C 30mm" — cc's
+best-available reading is that this describes the same single Y-offset
+from two angles, not a second independent axis. Flagged as an open
+interpretation, not asserted as certain — subject to correction once a
+real render is available.
+
+**REAL, SERIOUS, UNRESOLVED FINDING** — stated plainly, per this
+project's own Verification Discipline Rule (R-014): a rigorous fresh
+re-check of the CB1-branch's own clearance to apex D (0.01° sweep steps,
+full 0–90°) using several independent construction techniques — a single
+bow waypoint, a multi-point arc at radii from 45mm to 200mm, and a dense
+sampled path following the source prompt's own "trace D-E, offset 20mm
+outward" instruction literally — ALL converge on a near-zero (<0.02mm)
+worst-case clearance to apex D for this v7.2 pivot position. Adding more
+waypoints iteratively does not improve it (the search oscillates between
+the same two failure states). No construction found this session
+achieves a real, positive clearance margin for this specific pivot
+position.
+
+**More seriously**: re-running the ORIGINAL v6 45mm-corner-arc
+construction — the one this project's own file headers state achieved
+44.95mm clearance — against the ORIGINAL v6 pivot (`FC_Y = C_Y+15`) in a
+fresh, careful re-implementation this session gives **0.0106mm**, not
+44.95mm. cc cannot currently explain this discrepancy. This calls the
+CB1-branch apex-D clearance claim into real doubt going back to the
+very first v6 build — not just this round's own new pivot. Flagged
+prominently, not buried. Possible explanations not yet investigated:
+a bug in the original v6 verification script, a bug in this session's
+re-implementation, or a genuine difference in method between the two
+(e.g. sweep step size, segment endpoint handling) — no conclusion drawn
+without further work.
+
+**Disposition**: NOT fixed this round. Janis has explicitly deferred
+CB1/stopper review until the door can be opened, and this finding lives
+in that same area — `BBQ-offset-smoker-base-v7.2.scad`'s own branch/
+CB1/prong code is unchanged from v7 (the `BRANCH_BOW_NATIVE` construction
+recomputes live from the new `FC_Y`/`FC_Z`, but is NOT verified to clear
+apex D at this pivot position). This is not represented as fixed or
+safe — real re-verification, likely requiring a genuinely different
+construction approach (not a local waypoint tweak), is needed before
+fabrication, in the same round CB1/stopper get reviewed.

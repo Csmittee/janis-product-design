@@ -1,5 +1,17 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.8 — 2026-07-24
+> Version 1.9 — 2026-07-25
+> Changes: bbq-lid-hinge-v8, "unify system" redesign round. Amended the
+> "Three-Rib Lid Counterbalance System" section with 2 new real, locked
+> lessons: (1) a hardcoded fixed/lid split (e.g. a ridge midpoint) must
+> become its own real, tunable design parameter once a real reference
+> part can't be reconciled with it as a bare coincidence — the
+> `RIDGE_SPLIT_Y` fix, root-causing what v7/v7.2's pivot-only fixes could
+> not fully resolve; (2) a fixed bracket's own foot/mounting plate is a
+> real obstacle the swept arm must clear too, not just the pivot bore —
+> found via a capsule-vs-box distance sweep, not visual inspection, fixed
+> with the same "push the closest-approach point away" technique already
+> locked for corner obstacles, now generalized to box obstacles.
+> Previous: 1.8 — 2026-07-24
 > Changes: bbq-lid-hinge-v7-sync-pivot-margin. R-010/R-014 self-trigger
 > (3rd real round touching the rib/pivot mechanism in this same direct-cc
 > session — v6, v6.1, v7): amended the "Three-Rib Lid Counterbalance
@@ -496,6 +508,40 @@ the same method.
   resolvable within the round's own stated scope (e.g. the interfering
   hardware is frozen/DO NOT TOUCH), flag it explicitly as a real,
   unresolved cross-subsystem conflict — do not report the sweep as clean.
+- **A hardcoded fixed/lid split (e.g. a ridge midpoint) is not a real
+  design parameter until it has its own name and can be tuned** —
+  bbq-lid-hinge v6/v6.1/v7/v7.2 all reused the ridge's own literal
+  midpoint (`chamber_W/2`, coincidentally equal to `DATUM_Y_CENTER`) as
+  the fixed/lid boundary there, which made "pivot close to a real hinge
+  bracket" and "pivot provably on the fixed side" mutually exclusive
+  whenever the desired hinge location sat near a vertex deep in the
+  midpoint's own lid half. Round 4 (bbq-lid-hinge-v8) fixed this at the
+  root: promoted the ridge split to its own real, independently-tunable
+  parameter (`RIDGE_SPLIT_Y`) — moving THAT line, not just the pivot
+  offset, is what finally made both constraints achievable together. When
+  a product owner's own real reference hardware conflicts with a
+  hardcoded geometric coincidence, check whether the coincidence itself
+  (not just the number derived from it) is the thing that needs to become
+  a real parameter.
+- **A fixed bracket's own foot/mounting plate is a real solid obstacle
+  the SWEEPING arm must clear too, not just the pivot bore** — checking
+  only "is the pivot point itself on the fixed side" (the v7/v7.2 lesson
+  above) is necessary but not sufficient once the fixed bracket has real
+  volume near the swept path. bbq-lid-hinge-v8: a naive straight door-arm
+  segment, previously safe with a distant pivot, swept directly through
+  the new `hinge_bracket()`'s own foot plate once the pivot (and
+  therefore its bracket) moved close to the door's own parting line —
+  found via a capsule(arm-width)-vs-box(foot) distance sweep (0.02° steps,
+  full 0-90°), NOT by visual inspection (the bracket was too small to
+  spot a collision by eye at whole-assembly render scale). Fix reused the
+  SAME "push the closest-approach point away by a fixed margin" technique
+  already locked above for corner obstacles — applies equally to a box
+  obstacle, not just a point/corner. Exclude the small knuckle region
+  immediately around the pivot itself from this check (the rotating pad
+  and the fixed boss are EXPECTED to sit close together there by design,
+  same accepted simplification as every version's own pillow-block
+  placeholder) — the real new risk is further along the arm, not at the
+  pivot.
 
 ---
 

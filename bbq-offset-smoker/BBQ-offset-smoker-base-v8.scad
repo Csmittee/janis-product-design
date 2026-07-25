@@ -38,7 +38,7 @@
 //    the air so push it in to stay in CD face." cc's own real reading of
 //    this (flagged, not silently assumed): the "15-25mm gap" is the real
 //    physical clearance between the pivot pin and the door's own cut edge
-//    (`RIDGE_SPLIT_Y`) — `FC_Y = RIDGE_SPLIT_Y + HINGE_GAP` (`HINGE_GAP`
+//    (`RIDGE_SPLIT_Y`) — `FC_Y = RIDGE_SPLIT_Y + PIVOT_GAP` (`PIVOT_GAP`
 //    = 20mm, the stated range's own midpoint, a placeholder judgment call
 //    pending the real part). `FC_Z = DATUM_Z_RIDGE + BRACKET_RISE`
 //    (`BRACKET_RISE` = 25mm, a real, flagged placeholder for the newly-
@@ -639,7 +639,7 @@ RIB_REF_E = [chamber_W, chamber_floor_z + chamber_H - chamfer];
 // simultaneously achievable (impossible under every prior version, where
 // the ridge split was hardcoded at 305mm and C sat at 178.665mm, deep in
 // LID territory no matter what offset was tried).
-// `HINGE_GAP`(20mm) is cc's own real reading of Janis's stated "15-25mm
+// `PIVOT_GAP`(20mm) is cc's own real reading of Janis's stated "15-25mm
 // gap" constraint -- the real physical clearance between the pivot PIN
 // and the door's own cut edge at `RIDGE_SPLIT_Y`, taken as the range's own
 // midpoint since no more precise number is given yet; flagged as a
@@ -652,9 +652,9 @@ RIB_REF_E = [chamber_W, chamber_floor_z + chamber_H - chamfer];
 // re-guessed, not taken on faith): fixed zone is Y > RIDGE_SPLIT_Y per
 // `fixed_side_wedge()`'s own real boundary (BBQ-chambers-v25.scad),
 // FC_Y=228.665mm > RIDGE_SPLIT_Y=208.665mm. ───
-HINGE_GAP    = 20;                        // mm -- midpoint of Janis's stated 15-25mm range, placeholder pending the real part
+PIVOT_GAP    = 20;                        // mm -- midpoint of Janis's stated 15-25mm range, placeholder pending the real part
 BRACKET_RISE = 25;                        // mm -- short bracket's own Z rise above the ridge surface, placeholder pending the real part (was 33.3mm/UCP204-12's H, RETIRED)
-FC_Y = RIDGE_SPLIT_Y + HINGE_GAP;         // 228.665mm -- real gap from the door's own cut edge, fixed-side confirmed
+FC_Y = RIDGE_SPLIT_Y + PIVOT_GAP;         // 228.665mm -- real gap from the door's own cut edge, fixed-side confirmed
 FC_Z = DATUM_Z_RIDGE + BRACKET_RISE;      // 1406.335mm -- short bracket rise above the ridge surface
 
 // ─── Grab handle -- v6.1 REAL FIX: HANDLE_Y -140 -> -110 (pulled back
@@ -684,32 +684,59 @@ AXLE_BORE_D  = 27;                 // reuses this project's own 27mm-bore-over-2
 // real position, connected via a genuinely LONG DIAGONAL ARM (not a
 // short stubby riser) up to the pivot eye near the door's own edge.
 // cc's own first attempt this session (a short hull-based gusset,
-// foot right next to the parting line) undersold the real arm's own
-// length/reach -- corrected here after seeing the actual reference
-// image's pixels for the first time (flagged: cc had only a text
-// description before). `BKT_W`/`BKT_BOLT_D` reuse the retired UCP204-12
-// part's own real width/bolt-size numbers (38mm/10mm) since nothing
-// about those specific values was ever flagged wrong -- only its own
-// TALL casting shape (33.3mm H, floating cube straddling the parting
-// line) was wrong, not its bolt/width scale. `FOOT_Y0`/`FOOT_DEPTH`/
-// `FOOT_T` are new, real, flagged placeholders (a sketch, not a spec
-// sheet): the foot is now anchored near `DATUM_Y_CENTER`(305mm, the
-// chimney's own real Y position, `PIPE_HOLE_Y` in
-// BBQ-chambers-v25.scad) -- comfortably inside the fixed zone
-// (>`RIDGE_SPLIT_Y`) and comfortably clear of apex D (431.335mm) -- which
-// naturally produces a real diagonal arm of ~85mm from foot-center to the
-// pivot boss at `FC`, matching the reference image's own proportions far
-// better than a short stubby gusset. Self-checked: moving the foot
-// FARTHER from the door's own parting line only IMPROVES the door-arm-
-// vs-foot clearance already found and fixed below (worst case now
-// +41.8mm, up from the +12.79mm the short-gusset version achieved). ───
-BKT_W       = 38;                          // mm, bracket's own width along X (rib-spacing direction) -- reused from the retired UCP_A
-BKT_BOLT_D  = 10;                          // mm -- reused from the retired UCP_BOLT_D
-FOOT_DEPTH    = 40;                          // mm -- foot's own real footprint along Y, entirely on fixed ridge material
-FOOT_T        = 8;                           // mm -- foot plate thickness, sits flush ON the ridge surface (Z=DATUM_Z_RIDGE), NOT floating
-FOOT_Y0 = DATUM_Y_CENTER - 15;               // 290mm -- foot's near edge, anchored near the chimney's own real Y position (`DATUM_Y_CENTER`/`PIPE_HOLE_Y`=305mm), matching the reference image's own foot placement
-FOOT_Y1 = FOOT_Y0 + FOOT_DEPTH;              // 330mm -- foot's far edge, real margin confirmed vs RIB_REF_D (431.335mm, ~101mm clear)
+// foot right next to the parting line, MOUNTED ON THE RIDGE) undersold
+// the real arm's own length/reach AND, more importantly, mounted to the
+// wrong SURFACE entirely -- Janis's own direct correction, same day,
+// after the ridge-mount version was already pushed: "why cant you put it
+// on the side near end cap... we pass a shaft to all 3 ribs, and with
+// both end to the hinge which sit on the fix side of the frame near the
+// door parting." This is a real, checkable re-reading of the ORIGINAL
+// "Cannot do" constraint ("the hinge must stay at the fix side near end
+// cap") -- cc's first 2 passes both under-weighted "near end cap" as
+// loose/descriptive language; it was literal all along: mount at the
+// chamber's own TRUE end caps (`DATUM_X_FRONT`=0, `DATUM_X_REAR`=915),
+// not distributed along the ridge between the ribs. REAL, FLAGGED
+// CONSEQUENCE, stated not hidden: this is the 3rd real attempt at this
+// specific bracket's own mounting concept in one day (ridge-flush-at-
+// parting-line, then ridge-flush-near-chimney, now end-cap-mounted) --
+// each correction came from cc not having real information (first no
+// image at all, then an image without literally re-reading "near end
+// cap" against it) until Janis stated it explicitly enough to remove the
+// ambiguity. `FC_Y`/`FC_Z`/`PIVOT_GAP`/`BRACKET_RISE` (the pivot's own
+// real position, tied to `RIDGE_SPLIT_Y` -- Janis: "close to the hinge
+// door parting line on the top ridge") are UNCHANGED -- only the
+// bracket's own real mounting SURFACE and X-position moved, confirmed
+// via R-009 (grep) this is the only real consumer of the old
+// ridge-surface foot logic. A single long `axle_rod()` already spanned
+// all 3 ribs before this round (unchanged code) -- exactly the "pass a
+// shaft to all 3 ribs" Janis describes; only its own span (`axle_x0`/
+// `axle_x1`) now reaches out to the two new end-cap-mounted brackets
+// instead of hugging the outer ribs. `BKT_W`/`BKT_BOLT_D` reuse the
+// retired UCP204-12 part's own real width/bolt-size numbers (38mm/10mm),
+// unchanged, not flagged wrong. `FOOT_Y0`/`FOOT_YDEPTH`/`FOOT_Z1`/
+// `FOOT_ZDEPTH`/`FOOT_T`/`BKT_X_MARGIN` are new, real, flagged
+// placeholders (still no real spec sheet): the foot now mounts flush
+// against the real end-cap material (`octagon_ring()`'s own
+// `cap_x0`/`cap_x1` wall_t-thick plate, BBQ-chambers-v25.scad), near
+// where the ridge meets the end cap (close to `RIDGE_SPLIT_Y`, per
+// Janis's own "closer to door parting" instruction), extending inward
+// into the chamber's own real interior space (not floating) -- same
+// "push it in to stay on real fixed material" discipline as the
+// ridge-mount version, just against a different real surface. ───
+BKT_W        = 38;                          // mm, boss/collar width along X -- reused from the retired UCP_A
+BKT_BOLT_D   = 10;                          // mm -- reused from the retired UCP_BOLT_D
+BKT_X_MARGIN = 20;                          // mm -- bracket's own X inset from the true end cap, real weld/bolt access margin
+BKT0_X = DATUM_X_FRONT + BKT_X_MARGIN;      // 20mm -- front bracket's own pivot/boss X
+BKT1_X = DATUM_X_REAR  - BKT_X_MARGIN;      // 895mm -- rear bracket's own pivot/boss X
+FOOT_T        = 8;                           // mm -- foot plate thickness, now along X (flush against the end cap's own real material, was along Z when ridge-mounted)
+FOOT_Y0 = RIDGE_SPLIT_Y + 5;                 // 213.665mm -- foot's near edge, close to the door's own parting line, fixed side
+FOOT_YDEPTH   = 45;                          // mm -- foot's own real footprint along Y
+FOOT_Y1 = FOOT_Y0 + FOOT_YDEPTH;             // 258.665mm -- real margin confirmed vs RIB_REF_D (431.335mm)
+FOOT_Z1 = DATUM_Z_RIDGE;                     // mm -- foot's top edge, right at the ridge height, close to the door parting line in Z too
+FOOT_ZDEPTH   = 45;                          // mm -- foot's own real footprint along Z, reaching down the end cap from the ridge
+FOOT_Z0 = FOOT_Z1 - FOOT_ZDEPTH;             // 1336.335mm
 HINGE_BOSS_R  = AXLE_STUB_OD/2 + 8;          // mm -- pivot boss radius, smaller than the retired pillow block's own HOUSING_R since this is a real short bracket, not a casting
+ARM_R = 8;                                   // mm -- slender arm/strap half-thickness, placeholder
 
 // ─── CB1 -- 4" sq counterbalance pipe ───
 CB1_OD      = 101.6;
@@ -1003,56 +1030,61 @@ module cb1_pipe() {
 }
 
 // ─── Axle + hinge brackets -- FIXED reference geometry (Section 4 Step
-// 1): does NOT rotate with door_open_deg, always at fc. ───
-AXLE_SPAN_MARGIN = 30;
-axle_x0 = RIB0_X - AXLE_SPAN_MARGIN;
-axle_x1 = RIB2_X + RIB_T + AXLE_SPAN_MARGIN;
+// 1): does NOT rotate with door_open_deg, always at fc. v8 3rd pass: the
+// axle already spanned all 3 ribs as ONE continuous shaft before this
+// round (unchanged code) -- Janis's own "pass a shaft to all 3 ribs" is
+// already satisfied; only its own span now reaches the two end-cap-
+// mounted brackets (`BKT0_X`/`BKT1_X`) instead of hugging the outer
+// ribs. ───
 module axle_rod() {
-    translate([axle_x0, FC_Y, FC_Z]) rotate([0,90,0])
-        cylinder(h=axle_x1-axle_x0, r=AXLE_ROD_OD/2, $fn=64);
+    translate([BKT0_X, FC_Y, FC_Z]) rotate([0,90,0])
+        cylinder(h=BKT1_X-BKT0_X, r=AXLE_ROD_OD/2, $fn=64);
 }
-// hinge_bracket() -- v8 REAL REBUILD, replaces ucp_bearing()/the retired
-// UCP204-12 pillow block entirely (this file's own header). Real foot
-// plate flush-mounted ON the ridge surface (Z=DATUM_Z_RIDGE), fully
-// inside the fixed zone (Y=[FOOT_Y0,FOOT_Y1], both > RIDGE_SPLIT_Y --
-// "the feet of the hinge must not fly in the air"), connected to the
-// pivot boss via a real hull-based diagonal arm/gusset (this project's
-// own "hull() for rounded shapes" technique, reused not reinvented) --
-// the foot is anchored near the chimney's own real position
-// (DATUM_Y_CENTER), well clear of the door's own parting line, so the
-// hull naturally spans a real diagonal reach (~85mm) matching the
-// reference image's own long-arm silhouette (foot lower/behind near the
-// chimney, eye upper/forward near the door). Simple bbox/cylinder/hull
-// placeholder, no supplier casting detail (rules-bbq-fab.md Construction
-// Method), since the real part's own dimensions are not yet known (a
-// sketch, not a spec sheet).
-ARM_R = 8;   // mm, slender arm/strap half-thickness -- v8 2nd pass, replaces the first pass's own fat hull-wedge (a hull between the WHOLE foot slice and the boss fills in all the space between them, reading as a chunky trapezoid, not the reference image's own slender diagonal arm). A real hull of two small spheres (foot-top-center -> boss-center) gives a genuine uniform-thickness rod instead, matching the sketch far better -- placeholder radius, no real part dimension given yet.
-module hinge_bracket(x_pos) {
-    foot_top = [x_pos, (FOOT_Y0+FOOT_Y1)/2, DATUM_Z_RIDGE+FOOT_T];
-    boss_pt  = [x_pos, FC_Y, FC_Z];
+// hinge_bracket() -- v8 3rd pass, mounts to the chamber's own TRUE end
+// caps (this file's own header) instead of the ridge surface. Real foot
+// plate flush against the end cap's own real material
+// (`octagon_ring()`'s `cap_x0`/`cap_x1` wall_t-thick plate,
+// BBQ-chambers-v25.scad), extending inward into the chamber's own real
+// interior space (dir>0: front bracket, foot spans
+// X=[cap_x,cap_x+FOOT_T]; dir<0: rear bracket, foot spans
+// X=[cap_x-FOOT_T,cap_x], mirrored) -- "push it in to stay on real fixed
+// material," same discipline as the ridge-mount version, different real
+// surface. Foot's own Y-Z footprint sits close to the ridge/door parting
+// line (`FOOT_Y0`=RIDGE_SPLIT_Y+5, `FOOT_Z1`=DATUM_Z_RIDGE), per Janis's
+// own "closer to door parting" instruction. Connected to the pivot boss
+// (at `boss_x`, on the SAME real axle the ribs share) via a real
+// hull-based diagonal arm (hull of two small spheres, `ARM_R`, gives a
+// genuine slender rod, not a fat wedge -- v8 2nd pass's own real fix,
+// reused directly). Simple bbox/cylinder/hull placeholder, no supplier
+// casting detail (rules-bbq-fab.md Construction Method), real part
+// dimensions still not known (a sketch, not a spec sheet).
+module hinge_bracket(boss_x, cap_x, dir) {
+    foot_x0 = dir > 0 ? cap_x : cap_x - FOOT_T;
+    foot_top = [foot_x0 + FOOT_T/2, (FOOT_Y0+FOOT_Y1)/2, (FOOT_Z0+FOOT_Z1)/2];
+    boss_pt  = [boss_x, FC_Y, FC_Z];
     difference() {
         union() {
-            translate([x_pos-BKT_W/2, FOOT_Y0, DATUM_Z_RIDGE])
-                cube([BKT_W, FOOT_DEPTH, FOOT_T]);
+            translate([foot_x0, FOOT_Y0, FOOT_Z0])
+                cube([FOOT_T, FOOT_YDEPTH, FOOT_ZDEPTH]);
             hull() {
                 translate(foot_top) sphere(r=ARM_R, $fn=24);
                 translate(boss_pt)  sphere(r=ARM_R, $fn=24);
             }
-            translate([x_pos-BKT_W/2, FC_Y, FC_Z]) rotate([0,90,0])
+            translate([boss_x-BKT_W/2, FC_Y, FC_Z]) rotate([0,90,0])
                 cylinder(h=BKT_W, r=HINGE_BOSS_R, $fn=32);
         }
-        translate([x_pos-BKT_W/2-e, FC_Y, FC_Z]) rotate([0,90,0])
+        translate([boss_x-BKT_W/2-e, FC_Y, FC_Z]) rotate([0,90,0])
             cylinder(h=BKT_W+2*e, r=AXLE_STUB_OD/2+0.5, $fn=32);
-        translate([x_pos, FOOT_Y0+10, DATUM_Z_RIDGE-e]) cylinder(h=FOOT_T+2*e, r=BKT_BOLT_D/2, $fn=16);
-        translate([x_pos, FOOT_Y1-10, DATUM_Z_RIDGE-e]) cylinder(h=FOOT_T+2*e, r=BKT_BOLT_D/2, $fn=16);
+        translate([foot_x0-e, (FOOT_Y0+FOOT_Y1)/2, FOOT_Z0+10]) rotate([0,90,0]) cylinder(h=FOOT_T+2*e, r=BKT_BOLT_D/2, $fn=16);
+        translate([foot_x0-e, (FOOT_Y0+FOOT_Y1)/2, FOOT_Z1-10]) rotate([0,90,0]) cylinder(h=FOOT_T+2*e, r=BKT_BOLT_D/2, $fn=16);
     }
 }
 
 // ─── Full lid-hinge assembly ───
 module lid_hinge_assembly(door_open_deg=0) {
     axle_rod();
-    hinge_bracket(RIB0_X);
-    hinge_bracket(RIB2_X + RIB_T);
+    hinge_bracket(BKT0_X, DATUM_X_FRONT, 1);
+    hinge_bracket(BKT1_X, DATUM_X_REAR, -1);
     lid_rib_assembly(RIB0_X, door_open_deg);
     lid_rib_assembly(RIB1_X, door_open_deg);
     lid_rib_assembly(RIB2_X, door_open_deg);

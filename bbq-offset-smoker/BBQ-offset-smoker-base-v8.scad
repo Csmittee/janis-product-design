@@ -58,19 +58,28 @@
 //    NOT floating in the air — the old pillow block's own cube technically
 //    also touched Z=`DATUM_Z_RIDGE` at its base, but straddled ACROSS the
 //    parting line into open/lid territory; this bracket's foot is now
-//    fully checked to sit within `[RIDGE_SPLIT_Y+FOOT_MARGIN,
-//    RIDGE_SPLIT_Y+FOOT_MARGIN+FOOT_DEPTH]`, entirely inside the FIXED
-//    zone), with a short hull-based riser/gusset (same "hull() for
-//    rounded shapes" technique already established elsewhere in this
-//    project) cantilevering back to the pivot boss near the door's own
-//    edge — matching the reference photo Janis shared (short angled arm,
-//    foot lower/behind, eye upper/forward). Exact bracket dimensions are
-//    NOT given (a photo, not a spec sheet) — `FOOT_MARGIN`/`FOOT_DEPTH`/
-//    `FOOT_T`/`BKT_W`/`BKT_BOLT_D` are cc's own placeholder judgment
-//    calls, sized only to satisfy the stated real constraints, flagged
-//    explicitly as needing the real part's own dimensions once Janis has
-//    them (Can-do list: "Choose to lift the Z... but try not to, it will
-//    be extra bracket... or i find the higher bearing eyes hinge later").
+//    fully checked to sit within `[FOOT_Y0,FOOT_Y1]`, entirely inside the
+//    FIXED zone), with a real hull-based diagonal arm/gusset (same
+//    "hull() for rounded shapes" technique already established elsewhere
+//    in this project) reaching from the foot back to the pivot boss near
+//    the door's own edge. cc's OWN FIRST ATTEMPT this session (before
+//    actually seeing the reference image's pixels, only a text
+//    description) placed the foot right at the parting line with a short
+//    stubby riser — corrected once the real reference image (an
+//    OpenSCAD-style sketch, not a photo) was actually visible: it shows a
+//    genuinely LONG DIAGONAL ARM from a foot anchored near the chimney's
+//    own real position back to the pivot eye. Foot re-anchored near
+//    `DATUM_Y_CENTER` (305mm, the chimney's own real Y) — still fully
+//    inside the fixed zone, still comfortably clear of apex D, and it
+//    naturally produces a real ~85mm diagonal arm, matching the
+//    reference image's own proportions far better. Exact bracket
+//    dimensions are still NOT given (a sketch, not a spec sheet) —
+//    `FOOT_Y0`/`FOOT_DEPTH`/`FOOT_T`/`BKT_W`/`BKT_BOLT_D` are cc's own
+//    placeholder judgment calls, sized only to satisfy the stated real
+//    constraints, flagged explicitly as needing the real part's own
+//    dimensions once Janis has them (Can-do list: "Choose to lift the
+//    Z... but try not to, it will be extra bracket... or i find the
+//    higher bearing eyes hinge later").
 // 4. AXLE BORE HOLE LOCATION ON THE RIB: Janis's own explicit delegation
 //    ("you are free to find the hole location on the rib to make the
 //    pivot axle pass"/"you need to find the sweet spot on the rib"). cc's
@@ -669,23 +678,37 @@ AXLE_BORE_D  = 27;                 // reuses this project's own 27mm-bore-over-2
 // ─── Hinge bracket -- v8 REAL REBUILD, RETIRES the UCP204-12 pillow-block
 // placeholder entirely (its own `UCP_H/UCP_L/UCP_J/UCP_A/UCP_BOLT_D`
 // constants and `ucp_bearing()` module, R-009 confirmed zero other
-// consumers). Janis chose a real, shorter off-shelf bracket instead (a
-// reference photo, no spec sheet yet) -- see this file's own header, and
-// `hinge_bracket()` below. `BKT_W`/`BKT_BOLT_D` reuse the retired
-// part's own real width/bolt-size numbers (38mm/10mm) since nothing about
-// those specific values was ever flagged wrong -- only the pillow block's
-// own TALL casting shape (33.3mm H, floating cube straddling the parting
-// line) was wrong, not its bolt/width scale. `FOOT_MARGIN`/`FOOT_DEPTH`/
-// `FOOT_T` are new, real, flagged placeholders sized only to satisfy
-// Janis's own stated constraint (foot fully inside the fixed zone,
-// flush on the ridge surface) -- not derived from a real catalog part. ───
+// consumers). Janis chose a real, shorter off-shelf bracket instead --
+// this round's own real reference image (an OpenSCAD-style sketch, not a
+// photo) shows a FOOT sitting flush on the ridge near the chimney's own
+// real position, connected via a genuinely LONG DIAGONAL ARM (not a
+// short stubby riser) up to the pivot eye near the door's own edge.
+// cc's own first attempt this session (a short hull-based gusset,
+// foot right next to the parting line) undersold the real arm's own
+// length/reach -- corrected here after seeing the actual reference
+// image's pixels for the first time (flagged: cc had only a text
+// description before). `BKT_W`/`BKT_BOLT_D` reuse the retired UCP204-12
+// part's own real width/bolt-size numbers (38mm/10mm) since nothing
+// about those specific values was ever flagged wrong -- only its own
+// TALL casting shape (33.3mm H, floating cube straddling the parting
+// line) was wrong, not its bolt/width scale. `FOOT_Y0`/`FOOT_DEPTH`/
+// `FOOT_T` are new, real, flagged placeholders (a sketch, not a spec
+// sheet): the foot is now anchored near `DATUM_Y_CENTER`(305mm, the
+// chimney's own real Y position, `PIPE_HOLE_Y` in
+// BBQ-chambers-v25.scad) -- comfortably inside the fixed zone
+// (>`RIDGE_SPLIT_Y`) and comfortably clear of apex D (431.335mm) -- which
+// naturally produces a real diagonal arm of ~85mm from foot-center to the
+// pivot boss at `FC`, matching the reference image's own proportions far
+// better than a short stubby gusset. Self-checked: moving the foot
+// FARTHER from the door's own parting line only IMPROVES the door-arm-
+// vs-foot clearance already found and fixed below (worst case now
+// +41.8mm, up from the +12.79mm the short-gusset version achieved). ───
 BKT_W       = 38;                          // mm, bracket's own width along X (rib-spacing direction) -- reused from the retired UCP_A
 BKT_BOLT_D  = 10;                          // mm -- reused from the retired UCP_BOLT_D
-FOOT_MARGIN   = 5;                           // mm -- foot's near edge kept clear of the exact parting line (weld/bolt access), still fully inside the fixed zone
-FOOT_DEPTH    = 45;                          // mm -- foot's own real footprint along Y, entirely on fixed ridge material
+FOOT_DEPTH    = 40;                          // mm -- foot's own real footprint along Y, entirely on fixed ridge material
 FOOT_T        = 8;                           // mm -- foot plate thickness, sits flush ON the ridge surface (Z=DATUM_Z_RIDGE), NOT floating
-FOOT_Y0 = RIDGE_SPLIT_Y + FOOT_MARGIN;       // 213.665mm -- foot's near edge
-FOOT_Y1 = FOOT_Y0 + FOOT_DEPTH;              // 258.665mm -- foot's far edge, real margin confirmed vs RIB_REF_D (431.335mm)
+FOOT_Y0 = DATUM_Y_CENTER - 15;               // 290mm -- foot's near edge, anchored near the chimney's own real Y position (`DATUM_Y_CENTER`/`PIPE_HOLE_Y`=305mm), matching the reference image's own foot placement
+FOOT_Y1 = FOOT_Y0 + FOOT_DEPTH;              // 330mm -- foot's far edge, real margin confirmed vs RIB_REF_D (431.335mm, ~101mm clear)
 HINGE_BOSS_R  = AXLE_STUB_OD/2 + 8;          // mm -- pivot boss radius, smaller than the retired pillow block's own HOUSING_R since this is a real short bracket, not a casting
 
 // ─── CB1 -- 4" sq counterbalance pipe ───
@@ -993,23 +1016,30 @@ module axle_rod() {
 // plate flush-mounted ON the ridge surface (Z=DATUM_Z_RIDGE), fully
 // inside the fixed zone (Y=[FOOT_Y0,FOOT_Y1], both > RIDGE_SPLIT_Y --
 // "the feet of the hinge must not fly in the air"), connected to the
-// pivot boss via a short hull-based riser/gusset (this project's own
-// "hull() for rounded shapes" technique, reused not reinvented) --
-// matches the reference photo's own short angled arm + lower/behind foot,
-// upper/forward eye. Simple bbox/cylinder/hull placeholder, no supplier
-// casting detail (rules-bbq-fab.md Construction Method), since the real
-// part's own dimensions are not yet known (a photo, not a spec sheet).
+// pivot boss via a real hull-based diagonal arm/gusset (this project's
+// own "hull() for rounded shapes" technique, reused not reinvented) --
+// the foot is anchored near the chimney's own real position
+// (DATUM_Y_CENTER), well clear of the door's own parting line, so the
+// hull naturally spans a real diagonal reach (~85mm) matching the
+// reference image's own long-arm silhouette (foot lower/behind near the
+// chimney, eye upper/forward near the door). Simple bbox/cylinder/hull
+// placeholder, no supplier casting detail (rules-bbq-fab.md Construction
+// Method), since the real part's own dimensions are not yet known (a
+// sketch, not a spec sheet).
+ARM_R = 8;   // mm, slender arm/strap half-thickness -- v8 2nd pass, replaces the first pass's own fat hull-wedge (a hull between the WHOLE foot slice and the boss fills in all the space between them, reading as a chunky trapezoid, not the reference image's own slender diagonal arm). A real hull of two small spheres (foot-top-center -> boss-center) gives a genuine uniform-thickness rod instead, matching the sketch far better -- placeholder radius, no real part dimension given yet.
 module hinge_bracket(x_pos) {
+    foot_top = [x_pos, (FOOT_Y0+FOOT_Y1)/2, DATUM_Z_RIDGE+FOOT_T];
+    boss_pt  = [x_pos, FC_Y, FC_Z];
     difference() {
         union() {
             translate([x_pos-BKT_W/2, FOOT_Y0, DATUM_Z_RIDGE])
                 cube([BKT_W, FOOT_DEPTH, FOOT_T]);
             hull() {
-                translate([x_pos-BKT_W/2, FOOT_Y0, DATUM_Z_RIDGE])
-                    cube([BKT_W, 1, FOOT_T]);
-                translate([x_pos, FC_Y, FC_Z]) rotate([0,90,0])
-                    cylinder(h=BKT_W, r=HINGE_BOSS_R, $fn=32);
+                translate(foot_top) sphere(r=ARM_R, $fn=24);
+                translate(boss_pt)  sphere(r=ARM_R, $fn=24);
             }
+            translate([x_pos-BKT_W/2, FC_Y, FC_Z]) rotate([0,90,0])
+                cylinder(h=BKT_W, r=HINGE_BOSS_R, $fn=32);
         }
         translate([x_pos-BKT_W/2-e, FC_Y, FC_Z]) rotate([0,90,0])
             cylinder(h=BKT_W+2*e, r=AXLE_STUB_OD/2+0.5, $fn=32);

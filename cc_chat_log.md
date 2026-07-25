@@ -4,6 +4,10 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-25 | bbq-lid-hinge-v8 direct-cc, same-day follow-up | hinge_bracket() shape corrected after actually seeing the reference image's pixels (PR #151 already open)
+
+Janis re-sent the reference image; cc had only worked from a text description before (`hinge_bracket()`'s first pass never actually saw it). Once visible: a real, checkable mismatch — the reference shows a genuinely LONG diagonal arm from a foot near the chimney back to the pivot eye, not the short stubby hull-wedge cc built. Two fixes, both self-checked before pushing: (1) foot re-anchored near `DATUM_Y_CENTER`(305mm, the chimney's own real Y) instead of right at the parting line — still fully fixed-side, ~101mm clear of D, produces a real ~85mm diagonal reach; re-ran the door-arm-vs-foot sweep, clearance IMPROVED (+41.8mm, up from +12.79mm). (2) arm shape itself was wrong — a hull between the whole foot slice and the boss fills all the space between them (a chunky wedge, confirmed via an isolated side-view render), not a slender arm; rebuilt as a hull of two small spheres (`ARM_R`=8mm) for a real uniform rod, confirmed via a standalone isolated render matching the reference silhouette. `FC_Y`/`FC_Z` (the pivot's own real position, the actual hard 15-25mm-gap constraint) UNCHANGED — only the fixed bracket's own shape moved. Full `--render` (CGAL) re-confirmed `Simple: yes` at 0°/90°. Full detail: docs/lid-hinge-counterbalance-calc.md Section 12 addendum.
+
 ### 2026-07-25 | bbq-lid-hinge-v8 direct-cc | "unify system" redesign — real RIDGE_SPLIT_Y ridge parting line, hinge bracket rebuilt from a real reference part, door-arm/foot collision found + fixed via real OpenSCAD render
 
 OpenSCAD (`apt-get install -y openscad` + `xvfb-run -a`) now actually installed and used this round — real renders + a full `--render` (CGAL) pass confirm `Simple: yes` at door_open_deg=0 and 90, not just formulas. (Also confirms v7.2's own door/rib sync mechanism, unverified at the time of that commit, DOES work — real render, not assumed.)

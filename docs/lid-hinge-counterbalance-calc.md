@@ -540,3 +540,35 @@ size makes it hard to spot visually at the whole-assembly render scale.
 real position (`HANDLE_Y`/`HANDLE_Z` unchanged). Swept force curve
 (Section 3) is stale YET AGAIN, still not recomputed (stopper/CB review
 still deferred, item 5 above).
+
+**REAL CORRECTION, SAME DAY, AFTER PR #151 WAS ALREADY OPEN** — Janis
+re-sent the reference image; cc had only worked from a text description
+of it before (`hinge_bracket()`'s first pass was built without ever
+having seen its actual pixels). Once actually visible, the image shows a
+real, checkable shape mismatch against the first pass: a genuinely LONG
+DIAGONAL ARM from a foot anchored near the chimney back to the pivot eye
+near the door edge — not the short stubby hull-wedge cc built first.
+Two real fixes, both self-checked before pushing:
+1. **Foot re-anchored near `DATUM_Y_CENTER`** (305mm, the chimney's own
+   real Y position, `PIPE_HOLE_Y` in `BBQ-chambers-v25.scad`) instead of
+   right at the parting line — still fully inside the fixed zone, still
+   ~101mm clear of apex D, and produces a real ~85mm diagonal reach to
+   the pivot boss, matching the reference image's own proportions.
+   Re-ran the door-arm-vs-foot collision sweep (Section 12 above) against
+   the new foot position: clearance IMPROVED (+41.8mm worst-case, up from
+   +12.79mm) — moving the foot farther from the door's own swept path can
+   only help, never hurt, that specific check.
+2. **Arm shape corrected** — a `hull()` between the WHOLE foot slice and
+   the boss cylinder fills in all the space between them (a chunky
+   trapezoid, confirmed via an isolated side-view render), not a slender
+   arm. Rebuilt as a real hull of two small spheres (`ARM_R`=8mm,
+   foot-top-center -> boss-center), which gives a genuine uniform-
+   thickness rod — confirmed via a standalone isolated render
+   (foot + arm + boss only, no chamber body) showing a shape that visibly
+   matches the reference image's own silhouette.
+Re-verified after both fixes: full `--render` (CGAL) pass at
+`door_open_deg`=0 and 90 both `Simple: yes`. `hinge_bracket()`'s own
+`FOOT_MARGIN` constant retired (replaced by the `DATUM_Y_CENTER`-anchored
+`FOOT_Y0`); `FC_Y`/`FC_Z`/`HINGE_GAP`/`BRACKET_RISE` (the pivot's own real
+position, the actual hard constraint) are UNCHANGED — only the fixed
+bracket's own visual/structural shape moved, not the pivot itself.

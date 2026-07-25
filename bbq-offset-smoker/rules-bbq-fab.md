@@ -1,5 +1,18 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.9 — 2026-07-25
+> Version 1.10 — 2026-07-25
+> Changes: bbq-lid-hinge-v9, real shared hinge pivot round. Amended the
+> "Three-Rib Lid Counterbalance System" section with 2 new real, locked
+> lessons: (1) two parts that must move together as one rigid assembly
+> (the lid shell and its own rib/hinge structure) must share the LITERAL
+> same rotation center, not just numerically-close ones — the root cause
+> of the entire v8 sink/float saga (5 failed passes) was two independently
+> tuned rotation points, fixed by one real shared `HINGE_PIVOT_Y`/
+> `HINGE_PIVOT_Z` constant pair read live by both; (2) the "end margin
+> zone" — the region outside a lid's own `LID_X0`/`LID_X1` range has no
+> door at all, so a pivot mounted there can sit its Y exactly on the
+> fixed/lid parting line with zero gap, unlike anywhere inside the door's
+> real operating range.
+> Previous: 1.9 — 2026-07-25
 > Changes: bbq-lid-hinge-v8, "unify system" redesign round. Amended the
 > "Three-Rib Lid Counterbalance System" section with 2 new real, locked
 > lessons: (1) a hardcoded fixed/lid split (e.g. a ridge midpoint) must
@@ -542,6 +555,35 @@ the same method.
   same accepted simplification as every version's own pillow-block
   placeholder) — the real new risk is further along the arm, not at the
   pivot.
+- **Two parts that must move together as one rigid assembly (a lid shell
+  and its own rib/hinge structure) MUST share the literal same rotation
+  center — not just numerically-close ones.** Root cause of the ENTIRE
+  bbq-lid-hinge-v8 sink/float saga (5 passes, all failed): the chamber
+  file's `lid()` and the base file's rib assembly each carried their OWN
+  `FC_Y`/`FC_Z`-equivalent point, tuned independently each round. Two
+  rigid bodies rotated by the same angle about two different centers
+  necessarily drift apart at every angle except whichever one happened to
+  be tuned — no amount of per-corner standoff/miter tuning can fix this,
+  because the defect is structural, not dimensional. Fix (v9): ONE real
+  constant pair (`HINGE_PIVOT_Y`/`HINGE_PIVOT_Z`, chambers file) is now
+  the single source of truth, read live by both the lid's own rotation
+  point and the rib assembly's `FC_Y`/`FC_Z` — with a shared center, the
+  two parts' relative geometry is identical at every angle BY
+  CONSTRUCTION, not by re-verifying a sweep every round. When a hinge/lid
+  mechanism spans two separate files/modules, grep for every rotation
+  call touching that joint and confirm they all resolve to the same
+  named point before trusting any clearance number.
+- **The "end margin zone"**: on a lid that doesn't span its full parent
+  face (e.g. `LID_X0`/`LID_X1` short of the chamber's true 0/full-length
+  ends), the region outside `[LID_X0, LID_X1]` has NO door at all — the
+  cross-section there is fixed material regardless of Y or Z. A pivot
+  bracket mounted at an X-position inside this zone can therefore sit its
+  Y-coordinate EXACTLY on the fixed/lid parting line with zero safety
+  gap, something that would be unsafe anywhere inside the door's own real
+  operating X-range. Always check whether a hinge/bracket's chosen
+  X-position falls inside this zone before deciding whether a Y/Z gap is
+  required at all — it can eliminate an otherwise-real constraint
+  entirely rather than just shrinking it.
 
 ---
 

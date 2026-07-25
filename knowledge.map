@@ -1,5 +1,33 @@
 # knowledge.map
-# Version: v89 — 2026-07-25
+# Version: v90 — 2026-07-25
+# Changes: bbq-lid-hinge-v9, direct-cc, real shared hinge pivot round —
+# active pointers now BBQ-offset-smoker-base-v9.scad (source v8) ->
+# BBQ-understructure-v19.scad (source v18, pure pointer bump) ->
+# BBQ-chambers-v26.scad (source v25). ROOT CAUSE of the whole v8 sink/
+# float saga found: `lid()` (chambers) and the rib assembly (base file)
+# rotated about TWO DIFFERENT centers — two rigid bodies rotating by the
+# same angle about different centers necessarily drift apart, no
+# per-corner standoff tuning can fix that. FIX: new shared
+# `HINGE_PIVOT_Y`/`HINGE_PIVOT_Z` (chambers v26, 242.665mm/1445.335mm,
+# real UCP204-12 numbers, exactly on `RIDGE_SPLIT_Y`, no gap needed since
+# that X-position sits inside the door's real "end margin zone" — zero
+# door presence there regardless of Y/Z), now the ONE real source of
+# truth, read live by both `lid()`'s own rotation point and the base
+# file's `FC_Y`/`FC_Z`. `LID_HINGE_GAP` retired (R-009 confirmed zero
+# consumers). Hinge bracket rebuilt to Janis's own hands-on numbers (near
+# edge 25mm from `LID_X0`/`LID_X1`, foot L=127mm/A=38mm, H0=64mm rise).
+# Door-side rib spine simplified: apex B/apex C/pivot found EXACTLY
+# collinear (matches the B-C wall's own 45° chamfer) — one straight run
+# B->pivot via the correct `miter_point()` formula, no separate corner
+# treatment at C needed; reverted to v6.1's simpler single-normal
+# standoff technique per Janis's own instruction. Full `--render` (CGAL)
+# `Simple: yes` at 0/45/90°, AND — for the first time this saga — visual
+# renders at all 3 angles show the rib genuinely hugging the door
+# surface, not just "clears by a sweep-verified margin." CB1/
+# counterbalance/stopper and the Section-3 force-curve recompute both
+# explicitly deferred, Janis's own call. Full detail:
+# docs/lid-hinge-counterbalance-calc.md Section 15, cc_chat_log.md.
+# Previous: v89 — 2026-07-25
 # Changes: bbq-lid-hinge-v8, direct-cc "unify system" redesign round —
 # active pointers now BBQ-offset-smoker-base-v8.scad (source v7.2) ->
 # BBQ-understructure-v18.scad (source v17, pure pointer bump) ->

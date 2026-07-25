@@ -4,7 +4,31 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.32 — 2026-07-25 (bbq-lid-hinge-v8, direct-cc "unify system"
+# Version: 1.33 — 2026-07-25 (bbq-lid-hinge-v9, direct-cc, real shared
+# hinge pivot): chambers table pointer now BBQ-chambers-v26.scad (source
+# v25) — NEW `HINGE_PIVOT_Y`/`HINGE_PIVOT_Z` (242.665mm/1445.335mm, real
+# UCP204-12 numbers, exactly on `RIDGE_SPLIT_Y`, no gap), now the ONE real
+# source of truth for the lid pivot, read live by both `lid()` (its own
+# rotation point) and the base file's `FC_Y`/`FC_Z`. `LID_HINGE_GAP`
+# retired (R-009 confirmed zero consumers). Understructure table pointer
+# now BBQ-understructure-v19.scad (source v18, pure pointer-only bump).
+# Base assembly table pointer now BBQ-offset-smoker-base-v9.scad (source
+# v8) — ROOT CAUSE of the entire v8 sink/float saga finally found: `lid()`
+# and the rib assembly rotated about TWO DIFFERENT centers; fixed via the
+# shared pivot above. Hinge bracket rebuilt to Janis's own hands-on
+# UCP204-12 numbers inside the door's real "end margin zone" (near edge
+# 25mm from `LID_X0`/`LID_X1`, foot L=127mm/A=38mm, H0=64mm rise).
+# Door-side rib spine simplified: apex B/apex C/pivot found EXACTLY
+# collinear (matches the B-C wall's own 45° chamfer), so the spine is one
+# straight run B->pivot via the correct `miter_point()` formula, no
+# separate corner treatment at C — reverted to v6.1's simpler
+# single-normal standoff technique per Janis's own instruction. Full
+# `--render` (CGAL) `Simple: yes` at 0/45/90°, visually confirmed the rib
+# hugging the door surface at all 3 angles (first time this saga). CB1/
+# counterbalance/stopper and the Section-3 force-curve recompute both
+# explicitly deferred, Janis's own call. Full detail:
+# docs/lid-hinge-counterbalance-calc.md Section 15, cc_chat_log.md.
+# Previous: 1.32 — 2026-07-25 (bbq-lid-hinge-v8, direct-cc "unify system"
 # redesign): chambers table pointer now BBQ-chambers-v25.scad (source v24)
 # — NEW `RIDGE_SPLIT_Y` (208.665mm, was hardcoded chamber_W/2=305mm), a
 # real tunable ridge fixed/lid parting line, replacing all 4 real

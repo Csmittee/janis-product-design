@@ -758,3 +758,69 @@ real surface by construction, instead of the current approach's
 repeated, hard-to-get-right per-corner point math. Not yet implemented —
 proposed as the next real step, pending Janis's confirmation of the
 "side not the back" hinge-location point raised in the same message.
+
+## 15. v9 — real shared hinge pivot, Janis's own hands-on calculation (2026-07-25)
+
+The round that actually resolves the sink/float saga, after 5 v8 passes
+didn't. Full chat is the real record; summary of the real, load-bearing
+facts:
+
+**Hinge location, finally pinned down precisely.** Two real corrections
+from Janis, both confirmed with images before any code changed:
+1. cc's own diagram wrongly implied the door spans the full 915mm
+   chamber length. Real code check: `LID_X0`=100, `LID_X1`=815
+   (`LID_LENGTH`=715mm) — a real 100mm margin of solid, no-door material
+   exists at BOTH true ends. Janis named this the "end margin zone."
+2. The hinge bracket mounts INSIDE that end margin zone (its near edge
+   25mm from `LID_X0`/`LID_X1`, real UCP204-12 "A"=38mm foot width in X),
+   not on the ridge between the ribs, and not at the true X=0/915 ends
+   either. This is the key fact that unlocks everything else: AT THAT
+   X-POSITION, the CD face is fixed material regardless of Y or Z — no
+   door exists there to be "safely clear" of. That is why the pivot's
+   own real Y can sit EXACTLY on `RIDGE_SPLIT_Y` (no gap at all), a
+   placement that would have been unsafe anywhere inside the door's own
+   operating X-range.
+
+**Real UCP204-12 numbers, Janis's own literal spec, not re-derived**:
+L=127mm (foot width in Y, centered on the pivot), A=38mm (foot width in
+X), H0=64mm (pivot rise above the ridge). `RIDGE_SPLIT_Y` and the
+pivot's rise both reuse this same 64mm — Janis's own explicit
+instruction, both confirmed with a standalone isolated-hinge render
+before touching the full assembly.
+
+**Root cause of the whole saga, finally identified**: `lid()`
+(BBQ-chambers) and the rib assembly (base file) rotated about TWO
+DIFFERENT centers. Two rigid bodies rotating by the same angle about
+different centers necessarily drift apart — no per-corner standoff
+tuning can fix that, only avoid it. Fix: `BBQ-chambers-v26.scad`'s new
+`HINGE_PIVOT_Y`/`HINGE_PIVOT_Z` is now the ONE real source of truth,
+read live by both `lid()` and the base file's own `FC_Y`/`FC_Z`. With a
+shared center, the rib and door's relative geometry is identical at
+every angle by construction — confirmed visually at 0°/45°/90°, the rib
+now visibly tracks the door surface at every angle (screenshots sent to
+Janis), not just numerically "clears by a sweep-verified margin" like
+every v8 pass claimed.
+
+**Real, elegant confirmation found by direct calculation before writing
+any code**: apex B, apex C, and the new pivot are EXACTLY collinear
+(`HINGE_PIVOT_Y`-chamfer = 64 = `HINGE_PIVOT_Z`-`DATUM_Z_RIDGE`, matching
+the B-C wall's own real 45° chamfer slope). The door-side arm is
+therefore one straight run from B to the pivot; apex C needs no separate
+corner treatment at all. Per Janis's own explicit instruction ("get back
+the original rib you made"), the door-side spine reverted to v6.1's
+simpler single-normal standoff technique (`SPLIT_STANDOFF`=15mm,
+matching v6.1 exactly) plus the one real remaining corner (apex B, via
+the correct `miter_point()` formula, `B_STANDOFF`=20mm) — checked once
+at the closed state (a full multi-angle sweep is no longer needed, since
+there is no longer a sweep-dependent drift to check).
+
+**Deferred, explicitly, per Janis's own instruction**: CB1/counterbalance/
+stopper (unchanged, "let's talk about the counter balance side" next).
+Also deferred: the swept force curve (Section 3) was computed against a
+pivot assumption several rounds out of date — Janis's own explicit call:
+skip re-validating for now, fix any imbalance later with added/removed
+counterweight material, rather than block this round on a full physics
+recompute.
+
+Full `--render` (CGAL) confirms `Simple: yes` at `door_open_deg`
+0°/45°/90°.

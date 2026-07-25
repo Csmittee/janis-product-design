@@ -638,3 +638,73 @@ rear bracket's own X-range (907-915mm) overlaps in X with the firebox
 the bracket sits at Z=1336-1381mm (335mm+ clear) — confirmed via the
 chambers file's own real `firebox_z1`/`FOOT_Z0` values, not assumed.
 Re-verified: full `--render` (CGAL) `Simple: yes` at 0°/90°.
+
+## 13. v8 4th pass — hinge reverted to the ridge, real UCP204-12 numbers (H0=64mm), door-side arm rebuilt to stop floating above the door (2026-07-25)
+
+Janis, with an annotated screenshot: "i specifically ask to assembly on
+the top ridge not from side and its locate near the door lid" — the 3rd
+pass's own end-cap mount was WRONG; "near end cap" described the
+bracket's own X-position preference (close to the ribs), not a literal
+instruction to move off the ridge. `hinge_bracket()` reverted to
+ridge-mounted (reusing the 2nd pass's own real slender hull-of-spheres
+arm technique, unchanged), positioned near the outer ribs (`RIB0_X`,
+`RIB2_X+RIB_T`) instead of the true end caps. `FC_Y`/`FC_Z` (the pivot's
+own real position) unaffected by this revert.
+
+**Real UCP204-12 numbers, Janis's own explicit choice**: a real pillow
+block bearing, 3/4" bore (matches `AXLE_STUB_OD`=19.05mm, used since
+v6). Its own real "H0" spec dimension (64mm) is reused, per Janis's own
+instruction, for TWO real quantities: `RIDGE_SPLIT_Y` is now
+`chamfer+64` (242.665mm, was `chamfer+30`), and `BRACKET_RISE` is now
+64mm (was cc's own 25mm placeholder guess). `PIVOT_GAP`(20mm) unchanged,
+confirmed still "ok on y" by Janis's own live-render feedback.
+
+**"the rib fly above the door" — real bug, root-caused and fixed.**
+Janis's own real render showed the door-side arm floating clear above
+the lid's own real surface when open. Root cause: with `RIDGE_SPLIT_Y`
+now much farther from apex C, the lid's own ridge-cap panel is
+considerably longer than any prior version — the old straight
+`RIB_C_OFFSET`->pivot run cut a chord above this longer panel's own
+surface instead of tracking it. Self-checked via a real Python sweep
+(per R-014) comparing the rib's own swept position (rotating about `FC`)
+against the LID's own real panel geometry (rotating about its own,
+DIFFERENT center — `RIDGE_SPLIT_Y`+`LID_HINGE_GAP`, not `FC`) at every
+angle 0-90°, both directions, not just the closed state — this is a real
+geometric subtlety Janis's own QA ask ("either swing close or open")
+correctly anticipated: since the rib and lid rotate about different
+centers by the same angle, their relative offset genuinely drifts across
+the sweep, so a closed-state-only check is not sufficient.
+
+**TWO further real sink issues found by the same sweep, present since
+v6.1 (not new this round, just never checked this rigorously before)**:
+1. A single-normal offset at a corner where TWO panels meet (e.g. pure
+   `AB_NORM` at apex B, which also borders the B-C slant panel) doesn't
+   clear the SECOND panel — real overlap, up to ~16mm at various angles.
+2. Any spine point offset by a standoff SMALLER than its own real
+   half-width overlaps the wall it was offset from, AT that point
+   (`RIB_SPLIT_OFFSET`'s own old 15mm standoff vs 22mm width did this).
+
+**Fixes, all self-checked via the same sweep before committing:**
+- Real corner-miter normals at B and C (`miter_norm()`, average of both
+  adjacent panels' own outward normals) replace the single-wall normals.
+- Standoffs increased so each point's own real half-width no longer
+  exceeds its standoff: split 15->25mm, B/C 15->30mm (miter direction).
+- New `RIDGE_FLAT_PT` waypoint (`RIDGE_ARM_STANDOFF`=40mm above the
+  ridge-cap panel, `RIDGE_INSET`=50mm back from `RIDGE_SPLIT_Y`) so the
+  arm tracks the panel's own real surface before rising to the pivot.
+- `WELD_HALF_W_SPLIT`/`_B`/`_C` reduced to `MIN_HALF_W`(20mm, the
+  project's own stated floor) — the tight real geometry here does not
+  support the prior 22-25mm convention without reopening the sink.
+  `RIDGE_FLAT_HALF_W`=15mm, a real, flagged exception BELOW the 20mm
+  floor — the sweep found this is genuinely the narrowest point needed
+  to clear the ridge-cap panel's own edge across the full sweep at this
+  round's real numbers; 20mm there reopens a confirmed sink.
+
+**Result, fine sweep (0.02° steps, 0-90°, excluding the ~30mm knuckle
+zone around FC where the rotating pad and fixed boss are expected to sit
+close by design)**: worst-case real clearance **+2.3mm**. This is a
+real, flagged THIN margin — well under this project's usual 15-20mm
+convention — an honest consequence of how tight this corner geometry
+genuinely is at the real widths involved, not a false sense of safety.
+Re-verified: full `--render` (CGAL) `Simple: yes` at `door_open_deg`
+0°/45°/90°.

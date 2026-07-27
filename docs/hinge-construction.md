@@ -1,5 +1,14 @@
 # Hinge Construction — Locked Reference (BBQ Offset Smoker)
-> Version 1.2 — 2026-07-25
+> Version 1.3 — 2026-07-26
+> Changes: Section 4's general "open-then-freeze" method moved to
+> `.claude/SKILL_kinematic_frame_construction.md` (it's reusable across
+> any product, not BBQ-specific) — this file now keeps only BBQ's own
+> instance of the method and the real numbers. Part of a repo-wide
+> tidy-up: `bbq-offset-smoker/` also gained an `archive/` subfolder for
+> superseded `.scad` versions (see that folder's own README.md),
+> unrelated to this doc's own content but done the same round. Detail
+> reorganization, not new locked content — X.Y bump.
+> Previous: 1.2 — 2026-07-25
 > Changes: REAL BUG FIX — Sections 3/4/6 stated `HINGE_PIVOT_Z`=
 > 1445.335mm and the corrected CB1 value as (598.64, 1307.09), both
 > wrong by exactly +100mm in Z. Root cause: derived from a stale inline
@@ -79,27 +88,15 @@ automatically make the rib safe from the FIXED structure (see Section 5
 
 ## 4. The "open-then-freeze" construction method
 
-This is the METHOD, generalized — confirmed correct today
-(2026-07-25) by catching a real bug with it (Section 5's own history).
-Use this for ANY point on the rib that needs to be positioned relative
-to a real physical target on the door/lid surface:
-
-1. Rotate the relevant reference point(s) to their TRUE OPEN-state world
-   position using `rib_world_from_closed(pt, deg)` — do NOT reuse a
-   native/closed-frame point and just relabel it "open."
-2. For DIRECTION vectors (not points), rotate them the SAME way but
-   WITHOUT the pivot translation (pure rotation component only).
-3. Build/verify the target point relative to this TRUE open-state
-   geometry — e.g., "parallel to the real open DE face, standing off it
-   by a real air gap" is easy to state and check correctly ONLY in this
-   frame, because that's the frame where the physical constraint is
-   actually true.
-4. Convert the result back to native/closed frame via
-   `rib_closed_from_world(pt, deg)` — this "freezes" the point into the
-   rigid rib body's own permanent shape.
-5. Result: at door_open_deg=0 the frozen point swings up/away with the
-   rest of the rib; at door_open_deg=90 it lands exactly back at the
-   real open-state target you built it against.
+The general, reusable METHOD itself (not specific to BBQ) now lives in
+`.claude/SKILL_kinematic_frame_construction.md` — read that file for the
+full technique (build in the frame where the physical constraint is
+true, then convert back; the "native-frame point passed through the
+rotation function anyway" bug class; verify against a live value, never
+a comment). This section keeps only the BBQ-specific instance: applying
+`rib_world_from_closed`/`rib_closed_from_world` (this product's own
+names for the general skill's world-from-closed/closed-from-world
+functions) to position CB1 against the real open DE face.
 
 **Real bug this method just caught (2026-07-25, not yet fixed in code):**
 the CB1 counterbalance pipe's position (`CB1_OPEN`, unchanged since v6,
@@ -226,3 +223,7 @@ between them."
 - `docs/lid-hinge-counterbalance-calc.md` Section 15 — the shared-pivot narrative, full detail
 - `cc_chat_log.md`, 2026-07-25 entries — the CB1 bug discovery and the rib-rebuild decision, full detail
 - `rules-bbq-fab.md` — locked lessons list (shared rotation center, end margin zone)
+- `.claude/SKILL_kinematic_frame_construction.md` — the general,
+  cross-product "open-then-freeze" method itself, extracted here
+  2026-07-26; read it for the reusable technique, this doc for BBQ's
+  own numbers and the specific bug it caught

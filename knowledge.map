@@ -1,5 +1,22 @@
 # knowledge.map
-# Version: v91 — 2026-07-25
+# Version: v92 — 2026-07-26
+# Changes: NEW ARCHIVE CONVENTION for bbq-offset-smoker/ — that folder
+# had grown to 68 files (60 of them superseded .scad versions), too
+# large for Janis to comfortably sync into Claude Web project knowledge
+# alongside its .md governance files. Superseded versions older than the
+# last 3 of each family (BBQ-chambers-vN, BBQ-understructure-vN,
+# BBQ-offset-smoker-base-vN) moved to bbq-offset-smoker/archive/ via
+# `git mv` (full history preserved, `git log --follow` still works) —
+# see that folder's own README.md for the exact rule (keep last 3 live,
+# move the 4th-oldest into archive/ each time a new version pushes past
+# that). All .md governance files stay in the main folder, unmoved. Also:
+# general-purpose construction techniques should live in .claude/ as a
+# SKILL_*.md (cross-product, reusable), product-specific derived numbers
+# stay in docs/ or the product's own folder — see the new
+# .claude/SKILL_kinematic_frame_construction.md (split out of
+# docs/hinge-construction.md's Section 4) for the first real example of
+# this split.
+# Previous: v91 — 2026-07-25
 # Changes: new docs/hinge-construction.md — locked reference for the BBQ
 # lid hinge (shared rotation center + real UCP204-12 hinge location +
 # the "open-then-freeze" construction method for any rib/link point).

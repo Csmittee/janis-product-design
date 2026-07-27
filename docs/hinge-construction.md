@@ -1,5 +1,12 @@
 # Hinge Construction — Locked Reference (BBQ Offset Smoker)
-> Version 1.3 — 2026-07-26
+> Version 1.4 — 2026-07-27
+> Changes: Section 5 marked RESOLVED — v11 replaces the stale door-side
+> rib with a real construction, delivered by Claude Web/Janis and
+> integrated by cc against the live chambers file. CB1 removed from the
+> live file entirely (Janis's own instruction), not merely deferred —
+> Section 4's bug-fix math kept for whenever CB1 is redesigned fresh.
+> Detail update, not new locked content — X.Y bump.
+> Previous: 1.3 — 2026-07-26
 > Changes: Section 4's general "open-then-freeze" method moved to
 > `.claude/SKILL_kinematic_frame_construction.md` (it's reusable across
 > any product, not BBQ-specific) — this file now keeps only BBQ's own
@@ -160,29 +167,45 @@ wrong — all now corrected.
 
 ## 5. What is NOT locked — do not treat as reference
 
-The rib's own door-side spine construction, as it exists in
-`BBQ-offset-smoker-base-v9.scad`/`v10.scad` today (`RIB_SPLIT_PT`,
+**UPDATE 2026-07-27 — Section 5's own door-side rib problem is RESOLVED.**
+Everything below this paragraph describes the STALE `v9`/`v10` rib
+construction, kept as real history of what was wrong and why — it is no
+longer what's in the live file. `BBQ-offset-smoker-base-v11.scad`
+replaces it with a real tangent-circle-and-fillet trace
+(`RIB_DOORHANDLE_PROFILE_v1`), delivered by Claude Web/Janis together
+and integrated by cc against the live chambers file. See
+`cc_chat_log.md`'s 2026-07-27 entry and `CURRENT_STATE.md` for the
+current, real status. Also per that same round: **CB1/counterbalance
+was removed from the live file entirely** (not just deferred) — Section
+4's own bug-fix math is kept below for whenever CB1 is redesigned fresh,
+but there is currently no CB1 code in the assembly at all.
+
+The rib's own door-side spine construction, as it existed in
+`BBQ-offset-smoker-base-v9.scad`/`v10.scad` (`RIB_SPLIT_PT`,
 `RIB_B_OFFSET`, `SPLIT_STANDOFF`, `B_STANDOFF`, the `miter_point()` call
-at apex B), is flagged STALE this round — Janis's own words: "still look
+at apex B), was flagged STALE — Janis's own words: "still look
 like old copy and refer to something that not relevant." It was built by
 re-deriving placeholder standoff offsets from scratch rather than
 directly tracing the REAL lid panel shape that already exists in
 `BBQ-chambers-v26.scad` (see `lid_profile()` — currently an unused
 reference-only module — and `fixed_side_wedge()`/`lid_side_wedge()`,
-which encode the real fixed/lid split polygons). The planned real fix:
-copy the actual door shape from the ridge down to the AB wall directly,
-connect that to the handle, and remove the old placeholder-offset
-points entirely — not yet done. Do NOT copy today's rib spine
-construction into a future product line as a pattern; it is scheduled
-for a full rebuild, not a proven convention.
+which encode the real fixed/lid split polygons). Do NOT copy this OLD
+construction into a future product line as a pattern — it was a
+scheduled-for-rebuild placeholder, not a proven convention (the v11
+construction it was replaced with IS worth reusing as a pattern, for a
+future product with a similar rotating-body-must-hug-a-real-surface
+problem).
 
-Also NOT yet re-examined: whether the door-side rib (built near apex
-B/C, which are on the FIXED side of `RIDGE_SPLIT_Y`, unlike apex D which
-is lid-side) needs a genuine angle-sweep clearance check against the
-fixed structure — Section 2's shared-pivot fix only guarantees rib-vs-
-LID-surface consistency across the sweep, NOT rib-vs-FIXED-structure
-consistency, since the fixed structure doesn't rotate at all. This is a
-real, separate, still-open question, flagged here so it isn't lost.
+Also flagged, not yet re-examined as of this writing: whether the
+door-side rib (built near apex B/C, which are on the FIXED side of
+`RIDGE_SPLIT_Y`, unlike apex D which is lid-side) needs a genuine
+angle-sweep clearance check against the fixed structure — Section 2's
+shared-pivot fix only guarantees rib-vs-LID-surface consistency across
+the sweep, NOT rib-vs-FIXED-structure consistency, since the fixed
+structure doesn't rotate at all. This was not raised again during the
+v11 approval (Janis/Claude Web confirmed the new construction directly),
+but is left here in case it matters once CB1 re-adds swept mass/geometry
+near this same region.
 
 ## 6. Concrete rebuild checklist (delete vs. keep)
 

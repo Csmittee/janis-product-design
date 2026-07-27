@@ -1,5 +1,16 @@
 # knowledge.map
-# Version: v92 — 2026-07-26
+# Version: v93 — 2026-07-27
+# Changes: bbq-lid-hinge-v11, direct-cc — active base assembly pointer
+# now BBQ-offset-smoker-base-v11.scad (source v9; v10 was WIP, never
+# finalized, superseded). Real door/handle-side rib rebuild (tangent-
+# circle-and-fillet trace, delivered by Claude Web after 2 sessions,
+# cc-verified against the live chambers file before integration) + CB1
+# counterbalance REMOVED ENTIRELY per Janis's own explicit instruction
+# (a real, deliberate gap, not a placeholder — awaiting new instruction).
+# archive/ bookkeeping: BBQ-offset-smoker-base-v8.scad moved to
+# bbq-offset-smoker/archive/ (v9/v10/v11 are now the live last-3). Full
+# detail: docs/hinge-construction.md, cc_chat_log.md.
+# Previous: v92 — 2026-07-26
 # Changes: NEW ARCHIVE CONVENTION for bbq-offset-smoker/ — that folder
 # had grown to 68 files (60 of them superseded .scad versions), too
 # large for Janis to comfortably sync into Claude Web project knowledge

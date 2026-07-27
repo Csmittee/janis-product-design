@@ -1,6 +1,10 @@
 # CURRENT_STATE.md
 # Janis Product Design — Where We Left Off
-# Last updated: 2026-07-25 by cc (bbq-lid-hinge-v10 direct-cc — Janis
+# Last updated: 2026-07-27 by cc (bbq-lid-hinge-v11 direct-cc — real
+# door/handle-side rib rebuild integrated + CB1 removed entirely, Janis
+# confirmed a pause awaiting new CB1 instruction: "we are done only the
+# frontal door lid side only")
+# Previous update: 2026-07-25 by cc (bbq-lid-hinge-v10 direct-cc — Janis
 # confirmed a pause to hand off to Claude Web for rib-construction
 # planning: "i keep saying... should we quickly create a new hing
 # construction md file immediatly now... this must not be lost")
@@ -128,79 +132,76 @@ anything that predates the handoff.
 ## Vending Machine variants (Satu, VM-1.1, VM-1.2) — NOT STARTED
 Queued, no files exist yet.
 
-## BBQ Offset Smoker — PAUSED, Janis-confirmed 2026-07-25, handing off to Claude Web for rib-construction planning
+## BBQ Offset Smoker — PAUSED, Janis-confirmed 2026-07-27, awaiting new CB1 instruction
 
 Active chambers: `BBQ-chambers-v26.scad` | Active understructure:
-`BBQ-understructure-v19.scad` | Last CLEAN/committed base assembly:
-`BBQ-offset-smoker-base-v9.scad` (PR #154, merged 2026-07-25) | **WIP,
-uncommitted-as-final: `BBQ-offset-smoker-base-v10.scad`** — do not treat
-as a clean version, see Open Items below.
+`BBQ-understructure-v19.scad` | Active base assembly:
+`BBQ-offset-smoker-base-v11.scad` (source v9 — v10 was WIP, never
+finalized, superseded; both v8 and v10 now in
+`bbq-offset-smoker/archive/`). No PR open — Janis has not asked for one.
 
-This entire product line went through 10 real base-assembly rounds
-(v1-v10) plus many chambers/understructure rounds — this entry only
-covers the CURRENT state as of the 2026-07-25 pause; full history is
+This entire product line went through 11 real base-assembly rounds
+(v1-v11) plus many chambers/understructure rounds — this entry only
+covers the CURRENT state as of the 2026-07-27 pause; full history is
 `cc_chat_log.md`'s many BBQ entries (not restated here).
 
 **What is CONFIRMED CORRECT and LOCKED** (full detail:
-`docs/hinge-construction.md`, new 2026-07-25 — read this file first on
-resume, before anything else):
+`docs/hinge-construction.md` — read this file first on resume, before
+anything else):
 1. Real shared hinge-pivot rotation center (`HINGE_PIVOT_Y`/
    `HINGE_PIVOT_Z`, `BBQ-chambers-v26.scad`, read live by both `lid()`
    and the base file's `FC_Y`/`FC_Z`) — retires the whole v8 sink/float
    bug class (two rigid bodies can't rotate correctly about two
    different centers).
 2. Real hinge location, Janis's own hands-on numbers: the "end margin
-   zone" concept (hinge mounts outside the door's own real X-span, where
-   the pivot's Y can sit exactly on the parting line with zero gap),
-   real UCP204-12 spec (L=127/A=38/H0=64mm), 25mm gap from the door
-   boundary.
-3. The "open-then-freeze" construction method for positioning any rib/
-   link point against a real physical target: rotate to the TRUE
-   open-world position, build against the real target there, convert
-   back to native/closed frame. Confirmed correct by catching a real bug
-   (item 1 below) the same day it was written down.
+   zone" concept, real UCP204-12 spec (L=127/A=38/H0=64mm), 25mm gap
+   from the door boundary.
+3. The "open-then-freeze" construction method (now in `.claude/
+   SKILL_kinematic_frame_construction.md`, general/reusable) for
+   positioning any rib/link point against a real physical target.
+4. **NEW, real door/handle-side rib**, `v11`: a tangent-circle-and-
+   fillet trace through 6 real control points (handle bore -> up the AB
+   wall -> the B-C/C-D miter corner -> a short ridge run -> the pivot
+   boss), delivered by Claude Web (2 sessions) and Janis together,
+   cross-verified against a Python/Shapely reference (0.002% area
+   difference) before cc integrated it against the REAL LIVE
+   `BBQ-chambers-v26.scad` — confirmed via echo, not assumed. Visually
+   confirmed by Janis (a labeled cross-section diagram + the raw
+   OpenSCAD profile) before being written into the file. Full `--render`
+   (CGAL) `Simple: yes` at 0/45/90°, rib visibly tracks the door surface
+   at open too.
 
-**Open items (unresolved, not yet decided/completed — genuinely
-deferred, not silently accepted):**
-- **Real CB1 counterbalance-pipe position bug, found + corrected in math
-  only, NOT yet coded**: the existing `CB1_OPEN` formula (unchanged
-  since v6, always marked "LOCKED — do not recompute") applies a
-  spurious extra rotation, landing CB1 at a physically wrong closed-frame
-  position (380.9, 1701.3 — floating ~360mm above the ridge, live
-  constants). Correct value, derived via the open-then-freeze method and
-  verified against a live `echo()`: closed-frame (598.64, 1207.09).
-  Needs to be written into the base file. (These numbers were
-  themselves corrected 2026-07-25 — an earlier write-up of this same
-  entry had both off by +100mm in Z from a stale inline-comment
-  assumption; see `docs/hinge-construction.md` Section 4.5.)
-- **Door-side rib spine flagged STALE, needs a full rebuild**: Janis's
-  own words, "still look like old copy... refer to something not
-  relevant" — the current `RIB_SPLIT_PT`/`RIB_B_OFFSET`/
-  `SPLIT_STANDOFF`/`B_STANDOFF` construction re-derives placeholder
-  offsets from scratch instead of directly tracing the real lid panel
-  shape already defined in `BBQ-chambers-v26.scad` (ridge → apex B → AB
-  wall). Plan: copy that real shape directly, connect to the handle,
-  wipe the old placeholder points.
+**Real, deliberate gap — NOT a bug, NOT deferred-with-placeholder:**
+CB1/counterbalance is REMOVED ENTIRELY from `v11`. Janis's own explicit
+instruction: "remove the link side to the cb1 entirely and wait for new
+instruction. we are done only the frontal door lid side only." The lid
+currently has NO counterbalance or stopper of any kind. Do not re-add a
+placeholder or re-derive one from the old (buggy, since-v6) CB1 formula
+— wait for Janis's fresh instruction on this, which will design it from
+scratch against the now-final rib/pivot geometry.
+
+**Open items (unresolved, not yet decided — genuinely deferred):**
+- CB1/counterbalance/stopper geometry — awaiting Janis's new
+  instruction, per the gap above. The corrected math for the OLD (now-
+  deleted) approach is still recorded in `docs/hinge-construction.md`
+  Section 4 for reference, but a NEW design is expected, not a
+  reinstatement of the old one.
 - **Not yet checked**: whether the door-side rib (built near apex B/C,
-  which are on the FIXED side of `RIDGE_SPLIT_Y`, unlike apex D which is
-  lid-side) needs a genuine angle-sweep clearance check against the
-  fixed structure — the shared-pivot fix only guarantees rib-vs-LID-
-  surface consistency across the sweep, not rib-vs-FIXED-structure,
-  since the fixed structure doesn't rotate. Real, separate, open
-  question.
-- CB1/counterbalance/stopper geometry beyond the link (the prong/wrap
-  stopper touching the DE face) still needs re-verification against the
-  corrected CB1 position once it's coded.
+  which are on the FIXED side of `RIDGE_SPLIT_Y`) needs a genuine
+  angle-sweep clearance check against the fixed structure — the
+  shared-pivot fix only guarantees rib-vs-LID-surface consistency
+  across the sweep, not rib-vs-FIXED-structure, since the fixed
+  structure doesn't rotate. Real, separate, open question — not raised
+  again since the v11 rib was Janis/Claude-Web-approved directly, but
+  flagged here in case it matters once CB1 re-adds swept mass/geometry
+  near that same region.
 - The Section 3 moment/force swept curve
   (`docs/lid-hinge-counterbalance-calc.md`) is stale against every pivot
   change since it was written — explicitly deferred by Janis, fix
   imbalance later with added/removed counterweight material rather than
   block on a full recompute.
-- No PR open for v10 — Janis explicitly said "let me approve from here
-  first," do not open one without new confirmation.
 
 Next if resumed: read `docs/hinge-construction.md` in full, then
-`cc_chat_log.md`'s 2026-07-25 entries (newest first) — do not assume
-what happened from a paraphrase. The rib rebuild (door-side spine +
-CB1 fix) is the next real task, per Janis's own planned sequencing with
-Claude Web.
+`cc_chat_log.md`'s BBQ entries (newest first) — do not assume what
+happened from a paraphrase. Wait for Janis's own instruction on the CB1/
+counterbalance design before writing any counterbalance code.

@@ -166,9 +166,13 @@ deferred, not silently accepted):**
   only, NOT yet coded**: the existing `CB1_OPEN` formula (unchanged
   since v6, always marked "LOCKED — do not recompute") applies a
   spurious extra rotation, landing CB1 at a physically wrong closed-frame
-  position (380.9, 1801.3 — floating ~420mm above the ridge). Correct
-  value, derived via the open-then-freeze method: closed-frame
-  (598.64, 1307.09). Needs to be written into the base file.
+  position (380.9, 1701.3 — floating ~360mm above the ridge, live
+  constants). Correct value, derived via the open-then-freeze method and
+  verified against a live `echo()`: closed-frame (598.64, 1207.09).
+  Needs to be written into the base file. (These numbers were
+  themselves corrected 2026-07-25 — an earlier write-up of this same
+  entry had both off by +100mm in Z from a stale inline-comment
+  assumption; see `docs/hinge-construction.md` Section 4.5.)
 - **Door-side rib spine flagged STALE, needs a full rebuild**: Janis's
   own words, "still look like old copy... refer to something not
   relevant" — the current `RIB_SPLIT_PT`/`RIB_B_OFFSET`/

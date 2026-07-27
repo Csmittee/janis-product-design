@@ -1,10 +1,19 @@
 # Hinge Construction — Locked Reference (BBQ Offset Smoker)
-> Version 1.1 — 2026-07-25
-> Changes: added Section 6, the explicit delete-vs-keep rebuild checklist
-> Janis and cc confirmed together in chat — written here so it doesn't
-> depend on that specific chat turn being remembered. Detail addition,
-> not new structure — X.Y bump.
-> Previous: 1.0 — 2026-07-25
+> Version 1.2 — 2026-07-25
+> Changes: REAL BUG FIX — Sections 3/4/6 stated `HINGE_PIVOT_Z`=
+> 1445.335mm and the corrected CB1 value as (598.64, 1307.09), both
+> wrong by exactly +100mm in Z. Root cause: derived from a stale inline
+> comment (`GRATE_Z`=1000) instead of a live `echo()` — real live value
+> is `GRATE_Z`=900 (a real -100mm level-drop from an earlier round, v22
+> TASK 2, that other comments in the chambers file never got updated to
+> match either). Caught by cross-checking an independent claim against a
+> fresh live echo, not by re-reading more carefully. Corrected values:
+> `HINGE_PIVOT_Z`=1345.34mm, CB1 closed-frame=(598.64, 1207.09). New
+> Section 4.5 documents the mistake itself as a real, standing lesson
+> (verify against live echo, never a comment or a prior write-up,
+> including this one). The `.scad` CODE itself was never wrong (all live
+> formula references) — only this doc's own written numbers were.
+> Previous: 1.1 — 2026-07-25
 > Changes: new file. Extracted from the bbq-lid-hinge-v9/v10 direct-cc
 > session so the two real, hard-won, CONFIRMED-CORRECT results of that
 > session survive a context reload — separate from the rib construction,
@@ -54,9 +63,16 @@ automatically make the rib safe from the FIXED structure (see Section 5
   spec, not re-derived: `L`=127mm (foot width in Y, centered on the
   pivot), `A`=38mm (foot width in X), `H0`=64mm (pivot rise above the
   ridge). Bracket's near edge sits 25mm from `LID_X0`/`LID_X1`.
-- Resulting constants (`BBQ-chambers-v26.scad`):
-  - `HINGE_PIVOT_Y = RIDGE_SPLIT_Y = chamfer + 64` = 242.665mm
-  - `HINGE_PIVOT_Z = DATUM_Z_RIDGE + 64` = 1445.335mm
+- Resulting constants (`BBQ-chambers-v26.scad`), READ LIVE, not
+  hardcoded (see the Section 4.5 warning below for why this matters):
+  - `HINGE_PIVOT_Y = RIDGE_SPLIT_Y = chamfer + 64` = 242.665mm (does not
+    depend on `GRATE_Z`, safe to quote as a literal)
+  - `HINGE_PIVOT_Z = DATUM_Z_RIDGE + 64` — DOES depend on `GRATE_Z`
+    (via `chamber_floor_z`/`DATUM_Z_RIDGE`). Currently (`GRATE_Z`=900)
+    this is **1345.34mm** — NOT 1445.335mm (that number came from a
+    stale assumption `GRATE_Z`=1000; see 4.5). Always confirm this one
+    with a live `echo()`, never quote it from memory or from an old
+    inline comment.
 - Real bonus finding: apex B, apex C, and the pivot are EXACTLY
   collinear (same 45° line as the B-C wall's own chamfer) — a
   regular-octagon-construction coincidence, not assumed.
@@ -95,19 +111,55 @@ open-world coordinate. That applies an extra, spurious rotation the
 math was never supposed to have. Algebraically this makes the old
 formula's real closed-frame result equal
 `rib_closed_from_world(D_native + offsets, 90)`, NOT simply
-`D_native + offsets` — and numerically it lands CB1 at closed-frame
-(380.9, 1801.3), which is physically wrong (about 420mm floating in the
-air above the ridge, nowhere near the door).
+`D_native + offsets` — and numerically, evaluated against the CURRENT
+live constants (`GRATE_Z`=900), it lands CB1 at closed-frame
+**(380.9, 1701.3)**, which is physically wrong (about 360mm floating in
+the air above the ridge, nowhere near the door).
 
 The CORRECT value, worked out via the real open-then-freeze method
-above: closed-frame **(598.64, 1307.09)**. This is simply the naive
-native-frame formula
+above and confirmed against LIVE constants (`GRATE_Z`=900,
+`DATUM_Z_RIDGE`=1281.34): closed-frame **(598.64, 1207.09)**. This is
+simply the naive native-frame formula
 (`RIB_REF_D + CB1_EDGE_DIST*DE_DIR + CB1_STANDOFF*DE_NORM`) evaluated
 directly with NO extra rotation applied — the open-world round trip,
 done correctly, algebraically cancels back to exactly that. **This
 correct value has NOT yet been written into any `.scad` file** — this
 doc records the confirmed-correct math; the code fix is a pending task
 (see `cc_chat_log.md`, 2026-07-25 entry).
+
+## 4.5. A real mistake THIS doc itself made — verify against live echo, never a comment
+
+This doc's own first draft stated `HINGE_PIVOT_Z`=1445.335mm and the
+corrected CB1 value as (598.64, 1307.09) — BOTH WRONG by exactly
++100mm in Z. Root cause: the Python side-checks used to derive those
+numbers assumed `APEX_A_Z`=950 (`GRATE_Z`=1000), copied from a STALE
+INLINE COMMENT in `BBQ-chambers-v26.scad` (e.g. `// 950mm at current
+GRATE_Z=1000`) instead of an actual live `echo()` of the running file.
+The real live value is `GRATE_Z`=900 (`chamber_floor_z`=671.335,
+`DATUM_Z_RIDGE`=1281.34) — a real -100mm level-drop from an earlier
+round (v22 TASK 2) that several OTHER inline comments in the same file
+never got updated to reflect either.
+
+**This mistake was caught by cross-checking a claim from a completely
+independent source (another cc/chat session working from this same
+doc) against a fresh live `echo()` — not by re-reading the comments more
+carefully.** The general lesson (also see `RULES.md` R-014,
+Verification Discipline): a `.scad` file's own inline comments are
+DOCUMENTATION, not a source of truth — they drift, silently, across
+rounds that touch an upstream constant (`GRATE_Z` here) without
+re-checking every downstream comment. Any number quoted in THIS doc (or
+anywhere else) that depends on a live formula chain must be re-verified
+with a real `echo()` against the CURRENT file before being trusted,
+every time context reloads or a session resumes — never carried forward
+from a prior write-up, including this one.
+
+Importantly: the actual `.scad` CODE was never wrong — `FC_Z =
+HINGE_PIVOT_Z;` and `RIB_REF_D = [chamber_W - chamfer,
+DATUM_Z_RIDGE];` are live references, so real renders (the v9/v10
+screenshots already sent to Janis) always computed the correct live
+geometry regardless of this doc's own stale prose. Only the WRITTEN
+numbers in this doc, `cc_chat_log.md`, and `CURRENT_STATE.md` were
+wrong — all now corrected.
 
 ## 5. What is NOT locked — do not treat as reference
 
@@ -156,7 +208,8 @@ here explicitly so it doesn't depend on that chat turn being remembered:
   the new rib traces FROM these, it doesn't replace them.
 - The `miter_point()` FUNCTION — a correct, reusable formula. Re-apply
   it to the real traced shape instead of arbitrary offset points.
-- The corrected CB1 value from Section 4 (598.64, 1307.09) — this
+- The corrected CB1 value from Section 4 (598.64, 1207.09 — verify
+  against a live `echo()` before using, per Section 4.5) — this
   replaces the deleted formula's output, derived via the open-then-
   freeze method, not re-guessed.
 

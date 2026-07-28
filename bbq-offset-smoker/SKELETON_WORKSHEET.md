@@ -1,5 +1,18 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.28 — 2026-07-25
+> Version 1.29 — 2026-07-27
+> Changes: bbq-lid-hinge-v11, direct-cc, door/handle-side rib rebuild +
+> CB1 removal. PART C's own `door_open_deg` row: the door-side rib
+> profile is REBUILT — a real tangent-circle-and-fillet trace (6 control
+> points, ridge to AB wall to handle) delivered by Claude Web after 2
+> sessions and cross-verified before cc integrated it against the real
+> live `BBQ-chambers-v26.scad`. The CB1/counterbalance branch is REMOVED
+> ENTIRELY this round (not deferred-with-placeholder) — per Janis's own
+> explicit instruction, awaiting new instruction before it's redesigned.
+> `include` chain unchanged: base-v11 -> `BBQ-understructure-v19.scad` ->
+> `BBQ-chambers-v26.scad`. `cb1_pipe()` module retired (R-009 confirmed
+> zero remaining consumers). Full detail: docs/hinge-construction.md,
+> cc_chat_log.md.
+> Previous: 1.28 — 2026-07-25
 > Changes: bbq-lid-hinge-v9, direct-cc, real shared hinge pivot round.
 > ROOT CAUSE of the whole v8 sink/float saga found: `lid()` (chambers) and
 > the rib assembly (base file) rotated about TWO DIFFERENT centers. Fixed

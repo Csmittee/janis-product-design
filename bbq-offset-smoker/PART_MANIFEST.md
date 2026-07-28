@@ -4,7 +4,29 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.33 — 2026-07-25 (bbq-lid-hinge-v9, direct-cc, real shared
+# Version: 1.34 — 2026-07-27 (bbq-lid-hinge-v11, direct-cc, real
+# door/handle-side rib rebuild + CB1 removal): base assembly table
+# pointer now BBQ-offset-smoker-base-v11.scad (source v9 -- v10 was WIP,
+# never finalized, superseded). `rib_solid()`/`rib_profile_2d_native()`
+# REBUILT — retires the old placeholder-offset door-side spine (flagged
+# stale the prior round) with a real tangent-circle-and-fillet trace
+# through 6 real control points, delivered by Claude Web after 2
+# sessions, verified against a Python/Shapely reference (0.002% area
+# difference) before cc integrated it against the REAL LIVE
+# BBQ-chambers-v26.scad (confirmed via echo, not assumed — see
+# docs/hinge-construction.md Section 4.5's own standing lesson: that
+# section's earlier draft had `HINGE_PIVOT_Z` wrong by +100mm from a
+# stale comment, now corrected to the real live value, 1345.34mm).
+# `cb1_pipe()` ASSEMBLY-called module RETIRED ENTIRELY this round, per
+# Janis's own explicit instruction ("remove the link side to the cb1
+# entirely and wait for new instruction") — a real, deliberate gap, not
+# a placeholder: the lid currently has NO counterbalance/stopper of any
+# kind. `HANDLE_BORE_D`/`HANDLE_WRAP_R` also retired (R-009 confirmed
+# zero remaining consumers — the new rib profile bores the handle hole
+# directly to `HANDLE_ROD_OD`). Full `--render` (CGAL) `Simple: yes` at
+# 0/45/90°, visually confirmed the rib tracking the door surface at
+# open too. Full detail: docs/hinge-construction.md, cc_chat_log.md.
+# Previous: 1.33 — 2026-07-25 (bbq-lid-hinge-v9, direct-cc, real shared
 # hinge pivot): chambers table pointer now BBQ-chambers-v26.scad (source
 # v25) — NEW `HINGE_PIVOT_Y`/`HINGE_PIVOT_Z` (242.665mm/1445.335mm, real
 # UCP204-12 numbers, exactly on `RIDGE_SPLIT_Y`, no gap), now the ONE real

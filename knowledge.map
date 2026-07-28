@@ -1,5 +1,11 @@
 # knowledge.map
-# Version: v93 — 2026-07-27
+# Version: v94 — 2026-07-27
+# Changes: .claude/SKILL_local_render.md rebuilt (v1.2) — real
+# bounding-box-derived camera formula (was a fixed ~100mm-scale preset,
+# silently wrong for BBQ), new labeled-cut-section-view and world-
+# coordinates-only sections, all per Janis's own explicit render-quality
+# complaints this round. See that file's own row below for detail.
+# Previous: v93 — 2026-07-27
 # Changes: bbq-lid-hinge-v11, direct-cc — active base assembly pointer
 # now BBQ-offset-smoker-base-v11.scad (source v9; v10 was WIP, never
 # finalized, superseded). Real door/handle-side rib rebuild (tangent-
@@ -1129,7 +1135,7 @@ or WORKFLOW_SKILL.md.
 | SKILL_problem_solving_kt.md | Kepner-Tregoe problem solving, R-111 trigger (2+ failed fix loops) | R-111 triggered |
 | SKILL_joint_construction.md | Joint/T-junction/cross-section-transition construction rules | Any joint/seam/mismatched-cross-section fix or build |
 | SKILL_manifold_triage.md | Manifold-warning triage fast-path | Claude Web only — cc does NOT read this |
-| SKILL_local_render.md | Mandatory local OpenSCAD render verification protocol before any new-shape geometry prompt — v1.1 (2026-07-16) also adds an Independent Post-Fix Verification procedure for R-111 escalations (re-render the actual merged file, don't trust cc_chat_log/PR text alone) | Claude Web only — cc does NOT read this |
+| SKILL_local_render.md | Mandatory local OpenSCAD render verification protocol before any new-shape geometry prompt — v1.1 (2026-07-16) also adds an Independent Post-Fix Verification procedure for R-111 escalations (re-render the actual merged file, don't trust cc_chat_log/PR text alone). v1.2 (2026-07-27): camera angles rebuilt as a real bounding-box-derived formula (the old fixed preset was silently wrong at BBQ's ~1000mm scale, tuned only for ~100mm VM/PR parts) + new labeled-cut-section-view and world-coordinates-only sections, folded in from a render technique note that worked well in one chat session but wasn't wired into governance, so a different session didn't inherit it | Claude Web only — cc does NOT read this for ordinary geometry-design work (this standing rule is unchanged; cc reads/edits it only when directly assigned a governance-doc task on this exact file, same one-time-exception pattern as the v1.1 edit) |
 | SKILL_customizer_profile.md | Customizer-first workflow for aesthetic/artistic (non-dimensional) geometry decisions | Claude Web only — cc does NOT read this |
 | SKILL_option_b_unified_loft.md | Option B unified neck+collar loft spec for pole_top — DEFERRED, approved architecture not yet built | Before any pole_top seam/joint/T-junction work resumes |
 | SKILL_reference_point_first.md | Local-datum-origin habit (ask "measured FROM what" before dimensioning) — SUPERSEDED by SKILL_product_design_skeleton.md but still the live convention for VM-01/PR-01 specifically | Before designing any new module's geometry within VM-01 or PR-01 |

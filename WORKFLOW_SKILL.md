@@ -1,12 +1,25 @@
 # WORKFLOW_SKILL.md
 # Janis Product Design — How We Work
-# Version: 3.15 — 2026-07-13
-# Changes: governance-inline-content-and-predelivery-check. PRE-DELIVERY
-# SELF-CHECK section gets one new explanatory line — the checklist applies
-# with EXTRA weight on a new product line's first cc prompt, referencing
-# new rule R-012 (no chat-only content references, RULES.md). Detail
-# addition to an existing template section, not new structure — X.Y bump.
-# Previous: 3.14 — 2026-07-09
+# Version: 3.16 — 2026-07-27
+# Changes: real drift correction, flagged by a fresh chat session's own
+# opening self-check and confirmed by cc against the live file — this
+# file had not named bbq-offset-smoker/ ANYWHERE (PROJECT CONTEXT, Step
+# 4, FILE STRUCTURE) despite it being an active, mature product line with
+# its own scope file, fab rules, and skeleton worksheet, largely
+# developed direct-cc for the last several weeks with no Claude Web
+# session naturally positioned to notice its own file's staleness.
+# PROJECT CONTEXT rewritten (was VM-only text from before PR-01/BBQ
+# existed); Step 4 now names bbq-offset-smoker/design_scope_of_work_
+# rule.md and points at rules-bbq-fab.md/docs/hinge-construction.md for
+# BBQ-hinge-specific sessions; FILE STRUCTURE rebuilt against the real
+# repo (added bbq-offset-smoker/, docs/, RULES.md, rules-pr.md, several
+# newer .claude/ skill files; corrected PR-01's stale "(NOT STARTED)"
+# label). Done by cc as a one-time exception (this file is normally
+# Claude Web's own, per SYMMETRIC COMMUNICATION SYSTEM above), at
+# Janis's own explicit request, specifically so a concurrent direct-cc
+# rib-rebuild session could stay unmixed with governance work. Detail
+# correction to existing sections, not new structure — X.Y bump.
+# Previous: 3.15 — 2026-07-13
 # Changes: CC PROMPT TEMPLATE Section 1 (CC INTRO) gets a new mandatory
 # duplication-check line (governance-verification-escalation-rules,
 # wiring in R-009 from RULES.md) — before writing any fix, cc must state
@@ -63,10 +76,20 @@ No file is committed without a version bump if content changed.
 ## PROJECT CONTEXT
 
 Repo: github.com/Csmittee/janis-product-design
-Product: Satu vending machine — physical enclosure only
+Products (multi-line repo — this was VM-only at this file's own
+original writing, no longer accurate): Satu vending machine (VM-01
+LOCKED Generation 1, VM-02 active sibling line) — physical enclosure
+only; Pilates Reformer (PR-01, paused awaiting customer); BBQ Offset
+Smoker (bbq-offset-smoker/, active — own `design_scope_of_work_rule.md`,
+`rules-bbq-fab.md`, `SKELETON_WORKSHEET.md`, `PART_MANIFEST.md`, all in
+its own folder, largely developed direct-cc — see CURRENT_STATE.md for
+current status of each line).
 Stack: OpenSCAD (.scad), STL, DXF, PNG renders
-Authoritative dimensions: rules-dimensions.md (repo root) — never duplicated
-Payment: Online only — no cash/coin, never
+Authoritative dimensions: rules-dimensions.md (repo root, VM/PR) —
+BBQ's own dimensions live in its own rules-bbq-fab.md and the `.scad`
+files' own headers instead — never duplicated across files either way
+Payment: Online only — no cash/coin, never (VM-specific constraint, not
+applicable to PR-01/BBQ)
 
 ---
 
@@ -134,13 +157,21 @@ or sessions where Janis explicitly says no new geometry is being attempted.
   cc_chat_log. Not found → tell Janis sync is broken, same as Step 3.
 
 **Step 4:** Read `design_scope_of_work_rule.md` in FULL for the project(s)
-  this session concerns — `vending-machine/design_scope_of_work_rule.md`
-  and/or `pilates-reformer/design_scope_of_work_rule.md`. This holds the
+  this session concerns — `vending-machine/design_scope_of_work_rule.md`,
+  `pilates-reformer/design_scope_of_work_rule.md`, and/or
+  `bbq-offset-smoker/design_scope_of_work_rule.md`. This holds the
   owner's actual product concept (envelope targets, compartment map,
   functional/appearance features) — read it BEFORE any QA discussion or
   prompt drafting begins, same mandatory tier as Steps 2/3.5. If Step 3.5's
   CURRENT_STATE.md read doesn't make it unambiguous which project this
-  session will touch, read BOTH copies rather than picking one silently.
+  session will touch, read whichever copies are plausibly relevant rather
+  than picking one silently — for BBQ specifically, also read
+  `bbq-offset-smoker/rules-bbq-fab.md` (BBQ's own locked-conventions file,
+  the closest BBQ equivalent to rules-dimensions.md) and, if this session
+  concerns the lid hinge/rib mechanism, `docs/hinge-construction.md` in
+  full before forming any opinion — it is the current, carefully-checked
+  reference for that specific area, more current than this file's own
+  general guidance can be kept.
   Not found → tell Janis to confirm the file exists on main (repo root
   design_scope_of_work_rule.md files are not yet mirrored into project
   knowledge as of this writing — search project knowledge first per the
@@ -450,15 +481,27 @@ content rule, added 2026-07-13).
 
 ## FILE STRUCTURE — REPO
 
+Rebuilt 2026-07-27 against the real repo (this diagram had drifted —
+missing bbq-offset-smoker/ entirely, several newer .claude/ skill files,
+docs/, and RULES.md; PR-01 mislabeled "(NOT STARTED)" when it's real and
+paused). Governance-doc discipline note: WORKFLOW_SKILL.md is Claude
+Web's own file (see SYMMETRIC COMMUNICATION SYSTEM above) — cc does not
+normally edit it; this correction was a one-time exception, done at
+Janis's own explicit request while a separate direct-cc rib-rebuild
+session was intentionally kept unmixed with governance work.
+
 ```
 janis-product-design/
 ├── cc_rules.md                          ← cc reads every session
 ├── cc_chat_log.md                       ← cc writes / Claude Web reads (via project knowledge sync)
 ├── chat_rules.md                        ← Claude Web rules
-├── rules-dimensions.md                  ← authoritative dimensions
+├── rules-dimensions.md                  ← authoritative dimensions (VM/PR — BBQ has its own, see below)
+├── RULES.md                             ← numbered durable lessons (R-XXX) — cc + Claude Web, read before any SCAD task
+├── rules-pr.md                          ← PR-01-specific rules/config
 ├── knowledge.map                        ← navigation — cc updates when files added
 ├── WORKFLOW_SKILL.md                    ← this file (also in project knowledge)
 ├── CURRENT_STATE.md                     ← where-we-left-off resumption memo, updates only on Janis-confirmed pause
+├── README.md                            ← repo overview, stack, folder structure
 ├── .claude/
 │   ├── rules-codes.md                   ← cc — SCAD coding rules
 │   ├── rules-materials.md               ← cc — material specs
@@ -467,11 +510,25 @@ janis-product-design/
 │   ├── SKILL_problem_solving_kt.md      ← Claude Web + cc — R-111 trigger
 │   ├── SKILL_viewer_update.md           ← Claude Web only — viewer PROJECTS-entry update procedure
 │   ├── SKILL_reference_point_first.md   ← Claude Web + cc — SUPERSEDED, kept for VM-01/PR-01 work
-│   └── SKILL_product_design_skeleton.md ← Claude Web + cc — FIRST file read for any NEW product line (not VM-01/PR-01)
+│   ├── SKILL_product_design_skeleton.md ← Claude Web + cc — FIRST file read for any NEW product line (not VM-01/PR-01)
+│   ├── SKILL_local_render.md            ← Claude Web + cc (direct-cc sessions) — mandatory render-verification protocol; v1.2 rebuilt the camera-angle guidance as a real bounding-box formula (was hardcoded for ~100mm parts, silently wrong at BBQ's ~1000mm scale) + labeled cut-section views + world-coordinates-only rule — read before producing ANY render, not just BBQ
+│   ├── SKILL_joint_construction.md      ← Claude Web + cc — mismatched cross-section/T-junction construction rules
+│   ├── SKILL_manifold_triage.md         ← Claude Web only — 2-manifold warning fast-path
+│   ├── SKILL_customizer_profile.md      ← Claude Web only — Customizer-first workflow for aesthetic geometry decisions
+│   ├── SKILL_option_b_unified_loft.md   ← pole_top seam/T-junction spec — DEFERRED, approved but not built
+│   ├── SKILL_kinematic_frame_construction.md ← Claude Web + cc — positioning a point on a rotating body against a real physical target ("open-then-freeze" method), general/reusable, extracted from the BBQ hinge work
+│   └── SKILL_clearance_zone_map.md      ← diagnostic skill for mapping real clearance zones (see file's own header for scope)
 ├── prompts/                             ← active cc prompts
 │   └── archive/                         ← completed prompts ✅ COMPLETE
-├── vending-machine/VM-01-base/          ← VM-01 .scad versions
-├── pilates-reformer/PR-01-base/         ← PR-01 (NOT STARTED)
+├── docs/                                ← reference/derivation docs, not prompts — content varies by product
+│   ├── hinge-construction.md            ← BBQ lid hinge, LOCKED reference (shared pivot, real hinge numbers) — read before touching BBQ's hinge/rib mechanism
+│   ├── lid-hinge-counterbalance-calc.md ← BBQ lid hinge/counterbalance full derivation
+│   └── BBQ_CONFIGURATOR_ROADMAP.md      ← BBQ product-configurator planning notes
+├── vending-machine/VM-01-base/          ← VM-01 .scad versions (GENERATION 1 LOCKED, v58)
+├── vending-machine/VM-02-base/          ← VM-02 .scad versions (active sibling line)
+├── pilates-reformer/PR-01-base/         ← PR-01 (PAUSED, awaiting customer — real content exists, v31)
+├── bbq-offset-smoker/                   ← BBQ Offset Smoker — active, largely direct-cc. Own design_scope_of_work_rule.md, rules-bbq-fab.md (locked-conventions file, BBQ's own equivalent of rules-dimensions.md), SKELETON_WORKSHEET.md, PART_MANIFEST.md, all in this folder alongside the .scad versions
+│   └── archive/                         ← superseded .scad versions (last-3-per-family kept live in the main folder) — full git history intact via git mv, see that folder's own README.md
 ├── exports/for-supplier/                ← STL
 ├── exports/for-cnc/                     ← DXF
 └── renders/                             ← PNG screenshots

@@ -1,24 +1,35 @@
 # SKILL_local_render.md
 # Local OpenSCAD Render Verification — Janis Product Design
-# Version: 1.1 — 2026-07-16
-# Changes: SKILL_local_render_addendum_independent_verification. New
-# "INDEPENDENT POST-FIX VERIFICATION (R-111 ESCALATION)" section added —
-# origin: bbq-chambers "reads solid, not hollow" took 3 real fix attempts
-# (PR #119, v5's end-cap gap fix, PR #121) that each passed their own
-# CGAL/manifold checks but still failed the same human visual check,
-# resolved only once the ACTUAL merged file was independently re-rendered
-# rather than trusted from cc_chat_log/PR text. Extends this skill's
-# existing pre-fix render discipline (Steps 1-5 above) with a matching
-# post-fix discipline, scoped specifically to R-111 (2+ failed loops on
-# the same symptom) — this is a read-only VERIFICATION rule, not a new
-# design-work authorization (see that section's own SCOPE note). Detail
-# addition, not a restructure of the existing content — X.Y bump.
-# Previous: 1.0 — 2026-07-01
+# Version: 1.2 — 2026-07-27
+# Changes: bbq-lid-hinge-v11 aftermath — Janis ran a real cross-chat A/B:
+# a render technique note that worked very well for one chat session
+# (the BBQ frontal-lid-rib round) still produced messy/confusing views
+# when handed to a DIFFERENT chat, because it was never wired into this
+# governance file — a new session had no automatic reason to read it.
+# Folded its real, working content in here (the ONLY place both cc and
+# Claude Web read before rendering) and fixed 2 real, standing gaps in
+# this file's own prior content: (1) "KNOWN GOOD CAMERA ANGLES" was a
+# fixed preset hardcoded for ~100mm-scale VM/PR parts — silently wrong
+# for BBQ's 600-1500mm scale (the actual, confirmed root cause of past
+# "flat"/clipped renders), replaced with a real bounding-box-derived
+# formula, scale-independent by construction. (2) no standing rule
+# existed for a labeled cut-section view (numbered control points, the
+# technique that made the BBQ rib profile easy for Janis to confirm at a
+# glance) — new section added. Also codifies Janis's own explicit,
+# recurring complaint: renders presented in an arbitrarily rotated local
+# frame, or a degenerate single-plane "iso" that reads as flat with no
+# real information — new WORLD-COORDINATES-ONLY section states this as a
+# hard rule, not a style preference. X.Y bump (detail/structure addition
+# to existing sections, the skill's own scope/purpose unchanged).
+# Previous: 1.1 — 2026-07-16
 # Location: .claude/SKILL_local_render.md
-# Read when: any geometry design or fix session is starting, or any time
-# a new module shape is being designed before sending to cc. Also read
-# when R-111 has triggered (2+ failed loops on the same human-reported
-# symptom) — see the new section below.
+# Read when: any geometry design or fix session is starting, any time a
+# new module shape is being designed before sending to cc, or any time
+# ANY render/screenshot is about to be shown to Janis — camera setup,
+# section-view labeling, and world-coordinate framing (below) are not
+# optional extras, they are the default presentation for every render.
+# Also read when R-111 has triggered (2+ failed loops on the same
+# human-reported symptom) — see that section further below.
 
 ---
 
@@ -108,19 +119,159 @@ construction method verified locally).
 
 ---
 
-## KNOWN GOOD CAMERA ANGLES (for this project's scale ~100mm parts)
+## CAMERA SETUP — COMPUTE FROM THE REAL GEOMETRY, EVERY TIME
 
-```
-Iso:   --camera=300,260,160,52,0,5
-Side:  --camera=52,350,10,52,0,5
-Front: --camera=350,0,5,52,0,5
-Top:   --camera=52,0.01,280,52,0,5
-Back:  --camera=-250,0,5,52,0,5
-Bottom:--camera=52,0.001,-150,52,0,5
-```
+**This project spans wildly different physical scales** (VM/PR parts
+~100mm, BBQ ~600-1500mm) — a fixed camera preset from one product is
+silently wrong on another. The single most common cause of a "flat" or
+badly-framed render in this project's own history was reusing a preset
+tuned for the wrong scale. Never copy a camera number from an old
+render — always derive it fresh from the CURRENT geometry's own real
+bounding box, every time, using the formula below.
 
-Adjust distance (first 3 values) based on part size.
-`--imgsize=1200,900` is the standard resolution.
+### The formula (6-value eye/center form)
+
+`--camera=eyeX,eyeY,eyeZ,centerX,centerY,centerZ`
+
+1. **Find the real center** — the midpoint of the bounding box of
+   whatever you're actually looking at (the whole assembly for an
+   overview, or just the sub-region of interest for a detail shot — see
+   "Full view of the area of interest" below). Use real project
+   coordinates, read from the actual constants/formulas, never eyeballed.
+2. **Pick a real 3-axis direction for iso views** — a direction vector
+   with a genuine, non-degenerate component in all three axes, e.g.
+   `dir = (1, -1, 0.6)` (normalize it). A camera offset in only two of
+   the three axes (one axis left at 0) reads as a flat elevation, not a
+   true iso — this is the single most common cause of a "meaningless
+   flat surface" render Janis has flagged before. For a pure side or
+   front view (not iso), the camera legitimately sits on ONE axis,
+   looking straight at the center — that's correct there, just not for
+   an iso shot.
+3. **Pick distance = roughly 2-3x the object's largest bounding-box
+   dimension.** Too close clips into the geometry or loses context; too
+   far makes small features unreadable. Neither "too deep zoomed" nor
+   "too wide zoomed out" — frame the actual area of interest snugly.
+4. `eye = center + dir * distance`.
+
+Worked example, an object ~900mm long x 600mm wide x 800mm tall
+(center ~450,300,1000):
+```
+--camera=1900,-1150,2050,450,300,1000 --projection=ortho
+```
+Worked example, an object ~100mm x 80mm x 60mm (center ~52,0,5) — the
+project's own older small-part convention, still valid at its own
+scale:
+```
+--camera=300,260,160,52,0,5 --projection=ortho
+```
+Same formula, different inputs — never reuse the numbers, always
+recompute the inputs (center + scale) from the CURRENT part.
+
+### Required view set — every render round, not just one iso
+
+For ANY geometry being shown to Janis: **iso (full view of the area of
+interest, not too tight/not too wide) + a straight side view + a
+straight front view**, at minimum. Add a top/back/bottom or a tight
+detail shot only when the specific question needs it. One iso alone is
+never enough to confirm shape, fit, or a gap — this matches the
+project's own long-standing "render 3+ angles" rule, now stated as a
+hard minimum rather than a suggestion.
+
+### Other settings that matter as much as the camera
+
+- **Always `--projection=ortho`** for any view used to check dimensions,
+  alignment, or shape — perspective distorts true proportions and hides
+  misalignments. Drop `ortho` only for a final presentation shot where
+  no measurement/alignment claim is being made.
+- **Color every distinct component differently** — a monochrome render
+  is unreadable in 3D even with a perfect camera. Convention: structural/
+  fixed housing in steel blue, the moving/lid part in orange, the part
+  actually being designed/verified in solid red or full opacity, hubs/
+  pivots/bores in gold, off-the-shelf hardware in brass.
+- **Opacity for context, full opacity for focus** — background/context
+  parts (shell, lid) at alpha ~0.5-0.6 so what's happening behind/inside
+  is visible, the part actually being verified fully opaque.
+- `--imgsize=1200,900` (small parts) or `1400,1100` (BBQ-scale, more
+  detail to fit) is the standard resolution — bump higher for a detail
+  crop.
+
+---
+
+## WORLD COORDINATES ONLY — NO ROTATED OR DEGENERATE VIEWS
+
+**Never rotate the OBJECT to make a render look nicer.** Every render
+shown to Janis presents the geometry in its own real, live project world
+coordinates — the CAMERA moves to frame it (per the formula above), the
+object never does. A render is only useful for confirming or discussing
+real construction if its coordinates map directly to the actual project
+constants — an object rotated for framing convenience breaks that
+mapping and makes the image impossible to reason about together (Janis's
+own recurring complaint: "many chat present me with rotate angle,
+difficult to understand image").
+
+This also rules out the degenerate case Janis has flagged directly: an
+"iso" view built with a camera direction that has zero offset on one
+axis renders as a flat, meaningless plane, not a real 3D shape — this is
+the SAME root cause named in the camera formula above (a direction
+vector needs real components in all three axes), stated again here as
+its own explicit rule because it's a distinct failure mode from picking
+a bad distance/center: a degenerate iso can have a perfectly reasonable
+center and distance and still be worthless if the direction vector is
+flat.
+
+If a rotated or cropped view is genuinely necessary to show something
+(e.g. a cross-section, see below), the RENDER PIPELINE may rotate/cut —
+but the underlying object and any coordinates discussed in text must
+still refer to real world coordinates, and the render's own caption must
+say explicitly what cut/rotation was applied and why.
+
+---
+
+## LABELED CUT-SECTION VIEWS FOR COMPLEX GEOMETRY
+
+When designing or discussing any non-trivial profile (a rib, a bracket,
+any multi-point traced shape) — not just a bounding-box check — produce
+a labeled 2D cross-section with each real control point numbered, in
+the SAME numbering the accompanying `.scad` code uses (e.g. `t1`..`t6`
+labeled as `1`..`6`). This is the single technique that made the BBQ
+door-rib profile easy for Janis to confirm at a glance across multiple
+chat sessions — treat it as the default presentation for this class of
+geometry, not an occasional extra.
+
+### Preferred technique: a real Python/matplotlib diagram, not a raw OpenSCAD screenshot
+
+A raw OpenSCAD render of a 2D profile is hard to label cleanly (text()
+placement/rendering varies by version, no easy per-point callouts). Where
+Python is available in the sandbox, compute the SAME real control-point
+coordinates the `.scad` file uses (port the exact formulas — do not
+hand-approximate them) and plot with matplotlib:
+- The relevant fixed/reference geometry (e.g. the real octagon wall) as
+  context, in a muted color.
+- The profile itself as a solid/filled shape in a clear accent color.
+- Each real control point marked and numbered, matching the `.scad`
+  variable names/numbering exactly.
+- Axis labels in real project units (mm), aspect ratio locked equal
+  (`ax.set_aspect('equal')`) so proportions read correctly.
+
+### Fallback if Python/matplotlib is unavailable
+
+Render the isolated 2D profile in OpenSCAD (`projection()` or a thin
+`linear_extrude` viewed top-down per the camera formula above), then
+mark points via small spheres/circles at each control-point coordinate,
+colored distinctly (e.g. gold) so they're visible against the profile,
+plus a SEPARATE plain-text list in the same message stating each
+numbered point's real coordinates — the numbering must still match the
+`.scad` code exactly even without inline text labels on the image
+itself.
+
+### Always cross-check against the real live file
+
+Whichever technique is used, the control-point coordinates must come
+from the ACTUAL project's live constants (read via `echo()` or by
+importing/porting the real formulas), never from memory, a comment, or
+a prior session's write-up — see `docs/hinge-construction.md` Section
+4.5 for a real, caught instance of exactly this mistake costing a whole
+extra round.
 
 ---
 

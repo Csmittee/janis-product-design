@@ -4,7 +4,18 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.37 — 2026-07-30 (bbq-lid-hinge-v12, 2nd REWORK same-day):
+# Version: 1.38 — 2026-07-30 (bbq-lid-hinge-v12, 3rd REWORK same-day):
+# `cb1_link_2d()` now includes `RIB1_WEB_OUTLINE` — t6be/t7/t7r linked
+# into the existing t4/t5 rib body as ONE SOLID FILLED region (not two
+# separate thin "link" arms), per Janis's own explicit correction. t7/t7r
+# confirmed as EDGE points (matching t2-t4), no separate expanding
+# radius. Real construction bug found+fixed: an arc forced tangent to
+# t4-t5 at t4 over-constrained into a 151-degree sweep that left a real
+# gap (confirmed via CGAL render, not just preview) — replaced with a
+# disclosed 400mm-radius gentle arc. DXF now 3 contours (CB1 fully
+# connected to the main rib). Full `--render` (CGAL) `Simple: yes` at
+# 0/45/90°. Full detail: cc_chat_log.md 2026-07-30 3rd REWORK entry.
+# Previous: 1.37 — 2026-07-30 (bbq-lid-hinge-v12, 2nd REWORK same-day):
 # `cb1_link_2d()` bracket ORIENTATION CONFIRMED CORRECT by Janis — Ub
 # (back wall, perpendicular to DE) / Ua (top arm) / Uc (bottom arm, DE-
 # contact stopper), matching the prompt's own literal text exactly (the

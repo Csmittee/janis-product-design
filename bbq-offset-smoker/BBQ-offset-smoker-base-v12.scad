@@ -1009,14 +1009,68 @@ BRACKET_OUTLINE = [
     tangential_pt(CB1_EDGE_DIST, Uarm_top_n),                        // Ua outer-top corner
     tangential_pt(Ub_outer_s, Uarm_top_n),                           // Ub back-top corner
     tangential_pt(Ub_outer_s, CB1_STANDOFF+NECK_HALF_W),             // neck root, top, on Ub's own back face
-    tangential_pt(Ub_outer_s-NECK_LEN, CB1_STANDOFF+NECK_HALF_W),   // neck tab tip, top (dangling -- no link to t7 yet)
+    tangential_pt(Ub_outer_s-NECK_LEN, CB1_STANDOFF+NECK_HALF_W),   // neck tab tip, top -- t7r
 ];
+t7_native  = freeze_from_open(BRACKET_OUTLINE[0]);   // neck_l tip -- EDGE point, no radius of its own (matches t2-t4)
+t7r_native = freeze_from_open(BRACKET_OUTLINE[11]);  // neck_r tip -- EDGE point, no radius of its own (matches t2-t4)
 
-// Per Janis's own explicit instruction this round: do NOT draw the link
-// to t7 yet (bottom/top rib arms connecting this bracket back to the
-// existing t4/t5 rib body) -- CB1 bracket + the neck ROOT shape only.
+// t6be -- per Janis 2026-07-30: built AT THE OPEN door position, a
+// vertical line through t6/FC, 20mm Z-drop (frozen to native like the
+// rest of this link). Real, disclosed finding, shown to Janis before
+// being locked in: at this exact point the bore's own required material
+// margin is negative for any half-width above ~6.5mm (this file's own
+// standard rib half-width is 20mm) -- Janis's own explicit call: accept
+// this, material/shear-strength around the pivot is a secondary concern
+// vs not literally colliding; kept as specified, not silently altered.
+T6BE_OPEN   = [FC_Y, FC_Z - 20];
+t6be_native = freeze_from_open(T6BE_OPEN);
+
+// Arc center for the TOP rib line (t4 -> t7r): a gentle circular arc
+// directly between the two points, per Janis's own explicit "smooth
+// arc, not a sharp wide angle" instruction. FIRST ATTEMPT (removed):
+// forcing exact tangency to the t4-t5 direction AT t4 over-constrained
+// the circle into a huge radius (159.9mm on a 310mm chord) with a wide
+// 151-degree sweep that bulged FAR outside the intended fill region --
+// confirmed as a real defect via an isolated render (a visible gap/
+// notch where the arc diverged from the bracket, not just a preview
+// artifact -- checked with a full --render CGAL pass too). Fixed by
+// choosing a real, generous fixed radius instead and taking the SHORT
+// arc between t4 and t7r on the OUTWARD side (same disambiguation
+// convention as ext_tangent()'s own OUTWARD constant elsewhere in this
+// file) -- a real, disclosed choice (not derived from a locked
+// constraint), picked for a visibly gentle bulge, not tangency.
+TOP_ARC_R = 400;   // chosen for a gentle ~46 degree sweep on this 310mm chord -- disclosed choice, not a locked/derived value
+function circle_center_2pt(P,Q,R,outward) = let(
+    d = norm([Q[0]-P[0], Q[1]-P[1]]),
+    mid = [(P[0]+Q[0])/2, (P[1]+Q[1])/2],
+    h = sqrt(max(0,R*R - (d/2)*(d/2))),
+    dirpq = unit([Q[0]-P[0], Q[1]-P[1]]),
+    perp = [-dirpq[1], dirpq[0]],
+    c1 = [mid[0]+h*perp[0], mid[1]+h*perp[1]],
+    c2 = [mid[0]-h*perp[0], mid[1]-h*perp[1]],
+    s1 = (c1[0]-mid[0])*outward[0]+(c1[1]-mid[1])*outward[1],
+    s2 = (c2[0]-mid[0])*outward[0]+(c2[1]-mid[1])*outward[1]
+) (s1>s2) ? c1 : c2;
+TOP_ARC_CENTER = circle_center_2pt(t4, t7r_native, TOP_ARC_R, OUTWARD);
+
+// Bottom rib line (t5 -> t6be -> t7) and top rib line (t4 -> arc -> t7r)
+// are BOUNDARY EDGES of ONE SOLID FILLED region, per Janis's own explicit
+// correction 2026-07-30 ("chat has made mistake thought the line...is a
+// link, no its a boundary, fill inside with material") -- NOT two
+// separate thin members with empty space between them. t6be/t7/t7r are
+// EDGE points (no separate expanding radius/boss), matching t2-t4's own
+// convention exactly -- the fill polygon's own straight/arc segments
+// pass directly THROUGH these coordinates, no hull()/circle() involved.
+RIB1_WEB_OUTLINE = concat(
+    [t4, t5, t6be_native, t7_native, t7r_native],
+    arc_pts(TOP_ARC_CENTER, TOP_ARC_R, t7r_native, t4)
+);
+
 module cb1_link_2d() {
-    polygon(points=[for(p=BRACKET_OUTLINE) pt2(freeze_from_open(p))]);
+    union() {
+        polygon(points=[for(p=BRACKET_OUTLINE) pt2(freeze_from_open(p))]);
+        polygon(points=[for(p=RIB1_WEB_OUTLINE) pt2(p)]);
+    }
 }
 
 module rib_profile_2d_native(with_cb1=false) {

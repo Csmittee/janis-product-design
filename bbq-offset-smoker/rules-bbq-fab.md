@@ -1,5 +1,14 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.15 — 2026-07-30
+> Version 1.16 — 2026-07-30
+> Changes: bbq-lid-hinge-v12, 3rd CB1 REWORK same day — t6be/t7/t7r linked
+> into a single SOLID FILLED web (not two hollow arms), per Janis's own
+> explicit correction. New locked lesson: forcing a fillet/arc to be
+> exactly tangent at one endpoint while passing through a distant second
+> point can over-constrain the circle into a huge radius/wide sweep that
+> bulges outside the intended fill region — a real defect only visible in
+> an actual render, not from the math alone. Prefer a disclosed, gentle
+> fixed-radius arc over a forced tangency solve.
+> Previous: 1.15 — 2026-07-30
 > Changes: bbq-lid-hinge-v12, 2nd CB1 REWORK same day — Janis confirmed
 > the bracket orientation was STILL wrong after the 1.14 fix (contour
 > count was fixed, but the "breach one edge" notch opened the wrong
@@ -754,6 +763,26 @@ the same method.
   writing code — quote it, don't re-guess it — then confirm with a
   labeled diagram before touching the committed file, especially after a
   prior round already got this same feature wrong once.
+- **Forcing a fillet/arc to be exactly TANGENT to an existing edge at one
+  endpoint, while also passing through a distant second point, can
+  over-constrain the circle into a huge radius and a very wide sweep —
+  not a small, gentle arc** (bbq-lid-hinge-v12, the t4-to-neck_r "top rib
+  line"): solving for tangency at t4 plus passage through a point 310mm
+  away produced a 160mm-radius circle with a 151-degree sweep that
+  bulged far outside the intended fill region — a real, visible gap in
+  the rendered material, not merely an ugly curve. This is NOT visible
+  from the math alone (the tangency/pass-through solve "succeeds" and
+  looks fine as numbers) — it only showed up as a real defect in an
+  actual render (confirmed with a full `--render` CGAL pass, not just
+  the fast OpenCSG preview, since the two can look different at a
+  boolean seam). **When asked for "a smooth arc, not a sharp angle,"
+  prefer a disclosed, reasonable fixed radius chosen for a gentle sweep
+  over one derived by force-solving a tangency constraint** — tangency
+  is not required for "smooth," and over-constraining it can produce a
+  worse shape than a plain, generous circular arc between the two
+  endpoints. Always render the actual result (both OpenCSG preview and a
+  real `--render`) before trusting a new curve construction, exactly as
+  for any other new geometry this project builds.
 
 ---
 

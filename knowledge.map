@@ -1,5 +1,24 @@
 # knowledge.map
-# Version: v101 — 2026-07-30
+# Version: v102 — 2026-07-30
+# Changes: bbq-lid-hinge-v14 (new version file, per the just-established
+# rule -- every round with real changes gets one). Two real fixes, both
+# Janis's own direct catches from a render: (1) tray skirt moved off the
+# hinge-side edge (visibly sank into the hinge block, no manifold error
+# since it's just overlapping solid material, but a real visible
+# defect) onto the tip + both left/right side edges; hinge side now
+# carries zero skirt on purpose. (2) the folding link joint is now real,
+# visible geometry (`tray_link()`, 2 rod segments + elbow) at the tray's
+# deployed reference position, not just a computed length. Real,
+# disclosed kinematic finding checked via circle-circle intersection in
+# Python before modeling: a fixed-length 2-bar link anchored at `al`
+# cannot follow the tray through the FULL stow sweep (distance from the
+# fixed anchor only grows as the tray folds up) -- matches why real
+# folding-shelf hardware for this job commonly uses a slotted pivot at
+# one end. `HINGE_OUT` widened +15mm for link-hardware clearance.
+# `BBQ-offset-smoker-base-v11.scad` archived (last-3-live: v12/v13/v14).
+# Re-verified Simple:yes + empty interference sweep. Full summary:
+# docs/handoff-2026-07-30.md (updated).
+# Previous: v101 — 2026-07-30
 # Changes: bbq-lid-hinge-v13, REAL FILE VERSION BUMP + CB1 pipe rotation
 # fix. Janis caught a real process lapse: every change since the CB1
 # lateral link round (v96-v100: sanitization, CB1 pipe restore, moment

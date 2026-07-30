@@ -4,7 +4,30 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.45 — 2026-07-30 (bbq-lid-hinge-v13, REAL FILE VERSION BUMP
+# Version: 1.46 — 2026-07-30 (bbq-lid-hinge-v14, tray skirt fix + real
+# link geometry): new version file per the just-established rule (every
+# round with real changes gets one). Two real fixes, both Janis's own
+# direct catches from a render: (1) the tray skirt had been placed on
+# the hinge-side edge, where it visibly sank into the hinge block (no
+# manifold error -- it's just overlapping solid material, not a
+# self-intersection -- but a real visible defect). Moved to the tip +
+# both left/right side edges instead; hinge side now carries zero
+# skirt on purpose. (2) the folding link joint never showed up in any
+# render -- it was only ever a computed length. Built as real, visible
+# geometry (`tray_link()`, 2 rod segments + elbow) at the tray's
+# deployed (0°) reference position. Real, disclosed finding checked via
+# circle-circle intersection in Python before modeling: a fixed-length
+# 2-bar link anchored at `al` cannot kinematically follow the tray
+# through the FULL stow sweep (distance from the fixed anchor to the
+# tray only grows as it folds up) -- matches why real folding-shelf
+# hardware for this job commonly uses a slotted pivot at one end.
+# `HINGE_OUT` widened +15mm for real link-hardware clearance. Re-verified
+# `Simple: yes` at 0/45/90° door + -90/0° tray angles, interference sweep
+# vs `front_wheel_support()` still empty at every tray angle.
+# `BBQ-offset-smoker-base-v11.scad` archived (last-3-live window is now
+# v12/v13/v14). See docs/handoff-2026-07-30.md (updated) for full
+# current-state summary.
+# Previous: 1.45 — 2026-07-30 (bbq-lid-hinge-v13, REAL FILE VERSION BUMP
 # + CB1 pipe rotation fix): Janis caught a real process lapse this
 # round -- every change since the CB1 lateral link round (1.41-1.44:
 # sanitization, CB1 pipe restore, moment analysis, tray relocation

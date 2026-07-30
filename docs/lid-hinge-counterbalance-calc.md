@@ -1,5 +1,18 @@
 # Lid Hinge / Counterbalance Mechanism — Moment-Balance Calculation
 
+> **SUPERSEDED 2026-07-30.** This entire document is built on the pivot
+> position and CB1 counterweight-pipe design from the v6-v8 rounds
+> (`fc_y=193.665`/`fc_z=1314.635`, a CB1 pipe with a real assigned mass).
+> Both are retired: the real shared pivot is now `FC_Y=242.665`/
+> `FC_Z=1345.34` (`HINGE_PIVOT_Y`/`HINGE_PIVOT_Z` in
+> `BBQ-chambers-v26.scad`), and the current CB1 (`BBQ-offset-smoker-base-v12.scad`)
+> is a welded structural stopper/bracket, not a counterweight mass. The
+> current, real moment-vs-angle analysis (built from the live geometry,
+> not this superseded one) is `docs/lid-hinge-moment-analysis.md`. Kept
+> here unedited, on record, for the geometry-verification technique
+> (round-trip rotation checks, apex-clearance sweep) which is still
+> valid methodology even though the numbers below are stale.
+>
 > Source: prompts/bbq-lid-hinge-three-rib-v2-cc-prompt.md (2026-07-24),
 > Section 9. Reference material only — does not gate or block the
 > geometry work in `BBQ-offset-smoker-base-v6.scad`. The moment/torque

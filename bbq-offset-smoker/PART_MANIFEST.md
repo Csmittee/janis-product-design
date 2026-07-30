@@ -4,7 +4,27 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.42 — 2026-07-30 (bbq-lid-hinge-v12, CB1 counterweight pipe
+# Version: 1.43 — 2026-07-30 (bbq-lid-hinge-v12, TRAY RELOCATION
+# BRACKET -- fixes real grab-handle-vs-tray collision): old tray hinge
+# (HINGE_Z=880) put the deployed tray plate inside the handle boss's own
+# Z-range (t1/R1 -> Z=[850.3,899.7]) -- real overlap, not a near-miss.
+# Janis's own 5-step method, executed literally (full derivation +
+# diagram: docs/tray-relocation-bracket.md): new triangular gusset
+# bracket (`tray_bracket()`, apex A / hal / al, 30mm wide, ONE flagged
+# interpretation -- "face HA" = the existing chamfer wall from apex A
+# down to the floor corner, since no other reading makes step 2's own
+# wording work -- disclosed, not silently assumed) mounted at the same 4
+# hinge X positions as before. HINGE_Z REDEFINED (old formula deleted,
+# not left dead) to lowest-point-of-t1-minus-15mm = 835.3mm -- real
+# 13mm clearance now confirmed vs the old full overlap. Folding link
+# length computed: tt (tray tip -20mm) to ts (45° line to the apex-A/al
+# plane) = 403.1mm -- the number to source a real part with, link itself
+# not modeled as a mechanism (that wasn't the ask). Re-verified
+# `Simple: yes` at 0/45/90° door + -90/0° tray angles, and a real
+# interference sweep (trays() vs front_wheel_support(), tray angle
+# -90/-60/-30/0°) confirms empty at every angle -- no new collision
+# introduced by the 44.7mm relocation.
+# Previous: 1.42 — 2026-07-30 (bbq-lid-hinge-v12, CB1 counterweight pipe
 # RESTORED): Janis clarified CB1 is 2 real parts -- the bracket
 # (Ua/Ub/Uc, locked, unchanged) AND a separate 4" square tube, both ends
 # capped, that the bracket wraps/welds around -- the pipe is the real

@@ -73,13 +73,11 @@ TRAY_X0         = (chamber_L - TRAY_TOTAL_SPAN) / 2;   // -2.5mm
 TRAY0_X0        = TRAY_X0;                        // -2.5
 TRAY1_X0        = TRAY_X0 + TRAY_L + TRAY_GAP;    // 460mm
 
-// Hinges — mounted to TASK 1's REAL new fixed band, read live (NOT
-// hardcoded 980, per the prompt's own explicit instruction) — 20mm below
-// NEW_SPLIT_Z's own real confirmed value (1000mm this round, matches the
-// prompt's own expected 980mm exactly because NEW_SPLIT_Z landed exactly
-// at the expected 1000mm — stated as a live read, not a coincidence
-// silently assumed to always hold).
-HINGE_Z         = NEW_SPLIT_Z - 20;               // 980mm, real live value
+// HINGE_Z itself is defined further down this file (needs t1/R1/HANDLE_Z,
+// the handle boss, which aren't known yet at this point in the file) --
+// see "Tray relocation bracket" section below for the real, current
+// value and why (2026-07-30: moved off the chamber wall entirely, the
+// old NEW_SPLIT_Z-20 value collided with the handle boss).
 HINGE_W         = 20;
 HINGE_H         = 20;
 HINGE_INTO_WALL = 10;                             // real Y depth, pushes past wall_t(3mm) with margin for genuine weld contact, not a coincident face
@@ -120,6 +118,8 @@ module tray_hinge(x_pos) {
 module tray_hinges(x0) {
     tray_hinge(x0 + HINGE_OFFSET);
     tray_hinge(x0 + TRAY_L - HINGE_OFFSET);
+    tray_bracket(x0 + HINGE_OFFSET);
+    tray_bracket(x0 + TRAY_L - HINGE_OFFSET);
 }
 // tray() — welded steel frame + 2mm plate (thin-shell representation).
 // Real rotation axis: Y=-HINGE_PIVOT_OFFSET (the hinge's own real
@@ -297,6 +297,42 @@ OUTWARD=[-0.6,0.5];
 HANDLE_MEAT=12;
 
 t1=[HANDLE_Y,HANDLE_Z];                                    R1=HANDLE_ROD_OD/2+HANDLE_MEAT;
+
+// ─── Tray relocation bracket + new hinge Z -- 2026-07-30, per Janis's
+// own 5-step construction (grab handle was colliding with the tray's
+// old hinge -- t1's own boss spans Z=[825.6,899.7], the old HINGE_Z=880
+// sat right inside it). Real, disclosed judgment call: "face HA" isn't
+// an existing term in this project -- cc's own reading, geometrically
+// forced by step 2's own wording ("horizontal line from face HA to
+// connect with al" only makes sense if apex A does NOT itself sit on
+// face HA) is that H is the existing octagon corner where the chamber
+// floor meets the 45° chamfer wall below apex A, and face HA is that
+// diagonal chamfer wall. Flagged for Janis to correct if wrong --
+// everything below follows from this one reading.
+TRAY_H_POINT   = [chamfer, chamber_floor_z];              // existing octagon corner (floor / chamfer-wall junction) below apex A
+// step 1: straight line down from apex A, 200mm in Z
+TRAY_AL        = [RIB_REF_A[0], RIB_REF_A[1] - 200];      // "al"
+// step 2: face HA's own real line (apex A -> H), extended to al's own Z
+TRAY_HAL_SLOPE = (TRAY_H_POINT[0]-RIB_REF_A[0]) / (TRAY_H_POINT[1]-RIB_REF_A[1]);   // dY/dZ along face HA
+TRAY_HAL       = [RIB_REF_A[0] + TRAY_HAL_SLOPE*(TRAY_AL[1]-RIB_REF_A[1]), TRAY_AL[1]];   // "hal"
+// step 3: triangle bracket outline (apex A - hal - al), one per hinge
+TRAY_BRACKET_OUTLINE = [RIB_REF_A, TRAY_HAL, TRAY_AL];
+TRAY_BRACKET_W = HINGE_W + 10;    // 30mm -- real judgment call, must be at least HINGE_W(20mm) wide to weld the hinge to, +5mm margin each side; no exact width given
+// step 4: new tray/hinge Z -- lowest point of t1 (handle boss, incl.
+// its own rib meat) minus 15mm real escape clearance. Re-defines
+// HINGE_Z (was NEW_SPLIT_Z-20 -- that old value sat inside the handle
+// boss, the actual collision Janis reported) -- same global name reused
+// so tray_hinge()/tray() below need no other change, only their real
+// mounting point moves down onto this new bracket instead of the old
+// (non-existent, below apex A the wall doesn't reach this far out)
+// wall material.
+HINGE_Z        = (HANDLE_Z - R1) - 15;   // 835.3mm at current values -- REDEFINES the placeholder further up this file
+module tray_bracket(x_center) {
+    translate([x_center,0,0]) rotate([0,90,0]) translate([0,0,-TRAY_BRACKET_W/2])
+        linear_extrude(height=TRAY_BRACKET_W, convexity=4)
+            polygon(points=[for(p=TRAY_BRACKET_OUTLINE) pt2(p)]);
+}
+
 t2=[RIB_SPLIT_PT[0]+20*AB_NORM[0], RIB_SPLIT_PT[1]+20*AB_NORM[1]+10]; R2=20;
 t3=miter_point(RIB_REF_B,AB_NORM,BC_NORM,20);               R3=20;
 t4=miter_point(RIB_REF_C,BC_NORM,CD_NORM,20);                R4=20;

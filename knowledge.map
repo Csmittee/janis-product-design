@@ -1,5 +1,19 @@
 # knowledge.map
-# Version: v98 — 2026-07-30
+# Version: v99 — 2026-07-30
+# Changes: bbq-lid-hinge-v12, TRAY RELOCATION BRACKET -- fixes real
+# grab-handle-vs-tray collision (old HINGE_Z=880 put the deployed tray
+# plate inside the handle boss's own Z-range). New triangular gusset
+# bracket (`tray_bracket()`, 4 copies, same hinge X spacing) per Janis's
+# own 5-step method (full derivation: docs/tray-relocation-bracket.md) --
+# one flagged interpretation disclosed ("face HA" = the existing chamfer
+# wall below apex A, the only reading that makes step 2 work). HINGE_Z
+# redefined to 835.3mm (lowest point of handle boss t1 minus 15mm), old
+# formula deleted not left dead. Folding link length computed: 403.1mm
+# (tt to ts, the number to source a real part with). Re-verified
+# Simple:yes at 0/45/90 door + -90/0 tray angles, and a real
+# interference sweep vs front_wheel_support() across the full tray
+# stow-to-deploy range confirms empty -- no new collision introduced.
+# Previous: v98 — 2026-07-30
 # Changes: bbq-lid-hinge-v12, CB1 counterweight PIPE RESTORED. CB1 is 2
 # real parts: the bracket (Ua/Ub/Uc, locked) + a separate 4" square tube
 # (`cb1_pipe()`, both ends capped) the bracket wraps/welds around -- the

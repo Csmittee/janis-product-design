@@ -61,6 +61,7 @@ TRAY_COUNT      = 2;                              // fixed, Janis's own spec
 TRAY_L          = chamber_L / TRAY_COUNT;         // 457.5mm each, real live value (chamber_L=915, read live)
 TRAY_D          = 300;                            // deployed depth, Y, projecting outward (toward -Y, the Standing Orientation Convention's own "toward the user" side)
 TRAY_T          = 2;                              // 2mm plate, thin-shell representation — consistent with this project's existing sheet-metal parts (rules-bbq-fab.md Construction Method)
+TRAY_SKIRT_H    = 10;                              // mm, Janis's own explicit spec -- a real judgment call on exact placement (not given): a downturned lip at the tray's own inner (hinge-side) edge, folded 90° from the main plate and rigidly part of the tray, so it covers the hinge from view and finishes the raw edge at every angle (stowed or deployed), not just one
 TRAY_GAP        = 5;                              // real assembly tolerance, ADDITIVE (confirmed below, not absorbed into TRAY_L)
 TRAY_TOTAL_SPAN = TRAY_L * TRAY_COUNT + TRAY_GAP; // 920mm — real, ADDITIVE: 2x457.5 + 5, confirmed 5mm MORE than chamber_L(915), not shrunk to fit inside it
 // Real span centered on chamber_L's own midpoint — a small, real, stated
@@ -140,8 +141,15 @@ module tray_hinges(x0) {
 // list and results.
 module tray(x0, angle_deg) {
     tray_hinges(x0);
-    translate([x0, -HINGE_PIVOT_OFFSET, HINGE_Z]) rotate([angle_deg, 0, 0]) translate([0, -TRAY_D - e, 0])
-        cube([TRAY_L, TRAY_D, TRAY_T]);
+    translate([x0, -HINGE_PIVOT_OFFSET, HINGE_Z]) rotate([angle_deg, 0, 0]) {
+        translate([0, -TRAY_D - e, 0])
+            cube([TRAY_L, TRAY_D, TRAY_T]);
+        // skirt -- rigidly part of the tray, so it stays over the hinge
+        // at every angle (stowed or deployed), not just one; overlaps the
+        // main plate's own inner edge for a real weld, not a coincident face
+        translate([0, -e-TRAY_T, -TRAY_SKIRT_H])
+            cube([TRAY_L, 2*TRAY_T, TRAY_SKIRT_H + TRAY_T]);
+    }
 }
 // TASK 2 kinetic parameter — each tray's OWN independent angle, real
 // chosen names: tray0_angle_deg / tray1_angle_deg (not shared, per spec).
@@ -332,6 +340,16 @@ module tray_bracket(x_center) {
         linear_extrude(height=TRAY_BRACKET_W, convexity=4)
             polygon(points=[for(p=TRAY_BRACKET_OUTLINE) pt2(p)]);
 }
+
+// step 5: folding link -- Janis's own correction, 2026-07-30: al (fixed
+// by step 1) is the real anchor ("ts"), NOT a point merely close to it --
+// project the 45° line the OTHER way, FROM al back up to the tray's own
+// underside (Z=HINGE_Z), to find "tt" instead. tt lands well inside the
+// tray's own real tip (deployed Y-span reaches -305.01mm; tt below is
+// -185.3mm -- confirmed inside, not past it, exactly as Janis called for).
+TRAY_LINK_TS  = TRAY_AL;                                            // "ts" = al itself, the real fixed anchor
+TRAY_LINK_TT  = [TRAY_AL[0] - (HINGE_Z - TRAY_AL[1]), HINGE_Z];     // "tt" -- 45° up from al to the tray's own Z
+TRAY_LINK_LEN = norm(TRAY_LINK_TT - TRAY_LINK_TS);                  // 262.06mm at current values -- real length to source a folding link part with
 
 t2=[RIB_SPLIT_PT[0]+20*AB_NORM[0], RIB_SPLIT_PT[1]+20*AB_NORM[1]+10]; R2=20;
 t3=miter_point(RIB_REF_B,AB_NORM,BC_NORM,20);               R3=20;

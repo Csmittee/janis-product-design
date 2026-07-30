@@ -1,5 +1,14 @@
 # knowledge.map
-# Version: v99 — 2026-07-30
+# Version: v100 — 2026-07-30
+# Changes: bbq-lid-hinge-v12, tray link fix + skirt. Janis CONFIRMED the
+# H/face-HA reading (octagon's 8th vertex, face just before apex A --
+# matches v99's construction exactly). Folding link flipped: ts=al
+# itself (fixed anchor), 45° projected from al up to the tray's own Z to
+# find tt -- new length 262.1mm (was 403.1mm, approximate). New
+# TRAY_SKIRT_H=10mm lip at the tray's inner edge, covers the hinge at
+# every angle, finishes the raw edge. Re-verified Simple:yes + empty
+# interference sweep vs front_wheel_support() with the skirt added.
+# Previous: v99 — 2026-07-30
 # Changes: bbq-lid-hinge-v12, TRAY RELOCATION BRACKET -- fixes real
 # grab-handle-vs-tray collision (old HINGE_Z=880 put the deployed tray
 # plate inside the handle boss's own Z-range). New triangular gusset

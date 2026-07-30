@@ -4,7 +4,21 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.43 — 2026-07-30 (bbq-lid-hinge-v12, TRAY RELOCATION
+# Version: 1.44 — 2026-07-30 (bbq-lid-hinge-v12, tray link fix + skirt):
+# Janis CONFIRMED the H/face-HA reading (octagon has 8 vertices, H is
+# the last one going around, face HA is the face just before apex A --
+# matches 1.43's own construction exactly). Two real corrections: (1)
+# folding link flipped -- `ts` is now `al` itself (the real, fixed
+# anchor), 45° projected the OTHER way (from al up to the tray's own Z)
+# to find `tt`, landing well inside the tray's real tip as Janis called
+# for. New link length: 262.1mm (was 403.1mm, the old approximate `ts`
+# missed `al` by ~100mm). (2) new `TRAY_SKIRT_H`=10mm -- a downturned lip
+# at the tray's own inner edge, rigidly part of the tray, covers the
+# hinge from view at every angle and finishes the raw edge. Re-verified
+# Simple:yes at 0/45/90 door + -90/0 tray angles, interference sweep vs
+# front_wheel_support() still empty at every tray angle with the skirt
+# added.
+# Previous: 1.43 — 2026-07-30 (bbq-lid-hinge-v12, TRAY RELOCATION
 # BRACKET -- fixes real grab-handle-vs-tray collision): old tray hinge
 # (HINGE_Z=880) put the deployed tray plate inside the handle boss's own
 # Z-range (t1/R1 -> Z=[850.3,899.7]) -- real overlap, not a near-miss.

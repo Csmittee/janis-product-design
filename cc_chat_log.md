@@ -4,6 +4,11 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-30 | bbq-lid-hinge-v12 | Tray link fix (Janis confirmed H) + skirt added.
+
+Janis confirmed the H/face-HA reading from the diagram: octagon has 8 vertices, H is the last one going around, face HA is the face just before apex A -- matches exactly what was built. Two real fixes: (1) folding link flipped per Janis's own correction -- `ts` is now `al` itself (the real, fixed anchor from step 1), with the 45° line projected the OTHER way (from al UP to the tray's own Z=835.3) to find `tt` instead of fixing tt first and computing an approximate ts. New tt=[-185.3,835.3] lands well inside the tray's real tip, exactly as asked. New link length: **262.1mm** (was 403.1mm -- the old approximate ts missed al by ~100mm). (2) New `TRAY_SKIRT_H`=10mm downturned lip at the tray's own inner edge, rigidly part of the tray -- covers the hinge from view at every angle (stowed or deployed) and finishes the raw edge instead of leaving it sharp, per Janis's explicit ask.
+Re-verified: `Simple: yes` at 0/45/90° door + -90/0° tray angles, and the `trays()` vs `front_wheel_support()` interference sweep still comes back empty at every tray angle with the skirt added. Full detail: `docs/tray-relocation-bracket.md`.
+
 ### 2026-07-30 | bbq-lid-hinge-v12 | TRAY RELOCATION BRACKET -- fixes real grab-handle-vs-tray collision.
 
 Old tray hinge (`HINGE_Z`=880) put the deployed tray plate (Z=[880,882]) fully inside the grab handle boss's own Z-range (t1/R1 -> [850.3,899.7]) -- a real, confirmed overlap, not a near-miss. Built Janis's own 5-step fix literally (full derivation + diagram: `docs/tray-relocation-bracket.md`, `docs/tray-relocation-bracket.png`): a new triangular gusset bracket (`tray_bracket()`, apex A / hal / al, 30mm wide) at the same 4 hinge X positions, redefining `HINGE_Z` to 835.3mm (lowest point of the handle boss minus 15mm -- old formula deleted, not left dead). One interpretation flagged and disclosed, not silently assumed: "face HA" isn't an existing term in this project -- cc read it as the existing chamfer wall from apex A down to the floor corner, the only reading that makes step 2's own wording ("horizontal line from face HA to connect with al") work at all.

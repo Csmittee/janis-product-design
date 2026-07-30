@@ -9,16 +9,12 @@ Fixes a real, confirmed collision: the prep trays' old hinge (`HINGE_Z`
 
 ![Derived construction](tray-relocation-bracket.png)
 
-> **Flagged interpretation, not previously an established term:**
-> "face HA" doesn't appear anywhere else in this project. cc's reading —
-> forced by step 2's own wording, since "a horizontal line from face HA
-> to connect with al" only makes sense if apex A does *not* itself sit
-> on face HA — is that **H** is the existing octagon corner where the
-> chamber floor meets the 45° chamfer wall directly below apex A
-> (`[chamfer, chamber_floor_z]` = live `[178.665, 671.335]`), and **face
-> HA** is that diagonal chamfer wall. This reading is what's built below.
-> Flagged for Janis to correct if wrong — everything downstream follows
-> from this one assumption.
+> **H / face HA — confirmed by Janis:** the octagon has 8 vertices;
+> running the alphabet around them (A, B, C...), the last one is **H**.
+> **Face HA** is the face just before apex A going around — i.e. the
+> existing chamfer wall directly below apex A
+> (`H = [chamfer, chamber_floor_z]` = live `[178.665, 671.335]`). Matches
+> what's built below exactly.
 
 1. **al** = straight line down from apex A, 200mm in Z: `[0, 650]`
    (`TRAY_AL`).
@@ -37,14 +33,33 @@ Fixes a real, confirmed collision: the prep trays' old hinge (`HINGE_Z`
    read the global `HINGE_Z`. Real clearance confirmed: new tray plate
    top surface (837.3mm) sits 13mm clear of the handle boss's own lowest
    point (850.3mm) — was previously fully inside it.
-5. **Folding link**: tray tip inset 20mm in Y (`tt`), 45° line from `tt`
-   to the apex-A/al plane (Y=0) — lands at `ts=[0, 550.3]` (99.7mm from
-   `al`, in the same below-floor region — Janis's own "sweet spot,"
-   flagged as approximate per Janis's own "try...to find" phrasing).
-   **Link length: tt-to-ts straight-line distance = 403.1mm** (this is
+5. **Folding link** — corrected per Janis's own follow-up: the first
+   pass fixed `tt` at "tray tip -20mm" and computed an approximate `ts`
+   that landed 99.7mm short of `al`, which isn't tight enough for a real
+   45° link. Flipped the construction: **`ts` = `al` itself** (the real,
+   fixed anchor from step 1, not merely "close to" it), then the 45°
+   line runs the OTHER way — from `al` back up to the tray's own
+   underside (`HINGE_Z`=835.3mm) — to find `tt`. Result: `tt=[-185.3,
+   835.3]`, well inside the tray's own real tip (deployed span reaches
+   Y=-305.01mm), i.e. `tt` sits further inward from the tray's edge than
+   the first pass, exactly as Janis called for.
+   **Link length: tt-to-ts straight-line distance = 262.1mm** (this is
    the number to search the market for — the link itself isn't modeled
    as a real folding 2-bar mechanism here, since Janis's own ask was
-   just the length, not the mechanism).
+   just the length, not the mechanism; when the tray folds to stowed
+   vertical, this rigid `tt`-`ts` relationship no longer holds exactly —
+   a real folding 2-bar link is needed there, per Janis's own note that
+   it should collapse 50/50 and hide behind the tray's own face).
+
+## Tray skirt
+
+A 10mm skirt (`TRAY_SKIRT_H`) was added at the tray's own inner
+(hinge-side) edge, folded 90° from the main plate and rigidly part of
+the tray — per Janis's explicit ask, to cover the hinge from view (both
+stowed and deployed, since it moves with the tray) and finish the raw
+edge instead of leaving it sharp. Exact fold direction/placement wasn't
+fully specified — cc's own judgment call, disclosed here, not silently
+assumed.
 
 ## Verification
 

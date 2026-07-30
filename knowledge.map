@@ -1,5 +1,23 @@
 # knowledge.map
-# Version: v102 — 2026-07-30
+# Version: v103 — 2026-07-30
+# Changes: bbq-lid-hinge-v15 (new version file). Real folding-link
+# hardware rebuild per Janis's detailed spec after reviewing a v14
+# render: (1) TRAY_MOUNT_GAP=16mm -- the tray plate was still mounted
+# flush with the pivot line, overlapping the (already-widened) hinge
+# block, so there was never a real gap for the folded link to hide
+# behind the tray -- fixed, plate+skirt now start flush with the hinge
+# block's own outer tip. (2) link rebuilt as a real flat 15mm steel
+# strip (was round rod) with a genuine ~10mm lap overlap at the middle
+# pivot (each link's real length = (span+overlap)/2, not half the
+# span), a U-shaped clevis+pin at BOTH ts and tt, and tt pulled 15mm
+# clear of the tray's own underside so it no longer visibly penetrates
+# the tray surface. ts remains a conceptual slider along the apex-A/al
+# face (Janis's own call, no rail modeled). Re-verified Simple:yes +
+# empty interference sweep + a real collision check confirming the link
+# no longer penetrates the tray plate. v12.scad archived (last-3-live:
+# v13/v14/v15). Full summary: docs/handoff-2026-07-30.md,
+# docs/tray-relocation-bracket.md (both updated).
+# Previous: v102 — 2026-07-30
 # Changes: bbq-lid-hinge-v14 (new version file, per the just-established
 # rule -- every round with real changes gets one). Two real fixes, both
 # Janis's own direct catches from a render: (1) tray skirt moved off the

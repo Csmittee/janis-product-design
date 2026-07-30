@@ -1,5 +1,25 @@
 # knowledge.map
-# Version: v96 — 2026-07-30
+# Version: v97 — 2026-07-30
+# Changes: bbq-lid-hinge-v12, sanitization + real moment analysis round.
+# CB1 confirmed present in the render at 0/90° (Janis's "missing CB1"
+# screenshot concern was a viewing-angle/zoom issue, not a code bug).
+# `door_open_deg` Customizer warning root-caused + fixed: a dead
+# `lid_open_deg = door_open_deg;` line tripped the Customizer's
+# literal-only parameter scanner — deleted (harmless to real render
+# either way, `Simple: yes` unchanged). All 3 live .scad files
+# sanitized: ~2100 combined lines of superseded round-by-round version
+# history condensed to current-state-only headers (full history stays
+# in cc_chat_log.md); one still-live open finding (rib0/rib2 inside
+# tray0/tray1's stow footprint) kept, not deleted. New
+# `docs/lid-hinge-moment-analysis.md` — real 0-90° gravity moment calc
+# from live STL-derived mass/CG data: current design meets only 1 of
+# Janis's 4 stated criteria (3.6kgf startup lift is in range; moment
+# never crosses negative, so the door does not self-hold open at 90° —
+# root cause is the absence of a real counterbalancing mass, current
+# CB1 is a stopper/bracket not a counterweight). Old
+# `docs/lid-hinge-counterbalance-calc.md` marked SUPERSEDED (built on a
+# retired pivot + retired CB1-counterweight-pipe design).
+# Previous: v96 — 2026-07-30
 # Changes: bbq-lid-hinge-v12, CB1 lateral link, FINAL/COMPLETE this round
 # (consolidates several same-day rework passes — full history:
 # cc_chat_log.md's 2026-07-30 entries). Active base assembly pointer:

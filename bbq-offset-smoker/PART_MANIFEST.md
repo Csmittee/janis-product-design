@@ -4,10 +4,38 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.40 — 2026-07-30 (bbq-lid-hinge-v12, CB1 lateral link,
-# FINAL/COMPLETE this round — consolidates 1.35-1.39's own iterative
-# history, see cc_chat_log.md's 2026-07-30 entries for the full
-# blow-by-blow if ever needed): `cb1_link_2d()` applies to ALL 3 RIBS
+# Version: 1.41 — 2026-07-30 (bbq-lid-hinge-v12, sanitization + real
+# moment analysis round): (1) confirmed CB1 was never actually missing
+# from the assembly (Janis's screenshot concern) — direct render
+# verification at 0° and 90° shows the bracket present at both angles,
+# code was correct all along. (2) Root-caused and fixed the
+# `door_open_deg` "unknown variable" Customizer warning: a dead
+# `lid_open_deg = door_open_deg;` line under the `/* [Kinetic
+# Parameters] */` group header tripped OpenSCAD's Customizer parameter
+# scanner (which only resolves literal defaults, not variable
+# references) — deleted, confirmed harmless to real render evaluation
+# either way (`Simple: yes` before and after, identical vertex/facet
+# counts). (3) Sanitized all 3 live files: condensed ~2100 combined
+# lines of superseded round-by-round version-history narrative (base
+# 624→~35, chambers 927→~20, understructure 553→~12 lines) down to
+# current-state-only headers — full history untouched, still in
+# cc_chat_log.md. One still-live open finding (rib0/rib2 fall inside
+# tray0/tray1's own stow footprint) preserved, not deleted, since it's
+# still true of the current RIB_X values. (4) New:
+# `docs/lid-hinge-moment-analysis.md` — real 0-90° gravity moment
+# calculation from live STL-derived mass/CG data (not the old, retired
+# pivot/CB1-counterweight assumptions in
+# `docs/lid-hinge-counterbalance-calc.md`, now marked SUPERSEDED).
+# Result: current design meets only 1 of Janis's 4 stated criteria
+# (3.6 kgf startup lift); the moment never crosses negative anywhere in
+# 0-90° (root cause: no counterbalancing mass — current CB1 is a
+# stopper/bracket, not a counterweight), so the door does not self-hold
+# open. See that doc for the full comparison table and graph.
+#
+# Previous: 1.40 — 2026-07-30 (bbq-lid-hinge-v12, CB1 lateral link,
+# FINAL/COMPLETE — consolidates 1.35-1.39's own iterative history, see
+# cc_chat_log.md's 2026-07-30 entries for the full blow-by-blow if ever
+# needed): `cb1_link_2d()` applies to ALL 3 RIBS
 # (widened from the source prompt's own original middle-rib-only scope).
 # Full current geometry, all Janis-confirmed:
 #   - Bracket (`BRACKET_OUTLINE`): Ua (top arm) / Ub (back wall,

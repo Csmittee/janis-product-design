@@ -1,5 +1,21 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.16 — 2026-07-30
+> Version 1.17 — 2026-07-30
+> Changes: bbq-lid-hinge-v12, sanitization + real moment analysis round.
+> New locked lesson: OpenSCAD's Customizer treats every top-level
+> assignment following a `/* [Group] */` comment as a candidate UI
+> parameter, and resolves its default value with an isolated, literal-
+> only evaluator that has no access to other top-level variables in
+> sequence — a variable reassigned to another variable's value (not a
+> literal) in that position triggers "Ignoring unknown variable" from
+> that scanner, even though the real top-to-bottom render evaluation
+> resolves it correctly (confirmed via direct render: `Simple: yes`,
+> identical geometry, with or without the warning). Grouping it under
+> `/* [Hidden] */` does NOT fix this — confirmed by direct test, the
+> warning persists regardless of visibility, only the RHS being a
+> literal removes it. If the variable is otherwise dead (superseded by a
+> direct explicit module argument elsewhere), the real fix is deleting
+> it, not fighting the Customizer scanner.
+> Previous: 1.16 — 2026-07-30
 > Changes: bbq-lid-hinge-v12, 3rd CB1 REWORK same day — t6be/t7/t7r linked
 > into a single SOLID FILLED web (not two hollow arms), per Janis's own
 > explicit correction. New locked lesson: forcing a fillet/arc to be

@@ -1,5 +1,18 @@
 # Hinge Construction — Locked Reference (BBQ Offset Smoker)
-> Version 1.4 — 2026-07-27
+> Version 1.5 — 2026-07-30
+> Changes: REAL ERROR CORRECTED, per Janis's direct catch (not cc's own
+> finding) — Section 4 had mislabeled the OPEN-frame CB1 contact-target
+> point as the "closed-frame" value, omitting the required freeze
+> rotation entirely. This is a DANGEROUS class of error (this exact doc
+> is what a future session would trust) — Section 4 rewritten with the
+> correct method (`freeze_from_open()`, verified via an isolated render:
+> a marker built this way lands exactly on the real DE line when passed
+> through `lid_rib_assembly()`'s own open-state transform, and sits well
+> clear of it, unrotated, at closed) and Section 6's stale "KEEP" bullet
+> corrected to not repeat the same wrong number. Full detail:
+> `BBQ-offset-smoker-base-v12.scad`'s own CB1 section header,
+> cc_chat_log.md 2026-07-30 entry.
+> Previous: 1.4 — 2026-07-27
 > Changes: Section 5 marked RESOLVED — v11 replaces the stale door-side
 > rib with a real construction, delivered by Claude Web/Janis and
 > integrated by cc against the live chambers file. CB1 removed from the
@@ -101,35 +114,54 @@ full technique (build in the frame where the physical constraint is
 true, then convert back; the "native-frame point passed through the
 rotation function anyway" bug class; verify against a live value, never
 a comment). This section keeps only the BBQ-specific instance: applying
-`rib_world_from_closed`/`rib_closed_from_world` (this product's own
-names for the general skill's world-from-closed/closed-from-world
-functions) to position CB1 against the real open DE face.
+`freeze_from_open()` (`BBQ-offset-smoker-base-v12.scad`'s own name for
+the general skill's world-from-closed/closed-from-world functions) to
+position CB1 against the real open DE face.
 
-**Real bug this method just caught (2026-07-25, not yet fixed in code):**
-the CB1 counterbalance pipe's position (`CB1_OPEN`, unchanged since v6,
-always marked "LOCKED — do not recompute") was built by taking the
-NATIVE-frame apex D and NATIVE-frame `DE_DIR`/`DE_NORM`, using them
-directly (i.e., already in closed-frame numbers), then passing that
-result through `rib_closed_from_world(..., 90)` as if it were a genuine
-open-world coordinate. That applies an extra, spurious rotation the
-math was never supposed to have. Algebraically this makes the old
-formula's real closed-frame result equal
-`rib_closed_from_world(D_native + offsets, 90)`, NOT simply
-`D_native + offsets` — and numerically, evaluated against the CURRENT
-live constants (`GRATE_Z`=900), it lands CB1 at closed-frame
-**(380.9, 1701.3)**, which is physically wrong (about 360mm floating in
-the air above the ridge, nowhere near the door).
+**CORRECTION, 2026-07-30 (bbq-lid-hinge-v12) — this section's own
+previous "correct value" was ITSELF WRONG, a real error caught by Janis
+directly, not by cc.** The prior text below (now removed) stated the
+correct closed-frame CB1 value was the DIRECT native-frame formula
+(`RIB_REF_D + CB1_EDGE_DIST*DE_DIR + CB1_STANDOFF*DE_NORM`) with **NO
+rotation applied**, and labeled that result "closed-frame." That is
+backwards: that direct formula IS the OPEN-frame (world, door_open_deg=
+90) contact target — it is NOT a valid closed-frame/native coordinate,
+because CB1 must float clear of DE when closed and only reach DE when
+open. Baking the direct-formula point straight into the native (θ=0)
+profile makes CB1 sit AT the DE-contact location when the door is
+CLOSED (physically wrong — it would block the door from ever closing),
+and swing AWAY from DE when opened (exactly backwards from a stopper).
+Janis caught this from a real render: "you can not design this cb1 link
+with the front door lid still in close position... when door close it
+stay in the air when door open it fall to stop at DE face."
 
-The CORRECT value, worked out via the real open-then-freeze method
-above and confirmed against LIVE constants (`GRATE_Z`=900,
-`DATUM_Z_RIDGE`=1281.34): closed-frame **(598.64, 1207.09)**. This is
-simply the naive native-frame formula
-(`RIB_REF_D + CB1_EDGE_DIST*DE_DIR + CB1_STANDOFF*DE_NORM`) evaluated
-directly with NO extra rotation applied — the open-world round trip,
-done correctly, algebraically cancels back to exactly that. **This
-correct value has NOT yet been written into any `.scad` file** — this
-doc records the confirmed-correct math; the code fix is a pending task
-(see `cc_chat_log.md`, 2026-07-25 entry).
+Confirmation this doc's own OTHER file, `docs/lid-hinge-counterbalance-
+calc.md` Section 4, already had the correct two-value pair for the OLD
+CB1 pipe design: `CB1_OPEN computed = (598.636, 1207.088)` (the direct
+native-frame-formula result — an OPEN-frame value) and, separately,
+`CB1_CLOSED (round-trip inverse @ 90°) = (301.211, 1719.606)` (the REAL
+closed-frame value, obtained by actually applying the inverse rotation).
+This section's own text had mislabeled the first number as if it were
+the second, dropping the rotation step entirely.
+
+**The correct method (verified empirically this round, not just
+derived)**: compute every CB1 point as a real OPEN-frame (door_open_deg=
+90) target using the fixed `RIB_REF_D`/`RIB_REF_E` directly (this part
+was always valid — D/E never rotate), then convert EACH point to
+native/closed frame via one explicit formula before using it in the
+profile:
+```
+function freeze_from_open(p) = [FC_Y+FC_Z-p[1], FC_Z+p[0]-FC_Y];
+```
+(plain vector math — the closed-frame point that, after
+`lid_rib_assembly()`'s own `rotate([-door_open_deg,0,0])` about the
+shared pivot at door_open_deg=90, lands exactly back at `p`). Verified
+via an isolated render: a marker built this way, rendered through the
+real `lid_rib_assembly()` transform at door_open_deg=90, lands exactly
+on the real DE line; the same marker with NO rotation (native, θ=0)
+sits well clear of it. See `BBQ-offset-smoker-base-v12.scad`'s own CB1
+section header for the full derivation and `cc_chat_log.md`'s
+2026-07-30 entry for the render that proved it.
 
 ## 4.5. A real mistake THIS doc itself made — verify against live echo, never a comment
 
@@ -228,10 +260,12 @@ here explicitly so it doesn't depend on that chat turn being remembered:
   the new rib traces FROM these, it doesn't replace them.
 - The `miter_point()` FUNCTION — a correct, reusable formula. Re-apply
   it to the real traced shape instead of arbitrary offset points.
-- The corrected CB1 value from Section 4 (598.64, 1207.09 — verify
-  against a live `echo()` before using, per Section 4.5) — this
-  replaces the deleted formula's output, derived via the open-then-
-  freeze method, not re-guessed.
+- The open-then-freeze METHOD itself (Section 4) for positioning CB1
+  against the real open DE face — NOT any specific old numeric value
+  from a prior CB1 design (that design, and its numbers, are gone;
+  Section 4's own 2026-07-30 correction is the current, verified-correct
+  statement of the method — re-derive fresh for whatever CB1 design is
+  live, never reuse an old written-down coordinate).
 
 Net effect: this is not "start from zero" — it's "delete the two
 guessed constructions, keep the two locked reference systems (the pivot,

@@ -923,105 +923,106 @@ module part2_2d() { polygon(points=[for(p=PART2_OUTLINE) pt2(p)]); }
 
 // ═══════════════════════════════════════════════════════════════
 // CB1 LATERAL LINK -- RIB1 (middle rib) ONLY, per Janis's own
-// language-spec prompt (prompts/cc_prompt_cb1_link.md). Built directly
-// against the FIXED RIB_REF_D/RIB_REF_E octagon points using the same
-// native-frame vector-math technique t4/t5/t6 themselves already use
-// above -- no rotate() call. An explicit extra rotation here would
-// reintroduce the exact CB1 rotation bug already found/fixed earlier
-// this project (docs/hinge-construction.md Section 4.5's own subject).
+// language-spec prompt (prompts/cc_prompt_cb1_link.md), REBUILT this
+// round after Janis flagged a real, fundamental frame error in the
+// first attempt (v12 first pass): CB1 is a stopper that must rest
+// against the fixed D-E face ONLY when the door is OPEN, and float
+// clear of it ("in the air") when the door is CLOSED -- so it CANNOT be
+// built directly from RIB_REF_D/RIB_REF_E as if that were already the
+// native/closed-frame coordinate (that bakes contact-with-DE into the
+// CLOSED state instead, exactly backwards, and blocks the door from
+// ever closing). Correct method, per this project's own "open-then-
+// freeze" convention (docs/hinge-construction.md Section 4, .claude/
+// SKILL_kinematic_frame_construction.md): build every point as the real
+// OPEN-frame (door_open_deg=90) target -- where it should sit relative
+// to the FIXED, never-moving RIB_REF_D/RIB_REF_E -- then convert EACH
+// point back to native/closed frame via `freeze_from_open()` before
+// using it in the polygon. Empirically verified (not just derived): a
+// test marker built this way and run through `lid_rib_assembly()`'s own
+// -90 deg transform lands EXACTLY on the real DE line; the same marker
+// with NO rotation (native/closed state) sits well clear of it, "in the
+// air" -- confirmed via an isolated render before being written here.
 //
-// TWO REAL DEVIATIONS from the prompt's literal numbers, both verified
-// in Python before being written here (scratchpad cb1_link_final.py),
-// disclosed to Janis, not decided silently:
-//  1. CB1_EDGE_FRAC 0.30 -> 0.40. The prompt's own literal 30% leaves
-//     Ub's near-D corner only ~5.0mm from apex D -- the prompt's own QA
-//     item 2 already flags this exact number as "unresolved... needs
-//     Janis's call." 40% gives a real, verified 30.27mm clearance.
-//  2. t6be. The prompt's own "vertical line through t6, offset down
-//     >=15mm" is a proven mathematical impossibility under this file's
-//     own 20mm-half-width floor: the ridge floor (Z >= DATUM_Z_RIDGE+20)
-//     and the t6-boss keepout ceiling (Z <= FC_Z-R6-20) conflict by a
-//     hard 4.5mm on any pure-vertical line through t6. Resolved with a
-//     diagonal (toward-D) offset instead -- real, computed 10.0mm ridge
-//     clearance and 11.6mm boss clearance (see QA echoes below), not
-//     assumed.
-// ═══════════════════════════════════════════════════════════════
-
-MIN_HALF_W = 20;   // this project's own standing apex/corner clearance rule -- 20mm net, everywhere
+// `freeze_from_open(p)`: the closed-frame coordinate that, after
+// `lid_rib_assembly()`'s own `rotate([-door_open_deg,0,0])` about the
+// shared pivot at door_open_deg=90, lands exactly at `p` (a point
+// expressed in OPEN/world frame). Plain vector math, no `rotate()`
+// module call -- matches this file's own established convention for
+// t1-t6 (avoids the exact double-rotation bug already found once on the
+// old CB1 formula, docs/hinge-construction.md Section 4).
+function freeze_from_open(p) = [FC_Y+FC_Z-p[1], FC_Z+p[0]-FC_Y];
 
 DE_DIR  = unit([RIB_REF_E[0]-RIB_REF_D[0], RIB_REF_E[1]-RIB_REF_D[1]]);
 DE_NORM = [-DE_DIR[1], DE_DIR[0]];
 DE_LEN  = norm([RIB_REF_E[0]-RIB_REF_D[0], RIB_REF_E[1]-RIB_REF_D[1]]);
+// tangential_pt(s,n) -- OPEN-frame (world) point, s = distance along DE
+// from D, n = perpendicular distance off the DE face. Valid always,
+// since D/E never rotate -- but the RESULT is an open-frame target and
+// MUST go through freeze_from_open() before use in the native profile.
 function tangential_pt(s,n) = [RIB_REF_D[0]+s*DE_DIR[0]+n*DE_NORM[0], RIB_REF_D[1]+s*DE_DIR[1]+n*DE_NORM[1]];
+// frozen_rect(s0,s1,n0,n1) -- 4 corners of an axis-aligned (s,n)
+// rectangle, each individually frozen to native frame then pt2-mapped.
+// Built as an explicit polygon (not square()) because a frozen
+// rectangle is a ROTATED square in native/pt2 space, not axis-aligned.
+function frozen_rect(s0,s1,n0,n1) = [
+    pt2(freeze_from_open(tangential_pt(s0,n0))),
+    pt2(freeze_from_open(tangential_pt(s1,n0))),
+    pt2(freeze_from_open(tangential_pt(s1,n1))),
+    pt2(freeze_from_open(tangential_pt(s0,n1)))
+];
 
 CB1_OD        = 101.6;                          // 4" square tube
 CB1_AIR_GAP   = 20;
 CB1_STANDOFF  = CB1_AIR_GAP + CB1_OD/2;          // 70.8mm, DE face to tube centerline, along DE_NORM
-CB1_EDGE_FRAC = 0.40;                            // CHANGED from the prompt's literal 0.30 -- see header above
-UARM_REACH    = CB1_OD/2;                        // 50.8mm ("2 inch"), Ua/Uc reach along the tube face, to the tube's own centerline
-UWALL         = 20;
+CB1_EDGE_FRAC = 0.40;                            // CHANGED from the prompt's literal 0.30 -- reproduces the prompt's own already-flagged ~5mm D-clearance at 0.30; 40% gives a real, verified 30.27mm
+UWALL         = 20;                              // bracket wall thickness AND the offset from CB1's own outline -- per Janis's own simplified spec this round
 NECK_HALF_W   = 20;
-NECK_LEN      = 25;                              // rigid, fixed length -- the prompt's own primary control, enforced exactly below
+NECK_LEN      = 25;                              // rigid, fixed length -- the prompt's own primary control
 
-CB1_EDGE_DIST = CB1_EDGE_FRAC * DE_LEN;
-Ub_inner_s    = CB1_EDGE_DIST - UARM_REACH;      // back wall's inner (tube-side) face
-Ub_outer_s    = Ub_inner_s - UWALL;              // back wall's outer (D-side) face -- also Ua/Uc's own back edge
-Ubbc          = tangential_pt(Ub_outer_s, CB1_STANDOFF);  // Ub's back edge x the bracket's own vertical centerline -- where the neck attaches
-neck_l_n      = CB1_STANDOFF - NECK_HALF_W;      // 50.8mm -- chamber/DE-face side
-neck_r_n      = CB1_STANDOFF + NECK_HALF_W;      // 90.8mm -- top-ridge side, matches Ua's side
-Uarm_top_n    = CB1_STANDOFF + CB1_OD/2 + UWALL; // 141.6mm -- Ua's own outer face
-Uarm_bot_n    = 0;                                // Uc's own outer face -- the DE-contact stopper
+CB1_EDGE_DIST = CB1_EDGE_FRAC * DE_LEN;                  // s-position of CB1's own center
+SQ_HALF       = CB1_OD/2 + UWALL;                        // 70.8mm -- half-width of the offset-20mm bracket square (coincides numerically with CB1_STANDOFF, both 70.8, since CB1_AIR_GAP=UWALL=20 -- a real, checked property, not assumed: it puts the square's own near-DE face exactly ON the DE line, n=0)
+Ubbc_s        = CB1_EDGE_DIST - SQ_HALF;                 // bracket's own back (D-facing) edge, s-position -- neck attaches here, at n=CB1_STANDOFF (vertical center)
+Ubbc          = tangential_pt(Ubbc_s, CB1_STANDOFF);      // reference point only (QA/reporting) -- OPEN-frame coordinate
 
-// t7/t7r -- computed FIRST from the strict 25mm-from-Ubbc constraint
-// (per the prompt's own explicit ordering warning), the t6be->t7 and
-// t4->...->t7r line angles are DERIVED from these, not the reverse.
-t7  = tangential_pt(Ub_outer_s - NECK_LEN, neck_l_n);
-t7r = tangential_pt(Ub_outer_s - NECK_LEN, neck_r_n);
-t8  = [t7[0], t7[1]+40];   // re-derived fresh above t7's REAL (not stale) position, per the prompt's own note
-
-// t6be -- a POINT (no boss radius/feature of its own; R=20 in the hull
-// chain below is only the local half-width, matching t2-t5's own
-// convention). Diagonal-offset fix, see header above.
-T6BE_Z      = DATUM_Z_RIDGE + MIN_HALF_W + 10;         // 1311.34mm -- 10mm real net margin above the ridge floor
-T6BE_R_KEEP = R6 + MIN_HALF_W;                          // t6 boss keepout radius, 48.5mm
-t6be = [FC_Y + sqrt(pow(T6BE_R_KEEP,2) - pow(FC_Z-T6BE_Z,2)) + 15, T6BE_Z];  // +15mm real margin past the keepout circle
-
-// BRACKET_OUTLINE -- U-bracket (Ub back wall + Ua top arm + Uc bottom
-// arm, 3-sided wrap of the CB1 square tube, open toward +s/E) AND the
-// neck pad traced as ONE single simple polygon, not 3+1 separate
-// rectangles unioned. Real fix for the exact "OpenSCAD 2D boolean gap"
-// trap the prompt itself warns about: axis-aligned rectangles sharing a
-// long COINCIDENT (not overlapping) edge measurably failed to merge here
-// (confirmed via an isolated minimal test, per the prompt's own
-// guidance -- 2 contours instead of 1 with the rectangle-union version,
-// verified fixed with this single-outline trace). Uc's own outer edge
-// (at Uarm_bot_n=0, on the DE face itself) is the DE-contact stopper.
-BRACKET_OUTLINE = [
-    tangential_pt(Ub_outer_s-NECK_LEN, neck_l_n),          // t7 -- neck tab tip, bottom
-    tangential_pt(Ub_outer_s, neck_l_n),                    // neck root, bottom, on Ub's back face
-    tangential_pt(Ub_outer_s, Uarm_bot_n),                  // Ub back-bottom corner
-    tangential_pt(CB1_EDGE_DIST, Uarm_bot_n),                // Uc outer-bottom corner -- DE-contact stopper
-    tangential_pt(CB1_EDGE_DIST, Uarm_bot_n+UWALL),           // Uc inner-bottom corner
-    tangential_pt(Ub_inner_s, Uarm_bot_n+UWALL),             // U-mouth, bottom
-    tangential_pt(Ub_inner_s, Uarm_top_n-UWALL),             // U-mouth, top
-    tangential_pt(CB1_EDGE_DIST, Uarm_top_n-UWALL),           // Ua inner-top corner
-    tangential_pt(CB1_EDGE_DIST, Uarm_top_n),                 // Ua outer-top corner
-    tangential_pt(Ub_outer_s, Uarm_top_n),                  // Ub back-top corner
-    tangential_pt(Ub_outer_s, neck_r_n),                    // neck root, top, on Ub's back face
-    tangential_pt(Ub_outer_s-NECK_LEN, neck_r_n),           // t7r -- neck tab tip, top
-];
-
+// Per Janis's own explicit instruction this round: do NOT draw the link
+// to t7 yet (bottom/top rib arms connecting this bracket back to the
+// existing t4/t5 rib body) -- CB1 tube's own bracket + the neck ROOT
+// shape only, this round.
 module cb1_link_2d() {
     union() {
-        polygon(points=[for(p=BRACKET_OUTLINE) pt2(p)]);
-
-        // Bottom rib line: t5 (existing, shared circle, no new anchor) -> t6be -> t7
-        hull(){ translate(pt2(t5)) circle(r=R5,$fn=64); translate(pt2(t6be)) circle(r=20,$fn=64); }
-        hull(){ translate(pt2(t6be)) circle(r=20,$fn=64); translate(pt2(t7)) circle(r=20,$fn=64); }
-
-        // Top rib line: t4 (existing, shared circle, no new anchor) -> t8 -> t7r
-        hull(){ translate(pt2(t4)) circle(r=R4,$fn=64); translate(pt2(t8)) circle(r=20,$fn=64); }
-        hull(){ translate(pt2(t8)) circle(r=20,$fn=64); translate(pt2(t7r)) circle(r=20,$fn=64); }
+        // Bracket: a single square, offset UWALL(20mm) from CB1's own
+        // outline on all 4 sides, minus the FAR (away-from-DE) HALF of
+        // CB1's own footprint, extended up to actually BREACH the
+        // square's own top edge (difference of 2 explicit polygons --
+        // Janis's own simplification this round, replacing the earlier
+        // 3-rectangle U-channel trace: guaranteed single piece by
+        // construction, no coincident-edge union to fail). Real, checked
+        // finding: a notch sized to EXACTLY half of CB1's own footprint
+        // (n=[CB1_STANDOFF-CB1_OD/2, CB1_STANDOFF]) stays 20mm short of
+        // every outer edge (the same UWALL margin added on all sides) --
+        // it does NOT breach, leaving an enclosed hole (a picture-frame
+        // shape) instead of a real, open "U" (confirmed via an isolated
+        // DXF contour test: 2 contours, outer+inner-hole, not a real U).
+        // Fix: extend the notch's own far edge from CB1_STANDOFF out to
+        // CB1_STANDOFF+SQ_HALF -- the square's own real top edge -- so it
+        // genuinely breaches. Net shape: solid full-width bottom slab
+        // (n=[0,CB1_STANDOFF], the real DE-contact stopper foot when
+        // open -- its own outer face sits exactly on the DE line, n=0)
+        // plus two solid corner posts (the 20mm side margins, left/right
+        // of CB1's own s-span) rising the full height -- a real, literal
+        // U shape, open at the top-center, wrapping CB1 on 3 sides.
+        difference() {
+            polygon(points=frozen_rect(CB1_EDGE_DIST-SQ_HALF, CB1_EDGE_DIST+SQ_HALF, CB1_STANDOFF-SQ_HALF, CB1_STANDOFF+SQ_HALF));
+            polygon(points=frozen_rect(CB1_EDGE_DIST-CB1_OD/2, CB1_EDGE_DIST+CB1_OD/2, CB1_STANDOFF, CB1_STANDOFF+SQ_HALF));
+        }
+        // Neck ROOT -- rigid 25mm x 40mm pad from Ubbc outward (toward
+        // D), extended 5mm INTO the bracket's own solid back wall for a
+        // real, deliberate overlap (not a coincident touching edge --
+        // the exact "OpenSCAD 2D boolean gap" trap this project has hit
+        // before; the bracket's back wall at s=Ubbc_s is confirmed solid
+        // across the full neck n-range, so this overlap is real material
+        // on both sides, not a void). Dangling end (no link to t7 yet).
+        polygon(points=frozen_rect(Ubbc_s-NECK_LEN, Ubbc_s+5, CB1_STANDOFF-NECK_HALF_W, CB1_STANDOFF+NECK_HALF_W));
     }
 }
 

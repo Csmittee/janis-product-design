@@ -1,5 +1,25 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.13 — 2026-07-30
+> Version 1.14 — 2026-07-30
+> Changes: bbq-lid-hinge-v12, CB1 REWORK round — Janis caught a real,
+> fundamental error in the first v12 pass directly from a render (not
+> found by cc): CB1 was built directly from the fixed RIB_REF_D/E points
+> as if that were already the native/closed-frame coordinate, baking
+> DE-contact into the CLOSED state instead of the OPEN state (backwards
+> for a stopper: should float clear when closed, touch DE only when
+> open). Amended the "Three-Rib Lid Counterbalance System" section with
+> 2 new real, locked lessons: (1) a stopper/link whose rest state is
+> defined at the OPEN door position must be built via the real
+> open-then-freeze method (open-frame target -> `freeze_from_open()` ->
+> native frame) — the "build directly from a fixed point, no rotate()"
+> technique that IS correct for t1-t6 is WRONG here, because those
+> points' own rest state is the CLOSED position, not the open one;
+> verify with a render at both door states, not just an algebraic check;
+> (2) a `difference()` notch sized to exactly "half" of an embedded
+> shape, inside an outer shape built with a uniform margin, stays short
+> of every edge and produces an enclosed hole (2 DXF contours) instead of
+> a genuine open U/C (1 contour) — the notch must be extended to actually
+> breach the one edge meant to be open.
+> Previous: 1.13 — 2026-07-30
 > Changes: bbq-lid-hinge-v12, CB1 lateral link round. Amended the
 > "Three-Rib Lid Counterbalance System" section with 2 new real, locked
 > lessons: (1) a multi-piece bracket built as several separately-unioned
@@ -653,6 +673,54 @@ the same method.
   margin, check algebraically whether the two floors are compatible on
   that axis AT ALL — if not, the fix is a different degree of freedom,
   not a different number on the same one.
+- **A REAL, DANGEROUS error, self-made and caught by Janis directly, not
+  cc (bbq-lid-hinge-v12, CB1 rework)**: a stopper/link mechanism whose
+  physical rest state is defined at the OPEN door position (must float
+  clear of the fixed structure when closed, contact it only when open)
+  CANNOT be built directly from a fixed reference point (e.g. an octagon
+  vertex) as if that were already the native/closed-frame coordinate —
+  doing so bakes the CONTACT state into the CLOSED position instead,
+  exactly backwards (it would prevent the door from ever closing, and
+  swing the stopper AWAY from its target when opened). This is true even
+  though the SAME "build directly from a fixed reference, no rotate()
+  call" technique is CORRECT for `t1`-`t6` (those points' own rest/flush
+  state is genuinely the CLOSED position, since the door hugs that wall
+  when shut) — the technique is only valid when the native/closed frame
+  IS the frame where the physical constraint actually holds. Before
+  reusing "build directly from a fixed point" for ANY new feature, ask
+  explicitly: at which door state (open, closed, or continuously) does
+  this feature's own physical constraint actually apply? If the answer
+  is "open" (a stopper, a link, anything meant to rest against fixed
+  structure only when swung open), the correct construction is the real
+  open-then-freeze method — compute the point as a genuine OPEN-frame
+  target, then convert to native/closed frame via the shared pivot's own
+  rotation formula (`freeze_from_open()`,
+  `BBQ-offset-smoker-base-v12.scad`) — never skip the freeze step because
+  the target happens to be computable from a fixed reference point.
+  **Verify this the same way it was caught here**: render the built
+  feature at native/closed frame (should sit CLEAR of its target) and at
+  the open angle via the real assembly transform (should land ON its
+  target) — a written-down formula "looking right" algebraically is not
+  sufficient, an isolated render showing both states is.
+- **A `difference()` notch sized to exactly remove "half" of an
+  embedded shape can produce an enclosed hole instead of a genuine open
+  "U"/"C" shape, even when that's what was intended** (bbq-lid-hinge-v12,
+  CB1 bracket): a bracket built as `big_square - half_of_CB1_footprint`
+  looks like it should open the square up on one side, but if the outer
+  square was built with a UNIFORM margin on all 4 sides (e.g. "offset
+  20mm from CB1"), a notch sized to only half the embedded shape's own
+  footprint stays short of every outer edge by exactly that margin — the
+  result is a fully-enclosed picture-frame (2 DXF contours: outer + inner
+  hole), not an open U (which needs the notch to genuinely BREACH one
+  outer edge). Confirmed via an isolated DXF contour count before
+  assuming the shape was right. **Fix: extend the notch past the
+  embedded shape's own edge, all the way to the corresponding OUTER edge
+  on the side meant to be open** — the notch then removes slightly more
+  than a literal "half" of the embedded footprint (it also eats the
+  margin strip on that one side), but this is what actually produces a
+  connected, genuinely-open U/C profile in one single `difference()`
+  call. Verify with a DXF contour count: a closed frame reads as 2
+  contours, a real open U reads as 1.
 
 ---
 

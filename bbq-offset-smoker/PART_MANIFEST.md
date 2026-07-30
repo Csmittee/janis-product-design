@@ -4,7 +4,19 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.35 — 2026-07-30 (bbq-lid-hinge-v12, direct-cc, CB1 lateral
+# Version: 1.36 — 2026-07-30 (bbq-lid-hinge-v12 REWORK, same-day
+# follow-up): `cb1_link_2d()` REBUILT — Janis caught a real frame error
+# in the 1.35 pass directly from a render (CB1 was baked into the CLOSED
+# state instead of the OPEN state, backwards for a stopper). Fixed via
+# the real open-then-freeze method (new `freeze_from_open()` function),
+# verified via an isolated render showing the correct closed(in-air)/
+# open(touches DE) behavior. Bracket simplified to one square-minus-notch
+# `difference()` per Janis's own explicit instruction (replacing the
+# 12-point U-channel polygon). Link to t7 (back to the existing t4/t5 rib
+# body) explicitly NOT built this round, per Janis — CB1 is currently a
+# disconnected island (4 DXF contours, expected). Full detail:
+# cc_chat_log.md 2026-07-30 REWORK entry, docs/hinge-construction.md v1.5.
+# Previous: 1.35 — 2026-07-30 (bbq-lid-hinge-v12, direct-cc, CB1 lateral
 # link built per Janis's language-spec prompt): base assembly table
 # pointer now BBQ-offset-smoker-base-v12.scad (source v11). NEW
 # `cb1_link_2d()`, RIB1-only via new `with_cb1` flag. Two real, disclosed

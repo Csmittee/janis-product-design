@@ -967,7 +967,7 @@ CB1_STANDOFF  = CB1_AIR_GAP + CB1_OD/2;          // 70.8mm, DE face to tube cent
 CB1_EDGE_FRAC = 0.40;                            // CHANGED from the prompt's literal 0.30 -- reproduces the prompt's own already-flagged ~5mm D-clearance at 0.30; 40% gives a real, verified 30.27mm
 UWALL         = 20;                              // Ua/Ub/Uc wall thickness -- the prompt's own literal "20mm wall"
 UARM_REACH    = CB1_OD/2;                        // 50.8mm ("2 inch") -- Ua/Uc's own literal reach along the pipe face, from Ub to CB1's own centerline. Janis confirmed 2026-07-30: wrap only this much, not the full tube -- "enough for welding it to this rib," not meant to surround the entire CB1.
-NECK_HALF_W   = 20;
+NECK_HALF_W   = 25;                              // CHANGED from 20 (40mm total) to 25 (50mm total) -- Janis's own explicit instruction 2026-07-30, neck was "too narrow"
 NECK_LEN      = 25;                              // rigid, fixed length -- the prompt's own primary control
 
 CB1_EDGE_DIST = CB1_EDGE_FRAC * DE_LEN;                  // s-position of CB1's own center
@@ -1009,10 +1009,10 @@ BRACKET_OUTLINE = [
     tangential_pt(CB1_EDGE_DIST, Uarm_top_n),                        // Ua outer-top corner
     tangential_pt(Ub_outer_s, Uarm_top_n),                           // Ub back-top corner
     tangential_pt(Ub_outer_s, CB1_STANDOFF+NECK_HALF_W),             // neck root, top, on Ub's own back face
-    tangential_pt(Ub_outer_s-NECK_LEN, CB1_STANDOFF+NECK_HALF_W),   // neck tab tip, top -- t7r
+    tangential_pt(Ub_outer_s-NECK_LEN, CB1_STANDOFF+NECK_HALF_W),   // neck tab tip, top -- t7u
 ];
 t7_native  = freeze_from_open(BRACKET_OUTLINE[0]);   // neck_l tip -- EDGE point, no radius of its own (matches t2-t4)
-t7r_native = freeze_from_open(BRACKET_OUTLINE[11]);  // neck_r tip -- EDGE point, no radius of its own (matches t2-t4)
+t7u_native = freeze_from_open(BRACKET_OUTLINE[11]);  // neck_r tip -- "t7u" (upper ridge), Janis's own naming 2026-07-30 -- EDGE point, no radius of its own (matches t2-t4)
 
 // t6be -- per Janis 2026-07-30: built AT THE OPEN door position, a
 // vertical line through t6/FC, 20mm Z-drop (frozen to native like the
@@ -1025,21 +1025,35 @@ t7r_native = freeze_from_open(BRACKET_OUTLINE[11]);  // neck_r tip -- EDGE point
 T6BE_OPEN   = [FC_Y, FC_Z - 20];
 t6be_native = freeze_from_open(T6BE_OPEN);
 
-// Arc center for the TOP rib line (t4 -> t7r): a gentle circular arc
+// T4U -- per Janis 2026-07-30: the TOP rib line must NOT start at the
+// existing t4 (the mitered turning point AT apex C, blending BC_NORM and
+// CD_NORM together) -- it starts from a point found by drawing a line
+// PERPENDICULAR TO THE BC WALL from apex C (i.e. along BC_NORM, the
+// wall's own already-established outward normal) until it intersects
+// the ridge (the rib's own flat top boundary, the same Z that t4/t5
+// already share). This is a real, different point from t4 (confirmed
+// via live echo: T4U=(158.665,1301.34) vs t4=(170.381,1301.34) -- T4U
+// sits further back toward apex B/C, INSIDE the existing t4/R4 fillet
+// circle, giving genuine material overlap for the union, not just a
+// coincident edge).
+function line_hits_z(P,dir,z) = let(t=(z-P[1])/dir[1]) [P[0]+t*dir[0], P[1]+t*dir[1]];
+T4U = line_hits_z(RIB_REF_C, BC_NORM, t5[1]);
+
+// Arc center for the TOP rib line (T4U -> t7u): a gentle circular arc
 // directly between the two points, per Janis's own explicit "smooth
 // arc, not a sharp wide angle" instruction. FIRST ATTEMPT (removed):
-// forcing exact tangency to the t4-t5 direction AT t4 over-constrained
+// forcing exact tangency to the t4-t5 direction at t4 over-constrained
 // the circle into a huge radius (159.9mm on a 310mm chord) with a wide
 // 151-degree sweep that bulged FAR outside the intended fill region --
 // confirmed as a real defect via an isolated render (a visible gap/
 // notch where the arc diverged from the bracket, not just a preview
 // artifact -- checked with a full --render CGAL pass too). Fixed by
 // choosing a real, generous fixed radius instead and taking the SHORT
-// arc between t4 and t7r on the OUTWARD side (same disambiguation
+// arc between the two points on the OUTWARD side (same disambiguation
 // convention as ext_tangent()'s own OUTWARD constant elsewhere in this
 // file) -- a real, disclosed choice (not derived from a locked
 // constraint), picked for a visibly gentle bulge, not tangency.
-TOP_ARC_R = 400;   // chosen for a gentle ~46 degree sweep on this 310mm chord -- disclosed choice, not a locked/derived value
+TOP_ARC_R = 400;   // disclosed choice, not a locked/derived value -- re-verify sweep looks gentle once T4U/t7u are final
 function circle_center_2pt(P,Q,R,outward) = let(
     d = norm([Q[0]-P[0], Q[1]-P[1]]),
     mid = [(P[0]+Q[0])/2, (P[1]+Q[1])/2],
@@ -1051,19 +1065,24 @@ function circle_center_2pt(P,Q,R,outward) = let(
     s1 = (c1[0]-mid[0])*outward[0]+(c1[1]-mid[1])*outward[1],
     s2 = (c2[0]-mid[0])*outward[0]+(c2[1]-mid[1])*outward[1]
 ) (s1>s2) ? c1 : c2;
-TOP_ARC_CENTER = circle_center_2pt(t4, t7r_native, TOP_ARC_R, OUTWARD);
+TOP_ARC_CENTER = circle_center_2pt(T4U, t7u_native, TOP_ARC_R, OUTWARD);
 
-// Bottom rib line (t5 -> t6be -> t7) and top rib line (t4 -> arc -> t7r)
+// Bottom rib line (t5 -> t6be -> t7) and top rib line (T4U -> arc -> t7u)
 // are BOUNDARY EDGES of ONE SOLID FILLED region, per Janis's own explicit
 // correction 2026-07-30 ("chat has made mistake thought the line...is a
 // link, no its a boundary, fill inside with material") -- NOT two
-// separate thin members with empty space between them. t6be/t7/t7r are
+// separate thin members with empty space between them. t6be/t7/t7u are
 // EDGE points (no separate expanding radius/boss), matching t2-t4's own
 // convention exactly -- the fill polygon's own straight/arc segments
 // pass directly THROUGH these coordinates, no hull()/circle() involved.
+// T4U (not t4) is the top-side anchor -- t4 itself is skipped in this
+// outline since T4U sits further back and the T4U->t5 edge is a flat
+// line at the SAME Z as the existing t4-t5 edge, passing directly
+// through/over t4 (real, exact-coincident overlap with the existing
+// rib material, not a gap).
 RIB1_WEB_OUTLINE = concat(
-    [t4, t5, t6be_native, t7_native, t7r_native],
-    arc_pts(TOP_ARC_CENTER, TOP_ARC_R, t7r_native, t4)
+    [T4U, t5, t6be_native, t7_native, t7u_native],
+    arc_pts(TOP_ARC_CENTER, TOP_ARC_R, t7u_native, T4U)
 );
 
 module cb1_link_2d() {

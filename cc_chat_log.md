@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-30 | bbq-lid-hinge-v12, 4th REWORK same-day | T4U (new top-line anchor) + neck widened to 50mm + t7r renamed t7u, per Janis's own explicit construction
+
+Janis confirmed the previous round's fill/connection concept ("no bad hole or missing material") but flagged the TOP line's own starting point: the existing `t4` (mitered turning point AT apex C) is the WRONG anchor — the correct one, `T4U`, is found by drawing a line PERPENDICULAR to the BC wall (along `BC_NORM`, already an established constant) from apex C (`RIB_REF_C`) until it intersects the ridge (the rib's own flat boundary, same Z as t4/t5). Implemented as `T4U = line_hits_z(RIB_REF_C, BC_NORM, t5[1])` — live result `(158.665, 1301.34)`, only 11.7mm from the existing t4 and confirmed INSIDE t4's own R4=20 fillet circle (real material overlap for the union, not a coincident-edge risk).
+Per Janis's own renaming request (for easier communication): `t7r` -> `t7u` ("upper ridge") throughout; `t7` (neck_l tip, bottom) unchanged. Top rib line rebuilt as `T4U -> (400mm-radius gentle arc, ~46.5deg sweep) -> t7u`, replacing t4 as the anchor. Bottom line (`t5->t6be->t7`) unchanged, per Janis's own instruction ("connect the t6be to t7... the same way you did again").
+Neck widened per Janis's explicit instruction: `NECK_HALF_W` 20->25mm (50mm total, was 40mm) — "too narrow." All downstream points (t7, t7u, Ubbc-relative geometry) re-derive automatically from this one constant.
+QA: DXF still 3 contours (CB1 fully connected). Full `--render` (CGAL) `Simple: yes` at 0/45/90°. Sent a labeled T4U-vs-t4 diagram plus both-door-state renders (full chamber context) for confirmation before this was treated as final. Full detail: `BBQ-offset-smoker-base-v12.scad`'s own CB1 section header.
+
 ### 2026-07-30 | bbq-lid-hinge-v12, 3rd REWORK same-day | t6be + t7/t7r LINKED to the CB1 bracket — bottom/top rib lines now a SOLID FILLED web, not two hollow arms; real arc-construction bug found+fixed along the way
 
 Per Janis's step-by-step guidance: `t6be` built exactly as specified (open-frame vertical 20mm Z-drop through t6/FC, frozen to native) — real, disclosed finding shown BEFORE being locked in: at this point the pivot bore's own required material margin is negative for any half-width above ~6.5mm (this file's usual 20mm convention gives -13.5mm); Janis's own explicit call: accept it, not-colliding matters more than the full margin here.

@@ -4,7 +4,16 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.38 — 2026-07-30 (bbq-lid-hinge-v12, 3rd REWORK same-day):
+# Version: 1.39 — 2026-07-30 (bbq-lid-hinge-v12, 4th REWORK same-day):
+# New anchor `T4U` replaces `t4` as the top rib line's own starting
+# point -- perpendicular to the BC wall (along `BC_NORM`) from apex C,
+# intersecting the ridge, per Janis's own explicit construction (11.7mm
+# from t4, confirmed inside its R4=20 circle -- real overlap). `t7r`
+# renamed `t7u` throughout. Neck widened 40mm->50mm (`NECK_HALF_W`
+# 20->25). Top rib line: `T4U -> (400mm-R arc) -> t7u`. DXF still 3
+# contours, full `--render` (CGAL) `Simple: yes` at 0/45/90°. Full
+# detail: cc_chat_log.md 2026-07-30 4th REWORK entry.
+# Previous: 1.38 — 2026-07-30 (bbq-lid-hinge-v12, 3rd REWORK same-day):
 # `cb1_link_2d()` now includes `RIB1_WEB_OUTLINE` — t6be/t7/t7r linked
 # into the existing t4/t5 rib body as ONE SOLID FILLED region (not two
 # separate thin "link" arms), per Janis's own explicit correction. t7/t7r

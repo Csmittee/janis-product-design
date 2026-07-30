@@ -546,11 +546,43 @@ module handle_rod() {
         cylinder(h=HANDLE_ROD_WALL, r=HANDLE_ROD_OD/2, $fn=64);
 }
 
-// ─── CB1 pipe -- REMOVED ENTIRELY this round, per Janis's own explicit
-// instruction ("remove the link side to the cb1 entirely and wait for
-// new instruction"). Real, deliberate gap: no counterbalance/stopper of
-// any kind exists in this assembly right now -- door/handle side only.
-// See this file's own header, item 2, and docs/hinge-construction.md. ───
+// ─── CB1 pipe -- REAL COUNTERWEIGHT MASS, restored 2026-07-30 per
+// Janis's own explicit correction ("cb1 consist of the bracket cb1
+// which is locked and cb1 4 inch pipe weight with both end close with
+// end cap... put this pipe back in place"). This is a SEPARATE part
+// from the bracket (Ua/Ub/Uc, in cb1_link_2d() above, still locked,
+// untouched) -- the bracket wraps/cradles this pipe on 3 sides and
+// welds to it; the pipe itself is the real counterbalance mass. Same
+// 4"-square-tube size the bracket was always built to wrap
+// (`CB1_OD`=101.6mm, already the wrap-clearance constant above), same
+// real span/wall/position convention as the original v6-v9 design
+// (`archive/BBQ-offset-smoker-base-v9.scad`, `CB1_WALL`=3,
+// `CB1_LEN`=chamber_L-100=815mm, `CB1_MASS_KG`=8.06 real/locked there --
+// NOT reused as a given here, this file computes its own real mass from
+// the actual solid below, see docs/lid-hinge-moment-analysis.md).
+// Position: same OPEN-frame centerline the bracket already wraps
+// (`tangential_pt(CB1_EDGE_DIST, CB1_STANDOFF)`), converted to native
+// frame the same way as every other CB1 point (`freeze_from_open()`) --
+// one single native-frame point since the pipe's own Y-Z position does
+// not vary with X, exactly like the handle rod. ───
+CB1_WALL = 3;                                    // mm, real wall thickness, matches the original v9 design
+CB1_LEN  = chamber_L - 100;                      // 815mm, centered on chamber_L, spans well past all 3 ribs (matches original v9 formula)
+cb1_x0   = (chamber_L - CB1_LEN) / 2;            // 50mm
+cb1_x1   = cb1_x0 + CB1_LEN;                     // 865mm
+CB1_OPEN_CENTER   = tangential_pt(CB1_EDGE_DIST, CB1_STANDOFF);   // open-frame centerline, same point the bracket wraps
+CB1_CENTER_NATIVE = freeze_from_open(CB1_OPEN_CENTER);            // native/closed frame, per this project's own construction convention
+module cb1_pipe() {
+    cy = CB1_CENTER_NATIVE[0];
+    cz = CB1_CENTER_NATIVE[1];
+    difference() {
+        translate([cb1_x0, cy-CB1_OD/2, cz-CB1_OD/2]) cube([CB1_LEN, CB1_OD, CB1_OD]);
+        translate([cb1_x0-e, cy-CB1_OD/2+CB1_WALL, cz-CB1_OD/2+CB1_WALL])
+            cube([CB1_LEN+2*e, CB1_OD-2*CB1_WALL, CB1_OD-2*CB1_WALL]);
+    }
+    // end caps -- close both ends of the hollow tube
+    translate([cb1_x0, cy-CB1_OD/2, cz-CB1_OD/2]) cube([CB1_WALL, CB1_OD, CB1_OD]);
+    translate([cb1_x1-CB1_WALL, cy-CB1_OD/2, cz-CB1_OD/2]) cube([CB1_WALL, CB1_OD, CB1_OD]);
+}
 
 // ─── Axle + hinge brackets -- v9 REAL REBUILD, mounted in the end
 // margin zone (this file's own header). The axle is ONE continuous shaft
@@ -608,6 +640,7 @@ module lid_hinge_assembly(door_open_deg=0) {
     lid_rib_assembly(RIB1_X, door_open_deg, true);
     lid_rib_assembly(RIB2_X, door_open_deg, true);
     lid_rib_rotate(door_open_deg) handle_rod();
+    lid_rib_rotate(door_open_deg) cb1_pipe();
 }
 
 // ───────────────────────────────

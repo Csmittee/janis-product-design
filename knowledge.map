@@ -1,5 +1,22 @@
 # knowledge.map
-# Version: v97 — 2026-07-30
+# Version: v98 — 2026-07-30
+# Changes: bbq-lid-hinge-v12, CB1 counterweight PIPE RESTORED. CB1 is 2
+# real parts: the bracket (Ua/Ub/Uc, locked) + a separate 4" square tube
+# (`cb1_pipe()`, both ends capped) the bracket wraps/welds around -- the
+# pipe carries the real counterbalance mass and had been missing since
+# v11 (only the bracket/stopper was ever rebuilt). Restored at the same
+# CB1_OD/span/wall convention as the original v6-v9 design, wired in via
+# lid_rib_rotate() alongside handle_rod(). Real mass from the actual
+# solid: 8.000kg (matches Janis's own ~8kg recollection + the old
+# locked CB1_MASS_KG=8.06 almost exactly). Re-verified Simple:yes at
+# 0/45/90. Moment analysis redone (docs/lid-hinge-moment-analysis.md):
+# adding the pipe flips the moment negative near 90° (previously never
+# negative at all), but lands near-neutral equilibrium at 90° rather
+# than Janis's ~5kgf holding target, and the zero-crossing is at 89.2°
+# not ~45-60° -- hitting the full envelope needs more counterweight
+# leverage, flagged as a tuning decision for Janis (CB1 position/size
+# not moved unilaterally, bracket called locked).
+# Previous: v97 — 2026-07-30
 # Changes: bbq-lid-hinge-v12, sanitization + real moment analysis round.
 # CB1 confirmed present in the render at 0/90° (Janis's "missing CB1"
 # screenshot concern was a viewing-angle/zoom issue, not a code bug).

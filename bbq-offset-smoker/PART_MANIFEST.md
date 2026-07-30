@@ -4,7 +4,32 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.41 — 2026-07-30 (bbq-lid-hinge-v12, sanitization + real
+# Version: 1.42 — 2026-07-30 (bbq-lid-hinge-v12, CB1 counterweight pipe
+# RESTORED): Janis clarified CB1 is 2 real parts -- the bracket
+# (Ua/Ub/Uc, locked, unchanged) AND a separate 4" square tube, both ends
+# capped, that the bracket wraps/welds around -- the pipe is the real
+# counterbalance mass and had been missing (never re-added) since v11.
+# New `cb1_pipe()` module: same `CB1_OD`(101.6mm/4") the bracket was
+# always built to wrap, `CB1_WALL`=3mm, `CB1_LEN`=chamber_L-100=815mm
+# centered on chamber_L (same span/wall formula as the original v6-v9
+# design in `archive/BBQ-offset-smoker-base-v9.scad`), positioned at the
+# SAME open-frame centerline the bracket wraps
+# (`tangential_pt(CB1_EDGE_DIST, CB1_STANDOFF)`), frozen to native frame
+# the same way as every other CB1 point. Wired in via `lid_rib_rotate()`
+# alongside `handle_rod()` (spans all 3 ribs as one rigid piece, not
+# per-rib). Real computed mass from the actual solid: 8.000kg -- matches
+# Janis's own ~8kg recollection and the old locked `CB1_MASS_KG`=8.06
+# almost exactly. Re-verified `Simple: yes` at 0/45/90° with the pipe
+# present. Moment analysis (`docs/lid-hinge-moment-analysis.md`)
+# redone: adding the pipe flips the moment negative near 90° (was never
+# negative at all before), but at its current position the door lands
+# in near-neutral equilibrium at 90° (-0.02kgf, not Janis's ~5kgf
+# holding target) and the zero-crossing is at 89.2°, not ~45-60° --
+# hitting the full target envelope needs more counterweight leverage (a
+# heavier pipe, longer CB1_STANDOFF, or a different CB1_EDGE_FRAC) -- a
+# tuning decision flagged for Janis, not changed unilaterally since the
+# bracket position is locked.
+# Previous: 1.41 — 2026-07-30 (bbq-lid-hinge-v12, sanitization + real
 # moment analysis round): (1) confirmed CB1 was never actually missing
 # from the assembly (Janis's screenshot concern) — direct render
 # verification at 0° and 90° shows the bracket present at both angles,

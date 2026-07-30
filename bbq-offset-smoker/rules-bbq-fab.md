@@ -1,5 +1,22 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.18 — 2026-07-30
+> Version 1.19 — 2026-07-30
+> Changes: bbq-lid-hinge-v16. New locked lesson: **a "gap" constant
+> shared by two rigidly-linked-but-not-identical geometries (a fixed
+> anchor point and a rotating plate riding the SAME pivot) is not a
+> free knob you can widen to buy clearance for one of them without
+> checking the other.** Found while chasing a real, disclosed near-full-
+> stow collision between the folding tray link's slider and the folded
+> tray plate: widening `HINGE_PIVOT_OFFSET` (the tray hinge's own real
+> knuckle standoff) from 5mm to 15mm, expecting more clearance, instead
+> made the collision WORSE at the same angle — because that constant
+> sets BOTH the folded plate's own resting position AND (via the shared
+> pivot) where the link's rotating `tt` pin lands, and the two moved
+> together, not apart. The fix for a real tight-tolerance finding like
+> this needs the same live-sweep verification as any other geometry
+> change, not an assumption that "more clearance" is monotonic in a
+> single constant. Detail addition, not new document structure — X.Y
+> bump.
+> Previous: 1.18 — 2026-07-30
 > Changes: bbq-lid-hinge-v13. TWO new locked lessons, both from Janis's
 > own direct catches: (1) **Process discipline**: several real rounds in
 > a row (sanitization, CB1 pipe restore, moment analysis, tray

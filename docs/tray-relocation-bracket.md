@@ -103,6 +103,60 @@ same way). The link is modeled at its deployed reference position only.
   flush with the hinge block's own outer tip, leaving the hinge
   block's full depth open behind the tray.
 
+## v16 wiring — link now genuinely responds to tray angle
+
+Janis's own direct catch, after reviewing the v15 render: "when i turn
+tray degree, look like the link doesnt link to the the degree turn yet,
+you got to wire it, thats it!" v15's `tray_link()` was real geometry but
+**static** — always drawn at its deployed (0°) reference position,
+regardless of `tray0_angle_deg`/`tray1_angle_deg`. Fixed in v16:
+
+- **`tt`** is rigidly part of the tray (its real pin, bolted to the
+  tray's underside) — `tray_link_tt(angle_deg)` now rotates the deployed
+  reference point about the tray's own real pivot
+  (`Y=-HINGE_PIVOT_OFFSET, Z=HINGE_Z`), the exact same rotation the tray
+  plate itself gets.
+- **`ts`** is NOT rigid with the tray — it's the real slider. For any
+  rotated `tt`, `tray_link_ts(angle_deg)` solves the point on the fixed
+  apex-A/al line (`Y=0`) a constant `TRAY_LINK_SPAN` away — a genuine
+  circle(center=`tt`, r=`TRAY_LINK_SPAN`) vs. line(`Y=0`) intersection,
+  not an approximation. Two roots exist; validated in Python before
+  writing any OpenSCAD (not assumed): the **lower** root (`tz - h`) stays
+  on the real `[TRAY_AL.z=671.335, RIB_REF_A.z=850]` segment across the
+  full `0..-90°` sweep (671.335mm at 0°, exactly matching the old fixed
+  `al` — confirms the formula's correctness at the reference config —
+  rising smoothly to ~773.64mm at -90°); the **upper** root (969–1215mm)
+  sits above apex A entirely, off the real segment, and is discarded.
+- `tray_link()` calls moved out of `tray_hinges(x0)` (no angle available
+  there) into `tray(x0, angle_deg)` directly, so both tray0 and tray1
+  drive their own link independently.
+
+**Re-verified** via a real isolated `intersection()` probe (link vs. the
+tray plate alone, chamber/firebox/exhaust geometry suppressed so the
+probe is unambiguous), not assumed clean from the code:
+
+| tray angle | tray0 link | tray1 link |
+|---|---|---|
+| 0° to -82° | empty (no collision) | empty (no collision) |
+| -83° to -90° | **real, small collision** | **real, small collision** |
+
+**New, disclosed finding, NOT fixed this round** — this is a geometric
+tightness issue, not a wiring bug. At full -90° stow, the folded plate's
+own near face always lands at exactly
+`Y = -HINGE_PIVOT_OFFSET + TRAY_T` (real rotation math, true regardless
+of any other constant) — with the live numbers that's `Y=-3mm`, only 3mm
+clear of the fixed `Y=0` slider line the link has to thread through. A
+flat 15mm-wide strip with no real slot/rail modeled (Janis's own
+explicit simplification) can't always clear that 3mm gap in the last
+~7-8° of fold. Tried widening `HINGE_PIVOT_OFFSET` (5mm→15mm) as a fix —
+made the overlap **worse** at the same angle, since it shifts both the
+folded plate AND the rotating `tt` pin together, not a simple
+1-parameter fix. Confirmed the same ~-83° threshold on both tray0 and
+tray1 (symmetric, not a per-tray bug). Needs a decision: either treat
+-85° as the practical fully-folded operating limit (zero-cost, a
+usage/firmware constraint) or design a real notch/slot in the wall face
+at this location (a fab step, out of scope here).
+
 ## Tray skirt
 
 A 10mm skirt (`TRAY_SKIRT_H`) runs along the tray's own **tip and both
@@ -116,13 +170,15 @@ visible design defect). The hinge side now has zero skirt, on purpose.
 ## Verification
 
 - Full `--render` CGAL `Simple: yes`, no warnings, at `door_open_deg`
-  0/45/90° and tray angles -90°(stowed)/0°(deployed) — re-verified after
-  every round of fixes, including the v15 hardware rebuild.
+  0/45/90° and a tray angle sweep (0/-30/-45/-60/-90°), both trays
+  independently — re-verified after every round of fixes, including the
+  v16 angle-wiring fix.
 - Real interference sweep (`intersection(trays(), front_wheel_support())`)
   at tray angles -90/-60/-30/0°: **empty at every angle**.
-- Real collision check (`intersection(tray_link(), <tray plate>)`):
-  **empty** — confirmed no part of the link penetrates the tray
-  surface, per Janis's own explicit QA ask.
+- Real collision check (`intersection(tray_link(), <tray plate>)`) swept
+  across angles (both trays): **empty from 0° to about -82°**; a real,
+  disclosed collision from about -83° to -90° — see "v16 wiring" above,
+  not fixed this round, flagged for a decision.
 - The link's `ts`-side U-hinge DOES touch `tray_bracket()`'s own solid
   material — intentional (that's the real attachment/slider point, not
   a defect); the link's own free length extends well clear of the

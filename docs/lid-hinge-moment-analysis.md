@@ -2,7 +2,7 @@
 
 Real gravity moment about the shared pivot (`FC_Y`/`FC_Z` =
 `HINGE_PIVOT_Y`/`HINGE_PIVOT_Z`, `BBQ-chambers-v26.scad`), computed from
-the **current, live** geometry in `BBQ-offset-smoker-base-v15.scad` /
+the **current, live** geometry in `BBQ-offset-smoker-base-v16.scad` /
 `BBQ-chambers-v26.scad` — not re-derived from an old assumption. This
 supersedes `docs/lid-hinge-counterbalance-calc.md` (built on a retired
 pivot and a retired CB1 counterweight-pipe design).

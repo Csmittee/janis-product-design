@@ -1,5 +1,60 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.12 — 2026-07-26
+> Version 1.16 — 2026-07-30
+> Changes: bbq-lid-hinge-v12, 3rd CB1 REWORK same day — t6be/t7/t7r linked
+> into a single SOLID FILLED web (not two hollow arms), per Janis's own
+> explicit correction. New locked lesson: forcing a fillet/arc to be
+> exactly tangent at one endpoint while passing through a distant second
+> point can over-constrain the circle into a huge radius/wide sweep that
+> bulges outside the intended fill region — a real defect only visible in
+> an actual render, not from the math alone. Prefer a disclosed, gentle
+> fixed-radius arc over a forced tangency solve.
+> Previous: 1.15 — 2026-07-30
+> Changes: bbq-lid-hinge-v12, 2nd CB1 REWORK same day — Janis confirmed
+> the bracket orientation was STILL wrong after the 1.14 fix (contour
+> count was fixed, but the "breach one edge" notch opened the wrong
+> side). Amended with 1 more real, locked lesson: a single-contour check
+> confirms a shape is CONNECTED, not that it's ORIENTED correctly — when
+> a casual simplification instruction changes HOW a shape is built
+> without re-stating WHICH original named features (Ua/Ub/Uc etc.) go
+> where, re-derive orientation from the original detailed spec's own
+> literal text, quoted, and confirm with a labeled diagram before
+> touching committed code. Bracket rebuilt as ONE traced polygon
+> (Ub=back wall perpendicular to DE, Ua/Uc=arms reaching 50.8mm along
+> DE to CB1's own centerline, Uc touching DE) — Janis confirmed correct
+> against a pencil-labeled diagram before this fix was committed.
+> Previous: 1.14 — 2026-07-30
+> Changes: bbq-lid-hinge-v12, CB1 REWORK round — Janis caught a real,
+> fundamental error in the first v12 pass directly from a render (not
+> found by cc): CB1 was built directly from the fixed RIB_REF_D/E points
+> as if that were already the native/closed-frame coordinate, baking
+> DE-contact into the CLOSED state instead of the OPEN state (backwards
+> for a stopper: should float clear when closed, touch DE only when
+> open). Amended the "Three-Rib Lid Counterbalance System" section with
+> 2 new real, locked lessons: (1) a stopper/link whose rest state is
+> defined at the OPEN door position must be built via the real
+> open-then-freeze method (open-frame target -> `freeze_from_open()` ->
+> native frame) — the "build directly from a fixed point, no rotate()"
+> technique that IS correct for t1-t6 is WRONG here, because those
+> points' own rest state is the CLOSED position, not the open one;
+> verify with a render at both door states, not just an algebraic check;
+> (2) a `difference()` notch sized to exactly "half" of an embedded
+> shape, inside an outer shape built with a uniform margin, stays short
+> of every edge and produces an enclosed hole (2 DXF contours) instead of
+> a genuine open U/C (1 contour) — the notch must be extended to actually
+> breach the one edge meant to be open.
+> Previous: 1.13 — 2026-07-30
+> Changes: bbq-lid-hinge-v12, CB1 lateral link round. Amended the
+> "Three-Rib Lid Counterbalance System" section with 2 new real, locked
+> lessons: (1) a multi-piece bracket built as several separately-unioned
+> rectangles can hit OpenSCAD's own 2D boolean coincident-edge gap trap
+> even with mathematically exact shared edges — fix is to trace the whole
+> shape as ONE single polygon, not union separate pieces; (2) a point
+> constrained to a single axis (e.g. "vertical line offset by >=Nmm") can
+> be a genuine impossibility once two independent clearance floors apply
+> from opposite directions on that same axis — fix is to free up a second
+> degree of freedom (diagonal offset) and re-solve, not push harder on the
+> same axis.
+> Previous: 1.12 — 2026-07-26
 > Changes: pointer split — the general "open-then-freeze" method now
 > lives in `.claude/SKILL_kinematic_frame_construction.md` (reusable
 > across products), `docs/hinge-construction.md` keeps BBQ's own
@@ -602,6 +657,132 @@ the same method.
   rib/link point against a real physical target — reusable across any
   product, not BBQ-specific — now lives in `.claude/
   SKILL_kinematic_frame_construction.md` (split out 2026-07-26).
+- **A multi-piece bracket/pad built as several separately-unioned
+  rectangles can hit OpenSCAD's own 2D boolean coincident-edge gap trap,
+  even when every coordinate is analytically exact** (bbq-lid-hinge-v12,
+  CB1 lateral link U-bracket): 3 axis-aligned rectangles (back wall + 2
+  arms) sharing a long COINCIDENT (not overlapping) straight edge — same
+  variable, same formula, zero floating-point drift — still produced 2
+  separate DXF contours instead of 1 (confirmed via an isolated minimal
+  test, the exact discipline `.claude/SKILL_local_render.md`'s own
+  "technical trap" section already calls for). This is a DIFFERENT
+  failure mode from the near-miss/rounding gaps that section already
+  documents (those involve a real, if tiny, measured distance between
+  pieces) — here the edges are mathematically identical, and the union
+  still split. **Real fix: trace the whole multi-segment shape as ONE
+  single simple polygon (one ordered point list, one `polygon()` call)
+  instead of unioning separate rectangles/pieces that happen to share an
+  edge.** A single polygon has no internal seam for the boolean engine to
+  fail on, and produces cleaner geometry besides (fewer facets). Prefer
+  this construction from the start for any bracket/pad assembled from
+  more than one rectilinear piece — don't reach for `union()` of
+  primitives as the default and only fall back to a single traced
+  outline after hitting the gap.
+- **A point defined as "a vertical/single-axis line offset from a fixed
+  center by >= Nmm" can be a genuine mathematical impossibility once two
+  independent clearance floors apply on opposite sides of that same
+  line** (bbq-lid-hinge-v12, `t6be`): the prompt's own literal spec (a
+  pure-vertical line through the t6 pivot, offset down >=15mm) required
+  simultaneously satisfying a ridge-floor constraint (Z >= a fixed
+  minimum, pushing the point UP) and a pivot-boss keepout constraint
+  (Z <= a fixed maximum, pushing the point DOWN) — on a single vertical
+  line these two floors conflicted by a real, computed 4.5mm under this
+  project's own 20mm-half-width convention, not a construction failure.
+  **Real fix: relax the constraint from a single-axis line to a
+  diagonal offset (both axes free) and re-solve** — the same two
+  clearance floors, now satisfiable together off-axis, gave a real
+  10.0mm/11.6mm margin on each side. Before iterating harder on a
+  single-axis placement that keeps producing a negative or near-zero
+  margin, check algebraically whether the two floors are compatible on
+  that axis AT ALL — if not, the fix is a different degree of freedom,
+  not a different number on the same one.
+- **A REAL, DANGEROUS error, self-made and caught by Janis directly, not
+  cc (bbq-lid-hinge-v12, CB1 rework)**: a stopper/link mechanism whose
+  physical rest state is defined at the OPEN door position (must float
+  clear of the fixed structure when closed, contact it only when open)
+  CANNOT be built directly from a fixed reference point (e.g. an octagon
+  vertex) as if that were already the native/closed-frame coordinate —
+  doing so bakes the CONTACT state into the CLOSED position instead,
+  exactly backwards (it would prevent the door from ever closing, and
+  swing the stopper AWAY from its target when opened). This is true even
+  though the SAME "build directly from a fixed reference, no rotate()
+  call" technique is CORRECT for `t1`-`t6` (those points' own rest/flush
+  state is genuinely the CLOSED position, since the door hugs that wall
+  when shut) — the technique is only valid when the native/closed frame
+  IS the frame where the physical constraint actually holds. Before
+  reusing "build directly from a fixed point" for ANY new feature, ask
+  explicitly: at which door state (open, closed, or continuously) does
+  this feature's own physical constraint actually apply? If the answer
+  is "open" (a stopper, a link, anything meant to rest against fixed
+  structure only when swung open), the correct construction is the real
+  open-then-freeze method — compute the point as a genuine OPEN-frame
+  target, then convert to native/closed frame via the shared pivot's own
+  rotation formula (`freeze_from_open()`,
+  `BBQ-offset-smoker-base-v12.scad`) — never skip the freeze step because
+  the target happens to be computable from a fixed reference point.
+  **Verify this the same way it was caught here**: render the built
+  feature at native/closed frame (should sit CLEAR of its target) and at
+  the open angle via the real assembly transform (should land ON its
+  target) — a written-down formula "looking right" algebraically is not
+  sufficient, an isolated render showing both states is.
+- **A `difference()` notch sized to exactly remove "half" of an
+  embedded shape can produce an enclosed hole instead of a genuine open
+  "U"/"C" shape, even when that's what was intended** (bbq-lid-hinge-v12,
+  CB1 bracket): a bracket built as `big_square - half_of_CB1_footprint`
+  looks like it should open the square up on one side, but if the outer
+  square was built with a UNIFORM margin on all 4 sides (e.g. "offset
+  20mm from CB1"), a notch sized to only half the embedded shape's own
+  footprint stays short of every outer edge by exactly that margin — the
+  result is a fully-enclosed picture-frame (2 DXF contours: outer + inner
+  hole), not an open U (which needs the notch to genuinely BREACH one
+  outer edge). Confirmed via an isolated DXF contour count before
+  assuming the shape was right. **Fix: extend the notch past the
+  embedded shape's own edge, all the way to the corresponding OUTER edge
+  on the side meant to be open** — the notch then removes slightly more
+  than a literal "half" of the embedded footprint (it also eats the
+  margin strip on that one side), but this is what actually produces a
+  connected, genuinely-open U/C profile in one single `difference()`
+  call. Verify with a DXF contour count: a closed frame reads as 2
+  contours, a real open U reads as 1.
+- **CORRECTION to the bullet immediately above, same day**: fixing the
+  CONTOUR COUNT (1 vs 2) is not the same as fixing the ORIENTATION — the
+  very next round, using this exact "breach one edge" technique, breached
+  the WRONG edge and produced a single-piece U that was still physically
+  backwards (open on the side away from where the tube needs its weld
+  reach, not along the pipe face as the spec required). Root cause:
+  Janis's own casual simplification instruction ("just subtract a
+  square") didn't specify a breach DIRECTION, and cc guessed one without
+  re-checking it against the ORIGINAL detailed spec's own named parts
+  (`Ua`/`Ub`/`Uc` here — which arm reaches where, which face contacts the
+  fixed structure). **A single DXF contour confirms the piece is
+  connected — it says NOTHING about whether the shape is oriented
+  correctly.** When a casual/simplified rebuild instruction changes HOW a
+  shape is built (union -> difference, 3 pieces -> 1 square) without
+  re-stating WHICH original named features go where, re-derive the
+  orientation from the ORIGINAL detailed spec's own literal text before
+  writing code — quote it, don't re-guess it — then confirm with a
+  labeled diagram before touching the committed file, especially after a
+  prior round already got this same feature wrong once.
+- **Forcing a fillet/arc to be exactly TANGENT to an existing edge at one
+  endpoint, while also passing through a distant second point, can
+  over-constrain the circle into a huge radius and a very wide sweep —
+  not a small, gentle arc** (bbq-lid-hinge-v12, the t4-to-neck_r "top rib
+  line"): solving for tangency at t4 plus passage through a point 310mm
+  away produced a 160mm-radius circle with a 151-degree sweep that
+  bulged far outside the intended fill region — a real, visible gap in
+  the rendered material, not merely an ugly curve. This is NOT visible
+  from the math alone (the tangency/pass-through solve "succeeds" and
+  looks fine as numbers) — it only showed up as a real defect in an
+  actual render (confirmed with a full `--render` CGAL pass, not just
+  the fast OpenCSG preview, since the two can look different at a
+  boolean seam). **When asked for "a smooth arc, not a sharp angle,"
+  prefer a disclosed, reasonable fixed radius chosen for a gentle sweep
+  over one derived by force-solving a tangency constraint** — tangency
+  is not required for "smooth," and over-constraining it can produce a
+  worse shape than a plain, generous circular arc between the two
+  endpoints. Always render the actual result (both OpenCSG preview and a
+  real `--render`) before trusting a new curve construction, exactly as
+  for any other new geometry this project builds.
 
 ---
 

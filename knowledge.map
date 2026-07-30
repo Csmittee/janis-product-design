@@ -1,5 +1,21 @@
 # knowledge.map
-# Version: v94 — 2026-07-27
+# Version: v96 — 2026-07-30
+# Changes: bbq-lid-hinge-v12, CB1 lateral link, FINAL/COMPLETE this round
+# (consolidates several same-day rework passes — full history:
+# cc_chat_log.md's 2026-07-30 entries). Active base assembly pointer:
+# BBQ-offset-smoker-base-v12.scad (source v11). `cb1_link_2d()` applies
+# to ALL 3 ribs (widened from the source prompt's own original
+# middle-rib-only scope). Bracket (Ua/Ub/Uc) + 50mm neck + T4U/t6be/t7/
+# t7u connect it into the existing t4/t5 rib body as one solid filled
+# region — `t1`-`t6` profile itself UNTOUCHED (locked). Full labeled
+# terminology reference: `docs/rib-cb1-terminology.png` — read this
+# before touching any point name in the CB1 section. 3 parametric
+# controls confirmed live (CB1 position/size, pivot, handle — change
+# any, everything downstream recomputes). DXF 3-contour check clean.
+# Full `--render` (CGAL) `Simple: yes` at 0/45/90° with all 3 ribs.
+# archive/ bookkeeping: BBQ-offset-smoker-base-v9.scad moved to
+# bbq-offset-smoker/archive/ (v10/v11/v12 are now the live last-3).
+# Previous: v94 — 2026-07-27
 # Changes: .claude/SKILL_local_render.md rebuilt (v1.2) — real
 # bounding-box-derived camera formula (was a fixed ~100mm-scale preset,
 # silently wrong for BBQ), new labeled-cut-section-view and world-

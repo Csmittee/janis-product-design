@@ -4,7 +4,28 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.46 — 2026-07-30 (bbq-lid-hinge-v14, tray skirt fix + real
+# Version: 1.47 — 2026-07-30 (bbq-lid-hinge-v15, real folding-link
+# hardware rebuild): new version file per the just-established rule.
+# Janis's own detailed hardware spec after reviewing a v14 render, all
+# real fixes: (1) `TRAY_MOUNT_GAP`=16mm -- the tray plate was still
+# mounted flush with the pivot line, overlapping the (already-widened)
+# hinge block by this same amount, so there was never a real gap for
+# the folded link to hide behind the tray. Plate + skirt now start
+# flush with the hinge block's own outer tip. (2) folding link rebuilt
+# as a real flat 15mm-wide steel strip (was a round rod), with a
+# genuine ~10mm lap overlap at the middle pivot (each link's real
+# length = (span+overlap)/2, not half the span), a U-shaped clevis+pin
+# at BOTH `ts` and `tt` (not just implied), and `tt` pulled 15mm clear
+# of the tray's own underside so it no longer visibly penetrates the
+# tray surface. `ts` remains a conceptual slider along the apex-A/al
+# face (Janis's own explicit call, no rail modeled). Re-verified:
+# `Simple: yes` at 0/45/90 door + -90/0 tray angles; interference sweep
+# vs `front_wheel_support()` still empty; real collision check
+# (`intersection(tray_link(), tray plate)`) confirmed EMPTY -- no
+# penetration. `v12.scad` archived (last-3-live: v13/v14/v15). Full
+# summary: docs/handoff-2026-07-30.md (updated), docs/tray-relocation-
+# bracket.md (updated).
+# Previous: 1.46 — 2026-07-30 (bbq-lid-hinge-v14, tray skirt fix + real
 # link geometry): new version file per the just-established rule (every
 # round with real changes gets one). Two real fixes, both Janis's own
 # direct catches from a render: (1) the tray skirt had been placed on

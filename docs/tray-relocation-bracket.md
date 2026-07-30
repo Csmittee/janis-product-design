@@ -16,11 +16,19 @@ Fixes a real, confirmed collision: the prep trays' old hinge (`HINGE_Z`
 > (`H = [chamfer, chamber_floor_z]` = live `[178.665, 671.335]`). Matches
 > what's built below exactly.
 
-1. **al** = straight line down from apex A, 200mm in Z: `[0, 650]`
-   (`TRAY_AL`).
-2. **hal** = face HA's own line (apex A → H), extended to al's own Z:
-   `[200, 650]` (`TRAY_HAL`) — forms the right triangle apex A / hal / al
-   exactly as described.
+1. **hal** = apex H itself, `[178.665, 671.335]` (`TRAY_HAL`) — **real
+   fix, Janis's own direct catch**: the first pass drew "al" as a plain
+   200mm straight drop from apex A, which overshot past apex H's own
+   real Z (671.335) — landing 21.3mm past the real wall's own physical
+   end, floating in open air, not on real face-HA material. `hal`
+   cannot float past the real wall — it IS the wall's own end.
+2. **al** = same Z as `hal`/H, on the apex-A/al vertical line:
+   `[0, 671.335]` (`TRAY_AL`) — derived FROM `hal` now, not the other
+   way around. The real drop from apex A is 178.665mm (exactly
+   `chamfer`, a consequence of face HA's own 45° geometry, not the
+   original 200mm guess) — forms the right triangle apex A / hal / al
+   exactly as described, with its diagonal edge (apex A → hal) now
+   lying entirely on real physical wall material for its full length.
 3. **Bracket** = that triangle (`TRAY_BRACKET_OUTLINE`), extruded
    `TRAY_BRACKET_W`=30mm wide (`HINGE_W`+10mm margin, a real judgment
    call — no exact width given). New module `tray_bracket(x_center)`,
@@ -35,24 +43,16 @@ Fixes a real, confirmed collision: the prep trays' old hinge (`HINGE_Z`
    point (850.3mm) — was previously fully inside it.
 5. **Folding link** — corrected per Janis's own follow-up: the first
    pass fixed `tt` at "tray tip -20mm" and computed an approximate `ts`
-   that landed 99.7mm short of `al`, which isn't tight enough for a real
-   45° link. Flipped the construction: **`ts` = `al` itself** (the real,
-   fixed anchor from step 1, not merely "close to" it), then the 45°
-   line runs the OTHER way — from `al` back up to the tray's own
-   underside (`HINGE_Z`=835.3mm) — to find `tt`. Result: `tt=[-185.3,
-   835.3]`, well inside the tray's own real tip (deployed span reaches
-   Y=-305.01mm), i.e. `tt` sits further inward from the tray's edge than
-   the first pass, exactly as Janis called for.
-   **Link length: tt-to-ts straight-line distance = 262.1mm.**
-
-**Real geometry now built** (`tray_link()`, 2026-07-30): two rod
-segments (10mm OD, `TRAY_LINK_ROD_OD`) meeting at an elbow, shown at the
-tray's deployed (0°) reference position, where the construction is
-fully determined — since both segments are the same length
-(`TRAY_LINK_LEN`/2 each) and the total distance `ts`-to-`tt` exactly
-equals their sum at 0°, the two circles (radius L/2 from each end) are
-tangent, so the elbow is simply the midpoint of the `ts`-`tt` line, no
-ambiguity.
+   that didn't land tightly on `al`. Flipped the construction: **`ts` =
+   `al` itself** (the real, fixed anchor, not merely "close to" it),
+   then the 45° line runs the OTHER way — from `al` back up to the
+   tray's own underside (`HINGE_Z`=835.3mm) — to find `tt`. Result (live
+   values, current `al`=`[0,671.335]`): `tt_raw=[-163.965, 835.3]`, well
+   inside the tray's own real tip (deployed span reaches Y=-321mm from
+   v15's own `TRAY_MOUNT_GAP`-adjusted mount), i.e. `tt` sits well
+   inward from the tray's edge, exactly as Janis called for.
+   **Real working span (ts to tt, before the v15 clearance offset):
+   221.5mm.**
 
 **Real, disclosed kinematic finding, checked in Python before modeling
 (not assumed)**: a genuine 2-bar pin-jointed link of fixed total length
@@ -65,41 +65,68 @@ as the tray folds toward stowed (-90°) — `ts` sits low (near apex H,
 well below the tray's own hinge Z), so `tt` swings AWAY from it, not
 toward it, as the tray folds up. A fixed-length rigid link genuinely
 cannot follow the tray through the full stow range from this anchor —
-this is a real geometric fact, not a modeling shortcut, and matches why
-real hardware for this exact job (a folding shelf/table stay) commonly
-uses a **slotted**, not a fixed, pivot at one end. The link is modeled
-here at its deployed reference position only; it is not (and cannot be,
-as a simple rigid 2-bar) shown following the tray through the full stow
-sweep.
+matches why real hardware for this exact job (a folding shelf/table
+stay) commonly uses a **slotted**, not a fixed, pivot at one end —
+Janis's own explicit call, confirmed: `ts` is a conceptual slider along
+the apex-A/al face, no rail modeled (real hardware handles this the
+same way). The link is modeled at its deployed reference position only.
+
+## Real hardware model (v15, per Janis's detailed spec after reviewing a render)
+
+- **Flat steel strip**, not a round rod: `TRAY_LINK_W`=15mm wide,
+  `TRAY_LINK_T`=3mm thick (both real judgment calls, no exact numbers
+  given), built the same way as `tray_bracket()` (a 2D profile in the
+  Y-Z plane, extruded thin along X).
+- **Real lap overlap at the middle pivot**: two links of a fixed total
+  length meeting at a single point isn't how a real folding link works
+  — each half now overlaps the other by `TRAY_LINK_OVERLAP`=10mm at the
+  middle, so each link's own real length is
+  `(ts-to-tt span + overlap) / 2`, not simply half the span. The pivot
+  pin sits centered in that 10mm overlap.
+- **`tt` pulled clear of the tray surface**: the raw 45°-derived point
+  landed exactly ON the tray's own underside (a real, visible
+  penetration in the v14 render — Janis's own direct catch).
+  `TRAY_LINK_CLEARANCE`=15mm now pulls the real pin point below the
+  tray surface; the U-hinge below bridges the remaining gap up to the
+  tray itself.
+- **U-shaped hinge + pin at BOTH ends** (`hinge_u()`): a simple
+  rectangle with a square notch (not a fabrication-precise clevis/fork —
+  Janis's own explicit call, "just represent with a simple U shape and
+  lock by a pin is ok") plus a real pin cylinder, at `ts` AND at `tt`.
+  A third, single pin marks the middle lap joint.
+- **`TRAY_MOUNT_GAP`=16mm** (`HINGE_OUT`-`HINGE_PIVOT_OFFSET`): real
+  fix, Janis's own direct catch — the tray plate was still mounted
+  flush with the pivot line, overlapping the (already-widened)
+  `HINGE_OUT` hinge block by this same amount, so widening the hinge
+  alone never actually created a real gap for the folded link to hide
+  behind. The tray plate's own inner edge (and its skirt) now starts
+  flush with the hinge block's own outer tip, leaving the hinge
+  block's full depth open behind the tray.
 
 ## Tray skirt
 
 A 10mm skirt (`TRAY_SKIRT_H`) runs along the tray's own **tip and both
 left/right side edges** — folded 90° from the main plate and rigidly
-part of the tray, covering the raw edge and (on the sides) the region
-near where the folded link would sit. **Real fix, 2026-07-30**: the
-first pass put the skirt on the hinge-side edge instead, where it
-visibly sank into the hinge block — Janis's own direct catch from a
-render (no manifold error, since it's just overlapping solid material,
-not a self-intersection, but a real visible design defect). The hinge
-side now has zero skirt, on purpose, so nothing can interfere with the
-hinge itself. Exact fold direction/placement beyond that wasn't fully
-specified — cc's own judgment call, disclosed here, not silently
-assumed.
-
-Also widened `HINGE_OUT` (+15mm) per Janis's explicit ask, to give the
-link's own 10mm rod real physical clearance near the hinge instead of
-being built tight against it.
+part of the tray. **Real fix**: the first pass put the skirt on the
+hinge-side edge instead, where it visibly sank into the hinge block —
+Janis's own direct catch from a render (no manifold error, since it's
+just overlapping solid material, not a self-intersection, but a real
+visible design defect). The hinge side now has zero skirt, on purpose.
 
 ## Verification
 
 - Full `--render` CGAL `Simple: yes`, no warnings, at `door_open_deg`
   0/45/90° and tray angles -90°(stowed)/0°(deployed) — re-verified after
-  the skirt fix, the link geometry, and the widened `HINGE_OUT`.
+  every round of fixes, including the v15 hardware rebuild.
 - Real interference sweep (`intersection(trays(), front_wheel_support())`)
-  at tray angles -90/-60/-30/0°: **empty at every angle** — no new
-  collision introduced by moving the tray/hinge down 44.7mm, nor by any
-  of this round's changes.
+  at tray angles -90/-60/-30/0°: **empty at every angle**.
+- Real collision check (`intersection(tray_link(), <tray plate>)`):
+  **empty** — confirmed no part of the link penetrates the tray
+  surface, per Janis's own explicit QA ask.
+- The link's `ts`-side U-hinge DOES touch `tray_bracket()`'s own solid
+  material — intentional (that's the real attachment/slider point, not
+  a defect); the link's own free length extends well clear of the
+  bracket beyond that.
 - Bracket X positions (87.5/365/550/827.5) never overlap any rib X
   position (200/457.5/715) even accounting for real part thickness — the
   tray/bracket system is geometrically independent of the rib assembly,

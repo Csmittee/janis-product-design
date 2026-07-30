@@ -1,24 +1,20 @@
 # knowledge.map
-# Version: v95 — 2026-07-30
-# Changes: bbq-lid-hinge-v12, direct-cc — active base assembly pointer
-# now BBQ-offset-smoker-base-v12.scad (source v11), per Janis's
-# language-spec prompt prompts/cc_prompt_cb1_link.md. NEW `cb1_link_2d()`
-# module — the CB1 lateral link, RIB1 (middle rib) ONLY via a new
-# `with_cb1` param (RIB0/RIB2 unchanged, no link). Two real, disclosed
-# deviations from the prompt's literal numbers: `CB1_EDGE_FRAC` 0.30->0.40
-# (fixes the prompt's own already-flagged ~5mm D-clearance to a real
-# 30.27mm) and `t6be` repositioned via a diagonal offset instead of a
-# pure-vertical line (proven impossible under this project's own 20mm-
-# half-width floor — real 10.0mm ridge / 11.6mm boss clearance instead).
-# Real construction-technique finding: 3 separately-unioned rectangles for
-# the U-bracket hit the OpenSCAD 2D boolean coincident-edge gap trap (2
-# contours instead of 1) — fixed by tracing the bracket+neck as ONE single
-# polygon; see rules-bbq-fab.md addendum. `t1`-`t6` profile UNTOUCHED
-# (locked). DXF 3-contour check clean both with/without CB1. Full
-# `--render` (CGAL) `Simple: yes` at 0/45/90°. archive/ bookkeeping:
-# BBQ-offset-smoker-base-v9.scad moved to bbq-offset-smoker/archive/
-# (v10/v11/v12 are now the live last-3). Full detail: cc_chat_log.md,
-# this file's own header in BBQ-offset-smoker-base-v12.scad.
+# Version: v96 — 2026-07-30
+# Changes: bbq-lid-hinge-v12, CB1 lateral link, FINAL/COMPLETE this round
+# (consolidates several same-day rework passes — full history:
+# cc_chat_log.md's 2026-07-30 entries). Active base assembly pointer:
+# BBQ-offset-smoker-base-v12.scad (source v11). `cb1_link_2d()` applies
+# to ALL 3 ribs (widened from the source prompt's own original
+# middle-rib-only scope). Bracket (Ua/Ub/Uc) + 50mm neck + T4U/t6be/t7/
+# t7u connect it into the existing t4/t5 rib body as one solid filled
+# region — `t1`-`t6` profile itself UNTOUCHED (locked). Full labeled
+# terminology reference: `docs/rib-cb1-terminology.png` — read this
+# before touching any point name in the CB1 section. 3 parametric
+# controls confirmed live (CB1 position/size, pivot, handle — change
+# any, everything downstream recomputes). DXF 3-contour check clean.
+# Full `--render` (CGAL) `Simple: yes` at 0/45/90° with all 3 ribs.
+# archive/ bookkeeping: BBQ-offset-smoker-base-v9.scad moved to
+# bbq-offset-smoker/archive/ (v10/v11/v12 are now the live last-3).
 # Previous: v94 — 2026-07-27
 # Changes: .claude/SKILL_local_render.md rebuilt (v1.2) — real
 # bounding-box-derived camera formula (was a fixed ~100mm-scale preset,

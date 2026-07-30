@@ -1,5 +1,11 @@
 # Hinge Construction — Locked Reference (BBQ Offset Smoker)
-> Version 1.5 — 2026-07-30
+> Version 1.6 — 2026-07-30
+> Changes: Section 5's own note that "there is currently no CB1 code in
+> the assembly at all" is now STALE and corrected — CB1 is back, real
+> and Janis-confirmed, on all 3 ribs, built via this doc's own corrected
+> Section 4 method. Full current geometry: `docs/rib-cb1-terminology.png`,
+> `PART_MANIFEST.md`. Detail update, not new locked content — X.Y bump.
+> Previous: 1.5 — 2026-07-30
 > Changes: REAL ERROR CORRECTED, per Janis's direct catch (not cc's own
 > finding) — Section 4 had mislabeled the OPEN-frame CB1 contact-target
 > point as the "closed-frame" value, omitting the required freeze
@@ -207,10 +213,12 @@ replaces it with a real tangent-circle-and-fillet trace
 (`RIB_DOORHANDLE_PROFILE_v1`), delivered by Claude Web/Janis together
 and integrated by cc against the live chambers file. See
 `cc_chat_log.md`'s 2026-07-27 entry and `CURRENT_STATE.md` for the
-current, real status. Also per that same round: **CB1/counterbalance
-was removed from the live file entirely** (not just deferred) — Section
-4's own bug-fix math is kept below for whenever CB1 is redesigned fresh,
-but there is currently no CB1 code in the assembly at all.
+current, real status. That same round removed CB1/counterbalance from
+the live file entirely — since superseded: `BBQ-offset-smoker-base-
+v12.scad` has a real, Janis-confirmed CB1 lateral link on all 3 ribs
+(built via the corrected Section 4 method below). Full current
+geometry/terminology: `docs/rib-cb1-terminology.png`,
+`PART_MANIFEST.md`.
 
 The rib's own door-side spine construction, as it existed in
 `BBQ-offset-smoker-base-v9.scad`/`v10.scad` (`RIB_SPLIT_PT`,

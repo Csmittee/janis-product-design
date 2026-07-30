@@ -4,57 +4,33 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.39 — 2026-07-30 (bbq-lid-hinge-v12, 4th REWORK same-day):
-# New anchor `T4U` replaces `t4` as the top rib line's own starting
-# point -- perpendicular to the BC wall (along `BC_NORM`) from apex C,
-# intersecting the ridge, per Janis's own explicit construction (11.7mm
-# from t4, confirmed inside its R4=20 circle -- real overlap). `t7r`
-# renamed `t7u` throughout. Neck widened 40mm->50mm (`NECK_HALF_W`
-# 20->25). Top rib line: `T4U -> (400mm-R arc) -> t7u`. DXF still 3
-# contours, full `--render` (CGAL) `Simple: yes` at 0/45/90°. Full
-# detail: cc_chat_log.md 2026-07-30 4th REWORK entry.
-# Previous: 1.38 — 2026-07-30 (bbq-lid-hinge-v12, 3rd REWORK same-day):
-# `cb1_link_2d()` now includes `RIB1_WEB_OUTLINE` — t6be/t7/t7r linked
-# into the existing t4/t5 rib body as ONE SOLID FILLED region (not two
-# separate thin "link" arms), per Janis's own explicit correction. t7/t7r
-# confirmed as EDGE points (matching t2-t4), no separate expanding
-# radius. Real construction bug found+fixed: an arc forced tangent to
-# t4-t5 at t4 over-constrained into a 151-degree sweep that left a real
-# gap (confirmed via CGAL render, not just preview) — replaced with a
-# disclosed 400mm-radius gentle arc. DXF now 3 contours (CB1 fully
-# connected to the main rib). Full `--render` (CGAL) `Simple: yes` at
-# 0/45/90°. Full detail: cc_chat_log.md 2026-07-30 3rd REWORK entry.
-# Previous: 1.37 — 2026-07-30 (bbq-lid-hinge-v12, 2nd REWORK same-day):
-# `cb1_link_2d()` bracket ORIENTATION CONFIRMED CORRECT by Janis — Ub
-# (back wall, perpendicular to DE) / Ua (top arm) / Uc (bottom arm, DE-
-# contact stopper), matching the prompt's own literal text exactly (the
-# 1.36 pass's "square minus notch" had the U open on the wrong side).
-# Built as ONE traced polygon (`BRACKET_OUTLINE`), not 3 unioned pieces,
-# per Janis's own explicit instruction. `UARM_REACH`=50.8mm (2in)
-# confirmed — wraps only half of CB1, "enough for welding," not the full
-# tube. DXF: `cb1_link_2d()` alone = 1 contour (single piece). Full
-# detail: cc_chat_log.md 2026-07-30 2nd REWORK entry.
-# Previous: 1.36 — 2026-07-30 (bbq-lid-hinge-v12 REWORK, same-day
-# follow-up): `cb1_link_2d()` REBUILT — Janis caught a real frame error
-# in the 1.35 pass directly from a render (CB1 was baked into the CLOSED
-# state instead of the OPEN state, backwards for a stopper). Fixed via
-# the real open-then-freeze method (new `freeze_from_open()` function),
-# verified via an isolated render showing the correct closed(in-air)/
-# open(touches DE) behavior. Bracket simplified to one square-minus-notch
-# `difference()` per Janis's own explicit instruction (replacing the
-# 12-point U-channel polygon). Link to t7 (back to the existing t4/t5 rib
-# body) explicitly NOT built this round, per Janis — CB1 is currently a
-# disconnected island (4 DXF contours, expected). Full detail:
-# cc_chat_log.md 2026-07-30 REWORK entry, docs/hinge-construction.md v1.5.
-# Previous: 1.35 — 2026-07-30 (bbq-lid-hinge-v12, direct-cc, CB1 lateral
-# link built per Janis's language-spec prompt): base assembly table
-# pointer now BBQ-offset-smoker-base-v12.scad (source v11). NEW
-# `cb1_link_2d()`, RIB1-only via new `with_cb1` flag. Two real, disclosed
-# deviations from the prompt's literal numbers (`CB1_EDGE_FRAC`
-# 0.30->0.40, `t6be` diagonal offset instead of pure-vertical) — both
-# proven-necessary fixes, not unilateral redesign, see this round's own
-# section below and cc_chat_log.md for full numbers/reasoning. Full
-# `--render` (CGAL) `Simple: yes` at 0/45/90°, DXF 3-contour check clean.
+# Version: 1.40 — 2026-07-30 (bbq-lid-hinge-v12, CB1 lateral link,
+# FINAL/COMPLETE this round — consolidates 1.35-1.39's own iterative
+# history, see cc_chat_log.md's 2026-07-30 entries for the full
+# blow-by-blow if ever needed): `cb1_link_2d()` applies to ALL 3 RIBS
+# (widened from the source prompt's own original middle-rib-only scope).
+# Full current geometry, all Janis-confirmed:
+#   - Bracket (`BRACKET_OUTLINE`): Ua (top arm) / Ub (back wall,
+#     perpendicular to DE) / Uc (bottom arm, the DE-contact stopper),
+#     wrapping CB1 on 3 sides (half the tube, "enough for the weld"),
+#     traced as ONE single polygon (not unioned rectangles).
+#   - Neck: 50mm wide (`NECK_HALF_W`=25), 25mm long, root at `Ubbc`.
+#   - `T4U`/`t7u`/`t7`/`t6be` connect the bracket into the existing
+#     t4/t5 rib body as ONE SOLID FILLED region (not two separate thin
+#     arms) — `T4U` (not the existing `t4`) is the top-line anchor,
+#     found perpendicular-to-BC from apex C onto the ridge; `t6be` is
+#     the open-frame 20mm vertical drop from t6/FC, frozen to native.
+#     Both lines are real boundary edges (t2-t4's own "edge point, not
+#     center" convention), not centerline-expanding hulls.
+#   - Full labeled terminology/reference: `docs/rib-cb1-terminology.png`
+#     — read this before touching any point name above.
+# QA: DXF 3 contours (CB1 fully connected, all 3 ribs identical 2D
+# profile). Full `--render` (CGAL) `Simple: yes` at 0/45/90°, all 3 ribs
+# in the assembly simultaneously. Three parametric controls confirmed
+# live (change any, everything downstream recomputes, no manual
+# re-editing needed): `CB1_EDGE_FRAC`/`CB1_STANDOFF` (CB1 position),
+# `CB1_OD` (CB1 size), `FC_Y`/`FC_Z`/`HANDLE_Y`/`HANDLE_Z` (pivot/handle,
+# both already-existing upstream constants).
 # Previous: 1.34 — 2026-07-27 (bbq-lid-hinge-v11, direct-cc, real
 # door/handle-side rib rebuild + CB1 removal): base assembly table
 # pointer now BBQ-offset-smoker-base-v11.scad (source v9 -- v10 was WIP,

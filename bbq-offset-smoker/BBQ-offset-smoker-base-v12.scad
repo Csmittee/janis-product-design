@@ -922,83 +922,63 @@ PART2_OUTLINE = concat(
 module part2_2d() { polygon(points=[for(p=PART2_OUTLINE) pt2(p)]); }
 
 // ═══════════════════════════════════════════════════════════════
-// CB1 LATERAL LINK -- RIB1 (middle rib) ONLY, per Janis's own
-// language-spec prompt (prompts/cc_prompt_cb1_link.md), REBUILT this
-// round after Janis flagged a real, fundamental frame error in the
-// first attempt (v12 first pass): CB1 is a stopper that must rest
-// against the fixed D-E face ONLY when the door is OPEN, and float
-// clear of it ("in the air") when the door is CLOSED -- so it CANNOT be
-// built directly from RIB_REF_D/RIB_REF_E as if that were already the
-// native/closed-frame coordinate (that bakes contact-with-DE into the
-// CLOSED state instead, exactly backwards, and blocks the door from
-// ever closing). Correct method, per this project's own "open-then-
-// freeze" convention (docs/hinge-construction.md Section 4, .claude/
-// SKILL_kinematic_frame_construction.md): build every point as the real
-// OPEN-frame (door_open_deg=90) target -- where it should sit relative
-// to the FIXED, never-moving RIB_REF_D/RIB_REF_E -- then convert EACH
-// point back to native/closed frame via `freeze_from_open()` before
-// using it in the polygon. Empirically verified (not just derived): a
-// test marker built this way and run through `lid_rib_assembly()`'s own
-// -90 deg transform lands EXACTLY on the real DE line; the same marker
-// with NO rotation (native/closed state) sits well clear of it, "in the
-// air" -- confirmed via an isolated render before being written here.
+// CB1 LATERAL LINK -- per prompts/cc_prompt_cb1_link.md, refined
+// through several rounds with Janis (full history: cc_chat_log.md's
+// 2026-07-30 entries). Applied to ALL 3 ribs (RIB0/RIB1/RIB2 -- widened
+// from the prompt's own original middle-rib-only scope, see
+// lid_hinge_assembly() below). For the full labeled terminology of
+// every point/term in this section, see docs/rib-cb1-terminology.png
+// (the one authoritative reference -- read that before changing
+// anything here) and PART_MANIFEST.md.
 //
-// `freeze_from_open(p)`: the closed-frame coordinate that, after
-// `lid_rib_assembly()`'s own `rotate([-door_open_deg,0,0])` about the
-// shared pivot at door_open_deg=90, lands exactly at `p` (a point
-// expressed in OPEN/world frame). Plain vector math, no `rotate()`
-// module call -- matches this file's own established convention for
-// t1-t6 (avoids the exact double-rotation bug already found once on the
-// old CB1 formula, docs/hinge-construction.md Section 4).
+// THREE PARAMETRIC CONTROLS -- change any of these and the entire rest
+// of this section (bracket, neck, t7/t7u, D-clearance) recomputes
+// automatically. Nothing below needs manual re-editing when these move:
+//   - CB1_EDGE_FRAC / CB1_STANDOFF -- CB1's own position along/off DE
+//   - CB1_OD -- CB1's own tube size
+//   - FC_Y/FC_Z (BBQ-chambers-v26.scad) -- the shared pivot; HANDLE_Y/
+//     HANDLE_Z above -- the other 2 of this project's "3 adjustable
+//     knobs" Janis names, both upstream of this section already.
+//
+// freeze_from_open(p): the native/closed-frame coordinate that, after
+// lid_rib_assembly()'s own rotate([-door_open_deg,0,0]) about the
+// shared pivot at door_open_deg=90, lands exactly at p (a point
+// expressed in OPEN/world frame). Required for CB1 specifically
+// because it's a stopper -- rests against the fixed D-E face only when
+// OPEN, floats clear when CLOSED -- unlike t1-t6, whose own rest state
+// is the CLOSED position (built directly, no freeze needed).
 function freeze_from_open(p) = [FC_Y+FC_Z-p[1], FC_Z+p[0]-FC_Y];
 
 DE_DIR  = unit([RIB_REF_E[0]-RIB_REF_D[0], RIB_REF_E[1]-RIB_REF_D[1]]);
 DE_NORM = [-DE_DIR[1], DE_DIR[0]];
 DE_LEN  = norm([RIB_REF_E[0]-RIB_REF_D[0], RIB_REF_E[1]-RIB_REF_D[1]]);
-// tangential_pt(s,n) -- OPEN-frame (world) point, s = distance along DE
-// from D, n = perpendicular distance off the DE face. Valid always,
-// since D/E never rotate -- but the RESULT is an open-frame target and
-// MUST go through freeze_from_open() before use in the native profile.
+// tangential_pt(s,n): OPEN-frame (world) point, s = distance along DE
+// from D, n = perpendicular distance off the DE face. Always valid
+// (D/E are fixed, never rotate) -- but the result is an open-frame
+// target and MUST go through freeze_from_open() before use below.
 function tangential_pt(s,n) = [RIB_REF_D[0]+s*DE_DIR[0]+n*DE_NORM[0], RIB_REF_D[1]+s*DE_DIR[1]+n*DE_NORM[1]];
 
-CB1_OD        = 101.6;                          // 4" square tube
+CB1_OD        = 101.6;    // 4" square tube
 CB1_AIR_GAP   = 20;
-CB1_STANDOFF  = CB1_AIR_GAP + CB1_OD/2;          // 70.8mm, DE face to tube centerline, along DE_NORM
-CB1_EDGE_FRAC = 0.40;                            // CHANGED from the prompt's literal 0.30 -- reproduces the prompt's own already-flagged ~5mm D-clearance at 0.30; 40% gives a real, verified 30.27mm
-UWALL         = 20;                              // Ua/Ub/Uc wall thickness -- the prompt's own literal "20mm wall"
-UARM_REACH    = CB1_OD/2;                        // 50.8mm ("2 inch") -- Ua/Uc's own literal reach along the pipe face, from Ub to CB1's own centerline. Janis confirmed 2026-07-30: wrap only this much, not the full tube -- "enough for welding it to this rib," not meant to surround the entire CB1.
-NECK_HALF_W   = 25;                              // CHANGED from 20 (40mm total) to 25 (50mm total) -- Janis's own explicit instruction 2026-07-30, neck was "too narrow"
-NECK_LEN      = 25;                              // rigid, fixed length -- the prompt's own primary control
+CB1_STANDOFF  = CB1_AIR_GAP + CB1_OD/2;   // 70.8mm, DE face to tube centerline
+CB1_EDGE_FRAC = 0.40;     // fraction of DE_LEN from D to CB1's own center -- gives real, verified 30.27mm D-clearance
+UWALL         = 20;       // Ua/Ub/Uc wall thickness
+UARM_REACH    = CB1_OD/2; // 50.8mm (2in) -- Ua/Uc's own reach along the pipe face, Ub to CB1's centerline; wraps HALF the tube only (enough for the weld, not meant to enclose CB1 entirely)
+NECK_HALF_W   = 25;       // 50mm total neck width
+NECK_LEN      = 25;       // rigid, fixed neck length
 
 CB1_EDGE_DIST = CB1_EDGE_FRAC * DE_LEN;                  // s-position of CB1's own center
-Ub_inner_s    = CB1_EDGE_DIST - UARM_REACH;              // Ub's own inner (tube-side) face -- where Ua/Uc's own reach starts
+Ub_inner_s    = CB1_EDGE_DIST - UARM_REACH;              // Ub's own inner (tube-side) face
 Ub_outer_s    = Ub_inner_s - UWALL;                       // Ub's own outer (D-side/back) face -- neck attaches here
 Uarm_top_n    = CB1_STANDOFF + CB1_OD/2 + UWALL;         // Ua's own outer face
-Ubbc          = tangential_pt(Ub_outer_s, CB1_STANDOFF); // reference point only (QA/reporting) -- OPEN-frame coordinate
+Ubbc          = tangential_pt(Ub_outer_s, CB1_STANDOFF); // Ub's centerline x back edge (QA/reporting reference point)
 
-// CB1 bracket -- Ua (top arm) / Ub (back wall) / Uc (bottom arm, DE-
-// contact stopper), per the prompt's own literal text, confirmed correct
-// by Janis 2026-07-30 against a labeled diagram (this exact orientation
-// was WRONG in the immediately preceding round -- see cc_chat_log.md):
-//   "Ua/Ub/Uc = U-shaped welded bracket wrapping CB1 on 3 sides, 20mm
-//    wall, Ua/Uc reach 2in (50.8mm) along the pipe face, Uc's outer face
-//    is the DE-contact stopper."
-//   "Ubbc = point on Ub's own back edge (intersection of Ub's centerline
-//    parallel to DE, and Ub's back edge perpendicular to DE)."
-// Ub is the back wall, perpendicular to DE, full height (its centerline
-// -- a line at n=CB1_STANDOFF -- runs parallel to DE; its own back edge
-// -- at s=Ub_outer_s -- runs perpendicular to DE; Ubbc is where these
-// two lines cross). Ua/Uc are the two arms, reaching UARM_REACH from
-// Ub's own inner face to CB1's own centerline (NOT the full tube -- per
-// Janis, wrapping half is enough for the weld, not meant to enclose
-// CB1 entirely). Built as ONE single traced polygon -- Janis's own
-// explicit instruction ("union it to be one single piece... call it ua,
-// ub, uc just for easy to locate them", i.e. these are LABELS for
-// regions of one part, not 3 separately-unioned solids) -- a union of 3
-// separate rectangles hits the exact OpenSCAD 2D boolean coincident-edge
-// gap trap already found once this project (rules-bbq-fab.md).
+// CB1 bracket -- Ua (top arm) / Ub (back wall) / Uc (bottom arm, the
+// DE-contact stopper) wrapping CB1 on 3 sides, traced as ONE single
+// polygon (not 3 separately-unioned rectangles -- avoids the OpenSCAD
+// 2D boolean coincident-edge gap trap, see rules-bbq-fab.md).
 BRACKET_OUTLINE = [
-    tangential_pt(Ub_outer_s-NECK_LEN, CB1_STANDOFF-NECK_HALF_W),  // neck tab tip, bottom (dangling -- no link to t7 yet)
+    tangential_pt(Ub_outer_s-NECK_LEN, CB1_STANDOFF-NECK_HALF_W),  // t7 -- neck_l tip
     tangential_pt(Ub_outer_s, CB1_STANDOFF-NECK_HALF_W),            // neck root, bottom, on Ub's own back face
     tangential_pt(Ub_outer_s, 0),                                    // Ub back-bottom corner
     tangential_pt(CB1_EDGE_DIST, 0),                                 // Uc outer-bottom corner -- DE-contact stopper, on the DE line itself
@@ -1009,51 +989,35 @@ BRACKET_OUTLINE = [
     tangential_pt(CB1_EDGE_DIST, Uarm_top_n),                        // Ua outer-top corner
     tangential_pt(Ub_outer_s, Uarm_top_n),                           // Ub back-top corner
     tangential_pt(Ub_outer_s, CB1_STANDOFF+NECK_HALF_W),             // neck root, top, on Ub's own back face
-    tangential_pt(Ub_outer_s-NECK_LEN, CB1_STANDOFF+NECK_HALF_W),   // neck tab tip, top -- t7u
+    tangential_pt(Ub_outer_s-NECK_LEN, CB1_STANDOFF+NECK_HALF_W),   // t7u -- neck_r tip
 ];
-t7_native  = freeze_from_open(BRACKET_OUTLINE[0]);   // neck_l tip -- EDGE point, no radius of its own (matches t2-t4)
-t7u_native = freeze_from_open(BRACKET_OUTLINE[11]);  // neck_r tip -- "t7u" (upper ridge), Janis's own naming 2026-07-30 -- EDGE point, no radius of its own (matches t2-t4)
+t7_native  = freeze_from_open(BRACKET_OUTLINE[0]);   // t7 -- EDGE point, no radius of its own (matches t2-t4)
+t7u_native = freeze_from_open(BRACKET_OUTLINE[11]);  // t7u -- EDGE point, no radius of its own (matches t2-t4)
 
-// t6be -- per Janis 2026-07-30: built AT THE OPEN door position, a
-// vertical line through t6/FC, 20mm Z-drop (frozen to native like the
-// rest of this link). Real, disclosed finding, shown to Janis before
-// being locked in: at this exact point the bore's own required material
-// margin is negative for any half-width above ~6.5mm (this file's own
-// standard rib half-width is 20mm) -- Janis's own explicit call: accept
-// this, material/shear-strength around the pivot is a secondary concern
-// vs not literally colliding; kept as specified, not silently altered.
+// t6be -- a POINT (no boss radius of its own), built AT THE OPEN door
+// position: a vertical line through t6/FC, 20mm Z-drop, frozen to
+// native. Disclosed, Janis-confirmed finding: at this exact point the
+// pivot bore's own material margin is negative for any half-width
+// above ~6.5mm (this file's usual convention is 20mm) -- accepted:
+// not-colliding matters more than the full margin here.
 T6BE_OPEN   = [FC_Y, FC_Z - 20];
 t6be_native = freeze_from_open(T6BE_OPEN);
 
-// T4U -- per Janis 2026-07-30: the TOP rib line must NOT start at the
-// existing t4 (the mitered turning point AT apex C, blending BC_NORM and
-// CD_NORM together) -- it starts from a point found by drawing a line
-// PERPENDICULAR TO THE BC WALL from apex C (i.e. along BC_NORM, the
-// wall's own already-established outward normal) until it intersects
-// the ridge (the rib's own flat top boundary, the same Z that t4/t5
-// already share). This is a real, different point from t4 (confirmed
-// via live echo: T4U=(158.665,1301.34) vs t4=(170.381,1301.34) -- T4U
-// sits further back toward apex B/C, INSIDE the existing t4/R4 fillet
-// circle, giving genuine material overlap for the union, not just a
-// coincident edge).
+// T4U -- the top rib line's own anchor (NOT the existing t4, the
+// mitered turning point at apex C). Found by drawing a line
+// PERPENDICULAR to the BC wall (along BC_NORM) from apex C
+// (RIB_REF_C) until it intersects the ridge (the rib's own flat top
+// boundary, same Z as t4/t5). Sits 11.7mm from t4, inside t4's own R4
+// fillet circle -- real material overlap for the union, not a gap.
 function line_hits_z(P,dir,z) = let(t=(z-P[1])/dir[1]) [P[0]+t*dir[0], P[1]+t*dir[1]];
 T4U = line_hits_z(RIB_REF_C, BC_NORM, t5[1]);
 
-// Arc center for the TOP rib line (T4U -> t7u): a gentle circular arc
-// directly between the two points, per Janis's own explicit "smooth
-// arc, not a sharp wide angle" instruction. FIRST ATTEMPT (removed):
-// forcing exact tangency to the t4-t5 direction at t4 over-constrained
-// the circle into a huge radius (159.9mm on a 310mm chord) with a wide
-// 151-degree sweep that bulged FAR outside the intended fill region --
-// confirmed as a real defect via an isolated render (a visible gap/
-// notch where the arc diverged from the bracket, not just a preview
-// artifact -- checked with a full --render CGAL pass too). Fixed by
-// choosing a real, generous fixed radius instead and taking the SHORT
-// arc between the two points on the OUTWARD side (same disambiguation
-// convention as ext_tangent()'s own OUTWARD constant elsewhere in this
-// file) -- a real, disclosed choice (not derived from a locked
-// constraint), picked for a visibly gentle bulge, not tangency.
-TOP_ARC_R = 400;   // disclosed choice, not a locked/derived value -- re-verify sweep looks gentle once T4U/t7u are final
+// Top rib line (T4U -> t7u): a gentle circular arc, real radius picked
+// for a visibly gentle bulge (not derived from a tangency constraint --
+// forcing tangency to t4-t5 over-constrains the circle into an
+// excessive sweep, see rules-bbq-fab.md). Bulge direction picked via
+// the SHORT arc on the OUTWARD side, same convention as ext_tangent().
+TOP_ARC_R = 1500;
 function circle_center_2pt(P,Q,R,outward) = let(
     d = norm([Q[0]-P[0], Q[1]-P[1]]),
     mid = [(P[0]+Q[0])/2, (P[1]+Q[1])/2],
@@ -1067,19 +1031,14 @@ function circle_center_2pt(P,Q,R,outward) = let(
 ) (s1>s2) ? c1 : c2;
 TOP_ARC_CENTER = circle_center_2pt(T4U, t7u_native, TOP_ARC_R, OUTWARD);
 
-// Bottom rib line (t5 -> t6be -> t7) and top rib line (T4U -> arc -> t7u)
-// are BOUNDARY EDGES of ONE SOLID FILLED region, per Janis's own explicit
-// correction 2026-07-30 ("chat has made mistake thought the line...is a
-// link, no its a boundary, fill inside with material") -- NOT two
-// separate thin members with empty space between them. t6be/t7/t7u are
-// EDGE points (no separate expanding radius/boss), matching t2-t4's own
-// convention exactly -- the fill polygon's own straight/arc segments
-// pass directly THROUGH these coordinates, no hull()/circle() involved.
-// T4U (not t4) is the top-side anchor -- t4 itself is skipped in this
-// outline since T4U sits further back and the T4U->t5 edge is a flat
-// line at the SAME Z as the existing t4-t5 edge, passing directly
-// through/over t4 (real, exact-coincident overlap with the existing
-// rib material, not a gap).
+// Bottom rib line (t5 -> t6be -> t7) and top rib line (T4U -> arc ->
+// t7u) are BOUNDARY EDGES of one SOLID FILLED region connecting the
+// existing rib body to the CB1 bracket -- not two separate thin arms
+// with hollow space between them. t6be/t7/t7u are EDGE points (no
+// separate expanding radius/boss), matching t2-t4's own convention.
+// T4U (not t4) is the top-side anchor; the T4U->t5 edge is a flat line
+// at the SAME Z as the existing t4-t5 edge, passing directly over t4
+// (exact-coincident overlap with the existing rib material).
 RIB1_WEB_OUTLINE = concat(
     [T4U, t5, t6be_native, t7_native, t7u_native],
     arc_pts(TOP_ARC_CENTER, TOP_ARC_R, t7u_native, T4U)
@@ -1224,9 +1183,9 @@ module lid_hinge_assembly(door_open_deg=0) {
     axle_rod();
     hinge_bracket(FRONT_BOSS_X, FRONT_NEAR_EDGE, 1);
     hinge_bracket(REAR_BOSS_X, REAR_NEAR_EDGE, -1);
-    lid_rib_assembly(RIB0_X, door_open_deg, false);
-    lid_rib_assembly(RIB1_X, door_open_deg, true);   // CB1 lateral link -- middle rib ONLY, prompts/cc_prompt_cb1_link.md
-    lid_rib_assembly(RIB2_X, door_open_deg, false);
+    lid_rib_assembly(RIB0_X, door_open_deg, true);   // CB1 lateral link -- ALL 3 ribs, per Janis's own explicit instruction 2026-07-30 (originally middle-rib-only per prompts/cc_prompt_cb1_link.md's own title; scope widened)
+    lid_rib_assembly(RIB1_X, door_open_deg, true);
+    lid_rib_assembly(RIB2_X, door_open_deg, true);
     lid_rib_rotate(door_open_deg) handle_rod();
 }
 

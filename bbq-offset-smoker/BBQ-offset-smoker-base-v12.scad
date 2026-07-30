@@ -960,70 +960,63 @@ DE_LEN  = norm([RIB_REF_E[0]-RIB_REF_D[0], RIB_REF_E[1]-RIB_REF_D[1]]);
 // since D/E never rotate -- but the RESULT is an open-frame target and
 // MUST go through freeze_from_open() before use in the native profile.
 function tangential_pt(s,n) = [RIB_REF_D[0]+s*DE_DIR[0]+n*DE_NORM[0], RIB_REF_D[1]+s*DE_DIR[1]+n*DE_NORM[1]];
-// frozen_rect(s0,s1,n0,n1) -- 4 corners of an axis-aligned (s,n)
-// rectangle, each individually frozen to native frame then pt2-mapped.
-// Built as an explicit polygon (not square()) because a frozen
-// rectangle is a ROTATED square in native/pt2 space, not axis-aligned.
-function frozen_rect(s0,s1,n0,n1) = [
-    pt2(freeze_from_open(tangential_pt(s0,n0))),
-    pt2(freeze_from_open(tangential_pt(s1,n0))),
-    pt2(freeze_from_open(tangential_pt(s1,n1))),
-    pt2(freeze_from_open(tangential_pt(s0,n1)))
-];
 
 CB1_OD        = 101.6;                          // 4" square tube
 CB1_AIR_GAP   = 20;
 CB1_STANDOFF  = CB1_AIR_GAP + CB1_OD/2;          // 70.8mm, DE face to tube centerline, along DE_NORM
 CB1_EDGE_FRAC = 0.40;                            // CHANGED from the prompt's literal 0.30 -- reproduces the prompt's own already-flagged ~5mm D-clearance at 0.30; 40% gives a real, verified 30.27mm
-UWALL         = 20;                              // bracket wall thickness AND the offset from CB1's own outline -- per Janis's own simplified spec this round
+UWALL         = 20;                              // Ua/Ub/Uc wall thickness -- the prompt's own literal "20mm wall"
+UARM_REACH    = CB1_OD/2;                        // 50.8mm ("2 inch") -- Ua/Uc's own literal reach along the pipe face, from Ub to CB1's own centerline. Janis confirmed 2026-07-30: wrap only this much, not the full tube -- "enough for welding it to this rib," not meant to surround the entire CB1.
 NECK_HALF_W   = 20;
 NECK_LEN      = 25;                              // rigid, fixed length -- the prompt's own primary control
 
 CB1_EDGE_DIST = CB1_EDGE_FRAC * DE_LEN;                  // s-position of CB1's own center
-SQ_HALF       = CB1_OD/2 + UWALL;                        // 70.8mm -- half-width of the offset-20mm bracket square (coincides numerically with CB1_STANDOFF, both 70.8, since CB1_AIR_GAP=UWALL=20 -- a real, checked property, not assumed: it puts the square's own near-DE face exactly ON the DE line, n=0)
-Ubbc_s        = CB1_EDGE_DIST - SQ_HALF;                 // bracket's own back (D-facing) edge, s-position -- neck attaches here, at n=CB1_STANDOFF (vertical center)
-Ubbc          = tangential_pt(Ubbc_s, CB1_STANDOFF);      // reference point only (QA/reporting) -- OPEN-frame coordinate
+Ub_inner_s    = CB1_EDGE_DIST - UARM_REACH;              // Ub's own inner (tube-side) face -- where Ua/Uc's own reach starts
+Ub_outer_s    = Ub_inner_s - UWALL;                       // Ub's own outer (D-side/back) face -- neck attaches here
+Uarm_top_n    = CB1_STANDOFF + CB1_OD/2 + UWALL;         // Ua's own outer face
+Ubbc          = tangential_pt(Ub_outer_s, CB1_STANDOFF); // reference point only (QA/reporting) -- OPEN-frame coordinate
+
+// CB1 bracket -- Ua (top arm) / Ub (back wall) / Uc (bottom arm, DE-
+// contact stopper), per the prompt's own literal text, confirmed correct
+// by Janis 2026-07-30 against a labeled diagram (this exact orientation
+// was WRONG in the immediately preceding round -- see cc_chat_log.md):
+//   "Ua/Ub/Uc = U-shaped welded bracket wrapping CB1 on 3 sides, 20mm
+//    wall, Ua/Uc reach 2in (50.8mm) along the pipe face, Uc's outer face
+//    is the DE-contact stopper."
+//   "Ubbc = point on Ub's own back edge (intersection of Ub's centerline
+//    parallel to DE, and Ub's back edge perpendicular to DE)."
+// Ub is the back wall, perpendicular to DE, full height (its centerline
+// -- a line at n=CB1_STANDOFF -- runs parallel to DE; its own back edge
+// -- at s=Ub_outer_s -- runs perpendicular to DE; Ubbc is where these
+// two lines cross). Ua/Uc are the two arms, reaching UARM_REACH from
+// Ub's own inner face to CB1's own centerline (NOT the full tube -- per
+// Janis, wrapping half is enough for the weld, not meant to enclose
+// CB1 entirely). Built as ONE single traced polygon -- Janis's own
+// explicit instruction ("union it to be one single piece... call it ua,
+// ub, uc just for easy to locate them", i.e. these are LABELS for
+// regions of one part, not 3 separately-unioned solids) -- a union of 3
+// separate rectangles hits the exact OpenSCAD 2D boolean coincident-edge
+// gap trap already found once this project (rules-bbq-fab.md).
+BRACKET_OUTLINE = [
+    tangential_pt(Ub_outer_s-NECK_LEN, CB1_STANDOFF-NECK_HALF_W),  // neck tab tip, bottom (dangling -- no link to t7 yet)
+    tangential_pt(Ub_outer_s, CB1_STANDOFF-NECK_HALF_W),            // neck root, bottom, on Ub's own back face
+    tangential_pt(Ub_outer_s, 0),                                    // Ub back-bottom corner
+    tangential_pt(CB1_EDGE_DIST, 0),                                 // Uc outer-bottom corner -- DE-contact stopper, on the DE line itself
+    tangential_pt(CB1_EDGE_DIST, CB1_STANDOFF-CB1_OD/2),             // Uc inner-top corner (at CB1's own centerline)
+    tangential_pt(Ub_inner_s, CB1_STANDOFF-CB1_OD/2),                // U-mouth, bottom (Ub/Uc inner corner)
+    tangential_pt(Ub_inner_s, CB1_STANDOFF+CB1_OD/2),                // U-mouth, top (Ub/Ua inner corner)
+    tangential_pt(CB1_EDGE_DIST, CB1_STANDOFF+CB1_OD/2),             // Ua inner-bottom corner (at CB1's own centerline)
+    tangential_pt(CB1_EDGE_DIST, Uarm_top_n),                        // Ua outer-top corner
+    tangential_pt(Ub_outer_s, Uarm_top_n),                           // Ub back-top corner
+    tangential_pt(Ub_outer_s, CB1_STANDOFF+NECK_HALF_W),             // neck root, top, on Ub's own back face
+    tangential_pt(Ub_outer_s-NECK_LEN, CB1_STANDOFF+NECK_HALF_W),   // neck tab tip, top (dangling -- no link to t7 yet)
+];
 
 // Per Janis's own explicit instruction this round: do NOT draw the link
 // to t7 yet (bottom/top rib arms connecting this bracket back to the
-// existing t4/t5 rib body) -- CB1 tube's own bracket + the neck ROOT
-// shape only, this round.
+// existing t4/t5 rib body) -- CB1 bracket + the neck ROOT shape only.
 module cb1_link_2d() {
-    union() {
-        // Bracket: a single square, offset UWALL(20mm) from CB1's own
-        // outline on all 4 sides, minus the FAR (away-from-DE) HALF of
-        // CB1's own footprint, extended up to actually BREACH the
-        // square's own top edge (difference of 2 explicit polygons --
-        // Janis's own simplification this round, replacing the earlier
-        // 3-rectangle U-channel trace: guaranteed single piece by
-        // construction, no coincident-edge union to fail). Real, checked
-        // finding: a notch sized to EXACTLY half of CB1's own footprint
-        // (n=[CB1_STANDOFF-CB1_OD/2, CB1_STANDOFF]) stays 20mm short of
-        // every outer edge (the same UWALL margin added on all sides) --
-        // it does NOT breach, leaving an enclosed hole (a picture-frame
-        // shape) instead of a real, open "U" (confirmed via an isolated
-        // DXF contour test: 2 contours, outer+inner-hole, not a real U).
-        // Fix: extend the notch's own far edge from CB1_STANDOFF out to
-        // CB1_STANDOFF+SQ_HALF -- the square's own real top edge -- so it
-        // genuinely breaches. Net shape: solid full-width bottom slab
-        // (n=[0,CB1_STANDOFF], the real DE-contact stopper foot when
-        // open -- its own outer face sits exactly on the DE line, n=0)
-        // plus two solid corner posts (the 20mm side margins, left/right
-        // of CB1's own s-span) rising the full height -- a real, literal
-        // U shape, open at the top-center, wrapping CB1 on 3 sides.
-        difference() {
-            polygon(points=frozen_rect(CB1_EDGE_DIST-SQ_HALF, CB1_EDGE_DIST+SQ_HALF, CB1_STANDOFF-SQ_HALF, CB1_STANDOFF+SQ_HALF));
-            polygon(points=frozen_rect(CB1_EDGE_DIST-CB1_OD/2, CB1_EDGE_DIST+CB1_OD/2, CB1_STANDOFF, CB1_STANDOFF+SQ_HALF));
-        }
-        // Neck ROOT -- rigid 25mm x 40mm pad from Ubbc outward (toward
-        // D), extended 5mm INTO the bracket's own solid back wall for a
-        // real, deliberate overlap (not a coincident touching edge --
-        // the exact "OpenSCAD 2D boolean gap" trap this project has hit
-        // before; the bracket's back wall at s=Ubbc_s is confirmed solid
-        // across the full neck n-range, so this overlap is real material
-        // on both sides, not a void). Dangling end (no link to t7 yet).
-        polygon(points=frozen_rect(Ubbc_s-NECK_LEN, Ubbc_s+5, CB1_STANDOFF-NECK_HALF_W, CB1_STANDOFF+NECK_HALF_W));
-    }
+    polygon(points=[for(p=BRACKET_OUTLINE) pt2(freeze_from_open(p))]);
 }
 
 module rib_profile_2d_native(with_cb1=false) {

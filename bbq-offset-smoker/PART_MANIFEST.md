@@ -4,7 +4,17 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.36 — 2026-07-30 (bbq-lid-hinge-v12 REWORK, same-day
+# Version: 1.37 — 2026-07-30 (bbq-lid-hinge-v12, 2nd REWORK same-day):
+# `cb1_link_2d()` bracket ORIENTATION CONFIRMED CORRECT by Janis — Ub
+# (back wall, perpendicular to DE) / Ua (top arm) / Uc (bottom arm, DE-
+# contact stopper), matching the prompt's own literal text exactly (the
+# 1.36 pass's "square minus notch" had the U open on the wrong side).
+# Built as ONE traced polygon (`BRACKET_OUTLINE`), not 3 unioned pieces,
+# per Janis's own explicit instruction. `UARM_REACH`=50.8mm (2in)
+# confirmed — wraps only half of CB1, "enough for welding," not the full
+# tube. DXF: `cb1_link_2d()` alone = 1 contour (single piece). Full
+# detail: cc_chat_log.md 2026-07-30 2nd REWORK entry.
+# Previous: 1.36 — 2026-07-30 (bbq-lid-hinge-v12 REWORK, same-day
 # follow-up): `cb1_link_2d()` REBUILT — Janis caught a real frame error
 # in the 1.35 pass directly from a render (CB1 was baked into the CLOSED
 # state instead of the OPEN state, backwards for a stopper). Fixed via

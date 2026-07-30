@@ -1,5 +1,19 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.14 — 2026-07-30
+> Version 1.15 — 2026-07-30
+> Changes: bbq-lid-hinge-v12, 2nd CB1 REWORK same day — Janis confirmed
+> the bracket orientation was STILL wrong after the 1.14 fix (contour
+> count was fixed, but the "breach one edge" notch opened the wrong
+> side). Amended with 1 more real, locked lesson: a single-contour check
+> confirms a shape is CONNECTED, not that it's ORIENTED correctly — when
+> a casual simplification instruction changes HOW a shape is built
+> without re-stating WHICH original named features (Ua/Ub/Uc etc.) go
+> where, re-derive orientation from the original detailed spec's own
+> literal text, quoted, and confirm with a labeled diagram before
+> touching committed code. Bracket rebuilt as ONE traced polygon
+> (Ub=back wall perpendicular to DE, Ua/Uc=arms reaching 50.8mm along
+> DE to CB1's own centerline, Uc touching DE) — Janis confirmed correct
+> against a pencil-labeled diagram before this fix was committed.
+> Previous: 1.14 — 2026-07-30
 > Changes: bbq-lid-hinge-v12, CB1 REWORK round — Janis caught a real,
 > fundamental error in the first v12 pass directly from a render (not
 > found by cc): CB1 was built directly from the fixed RIB_REF_D/E points
@@ -721,6 +735,25 @@ the same method.
   connected, genuinely-open U/C profile in one single `difference()`
   call. Verify with a DXF contour count: a closed frame reads as 2
   contours, a real open U reads as 1.
+- **CORRECTION to the bullet immediately above, same day**: fixing the
+  CONTOUR COUNT (1 vs 2) is not the same as fixing the ORIENTATION — the
+  very next round, using this exact "breach one edge" technique, breached
+  the WRONG edge and produced a single-piece U that was still physically
+  backwards (open on the side away from where the tube needs its weld
+  reach, not along the pipe face as the spec required). Root cause:
+  Janis's own casual simplification instruction ("just subtract a
+  square") didn't specify a breach DIRECTION, and cc guessed one without
+  re-checking it against the ORIGINAL detailed spec's own named parts
+  (`Ua`/`Ub`/`Uc` here — which arm reaches where, which face contacts the
+  fixed structure). **A single DXF contour confirms the piece is
+  connected — it says NOTHING about whether the shape is oriented
+  correctly.** When a casual/simplified rebuild instruction changes HOW a
+  shape is built (union -> difference, 3 pieces -> 1 square) without
+  re-stating WHICH original named features go where, re-derive the
+  orientation from the ORIGINAL detailed spec's own literal text before
+  writing code — quote it, don't re-guess it — then confirm with a
+  labeled diagram before touching the committed file, especially after a
+  prior round already got this same feature wrong once.
 
 ---
 

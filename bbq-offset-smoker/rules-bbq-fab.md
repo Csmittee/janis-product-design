@@ -1,5 +1,17 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.12 — 2026-07-26
+> Version 1.13 — 2026-07-30
+> Changes: bbq-lid-hinge-v12, CB1 lateral link round. Amended the
+> "Three-Rib Lid Counterbalance System" section with 2 new real, locked
+> lessons: (1) a multi-piece bracket built as several separately-unioned
+> rectangles can hit OpenSCAD's own 2D boolean coincident-edge gap trap
+> even with mathematically exact shared edges — fix is to trace the whole
+> shape as ONE single polygon, not union separate pieces; (2) a point
+> constrained to a single axis (e.g. "vertical line offset by >=Nmm") can
+> be a genuine impossibility once two independent clearance floors apply
+> from opposite directions on that same axis — fix is to free up a second
+> degree of freedom (diagonal offset) and re-solve, not push harder on the
+> same axis.
+> Previous: 1.12 — 2026-07-26
 > Changes: pointer split — the general "open-then-freeze" method now
 > lives in `.claude/SKILL_kinematic_frame_construction.md` (reusable
 > across products), `docs/hinge-construction.md` keeps BBQ's own
@@ -602,6 +614,45 @@ the same method.
   rib/link point against a real physical target — reusable across any
   product, not BBQ-specific — now lives in `.claude/
   SKILL_kinematic_frame_construction.md` (split out 2026-07-26).
+- **A multi-piece bracket/pad built as several separately-unioned
+  rectangles can hit OpenSCAD's own 2D boolean coincident-edge gap trap,
+  even when every coordinate is analytically exact** (bbq-lid-hinge-v12,
+  CB1 lateral link U-bracket): 3 axis-aligned rectangles (back wall + 2
+  arms) sharing a long COINCIDENT (not overlapping) straight edge — same
+  variable, same formula, zero floating-point drift — still produced 2
+  separate DXF contours instead of 1 (confirmed via an isolated minimal
+  test, the exact discipline `.claude/SKILL_local_render.md`'s own
+  "technical trap" section already calls for). This is a DIFFERENT
+  failure mode from the near-miss/rounding gaps that section already
+  documents (those involve a real, if tiny, measured distance between
+  pieces) — here the edges are mathematically identical, and the union
+  still split. **Real fix: trace the whole multi-segment shape as ONE
+  single simple polygon (one ordered point list, one `polygon()` call)
+  instead of unioning separate rectangles/pieces that happen to share an
+  edge.** A single polygon has no internal seam for the boolean engine to
+  fail on, and produces cleaner geometry besides (fewer facets). Prefer
+  this construction from the start for any bracket/pad assembled from
+  more than one rectilinear piece — don't reach for `union()` of
+  primitives as the default and only fall back to a single traced
+  outline after hitting the gap.
+- **A point defined as "a vertical/single-axis line offset from a fixed
+  center by >= Nmm" can be a genuine mathematical impossibility once two
+  independent clearance floors apply on opposite sides of that same
+  line** (bbq-lid-hinge-v12, `t6be`): the prompt's own literal spec (a
+  pure-vertical line through the t6 pivot, offset down >=15mm) required
+  simultaneously satisfying a ridge-floor constraint (Z >= a fixed
+  minimum, pushing the point UP) and a pivot-boss keepout constraint
+  (Z <= a fixed maximum, pushing the point DOWN) — on a single vertical
+  line these two floors conflicted by a real, computed 4.5mm under this
+  project's own 20mm-half-width convention, not a construction failure.
+  **Real fix: relax the constraint from a single-axis line to a
+  diagonal offset (both axes free) and re-solve** — the same two
+  clearance floors, now satisfiable together off-axis, gave a real
+  10.0mm/11.6mm margin on each side. Before iterating harder on a
+  single-axis placement that keeps producing a negative or near-zero
+  margin, check algebraically whether the two floors are compatible on
+  that axis AT ALL — if not, the fix is a different degree of freedom,
+  not a different number on the same one.
 
 ---
 

@@ -4,7 +4,16 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.34 — 2026-07-27 (bbq-lid-hinge-v11, direct-cc, real
+# Version: 1.35 — 2026-07-30 (bbq-lid-hinge-v12, direct-cc, CB1 lateral
+# link built per Janis's language-spec prompt): base assembly table
+# pointer now BBQ-offset-smoker-base-v12.scad (source v11). NEW
+# `cb1_link_2d()`, RIB1-only via new `with_cb1` flag. Two real, disclosed
+# deviations from the prompt's literal numbers (`CB1_EDGE_FRAC`
+# 0.30->0.40, `t6be` diagonal offset instead of pure-vertical) — both
+# proven-necessary fixes, not unilateral redesign, see this round's own
+# section below and cc_chat_log.md for full numbers/reasoning. Full
+# `--render` (CGAL) `Simple: yes` at 0/45/90°, DXF 3-contour check clean.
+# Previous: 1.34 — 2026-07-27 (bbq-lid-hinge-v11, direct-cc, real
 # door/handle-side rib rebuild + CB1 removal): base assembly table
 # pointer now BBQ-offset-smoker-base-v11.scad (source v9 -- v10 was WIP,
 # never finalized, superseded). `rib_solid()`/`rib_profile_2d_native()`
@@ -779,6 +788,44 @@ exclusive constants deleted (R-009, zero remaining callers confirmed via
 grep). Relocated to the Accessories branch
 (`BBQ-offset-smoker-base-v3.scad`, below) — NOT gone from the product,
 just no longer built in this file.
+
+## BBQ-offset-smoker-base-v12.scad — now the active file, see below
+
+v12 (bbq-lid-hinge-v12, 2026-07-30, direct-cc, per Janis's language-spec
+prompt `prompts/cc_prompt_cb1_link.md`): NEW `cb1_link_2d()` module — the
+CB1 lateral link (U-bracket + rigid 25mm neck + top/bottom rib arms to
+`t6be`/`t4`), applied to `RIB1_X` (middle rib) ONLY via a new `with_cb1`
+flag threaded through `rib_profile_2d_native()`/`rib_solid()`/
+`lid_rib_assembly()` — `RIB0_X`/`RIB2_X` UNCHANGED, no CB1 link. Two real,
+disclosed deviations from the prompt's literal numbers (both flagged in
+the file's own header): `CB1_EDGE_FRAC` 0.30->0.40 (fixes the prompt's
+own already-flagged ~5mm D-clearance to a real 30.27mm), and `t6be`
+repositioned via a diagonal offset instead of the prompt's literal
+"pure-vertical" placement (proven impossible under this project's own
+20mm-half-width floor — real 10.0mm ridge / 11.6mm boss clearance
+instead). Real construction-technique finding: the U-bracket built as 3
+separate unioned rectangles hit the OpenSCAD 2D boolean coincident-edge
+gap trap (2 contours instead of 1) — fixed by tracing the whole
+bracket+neck as ONE single polygon. DXF: exactly 3 contours (outer +
+pivot bore + handle bore) confirmed both with and without CB1. Full
+`--render` (CGAL) `Simple: yes` at 0/45/90°. `t1`-`t6` profile UNTOUCHED
+(locked, per the prompt's own explicit instruction). Full detail: this
+file's own header, cc_chat_log.md.
+
+## BBQ-offset-smoker-base-v11.scad
+
+v11 (bbq-lid-hinge-v11, 2026-07-27, direct-cc): base assembly table
+pointer bumped from v9 -- v10 was WIP, never finalized, superseded.
+`rib_solid()`/`rib_profile_2d_native()` REBUILT — retires the old
+placeholder-offset door-side spine with a real tangent-circle-and-fillet
+trace through 6 real control points (`RIB_DOORHANDLE_PROFILE_v1`,
+delivered by Claude Web, verified against a Python/Shapely reference).
+`cb1_pipe()` ASSEMBLY-called module RETIRED ENTIRELY this round, per
+Janis's own explicit instruction — a real, deliberate gap (superseded by
+v12's own `cb1_link_2d()` above, RIB1-only). `HANDLE_BORE_D`/
+`HANDLE_WRAP_R` also retired (R-009 confirmed zero remaining consumers).
+Full `--render` (CGAL) `Simple: yes` at 0/45/90°. Full detail:
+docs/hinge-construction.md, cc_chat_log.md.
 
 ## BBQ-offset-smoker-base-v7.scad — now the active file, see below
 

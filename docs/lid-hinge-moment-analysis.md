@@ -5,30 +5,38 @@ Real gravity moment about the shared pivot (`FC_Y`/`FC_Z` =
 the **current, live** geometry in `BBQ-offset-smoker-base-v12.scad` /
 `BBQ-chambers-v26.scad` — not re-derived from an old assumption. This
 supersedes `docs/lid-hinge-counterbalance-calc.md` (built on a retired
-pivot and a retired CB1 counterweight-pipe design that no longer exists).
+pivot and a retired CB1 counterweight-pipe design).
 
-Method (`/tmp/.../scratchpad/moment_analysis.py`, real script, not hand
-algebra):
+> **Revision note (same day):** the first version of this doc omitted
+> the CB1 counterweight pipe — Janis clarified CB1 is actually TWO real
+> parts: the bracket (Ua/Ub/Uc, locked, unchanged) that wraps/welds
+> around a separate **4" square tube, both ends capped**, which is the
+> real counterbalance mass. That pipe had been fully removed from the
+> assembly since v11 and was never re-added as a mass — only the
+> bracket/stopper was rebuilt. It has now been restored
+> (`cb1_pipe()`, same 4"/`CB1_OD` size the bracket was always built to
+> wrap, same `CB1_WALL`=3mm/span formula as the original v6-v9 design)
+> and this analysis redone with it included.
 
-1. Mass + center of gravity of the two shapes with real 2D profiles
-   (rib+CB1 bracket, and the visual lid shell) were taken from an actual
-   STL export of the live OpenSCAD geometry (`rib_solid(RIB1_X, true)`
-   and `lid(0)`), volume/centroid computed by tetrahedron decomposition
-   from the mesh triangles (`stl_mass.py`) — not a hand-derived polygon
-   area, since the rib profile is a `difference()` of several unioned
-   pieces and two bores, which is error-prone to reproduce by hand.
-2. The handle rod's mass/CG is computed analytically (hollow tube + 2
-   end caps) since it's a simple rotationally-symmetric shape centered
-   exactly on `[HANDLE_Y, HANDLE_Z]`.
+## Method
+
+1. Mass + CG of the rib+CB1 bracket, the visual lid shell, and the CB1
+   counterweight pipe were taken from actual STL exports of the live
+   OpenSCAD geometry (`rib_solid(RIB1_X, true)`, `lid(0)`, `cb1_pipe()`),
+   volume/centroid computed by tetrahedron decomposition from the mesh
+   triangles (`stl_mass.py`) — not hand-derived polygon/box math, since
+   several of these shapes are `difference()`/`union()` results that are
+   error-prone to reproduce by hand.
+2. The handle rod's mass/CG is analytic (hollow tube + 2 end caps),
+   since it's a simple rotationally-symmetric shape centered exactly on
+   `[HANDLE_Y, HANDLE_Z]`.
 3. Steel density 7850 kg/m³ (mild steel, this project's own standard
    sheet-metal material per `rules-bbq-fab.md`).
 4. For a rigid body rotating about a fixed pivot via
    `rotate([-door_open_deg,0,0])`, a point's native/closed-frame offset
    from the pivot `(dy,dz)` maps to world position
    `Y(θ) = FC_Y + dy·cosθ + dz·sinθ`. Summing `m·g·Y(θ)` over every
-   rotating component gives the potential energy `PE(θ)`; the moment the
-   user must apply in the opening direction is `dPE/dθ`, which reduces to
-   a clean closed form:
+   rotating component and differentiating gives a clean closed form:
 
    ```
    M(θ) = -g · (A·cosθ + B·sinθ)
@@ -39,68 +47,71 @@ algebra):
    Sign convention matches Janis's own: **positive = user must lift/push
    to open (gravity favors closed)**, **negative = user must pull to
    close (gravity favors open)**.
-5. Only the parts that actually rotate with the door are included: the
-   visual lid shell, all 3 rib+CB1 assemblies, and the handle rod. The
-   hinge brackets (`hinge_bracket()`) are fixed to the chamber and
-   excluded — they never move.
+5. Only parts that actually rotate with the door are included: the
+   visual lid shell, all 3 rib+CB1 bracket assemblies, the handle rod,
+   and the CB1 counterweight pipe. The hinge brackets (`hinge_bracket()`)
+   are fixed to the chamber and excluded.
 
-## Live inputs (echo'd from the actual files, 2026-07-30)
+## Live inputs (echo'd / STL-measured from the actual files, 2026-07-30)
 
 | Component | mass (kg) | dy from pivot (mm) | dz from pivot (mm) |
 |---|---:|---:|---:|
 | Lid shell (3 panels, `lid(0)`) | 8.803 | -172.53 | -218.69 |
 | 3× rib+CB1 bracket (`rib_solid(RIB1_X,true)`, ×3) | 3.481 | -109.82 | -69.10 |
 | Handle rod (hollow tube + end caps) | 0.644 | -352.66 | -470.34 |
-| **Total rotating mass** | **12.927** | | |
+| **CB1 counterweight pipe** (`cb1_pipe()`, 4" sq. tube, both ends capped) | **8.000** | **+85.40** | **+310.19** |
+| **Total rotating mass** | **20.928** | | |
 
-`FC_Y=242.665mm`, `FC_Z=1345.34mm`, `R_HANDLE=587.867mm` (pivot-to-handle
-radius, used to convert torque into an equivalent hand force).
+The CB1 pipe's real computed mass (8.000 kg from actual solid geometry)
+lands almost exactly on Janis's own recollection ("~8 kg") and the
+original locked `CB1_MASS_KG=8.06` value from
+`archive/BBQ-offset-smoker-base-v9.scad` — same OD/wall/span convention,
+independently re-derived here from the current geometry, not copied.
+Note it's the only component with a **positive** dy/dz: it sits on the
+far side of the pivot from the door's own bulk, which is exactly what a
+counterweight is for.
 
-`A = -2.128 kg·m`, `B = -2.468 kg·m`.
+`FC_Y=242.665mm`, `FC_Z=1345.34mm`, `R_HANDLE=587.867mm`.
 
-## Result
+`A = -1.445 kg·m`, `B = +0.013 kg·m` (was `A=-2.128`, `B=-2.468` before
+the pipe was added — the pipe pulls both terms sharply toward zero/
+positive, as expected for a counterweight).
+
+## Result (with the CB1 pipe restored)
 
 | Angle | Moment | Equivalent force at handle |
 |---|---:|---:|
-| 0° (closed) | +20.9 N·m | **+3.6 kgf** (must lift to start opening) |
-| ~45° | +31.9 N·m (peak) | +5.5 kgf |
-| 90° (full open) | +24.2 N·m | **+4.2 kgf** (must still push/hold — never goes negative) |
+| 0° (closed) | +14.2 N·m | **+2.5 kgf** (must lift to start opening) |
+| 45° | +10.0 N·m | +1.7 kgf |
+| 90° (full open) | -0.13 N·m | **-0.02 kgf** (just barely past level) |
 
-Zero-crossing: **none** across the full 0-90° sweep — the moment stays
-positive (closing-favored) at every angle, peaking around 45-50°.
+Zero-crossing: **89.2°** — the moment stays positive (closing-favored)
+almost the entire way, only dipping negative in the last degree of
+travel.
 
 ![Moment vs. angle](lid-hinge-moment-analysis.png)
 
 ## Comparison against Janis's stated design intent
 
-| Janis's requirement | Target | Computed | Verdict |
+| Janis's requirement | Target | Computed (with CB1 pipe) | Verdict |
 |---|---|---|---|
-| Startup lift at 0° | 3-7 kgf to begin lifting | 3.6 kgf | **MEETS** |
-| Zero moment at/after 45° | crosses to negative at 45° or later | never crosses zero | **FAILS** |
-| Gentle negative before 90° (no slam shut) | negative before reaching 90° | stays positive all the way to 90° | **FAILS** |
-| Self-holding at 90° (won't fall back closed) | ~5 kgf pull needed to bring it down | door is NOT self-holding — it takes +4.2 kgf of continued push just to keep it at 90°; release it and gravity swings it back toward CLOSED | **FAILS** |
+| Startup lift at 0° | 3-7 kgf to begin lifting | 2.5 kgf | **CLOSE, slightly under** |
+| Zero moment at/after 45° | crosses to negative at 45° or later | crosses at 89.2° | **TECHNICALLY MEETS "or later," but far later than 45°** |
+| Gentle negative before 90° (no slam shut) | negative before reaching 90° | negative only in the last ~1° | **MARGINAL** |
+| Self-holding at 90° (won't fall back closed) | ~5 kgf pull needed to bring it down | -0.02 kgf — essentially neutral equilibrium | **FAILS** |
 
-**1 of 4 criteria met.** The root cause is structural, not a tuning
-error: gravity's net moment stays same-signed (closing-favored) across
-the whole sweep because `A` and `B` are both negative — the combined CG
-of the lid+ribs+handle never crosses to the other side of "directly
-below the pivot" as the door opens. A sign flip requires a real
-counterbalancing mass whose own CG swings from one side of the pivot to
-the other during the 0-90° travel (this is what the original, since-
-retired CB1 counterweight *pipe* concept in
-`docs/lid-hinge-counterbalance-calc.md` was for). The **current** CB1 is
-a welded stopper/bracket only — it adds a small amount of mass near the
-rib, but not enough leverage on the far side of the pivot to flip the
-sign (confirmed by the numbers above: CB1's mass is already included in
-the "3× rib+CB1 bracket" row and the moment still never goes negative).
-
-**Bottom line:** the current door behaves like an ordinary gravity-
-closed hatch — it needs a light, steady push the whole way from closed
-to open (about 3.6-5.5 kgf), and it will swing itself shut if released
-at any angle, including fully open. It will not slam on the way down
-from a good push (peak resistance is mid-travel, ~45-50°, not right at
-the end), but it also will not stay open on its own and does not need a
-deliberate pull to close. Achieving Janis's full envelope (self-holding
-open, needs a pull to close) needs a real counterweight mass added on
-the correct side of the pivot — a follow-up design decision, not a code
-bug in the current geometry.
+**Big improvement over the no-counterweight case** (previously the
+moment never went negative at all), but restoring the pipe at its
+*current* position/size (tuned for bracket clearance, not for this
+moment target) lands the design almost exactly *balanced* rather than
+*self-holding open*: at 90° the door is in near-neutral equilibrium
+(essentially weightless to hold, but also not gripping itself open with
+any real margin — a light bump could tip it either way). To hit
+Janis's actual target (a real ~5 kgf pull needed to close it from 90°,
+and the zero-crossing nearer 45-60° instead of 89°) would need *more*
+counterweight leverage on the far side of the pivot — e.g. a heavier
+pipe, a longer `CB1_STANDOFF`, or moving `CB1_EDGE_FRAC` — a real
+tuning decision on the 3 adjustable knobs, not a code defect. CB1's
+position wasn't moved in this round since Janis called the bracket
+"locked" — flagging this for a decision rather than changing it
+unilaterally.

@@ -4,7 +4,66 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.41 — 2026-07-30 (bbq-lid-hinge-v12, sanitization + real
+# Version: 1.44 — 2026-07-30 (bbq-lid-hinge-v12, tray link fix + skirt):
+# Janis CONFIRMED the H/face-HA reading (octagon has 8 vertices, H is
+# the last one going around, face HA is the face just before apex A --
+# matches 1.43's own construction exactly). Two real corrections: (1)
+# folding link flipped -- `ts` is now `al` itself (the real, fixed
+# anchor), 45° projected the OTHER way (from al up to the tray's own Z)
+# to find `tt`, landing well inside the tray's real tip as Janis called
+# for. New link length: 262.1mm (was 403.1mm, the old approximate `ts`
+# missed `al` by ~100mm). (2) new `TRAY_SKIRT_H`=10mm -- a downturned lip
+# at the tray's own inner edge, rigidly part of the tray, covers the
+# hinge from view at every angle and finishes the raw edge. Re-verified
+# Simple:yes at 0/45/90 door + -90/0 tray angles, interference sweep vs
+# front_wheel_support() still empty at every tray angle with the skirt
+# added.
+# Previous: 1.43 — 2026-07-30 (bbq-lid-hinge-v12, TRAY RELOCATION
+# BRACKET -- fixes real grab-handle-vs-tray collision): old tray hinge
+# (HINGE_Z=880) put the deployed tray plate inside the handle boss's own
+# Z-range (t1/R1 -> Z=[850.3,899.7]) -- real overlap, not a near-miss.
+# Janis's own 5-step method, executed literally (full derivation +
+# diagram: docs/tray-relocation-bracket.md): new triangular gusset
+# bracket (`tray_bracket()`, apex A / hal / al, 30mm wide, ONE flagged
+# interpretation -- "face HA" = the existing chamfer wall from apex A
+# down to the floor corner, since no other reading makes step 2's own
+# wording work -- disclosed, not silently assumed) mounted at the same 4
+# hinge X positions as before. HINGE_Z REDEFINED (old formula deleted,
+# not left dead) to lowest-point-of-t1-minus-15mm = 835.3mm -- real
+# 13mm clearance now confirmed vs the old full overlap. Folding link
+# length computed: tt (tray tip -20mm) to ts (45° line to the apex-A/al
+# plane) = 403.1mm -- the number to source a real part with, link itself
+# not modeled as a mechanism (that wasn't the ask). Re-verified
+# `Simple: yes` at 0/45/90° door + -90/0° tray angles, and a real
+# interference sweep (trays() vs front_wheel_support(), tray angle
+# -90/-60/-30/0°) confirms empty at every angle -- no new collision
+# introduced by the 44.7mm relocation.
+# Previous: 1.42 — 2026-07-30 (bbq-lid-hinge-v12, CB1 counterweight pipe
+# RESTORED): Janis clarified CB1 is 2 real parts -- the bracket
+# (Ua/Ub/Uc, locked, unchanged) AND a separate 4" square tube, both ends
+# capped, that the bracket wraps/welds around -- the pipe is the real
+# counterbalance mass and had been missing (never re-added) since v11.
+# New `cb1_pipe()` module: same `CB1_OD`(101.6mm/4") the bracket was
+# always built to wrap, `CB1_WALL`=3mm, `CB1_LEN`=chamber_L-100=815mm
+# centered on chamber_L (same span/wall formula as the original v6-v9
+# design in `archive/BBQ-offset-smoker-base-v9.scad`), positioned at the
+# SAME open-frame centerline the bracket wraps
+# (`tangential_pt(CB1_EDGE_DIST, CB1_STANDOFF)`), frozen to native frame
+# the same way as every other CB1 point. Wired in via `lid_rib_rotate()`
+# alongside `handle_rod()` (spans all 3 ribs as one rigid piece, not
+# per-rib). Real computed mass from the actual solid: 8.000kg -- matches
+# Janis's own ~8kg recollection and the old locked `CB1_MASS_KG`=8.06
+# almost exactly. Re-verified `Simple: yes` at 0/45/90° with the pipe
+# present. Moment analysis (`docs/lid-hinge-moment-analysis.md`)
+# redone: adding the pipe flips the moment negative near 90° (was never
+# negative at all before), but at its current position the door lands
+# in near-neutral equilibrium at 90° (-0.02kgf, not Janis's ~5kgf
+# holding target) and the zero-crossing is at 89.2°, not ~45-60° --
+# hitting the full target envelope needs more counterweight leverage (a
+# heavier pipe, longer CB1_STANDOFF, or a different CB1_EDGE_FRAC) -- a
+# tuning decision flagged for Janis, not changed unilaterally since the
+# bracket position is locked.
+# Previous: 1.41 — 2026-07-30 (bbq-lid-hinge-v12, sanitization + real
 # moment analysis round): (1) confirmed CB1 was never actually missing
 # from the assembly (Janis's screenshot concern) — direct render
 # verification at 0° and 90° shows the bracket present at both angles,

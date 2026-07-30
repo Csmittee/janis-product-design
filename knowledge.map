@@ -1,5 +1,45 @@
 # knowledge.map
-# Version: v97 — 2026-07-30
+# Version: v100 — 2026-07-30
+# Changes: bbq-lid-hinge-v12, tray link fix + skirt. Janis CONFIRMED the
+# H/face-HA reading (octagon's 8th vertex, face just before apex A --
+# matches v99's construction exactly). Folding link flipped: ts=al
+# itself (fixed anchor), 45° projected from al up to the tray's own Z to
+# find tt -- new length 262.1mm (was 403.1mm, approximate). New
+# TRAY_SKIRT_H=10mm lip at the tray's inner edge, covers the hinge at
+# every angle, finishes the raw edge. Re-verified Simple:yes + empty
+# interference sweep vs front_wheel_support() with the skirt added.
+# Previous: v99 — 2026-07-30
+# Changes: bbq-lid-hinge-v12, TRAY RELOCATION BRACKET -- fixes real
+# grab-handle-vs-tray collision (old HINGE_Z=880 put the deployed tray
+# plate inside the handle boss's own Z-range). New triangular gusset
+# bracket (`tray_bracket()`, 4 copies, same hinge X spacing) per Janis's
+# own 5-step method (full derivation: docs/tray-relocation-bracket.md) --
+# one flagged interpretation disclosed ("face HA" = the existing chamfer
+# wall below apex A, the only reading that makes step 2 work). HINGE_Z
+# redefined to 835.3mm (lowest point of handle boss t1 minus 15mm), old
+# formula deleted not left dead. Folding link length computed: 403.1mm
+# (tt to ts, the number to source a real part with). Re-verified
+# Simple:yes at 0/45/90 door + -90/0 tray angles, and a real
+# interference sweep vs front_wheel_support() across the full tray
+# stow-to-deploy range confirms empty -- no new collision introduced.
+# Previous: v98 — 2026-07-30
+# Changes: bbq-lid-hinge-v12, CB1 counterweight PIPE RESTORED. CB1 is 2
+# real parts: the bracket (Ua/Ub/Uc, locked) + a separate 4" square tube
+# (`cb1_pipe()`, both ends capped) the bracket wraps/welds around -- the
+# pipe carries the real counterbalance mass and had been missing since
+# v11 (only the bracket/stopper was ever rebuilt). Restored at the same
+# CB1_OD/span/wall convention as the original v6-v9 design, wired in via
+# lid_rib_rotate() alongside handle_rod(). Real mass from the actual
+# solid: 8.000kg (matches Janis's own ~8kg recollection + the old
+# locked CB1_MASS_KG=8.06 almost exactly). Re-verified Simple:yes at
+# 0/45/90. Moment analysis redone (docs/lid-hinge-moment-analysis.md):
+# adding the pipe flips the moment negative near 90° (previously never
+# negative at all), but lands near-neutral equilibrium at 90° rather
+# than Janis's ~5kgf holding target, and the zero-crossing is at 89.2°
+# not ~45-60° -- hitting the full envelope needs more counterweight
+# leverage, flagged as a tuning decision for Janis (CB1 position/size
+# not moved unilaterally, bracket called locked).
+# Previous: v97 — 2026-07-30
 # Changes: bbq-lid-hinge-v12, sanitization + real moment analysis round.
 # CB1 confirmed present in the render at 0/90° (Janis's "missing CB1"
 # screenshot concern was a viewing-angle/zoom issue, not a code bug).

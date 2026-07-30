@@ -61,6 +61,7 @@ TRAY_COUNT      = 2;                              // fixed, Janis's own spec
 TRAY_L          = chamber_L / TRAY_COUNT;         // 457.5mm each, real live value (chamber_L=915, read live)
 TRAY_D          = 300;                            // deployed depth, Y, projecting outward (toward -Y, the Standing Orientation Convention's own "toward the user" side)
 TRAY_T          = 2;                              // 2mm plate, thin-shell representation — consistent with this project's existing sheet-metal parts (rules-bbq-fab.md Construction Method)
+TRAY_SKIRT_H    = 10;                              // mm, Janis's own explicit spec -- a real judgment call on exact placement (not given): a downturned lip at the tray's own inner (hinge-side) edge, folded 90° from the main plate and rigidly part of the tray, so it covers the hinge from view and finishes the raw edge at every angle (stowed or deployed), not just one
 TRAY_GAP        = 5;                              // real assembly tolerance, ADDITIVE (confirmed below, not absorbed into TRAY_L)
 TRAY_TOTAL_SPAN = TRAY_L * TRAY_COUNT + TRAY_GAP; // 920mm — real, ADDITIVE: 2x457.5 + 5, confirmed 5mm MORE than chamber_L(915), not shrunk to fit inside it
 // Real span centered on chamber_L's own midpoint — a small, real, stated
@@ -73,13 +74,11 @@ TRAY_X0         = (chamber_L - TRAY_TOTAL_SPAN) / 2;   // -2.5mm
 TRAY0_X0        = TRAY_X0;                        // -2.5
 TRAY1_X0        = TRAY_X0 + TRAY_L + TRAY_GAP;    // 460mm
 
-// Hinges — mounted to TASK 1's REAL new fixed band, read live (NOT
-// hardcoded 980, per the prompt's own explicit instruction) — 20mm below
-// NEW_SPLIT_Z's own real confirmed value (1000mm this round, matches the
-// prompt's own expected 980mm exactly because NEW_SPLIT_Z landed exactly
-// at the expected 1000mm — stated as a live read, not a coincidence
-// silently assumed to always hold).
-HINGE_Z         = NEW_SPLIT_Z - 20;               // 980mm, real live value
+// HINGE_Z itself is defined further down this file (needs t1/R1/HANDLE_Z,
+// the handle boss, which aren't known yet at this point in the file) --
+// see "Tray relocation bracket" section below for the real, current
+// value and why (2026-07-30: moved off the chamber wall entirely, the
+// old NEW_SPLIT_Z-20 value collided with the handle boss).
 HINGE_W         = 20;
 HINGE_H         = 20;
 HINGE_INTO_WALL = 10;                             // real Y depth, pushes past wall_t(3mm) with margin for genuine weld contact, not a coincident face
@@ -120,6 +119,8 @@ module tray_hinge(x_pos) {
 module tray_hinges(x0) {
     tray_hinge(x0 + HINGE_OFFSET);
     tray_hinge(x0 + TRAY_L - HINGE_OFFSET);
+    tray_bracket(x0 + HINGE_OFFSET);
+    tray_bracket(x0 + TRAY_L - HINGE_OFFSET);
 }
 // tray() — welded steel frame + 2mm plate (thin-shell representation).
 // Real rotation axis: Y=-HINGE_PIVOT_OFFSET (the hinge's own real
@@ -140,8 +141,15 @@ module tray_hinges(x0) {
 // list and results.
 module tray(x0, angle_deg) {
     tray_hinges(x0);
-    translate([x0, -HINGE_PIVOT_OFFSET, HINGE_Z]) rotate([angle_deg, 0, 0]) translate([0, -TRAY_D - e, 0])
-        cube([TRAY_L, TRAY_D, TRAY_T]);
+    translate([x0, -HINGE_PIVOT_OFFSET, HINGE_Z]) rotate([angle_deg, 0, 0]) {
+        translate([0, -TRAY_D - e, 0])
+            cube([TRAY_L, TRAY_D, TRAY_T]);
+        // skirt -- rigidly part of the tray, so it stays over the hinge
+        // at every angle (stowed or deployed), not just one; overlaps the
+        // main plate's own inner edge for a real weld, not a coincident face
+        translate([0, -e-TRAY_T, -TRAY_SKIRT_H])
+            cube([TRAY_L, 2*TRAY_T, TRAY_SKIRT_H + TRAY_T]);
+    }
 }
 // TASK 2 kinetic parameter — each tray's OWN independent angle, real
 // chosen names: tray0_angle_deg / tray1_angle_deg (not shared, per spec).
@@ -297,6 +305,52 @@ OUTWARD=[-0.6,0.5];
 HANDLE_MEAT=12;
 
 t1=[HANDLE_Y,HANDLE_Z];                                    R1=HANDLE_ROD_OD/2+HANDLE_MEAT;
+
+// ─── Tray relocation bracket + new hinge Z -- 2026-07-30, per Janis's
+// own 5-step construction (grab handle was colliding with the tray's
+// old hinge -- t1's own boss spans Z=[825.6,899.7], the old HINGE_Z=880
+// sat right inside it). Real, disclosed judgment call: "face HA" isn't
+// an existing term in this project -- cc's own reading, geometrically
+// forced by step 2's own wording ("horizontal line from face HA to
+// connect with al" only makes sense if apex A does NOT itself sit on
+// face HA) is that H is the existing octagon corner where the chamber
+// floor meets the 45° chamfer wall below apex A, and face HA is that
+// diagonal chamfer wall. Flagged for Janis to correct if wrong --
+// everything below follows from this one reading.
+TRAY_H_POINT   = [chamfer, chamber_floor_z];              // existing octagon corner (floor / chamfer-wall junction) below apex A
+// step 1: straight line down from apex A, 200mm in Z
+TRAY_AL        = [RIB_REF_A[0], RIB_REF_A[1] - 200];      // "al"
+// step 2: face HA's own real line (apex A -> H), extended to al's own Z
+TRAY_HAL_SLOPE = (TRAY_H_POINT[0]-RIB_REF_A[0]) / (TRAY_H_POINT[1]-RIB_REF_A[1]);   // dY/dZ along face HA
+TRAY_HAL       = [RIB_REF_A[0] + TRAY_HAL_SLOPE*(TRAY_AL[1]-RIB_REF_A[1]), TRAY_AL[1]];   // "hal"
+// step 3: triangle bracket outline (apex A - hal - al), one per hinge
+TRAY_BRACKET_OUTLINE = [RIB_REF_A, TRAY_HAL, TRAY_AL];
+TRAY_BRACKET_W = HINGE_W + 10;    // 30mm -- real judgment call, must be at least HINGE_W(20mm) wide to weld the hinge to, +5mm margin each side; no exact width given
+// step 4: new tray/hinge Z -- lowest point of t1 (handle boss, incl.
+// its own rib meat) minus 15mm real escape clearance. Re-defines
+// HINGE_Z (was NEW_SPLIT_Z-20 -- that old value sat inside the handle
+// boss, the actual collision Janis reported) -- same global name reused
+// so tray_hinge()/tray() below need no other change, only their real
+// mounting point moves down onto this new bracket instead of the old
+// (non-existent, below apex A the wall doesn't reach this far out)
+// wall material.
+HINGE_Z        = (HANDLE_Z - R1) - 15;   // 835.3mm at current values -- REDEFINES the placeholder further up this file
+module tray_bracket(x_center) {
+    translate([x_center,0,0]) rotate([0,90,0]) translate([0,0,-TRAY_BRACKET_W/2])
+        linear_extrude(height=TRAY_BRACKET_W, convexity=4)
+            polygon(points=[for(p=TRAY_BRACKET_OUTLINE) pt2(p)]);
+}
+
+// step 5: folding link -- Janis's own correction, 2026-07-30: al (fixed
+// by step 1) is the real anchor ("ts"), NOT a point merely close to it --
+// project the 45° line the OTHER way, FROM al back up to the tray's own
+// underside (Z=HINGE_Z), to find "tt" instead. tt lands well inside the
+// tray's own real tip (deployed Y-span reaches -305.01mm; tt below is
+// -185.3mm -- confirmed inside, not past it, exactly as Janis called for).
+TRAY_LINK_TS  = TRAY_AL;                                            // "ts" = al itself, the real fixed anchor
+TRAY_LINK_TT  = [TRAY_AL[0] - (HINGE_Z - TRAY_AL[1]), HINGE_Z];     // "tt" -- 45° up from al to the tray's own Z
+TRAY_LINK_LEN = norm(TRAY_LINK_TT - TRAY_LINK_TS);                  // 262.06mm at current values -- real length to source a folding link part with
+
 t2=[RIB_SPLIT_PT[0]+20*AB_NORM[0], RIB_SPLIT_PT[1]+20*AB_NORM[1]+10]; R2=20;
 t3=miter_point(RIB_REF_B,AB_NORM,BC_NORM,20);               R3=20;
 t4=miter_point(RIB_REF_C,BC_NORM,CD_NORM,20);                R4=20;
@@ -546,11 +600,43 @@ module handle_rod() {
         cylinder(h=HANDLE_ROD_WALL, r=HANDLE_ROD_OD/2, $fn=64);
 }
 
-// ─── CB1 pipe -- REMOVED ENTIRELY this round, per Janis's own explicit
-// instruction ("remove the link side to the cb1 entirely and wait for
-// new instruction"). Real, deliberate gap: no counterbalance/stopper of
-// any kind exists in this assembly right now -- door/handle side only.
-// See this file's own header, item 2, and docs/hinge-construction.md. ───
+// ─── CB1 pipe -- REAL COUNTERWEIGHT MASS, restored 2026-07-30 per
+// Janis's own explicit correction ("cb1 consist of the bracket cb1
+// which is locked and cb1 4 inch pipe weight with both end close with
+// end cap... put this pipe back in place"). This is a SEPARATE part
+// from the bracket (Ua/Ub/Uc, in cb1_link_2d() above, still locked,
+// untouched) -- the bracket wraps/cradles this pipe on 3 sides and
+// welds to it; the pipe itself is the real counterbalance mass. Same
+// 4"-square-tube size the bracket was always built to wrap
+// (`CB1_OD`=101.6mm, already the wrap-clearance constant above), same
+// real span/wall/position convention as the original v6-v9 design
+// (`archive/BBQ-offset-smoker-base-v9.scad`, `CB1_WALL`=3,
+// `CB1_LEN`=chamber_L-100=815mm, `CB1_MASS_KG`=8.06 real/locked there --
+// NOT reused as a given here, this file computes its own real mass from
+// the actual solid below, see docs/lid-hinge-moment-analysis.md).
+// Position: same OPEN-frame centerline the bracket already wraps
+// (`tangential_pt(CB1_EDGE_DIST, CB1_STANDOFF)`), converted to native
+// frame the same way as every other CB1 point (`freeze_from_open()`) --
+// one single native-frame point since the pipe's own Y-Z position does
+// not vary with X, exactly like the handle rod. ───
+CB1_WALL = 3;                                    // mm, real wall thickness, matches the original v9 design
+CB1_LEN  = chamber_L - 100;                      // 815mm, centered on chamber_L, spans well past all 3 ribs (matches original v9 formula)
+cb1_x0   = (chamber_L - CB1_LEN) / 2;            // 50mm
+cb1_x1   = cb1_x0 + CB1_LEN;                     // 865mm
+CB1_OPEN_CENTER   = tangential_pt(CB1_EDGE_DIST, CB1_STANDOFF);   // open-frame centerline, same point the bracket wraps
+CB1_CENTER_NATIVE = freeze_from_open(CB1_OPEN_CENTER);            // native/closed frame, per this project's own construction convention
+module cb1_pipe() {
+    cy = CB1_CENTER_NATIVE[0];
+    cz = CB1_CENTER_NATIVE[1];
+    difference() {
+        translate([cb1_x0, cy-CB1_OD/2, cz-CB1_OD/2]) cube([CB1_LEN, CB1_OD, CB1_OD]);
+        translate([cb1_x0-e, cy-CB1_OD/2+CB1_WALL, cz-CB1_OD/2+CB1_WALL])
+            cube([CB1_LEN+2*e, CB1_OD-2*CB1_WALL, CB1_OD-2*CB1_WALL]);
+    }
+    // end caps -- close both ends of the hollow tube
+    translate([cb1_x0, cy-CB1_OD/2, cz-CB1_OD/2]) cube([CB1_WALL, CB1_OD, CB1_OD]);
+    translate([cb1_x1-CB1_WALL, cy-CB1_OD/2, cz-CB1_OD/2]) cube([CB1_WALL, CB1_OD, CB1_OD]);
+}
 
 // ─── Axle + hinge brackets -- v9 REAL REBUILD, mounted in the end
 // margin zone (this file's own header). The axle is ONE continuous shaft
@@ -608,6 +694,7 @@ module lid_hinge_assembly(door_open_deg=0) {
     lid_rib_assembly(RIB1_X, door_open_deg, true);
     lid_rib_assembly(RIB2_X, door_open_deg, true);
     lid_rib_rotate(door_open_deg) handle_rod();
+    lid_rib_rotate(door_open_deg) cb1_pipe();
 }
 
 // ───────────────────────────────

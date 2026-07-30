@@ -4,7 +4,37 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.44 — 2026-07-30 (bbq-lid-hinge-v12, tray link fix + skirt):
+# Version: 1.45 — 2026-07-30 (bbq-lid-hinge-v13, REAL FILE VERSION BUMP
+# + CB1 pipe rotation fix): Janis caught a real process lapse this
+# round -- every change since the CB1 lateral link round (1.41-1.44:
+# sanitization, CB1 pipe restore, moment analysis, tray relocation
+# bracket/link/skirt) was made IN PLACE to the file still named
+# `BBQ-offset-smoker-base-v12.scad`, never bumped to a new version file,
+# breaking this project's own standing "always create new version
+# files, never overwrite in place" rule. FIXED: `BBQ-offset-smoker-
+# base-v12.scad` restored to its real frozen state as of the CB1
+# lateral link round (git commit 0c17225, the last point before the
+# pipe restore began) — the true historical v12. All of today's
+# subsequent work (CB1 pipe restore, moment analysis, tray relocation
+# bracket + link fix + skirt, and this round's CB1 pipe rotation fix
+# below) now lives in the NEW `BBQ-offset-smoker-base-v13.scad`, the
+# real active/live file. `BBQ-offset-smoker-base-v10.scad` archived
+# (ages out of the last-3-live window: v11/v12/v13).
+#
+# REAL FIX, same round: `cb1_pipe()`'s cross-section was built
+# axis-aligned with Y/Z instead of rotated to match the bracket's own
+# DE_DIR/DE_NORM frame -- Janis's own direct catch from a render (the
+# square tube sat cocked at an angle instead of flush in the Ua/Ub/Uc
+# slot). Rebuilt every corner of the pipe's own cross-section with
+# `tangential_pt()` (the exact same s/n local frame the bracket itself
+# uses) and froze each one individually via `freeze_from_open()` --
+# guarantees the same real orientation as the bracket by construction.
+# Re-verified `Simple: yes` at 0/45/90°; mass/CG essentially unchanged
+# (rotation only, same area) so the moment analysis numbers still hold.
+#
+# See docs/handoff-2026-07-30.md for the complete current-state summary.
+#
+# Previous: 1.44 — 2026-07-30 (bbq-lid-hinge-v12, tray link fix + skirt):
 # Janis CONFIRMED the H/face-HA reading (octagon has 8 vertices, H is
 # the last one going around, face HA is the face just before apex A --
 # matches 1.43's own construction exactly). Two real corrections: (1)
@@ -894,7 +924,7 @@ grep). Relocated to the Accessories branch
 (`BBQ-offset-smoker-base-v3.scad`, below) — NOT gone from the product,
 just no longer built in this file.
 
-## BBQ-offset-smoker-base-v12.scad — now the active file, see below
+## BBQ-offset-smoker-base-v12.scad — superseded by v13 (2026-07-30), kept here as historical record only
 
 v12 (bbq-lid-hinge-v12, 2026-07-30, direct-cc, per Janis's language-spec
 prompt `prompts/cc_prompt_cb1_link.md`): NEW `cb1_link_2d()` module — the

@@ -4,7 +4,40 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.47 — 2026-07-30 (bbq-lid-hinge-v15, real folding-link
+# Version: 1.48 — 2026-07-30 (bbq-lid-hinge-v16, wire the folding link
+# to the tray's own angle): new version file per the standing rule.
+# Janis's own direct catch after reviewing the v15 render: "when i turn
+# tray degree, look like the link doesnt link to the the degree turn
+# yet, you got to wire it." `tray_link()` was real geometry but STATIC,
+# always drawn at its deployed (0°) reference position regardless of
+# `tray0_angle_deg`/`tray1_angle_deg`. Fixed: `tt` (rigidly part of the
+# tray) now rotates WITH the tray about its own real pivot
+# (`tray_link_rot()`); `ts` (the slider) now re-solves every call via a
+# real circle(center=`tt`,r=`TRAY_LINK_SPAN`)/line(`Y=0`) intersection
+# (`tray_link_ts()`), picking the physically-valid "lower" root (checked
+# in Python first: stays on the real `[TRAY_AL.z,RIB_REF_A.z]` segment
+# across the full -90..0° sweep; the other root is off the segment
+# entirely, discarded). Moved `tray_link()` calls out of
+# `tray_hinges()` (no angle available there) into `tray(x0,angle_deg)`
+# directly. Wired for BOTH tray0 and tray1. Re-verified via a real
+# isolated `intersection()` probe (link vs. tray plate alone, chamber/
+# firebox/exhaust geometry suppressed): EMPTY (no collision) from 0° to
+# about -82° -- the normal operating range. NEW, DISCLOSED FINDING, NOT
+# fixed this round: a real, small collision exists from about -83° to
+# -90° (last ~7-8° approaching full vertical stow) -- the folded plate's
+# own near face always lands only ~3mm clear of the fixed `Y=0` slider
+# line at full stow (real rotation math: `Y=-HINGE_PIVOT_OFFSET+TRAY_T`,
+# independent of any other constant), too tight for the link's 15mm flat
+# strip with no real slot modeled. Tried widening `HINGE_PIVOT_OFFSET`
+# (5→15mm) as a fix -- made the overlap WORSE at the same angle (shifts
+# both the plate and the rotating `tt` pin together, not a 1-parameter
+# fix). Confirmed the same ~-83° threshold on BOTH trays (symmetric, not
+# a per-tray bug) -- needs a decision (accept -85° as the practical fold
+# limit, or a real notch/slot at the wall face). `v13.scad` archived
+# (last-3-live: v14/v15/v16). Full summary: docs/handoff-2026-07-30.md
+# (updated), docs/tray-relocation-bracket.md (updated, "v16 wiring"
+# section).
+# Previous: 1.47 — 2026-07-30 (bbq-lid-hinge-v15, real folding-link
 # hardware rebuild): new version file per the just-established rule.
 # Janis's own detailed hardware spec after reviewing a v14 render, all
 # real fixes: (1) `TRAY_MOUNT_GAP`=16mm -- the tray plate was still

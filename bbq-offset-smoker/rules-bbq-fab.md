@@ -1,5 +1,31 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.17 — 2026-07-30
+> Version 1.18 — 2026-07-30
+> Changes: bbq-lid-hinge-v13. TWO new locked lessons, both from Janis's
+> own direct catches: (1) **Process discipline**: several real rounds in
+> a row (sanitization, CB1 pipe restore, moment analysis, tray
+> relocation) were all made in place to a file whose name never changed
+> — a real violation of this project's own "always create a new version
+> file, never overwrite in place" rule, caught only because Janis
+> tracks file revisions to keep separate chat sessions aligned. A new
+> round of REAL changes (not a pure pointer bump) means a new version
+> file, every time, no exceptions for "it's a small tweak." (2)
+> **Rotated cross-sections must be built in the SAME local frame as
+> whatever they mate with, not derived as a separate rotation angle**:
+> `cb1_pipe()`'s first pass built its square cross-section axis-aligned
+> with Y/Z, but the bracket it mates with (`cb1_link_2d()`) is built in
+> a DE-face-tangent local frame (`tangential_pt()`, aligned with
+> `DE_DIR`/`DE_NORM`) — the two frames don't match, so the "square" pipe
+> sat cocked at a real angle inside the bracket's slot instead of flush.
+> Only caught by Janis looking at an actual render; the render alone
+> looked plausible from most angles. FIX, and the locked convention
+> going forward: when a new part must mate flush with an existing
+> DE-frame (or any other non-axis-aligned local frame) part, build its
+> own points with the SAME local-frame helper function
+> (`tangential_pt()` here) and the SAME frame-conversion step
+> (`freeze_from_open()` here) — never re-derive an equivalent rotation
+> angle by hand, since that's a second, independent place the two parts'
+> orientations could silently drift apart.
+> Previous: 1.17 — 2026-07-30
 > Changes: bbq-lid-hinge-v12, sanitization + real moment analysis round.
 > New locked lesson: OpenSCAD's Customizer treats every top-level
 > assignment following a `/* [Group] */` comment as a candidate UI

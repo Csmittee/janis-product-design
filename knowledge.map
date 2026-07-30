@@ -1,5 +1,24 @@
 # knowledge.map
-# Version: v100 — 2026-07-30
+# Version: v101 — 2026-07-30
+# Changes: bbq-lid-hinge-v13, REAL FILE VERSION BUMP + CB1 pipe rotation
+# fix. Janis caught a real process lapse: every change since the CB1
+# lateral link round (v96-v100: sanitization, CB1 pipe restore, moment
+# analysis, tray relocation bracket/link/skirt) was made IN PLACE to the
+# file still named BBQ-offset-smoker-base-v12.scad, never bumped to a
+# new version file. FIXED: v12.scad restored to its real frozen state as
+# of the CB1 lateral link round (git commit 0c17225); all subsequent
+# work now lives in the NEW BBQ-offset-smoker-base-v13.scad, the real
+# active file. BBQ-offset-smoker-base-v10.scad archived (last-3-live
+# window: v11/v12/v13).
+# Same round, real fix: cb1_pipe()'s cross-section was axis-aligned with
+# Y/Z instead of rotated to match the bracket's own DE_DIR/DE_NORM frame
+# -- Janis's own direct catch from a render. Rebuilt every corner via
+# tangential_pt(), each frozen individually via freeze_from_open() --
+# guarantees the same real orientation as the bracket. Re-verified
+# Simple:yes at 0/45/90; mass/CG essentially unchanged (pure rotation),
+# moment analysis numbers still hold.
+# Full current-state summary: docs/handoff-2026-07-30.md.
+# Previous: v100 — 2026-07-30
 # Changes: bbq-lid-hinge-v12, tray link fix + skirt. Janis CONFIRMED the
 # H/face-HA reading (octagon's 8th vertex, face just before apex A --
 # matches v99's construction exactly). Folding link flipped: ts=al

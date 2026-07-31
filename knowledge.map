@@ -1,5 +1,36 @@
 # knowledge.map
-# Version: v108 — 2026-07-31
+# Version: v109 — 2026-07-31
+# Changes: bbq-lid-hinge-v20 governance round (PR #172 merged; no new
+# .scad version -- docs/analysis only). Verified BBQ-offset-smoker-
+# base-v20.scad has zero leftover dead code from the v19->v20 rewrite
+# (full sweep, not assumed) and confirmed the file version set already
+# matches the last-3-live/archive convention. Fixed one real defect
+# found while independently re-deriving the moment analysis: BBQ-
+# chambers-v26.scad's HINGE_PIVOT_Z carried a stale 1445.335mm comment
+# that never matched the live echo()-verified value (1345.34mm) -- the
+# constant/formula itself was always correct, only the comment was
+# wrong. New: 5 subsystem construction-rule docs (bbq-offset-smoker/
+# construction-rules-1-chamber.md through -5-tray-system.md) -- concept
+# + generalizable rules + current-implementation pointers + new-variant
+# checklist per subsystem (chamber, firebox, understructure, ribs+
+# counterbalance, tray system), written for Janis's stated future
+# roadmap (round bullet capsule, square firebox, other scales/offsets)
+# so a future chat/cc can revise a subsystem without re-reading the
+# full round history -- each points at rules-bbq-fab.md's own locked
+# sections rather than duplicating them. docs/lid-hinge-moment-
+# analysis.md rewritten: full per-degree 0-90 sweep (was a 3-point
+# table), freshly re-derived from live STL exports and cross-checked
+# against the prior doc's own numbers (matched to STL-faceting
+# precision -- confirms the v19->v20 tray-link rewrite never touched
+# the lid/rib/CB1 rigid body). Headline: 20.93kg total rotating mass,
+# 2.46kgf startup lift @0 degrees, turning point 89.4 degrees, only
+# 0.03kgf holding force @90 degrees (near-neutral, not Janis's ~5kgf
+# self-holding target -- same open CB1-tuning decision as before, now
+# backed by per-degree data instead of 3 points). Full detail: docs/
+# handoff-2026-07-31.md (supersedes the 07-30 handoff, which is kept,
+# not deleted). Next up, not started this round: viewer integration
+# (modelsFolder dynamic picker + universal STL naming + floor-grid fix).
+# Previous: v108 — 2026-07-31
 # Changes: bbq-lid-hinge-v20 (new version file). Replaces v19's `lc` fix
 # entirely -- Janis's own catch, reading the v19 CODE not just a render:
 # flat_link(ts,lc,xc)'s rendered length is literally norm(lc-ts), and

@@ -1,6 +1,27 @@
 # SKILL_viewer_update.md
 # Viewer Update Procedure — Janis Product Design
-# Version: 1.2 — 2026-07-09
+# Version: 1.3 — 2026-07-31
+# Changes: BBQ-01 (BBQ Offset Smoker) wired into the PROJECTS object as
+# a modelsFolder project, same dynamic-picker pattern as VM-01/VM-02 —
+# no per-view cc prompt needed. Recommended filename pattern for BBQ-01
+# uploads to public/models/BBQ-01/ (not forced, same "any descriptive
+# name works" rule as every modelsFolder project below):
+#   BBQ-01-v20-lid-closed.stl
+#   BBQ-01-v20-lid-open-90.stl
+#   BBQ-01-v20-tray0-deployed.stl
+#   BBQ-01-v20-chamber-cutaway.stl   (export directly from
+#     BBQ-chambers-v26.scad alone, e.g. with show_firebox/show_grate
+#     toggled to expose interior parts, per Janis's own "chamber file
+#     which can show off more inside part at my choice" request — any
+#     partial/isolated-component STL works the same way, the viewer's
+#     floor-flooring logic (see below) grounds whatever bounding box it
+#     gets, full assembly or a single part)
+# The viewer's STL floor convention (loadSTL(), janis-product-viewer.html)
+# already grounds every model at its own bounding-box floor (Y=bbox.min.y)
+# instead of centering it (which would run the grid through the middle) —
+# confirmed still correct and shared by every modelsFolder project,
+# BBQ-01 included, no change needed there.
+# Previous: 1.2 — 2026-07-09
 # Changes: Added the dynamic modelsFolder system (vm01-viewer-dynamic-
 # folder-picker) — a project with a `modelsFolder` key no longer needs a
 # cc prompt to add/remove/rename a view; Janis just uploads a freely-named

@@ -157,6 +157,79 @@ tray1 (symmetric, not a per-tray bug). Needs a decision: either treat
 usage/firmware constraint) or design a real notch/slot in the wall face
 at this location (a fab step, out of scope here).
 
+## v17 — fold direction fixed, link kinematics rebuilt (taught + verified)
+
+Janis's own direct catch after reviewing the v16 render: the tray was
+folding the WRONG way. v16's convention (`angle_deg` -90=stowed) actually
+swung the tip UP past apex A, not down toward the ground — confirmed via
+a real colored render (the earlier grey/teal render had washed-out
+colors that hid this). Janis's own locked, never-to-change spec:
+default/stowed position has the tray tip facing the ground (vertical);
+"activating" (deploying) is a **clockwise rotation about X, viewed from
++X**, ending flat/horizontal. Fixed convention:
+**`angle_deg` 0=deployed .. +90=stowed (tip down)** — verified via local
+render at 0/45/90° before writing this into the real file.
+
+**Link kinematics rebuilt to match.** Janis walked through the real
+mechanism with a taught exercise first: a triangle with two rigid arms
+(a, b, equal length) meeting at apex X, and a collapsible face c (split
+into 2 segments meeting at a middle pivot) connecting their free ends —
+closing the angle at X shrinks the distance between the free ends, which
+the 2-segment c-link absorbs by bending at its own middle joint. Checked
+against a labeled Python/matplotlib simulation before applying it to the
+real tray (not assumed):
+
+- Under the CORRECTED fold direction, the fixed-`ts`-to-rotating-`tt`
+  distance now genuinely **shrinks** as the tray folds (221.5mm at 0°
+  down to 11.2mm near 90°) — the exact "chord shrinks as X closes"
+  behavior from the triangle exercise. This means `ts` reverts to
+  Janis's own ORIGINAL spec: **a true fixed anchor at `al`, no slider,
+  no rail** (v16's slider was a real, correct workaround for the WRONG
+  fold direction, not an actual hardware requirement).
+- The link's own middle lap-joint (`lc`) is what genuinely folds now —
+  solved via a real circle(`ts`,`C_HALF`)/circle(`tt`,`C_HALF`)
+  intersection. Two roots exist; picking the one **closer to apex A**
+  matches Janis's own description exactly ("lc will get closer to apex
+  A while tray is getting down") and was confirmed via the taught
+  simulation (`h` — the fold angle at the middle joint — only reaches
+  0° exactly when `X`, the arm-closing angle, also reaches 0°; the two
+  are locked together by the law of cosines when both segments are
+  equal length).
+- **Depth-split, not coplanar**: Janis's own teaching also covered why
+  2 rigid, same-width bars sharing one pivot point can't close together
+  without interpenetrating unless offset in depth — checked via a real
+  rectangle-overlap simulation (SAT test) before applying it: 2 coplanar
+  10mm-wide bars overlap for the ENTIRE fold range, from touching-only
+  at full extension to a full 10mm overlap at fully folded. Fixed the
+  same way real hinges/scissors do — the 2 link halves are now split in
+  X (depth), not left coplanar.
+- **Combined stack held at a real 10mm**, not additive: Janis's own
+  correction — the 2 link halves' cross-sections are different sizes
+  (one nests/wraps inside the other), so the combined real depth is a
+  single 10mm stack, not `10+10`. `TRAY_LINK_STACK_T=10` fixes the
+  depth-split's own magnitude so the combined envelope never exceeds
+  this (still modeled as 2 simple flat strips, schematic, matching
+  `hinge_u()`'s own "not fab-precise" convention — the real nested-
+  channel cross-section itself isn't modeled).
+
+**Re-verified** via the same real isolated `intersection()` probe (link
+vs. tray plate alone):
+
+| tray angle | tray0 link | tray1 link |
+|---|---|---|
+| 0° to 86° | empty (no collision) | empty (no collision) |
+| 87° to 90° | real, small collision | real, small collision |
+
+This is a large improvement over v16 (previously failed from -83° in
+the wrong direction; now clean across the entire normal 0-86° range).
+**Disclosed, not fully resolved** (Janis's own call — this link isn't
+critical, math doesn't need to be perfect): right at full stow, `ts`
+and `tt` nearly coincide (11mm apart vs. each link half being ~115mm
+long), which makes the circle intersection ill-conditioned — tried
+multiple root-selection variants, the instability is inherent to this
+near-degenerate geometry, not a selection-rule bug. Accepted as a
+practical ~86° fold limit rather than a literal 90°.
+
 ## Tray skirt
 
 A 10mm skirt (`TRAY_SKIRT_H`) runs along the tray's own **tip and both
@@ -170,15 +243,16 @@ visible design defect). The hinge side now has zero skirt, on purpose.
 ## Verification
 
 - Full `--render` CGAL `Simple: yes`, no warnings, at `door_open_deg`
-  0/45/90° and a tray angle sweep (0/-30/-45/-60/-90°), both trays
+  0/45/90° and a tray angle sweep (0/20/40/60/80/90°), both trays
   independently — re-verified after every round of fixes, including the
-  v16 angle-wiring fix.
+  v17 fold-direction + link rebuild.
 - Real interference sweep (`intersection(trays(), front_wheel_support())`)
-  at tray angles -90/-60/-30/0°: **empty at every angle**.
+  at tray angles 0/30/60/90° (corrected convention): **empty at every
+  angle**.
 - Real collision check (`intersection(tray_link(), <tray plate>)`) swept
-  across angles (both trays): **empty from 0° to about -82°**; a real,
-  disclosed collision from about -83° to -90° — see "v16 wiring" above,
-  not fixed this round, flagged for a decision.
+  across angles (both trays): **empty from 0° to about 86°**; a real,
+  disclosed collision from about 87° to 90° — see "v17" above, accepted
+  as a practical fold limit, not fixed further this round.
 - The link's `ts`-side U-hinge DOES touch `tray_bracket()`'s own solid
   material — intentional (that's the real attachment/slider point, not
   a defect); the link's own free length extends well clear of the

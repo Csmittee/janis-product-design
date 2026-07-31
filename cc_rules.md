@@ -1,5 +1,16 @@
 # Claude Code (cc) Rules
-# Version: v10 — 2026-07-21
+# Version: v11 — 2026-07-31
+# Changes: Governance audit round (Janis-requested check of RULES.md/
+# cc_rules.md/chat_rules.md against how sessions actually run). Two
+# changes: (1) "My Role" section gets one clarifying paragraph — R-011
+# direct-cc sessions have become the normal way BBQ work happens, not
+# an occasional escape valve, and the written role description hadn't
+# caught up to that; (2) Session Start step 5 updated to describe
+# cc_chat_log.md's new root+archive structure (see that file's own
+# header — root now holds only the last ~7 days, older entries split
+# by product into cc_chat_log-archive/). Detail addition, not new
+# structure — X bump per this file's own plain-integer convention.
+# Previous: v10 — 2026-07-21
 # Changes: Added Verification Discipline Rule — root cause fix for the BBQ
 # firebox/chamber dual-end-cap saga (BBQ-chambers-v15 through v20, the
 # SAME module touched 6 real times): CGAL "Simple: yes, no collision"
@@ -48,6 +59,20 @@
 - Report results in cc_chat_log.md after every commit
 - Never make design decisions — execute only
 
+**Direct-cc sessions (added 2026-07-31):** when Janis is working with cc
+directly and there is no separate Claude Web prompt for this task (R-011,
+RULES.md/chat_rules.md — a legitimate mode, not an exception), cc does
+take on some of Claude Web's own judgment-call role for that session's
+own scope: doc structure, naming, formatting, and similar in-the-moment
+calls don't need to be kicked back to Janis one at a time. This does NOT
+relax "never make design decisions" for genuinely open engineering
+questions (a physical dimension, a tuning target, a locked convention) —
+those still get flagged to Janis explicitly rather than decided
+unilaterally, same bar as always. Every other discipline in this file
+(versioning, cc_chat_log entries, governance-file updates) still applies
+in full during a direct-cc session — R-011 changes who's making which
+call, not whether the process gets followed.
+
 ---
 
 ## Session Start — Do This Every Time, In Order
@@ -58,7 +83,10 @@
    (Janis always pushes prompts to main — fetch before reading)
 3. Read cc_rules.md (this file)
 4. Read knowledge.map (know what else to load)
-5. Read cc_chat_log.md (what Claude Web flagged last session)
+5. Read cc_chat_log.md — root file only (last ~7 days, any product
+   mix). Resuming a product with nothing recent there? Follow the
+   ARCHIVE INDEX in its header to that product's own file under
+   cc_chat_log-archive/ — do not assume "not in root" means "no history"
 6. Read /prompts/[task].md (filename given by Janis in chat)
 7. Read latest .scad for active model (in cc_chat_log.md)
 8. Read rules-dimensions.md + rules-materials.md

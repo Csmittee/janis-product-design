@@ -1,5 +1,36 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.20 — 2026-07-31
+> Version 1.21 — 2026-07-31
+> Changes: bbq-lid-hinge-v18. TWO new locked lessons: (1) **A rotation
+> axis must sit at the real physical hinge point (the knuckle's own real
+> location), not an arbitrary offset chosen to solve a different
+> problem.** v17 placed the tray's own pivot at the hinge block's inner
+> face (a leftover from an earlier wall-clearance fix), not its real
+> outer tip — Janis caught this by eye ("it seem like you put in on the
+> apex a and al plane not the tip of the small hinge notch"), and it was
+> the direct root cause of a disclosed near-full-stow collision (only
+> ~3mm of real depth existed where there should have been the block's
+> own full ~20mm). Moving the pivot to the block's own real outer tip
+> (matching how a real door hinge's knuckle sits at the leaf's own outer
+> edge, not buried inside the mounting block) fixed it outright. Any
+> hinge pivot placement needs to be justified by the real hardware's own
+> geometry, not just "whatever value made an earlier bug go away."
+> (2) **An isolated collision probe reporting empty does NOT prove a
+> full-assembly union stays manifold.** Relocating the tray's pivot to
+> exactly coincide with the hinge block's own face (both at the same Y
+> plane) passed the isolated collision probe (genuinely no volumetric
+> overlap) but made the FULL assembly `Simple: no` at intermediate
+> angles — a real, live-caught non-manifold regression, only found via a
+> full-assembly CGAL sweep, not the narrower probe. Two solids that
+> merely TOUCH (a coincident face, zero-volume) can still produce a
+> degenerate/invalid union even though no real interpenetration exists.
+> Fixed with this project's own standard `e` epsilon (a genuine tiny
+> overlap, not a coincident face) — the same fix already used elsewhere
+> in this codebase for exactly this class of problem. Going forward: any
+> two parts intentionally mounted "flush" against each other need a real
+> `e`-scale overlap, and the FULL assembly (not just an isolated probe)
+> must be re-checked with `Simple: yes` after any pivot/mounting change.
+> Detail addition, not new document structure — X.Y bump.
+> Previous: 1.20 — 2026-07-31
 > Changes: bbq-lid-hinge-v17. TWO new locked lessons, both from Janis's
 > own direct teaching this round: (1) **A rotation direction/sign
 > convention must be confirmed by an actual colored render, never by

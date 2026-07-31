@@ -230,6 +230,63 @@ multiple root-selection variants, the instability is inherent to this
 near-degenerate geometry, not a selection-rule bug. Accepted as a
 practical ~86° fold limit rather than a literal 90°.
 
+## v18 — pivot relocated, link sizing fixed (closes the v17 gap completely)
+
+Janis's own direct teaching after reviewing the v17 render, two real
+fixes:
+
+1. **Pivot relocated to the hinge block's own real outer tip**
+   (`Y=-HINGE_OUT`, not `Y=-HINGE_PIVOT_OFFSET`). Janis's own catch:
+   "it seem like you put in on the apex a and al plane not the tip of
+   the small hinge notch" — v17 still rotated about the OLD inner
+   point, which is exactly why only ~3mm of real depth existed behind
+   the folded tray. Real door hinges put the knuckle at the leaf's own
+   outer edge, not buried inside the mounting block — this is that same
+   real convention applied here. Verified via a real CGAL check before
+   writing this: the plate, now flush-mounted at the same point as the
+   pivot, only ever touches the hinge block at their shared boundary
+   (an expected, zero-volume touch, same as `hinge_u()`'s own
+   intentional touch on `tray_bracket()`), never a real overlap, at any
+   swept angle. `TRAY_MOUNT_GAP` retired entirely (no bridging gap
+   needed once the pivot IS the block's own outer tip).
+2. **Link length sizing fixed**: `TRAY_LINK_C_HALF` is now exactly half
+   the deployed reach (`TRAY_LINK_SPAN0/2`), with no lap-overlap padding
+   added on top. Checked in Python before writing this: with `c1=c2`
+   exactly half the max chord, the fold angle at the middle joint
+   (`lc`) is mathematically guaranteed 180° (fully straight) at 0° —
+   proven via the law of cosines — and stays smooth across the ENTIRE
+   0-90° sweep, unlike v17's padded sizing which became ill-conditioned
+   near full stow. The real slop this hardware needs for an actual
+   pin/lap joint is what Janis's own **slotted pivot** correction
+   provides instead of a fixed pad — a real slotted mid-joint absorbs
+   the same slack a padded circle used to fake, without the padding's
+   own instability (not modeled as a literal slot mechanism here,
+   matching `hinge_u()`'s own schematic convention).
+
+**Also found and fixed along the way**: mounting the plate exactly
+coincident with the hinge block's own face (both at the identical Y
+plane) made the full assembly genuinely non-manifold (`Simple: no`) at
+intermediate angles — caught via a real full-assembly CGAL sweep, not
+just the isolated collision probe (a probe only proves no volumetric
+overlap; it doesn't prove a touching union stays manifold). Fixed with
+the project's own standard `e` epsilon (a genuine tiny overlap into the
+block, not a coincident face) — same convention already used elsewhere
+in this file (`rules-codes.md`'s "coplanar-face offset").
+
+**Re-verified** via the same real isolated `intersection()` probe:
+
+| tray angle | tray0 link | tray1 link |
+|---|---|---|
+| 0° to 90° | empty (no collision) | empty (no collision) |
+
+**Closes v17's disclosed 87-90° gap completely** — no collision
+anywhere in the real operating range now. Full `Simple: yes` CGAL sweep
+(0/20/40/60/80/90°) and the `front_wheel_support()` interference sweep
+(0/30/60/90°) both re-verified clean. **Still not perfect** (Janis's own
+call, this link isn't critical): the fold angle at `lc` reaches ~11° at
+full 90° stow, not a literal 0° — the real slotted pivot (not modeled
+precisely) would take up this last bit of play.
+
 ## Tray skirt
 
 A 10mm skirt (`TRAY_SKIRT_H`) runs along the tray's own **tip and both
@@ -245,14 +302,16 @@ visible design defect). The hinge side now has zero skirt, on purpose.
 - Full `--render` CGAL `Simple: yes`, no warnings, at `door_open_deg`
   0/45/90° and a tray angle sweep (0/20/40/60/80/90°), both trays
   independently — re-verified after every round of fixes, including the
-  v17 fold-direction + link rebuild.
+  v18 pivot relocation + link sizing fix. A real, live-caught non-manifold
+  regression (coincident plate/hinge-block faces) was found and fixed
+  with the project's own `e` epsilon during this same round — see "v18"
+  above.
 - Real interference sweep (`intersection(trays(), front_wheel_support())`)
   at tray angles 0/30/60/90° (corrected convention): **empty at every
   angle**.
 - Real collision check (`intersection(tray_link(), <tray plate>)`) swept
-  across angles (both trays): **empty from 0° to about 86°**; a real,
-  disclosed collision from about 87° to 90° — see "v17" above, accepted
-  as a practical fold limit, not fixed further this round.
+  across angles (both trays): **empty across the ENTIRE 0-90° range** —
+  v17's disclosed 87-90° gap is now closed, see "v18" above.
 - The link's `ts`-side U-hinge DOES touch `tray_bracket()`'s own solid
   material — intentional (that's the real attachment/slider point, not
   a defect); the link's own free length extends well clear of the

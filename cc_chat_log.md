@@ -4,6 +4,13 @@
 # cc updates TOP of log — newest entry FIRST.
 # Claude Web reads first 3 entries only. Keep each entry under 10 lines.
 
+### 2026-07-31 | bbq-lid-hinge-v18 | Relocated the tray's own rotation pivot to the hinge block's real outer tip + fixed link sizing. Closes v17's disclosed 87-90° collision completely.
+
+Janis's direct teaching after reviewing the v17 render: "it seem like you put in on the apex a and al plane not the tip of the small hinge notch" -- v17's pivot was still at the hinge block's OLD inner point, not its real outer tip. This was the root cause of v17's disclosed near-full-stow collision (only ~3mm of real depth existed behind the folded tray). Fixed: pivot now at `Y=-HINGE_OUT` (the block's own real outer tip, matching a real door hinge's own knuckle position). `TRAY_MOUNT_GAP` retired -- plate mounts flush at the same point.
+Also fixed link length sizing per Janis's own slot correction: `TRAY_LINK_C_HALF` is now exactly half the deployed reach, no lap-overlap padding -- proven via the law of cosines (checked in Python first) that this gives exactly 180° at 0° and stays smooth (not ill-conditioned) across the whole 0-90° sweep, unlike v17's padded sizing. The real slop a lap joint needs comes from Janis's own slotted-pivot idea instead of a fixed pad.
+Also caught and fixed a real non-manifold regression along the way: mounting the plate exactly coincident with the hinge block's own face made the full assembly `Simple: no` at intermediate angles -- only caught via a real full-assembly sweep, not the isolated collision probe. Fixed with the project's own `e` epsilon (genuine tiny overlap, not a coincident face).
+Re-verified: EMPTY (no collision) across the ENTIRE 0-90° range -- v17's disclosed 87-90° gap is closed completely. New version file `BBQ-offset-smoker-base-v18.scad` (source v17); `v15.scad` archived (last-3-live: v16/v17/v18). `docs/handoff-2026-07-30.md` and `docs/tray-relocation-bracket.md` (new "v18" section) both updated.
+
 ### 2026-07-31 | bbq-lid-hinge-v17 | Fixed a real fold-DIRECTION bug + rebuilt link kinematics, via a taught 2-bar-link exercise. LOCKED convention.
 
 Janis's direct catch after reviewing the v16 render: the tray was folding the WRONG way -- `angle_deg` -90=stowed actually swung the tip UP past apex A, not down toward the ground (confirmed via a real colored render, not assumed). LOCKED, never-to-change convention: `tray0_angle_deg`/`tray1_angle_deg` 0=deployed .. +90=stowed (tip down), clockwise about X viewed from +X when deploying.

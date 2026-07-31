@@ -4,7 +4,46 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.49 — 2026-07-31 (bbq-lid-hinge-v17, fix tray fold direction
+# Version: 1.50 — 2026-07-31 (bbq-lid-hinge-v18, relocate tray pivot +
+# fix link sizing, closes the v17 disclosed gap): new version file per
+# the standing rule. Janis's own direct teaching after reviewing the v17
+# render: "it seem like you put in on the apex a and al plane not the
+# tip of the small hinge notch" -- v17's rotation axis still sat at the
+# OLD inner point (Y=-HINGE_PIVOT_OFFSET), not the hinge block's own
+# real outer tip. FIX: the tray's own rotation axis now sits at
+# Y=-HINGE_OUT (the block's own real outer tip), matching a real door
+# hinge's own knuckle position (at the leaf's outer edge, not buried
+# inside the mounting block). This was the root cause of v17's disclosed
+# near-full-stow collision (only ~3mm of real depth existed behind the
+# folded tray before this fix). Plate mounts flush at the same point now
+# -- TRAY_MOUNT_GAP retired entirely. Also fixed link length sizing:
+# TRAY_LINK_C_HALF is now exactly half the deployed reach (no lap-
+# overlap padding) -- checked in Python before writing this: with c1=c2
+# exactly half the max chord, the fold angle at the middle joint (lc) is
+# mathematically guaranteed 180 degrees at 0 degrees (proven via the law
+# of cosines) and stays smooth across the ENTIRE 0-90 sweep, unlike
+# v17's padded sizing which was ill-conditioned near full stow. The real
+# slop a lap joint needs is what Janis's own SLOTTED PIVOT correction
+# provides instead of a fixed pad (not modeled as a literal mechanism,
+# matching hinge_u()'s own schematic convention). ALSO CAUGHT AND FIXED,
+# same round: mounting the plate exactly coincident with the hinge
+# block's own face made the full assembly genuinely non-manifold
+# (Simple: no) at intermediate angles -- only caught via a real full-
+# assembly CGAL sweep, not the isolated collision probe (a probe only
+# proves no volumetric overlap, not that a touching union stays
+# manifold) -- fixed with the project's own `e` epsilon (a genuine tiny
+# overlap into the block, not a coincident face). Re-verified via a real
+# isolated intersection() probe: EMPTY (no collision) across the ENTIRE
+# 0-90 degree sweep -- v17's disclosed 87-90 degree gap is now CLOSED
+# COMPLETELY. Full Simple:yes CGAL sweep and front_wheel_support()
+# interference sweep both re-verified clean. Still not perfect (Janis's
+# own call, this link isn't critical): the fold angle at the middle
+# joint reaches ~11 degrees at full stow, not a literal 0 -- the real
+# slotted pivot (not modeled precisely) would take up this last bit.
+# `v15.scad` archived (last-3-live: v16/v17/v18). Full summary:
+# docs/handoff-2026-07-30.md (updated), docs/tray-relocation-bracket.md
+# (updated, "v18" section).
+# Previous: 1.49 — 2026-07-31 (bbq-lid-hinge-v17, fix tray fold direction
 # + rebuild link kinematics): new version file per the standing rule.
 # Janis's own direct catch after reviewing the v16 render: the tray was
 # folding the WRONG way (angle_deg -90=stowed swung the tip UP past apex

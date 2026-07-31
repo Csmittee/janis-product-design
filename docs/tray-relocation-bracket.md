@@ -287,6 +287,66 @@ call, this link isn't critical): the fold angle at `lc` reaches ~11° at
 full 90° stow, not a literal 0° — the real slotted pivot (not modeled
 precisely) would take up this last bit of play.
 
+## v19 — `lc` rebuilt as a telescoping midpoint, `ts` moved off the bracket's own vertex
+
+Two more real defects Janis caught directly from renders after v18:
+
+1. **`ts`'s own hinge was sinking into the bracket.** `al` (where `ts`
+   lives) is literally one of `tray_bracket()`'s own 3 triangle
+   vertices — `hinge_u(ts,...)`, centered exactly on that vertex,
+   genuinely overlapped the bracket's own solid wedge. Confirmed via a
+   real `intersection(hinge_u(ts), tray_bracket())` probe: 22 vertices,
+   3 volumes — a real overlap, not a touch. Never caught earlier because
+   prior collision probes only checked the link against the tray plate,
+   never against `tray_bracket()` itself.
+2. **`lc` (the middle joint) landed 80-110mm away from both `ts` and
+   `tt`** at full fold, once actually measured — nowhere close to
+   "aligned." Root cause: v18's rigid circle/circle solve for `lc` has
+   no choice but to bow far out once each link half's own fixed length
+   (~111mm) vastly exceeds the shrunk `ts`-to-`tt` gap (~22mm at full
+   fold) — proven with a forced free-body diagram (forcing `lc`'s Y
+   into the desired band left the *other* half's own real length 21mm
+   *short of itself*, which a rigid bar can't be).
+
+**Fix for both, Janis's own direct resolution**: "we do not change the
+link length, we allow the pivot pin to slide along the link to
+compensate the diff of length need at each require angle" — a real
+telescoping slot at the mid-joint, not a bending 2-bar link. `lc` is now
+simply the **midpoint of `ts` and `tt`** at every angle:
+
+- Keeps `ts`-`lc`-`tt` exactly **collinear** — a straight, shortening
+  strut, not a bowing link. Matches the deployed (0°) reference exactly
+  by construction (half the deployed reach, same as before).
+- Puts `lc`'s own Y automatically **between** `ts` and `tt`'s own Y at
+  every angle — proven, not observed (a midpoint's coordinate is always
+  between its two endpoints') — which as a direct consequence also
+  keeps `lc` on the correct side of the wall (never crosses into the
+  bracket's own territory) at every angle.
+- The link's own internal depth-split between its 2 halves (`v18`'s
+  `TRAY_LINK_X_SPLIT`) is **retired** — it existed to stop 2 bowing,
+  coplanar bars from interpenetrating each other, which no longer
+  applies now that the link never bows. What both problems actually
+  needed was the *whole* link (not split internally) moved clear of the
+  bracket's own solid X-span (`TRAY_LINK_BRACKET_CLEAR`).
+
+**Re-verified**, using the real `tray_link()`/`tray_bracket()` code
+(not a prototype), across the full 0-90° sweep:
+
+| check | result |
+|---|---|
+| `tray_link()` self-manifold (`Simple: yes`) | clean at every angle |
+| `tray_link()` vs `tray_bracket()` | empty at every angle |
+| `tray_link()` vs tray plate | empty at every angle |
+| full assembly `Simple: yes` | clean at every angle |
+| `intersection(trays(), front_wheel_support())` | empty at every angle |
+
+**Real slot magnitude, disclosed**: since each link half's own physical
+length stays fixed (~111mm, unchanged), but the *working* `ts`-to-`lc`/
+`tt`-to-`lc` distance shrinks to ~11mm at full 90° stow, the real slot
+this asks for is large — nearly the bar's own full length. Not modeled
+as a literal slot mechanism here (schematic, matching `hinge_u()`'s own
+convention), but disclosed plainly rather than glossed over.
+
 ## Tray skirt
 
 A 10mm skirt (`TRAY_SKIRT_H`) runs along the tray's own **tip and both
@@ -302,20 +362,21 @@ visible design defect). The hinge side now has zero skirt, on purpose.
 - Full `--render` CGAL `Simple: yes`, no warnings, at `door_open_deg`
   0/45/90° and a tray angle sweep (0/20/40/60/80/90°), both trays
   independently — re-verified after every round of fixes, including the
-  v18 pivot relocation + link sizing fix. A real, live-caught non-manifold
+  v19 `lc` rebuild + `ts` repositioning. A real, live-caught non-manifold
   regression (coincident plate/hinge-block faces) was found and fixed
-  with the project's own `e` epsilon during this same round — see "v18"
+  with the project's own `e` epsilon during the v18 round — see "v18"
   above.
 - Real interference sweep (`intersection(trays(), front_wheel_support())`)
   at tray angles 0/30/60/90° (corrected convention): **empty at every
   angle**.
 - Real collision check (`intersection(tray_link(), <tray plate>)`) swept
-  across angles (both trays): **empty across the ENTIRE 0-90° range** —
-  v17's disclosed 87-90° gap is now closed, see "v18" above.
-- The link's `ts`-side U-hinge DOES touch `tray_bracket()`'s own solid
-  material — intentional (that's the real attachment/slider point, not
-  a defect); the link's own free length extends well clear of the
-  bracket beyond that.
+  across angles (both trays): **empty across the ENTIRE 0-90° range**.
+- Real collision check (`intersection(tray_link(), tray_bracket())`)
+  swept across angles (both trays): **empty across the ENTIRE 0-90°
+  range** — v19 fix, see "v19" above. (Earlier rounds had NOT checked
+  the link against the bracket at all, only against the tray plate —
+  the `ts`-hinge-sinks-into-the-bracket defect was a real gap in QA
+  coverage, not a tolerated touch.)
 - Bracket X positions (87.5/365/550/827.5) never overlap any rib X
   position (200/457.5/715) even accounting for real part thickness — the
   tray/bracket system is geometrically independent of the rib assembly,

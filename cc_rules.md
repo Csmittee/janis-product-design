@@ -86,7 +86,15 @@ call, not whether the process gets followed.
 5. Read cc_chat_log.md — root file only (last ~7 days, any product
    mix). Resuming a product with nothing recent there? Follow the
    ARCHIVE INDEX in its header to that product's own file under
-   cc_chat_log-archive/ — do not assume "not in root" means "no history"
+   cc_chat_log-archive/ — do not assume "not in root" means "no history".
+   **Self-check every session, no exceptions**: if root cc_chat_log.md
+   is over 40 entries OR over 500 lines, archive the excess (oldest
+   entries first, by product, into cc_chat_log-archive/) BEFORE doing
+   any other work this session — do not defer it, do not wait to be
+   asked. This is the only enforcement mechanism for that file's own
+   maintenance rule (no automated hook watches it) — it works exactly
+   like R-009/R-010/every other numbered rule in this repo: self-applied
+   by cc at a fixed checkpoint, not tooled.
 6. Read /prompts/[task].md (filename given by Janis in chat)
 7. Read latest .scad for active model (in cc_chat_log.md)
 8. Read rules-dimensions.md + rules-materials.md

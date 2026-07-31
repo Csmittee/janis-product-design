@@ -4,7 +4,42 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.48 — 2026-07-30 (bbq-lid-hinge-v16, wire the folding link
+# Version: 1.49 — 2026-07-31 (bbq-lid-hinge-v17, fix tray fold direction
+# + rebuild link kinematics): new version file per the standing rule.
+# Janis's own direct catch after reviewing the v16 render: the tray was
+# folding the WRONG way (angle_deg -90=stowed swung the tip UP past apex
+# A, not down toward the ground). LOCKED, never-to-change convention:
+# `tray0_angle_deg`/`tray1_angle_deg` 0=deployed (horizontal) ..
+# +90=stowed (vertical, tip toward ground), clockwise about X viewed
+# from +X when deploying. Confirmed via a real colored render before
+# writing this (an earlier grey/teal render had washed-out colors that
+# hid the direction bug). Link kinematics REBUILT to match, via a real
+# taught 2-bar-link exercise (triangle a/b/c, checked against a labeled
+# Python simulation first, not assumed): under the corrected direction
+# the fixed-`ts`-to-rotating-`tt` distance genuinely SHRINKS as the tray
+# folds (221.5mm->11.2mm), so `ts` reverts to a TRUE FIXED anchor at
+# `al` (v16's slider was a workaround for the wrong fold direction, not
+# a real hardware need) -- the give is now in the link's own middle
+# lap-joint (`lc`), solved via a real circle/circle intersection,
+# picking the root closer to apex A. The 2 link halves are also now
+# split in DEPTH (not coplanar) -- checked via a real rectangle-overlap
+# simulation that 2 same-width rigid bars sharing one pivot cannot close
+# without interpenetrating unless offset in depth (same reason real
+# hinges/scissors stack their leaves) -- combined stack held to a real
+# 10mm total (`TRAY_LINK_STACK_T`), not additive, per Janis's own
+# correction (the 2 halves nest/wrap into each other). Re-verified via a
+# real isolated `intersection()` probe: EMPTY (no collision) from 0° to
+# about 86° -- the ENTIRE normal operating range, a large improvement
+# over v16 (which failed from -83°, in the wrong direction anyway).
+# DISCLOSED, NOT FULLY RESOLVED: a real, small collision remains from
+# about 87° to 90°, where `ts`/`tt` nearly coincide, making the circle
+# intersection ill-conditioned -- inherent to this near-degenerate
+# geometry, not a selection-rule bug. Accepted as a practical ~86° fold
+# limit (Janis's own call, this link isn't critical). `v14.scad`
+# archived (last-3-live: v15/v16/v17). Full summary:
+# docs/handoff-2026-07-30.md (updated), docs/tray-relocation-bracket.md
+# (updated, "v17" section).
+# Previous: 1.48 — 2026-07-30 (bbq-lid-hinge-v16, wire the folding link
 # to the tray's own angle): new version file per the standing rule.
 # Janis's own direct catch after reviewing the v15 render: "when i turn
 # tray degree, look like the link doesnt link to the the degree turn

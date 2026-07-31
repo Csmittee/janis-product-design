@@ -1,5 +1,29 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.19 — 2026-07-30
+> Version 1.20 — 2026-07-31
+> Changes: bbq-lid-hinge-v17. TWO new locked lessons, both from Janis's
+> own direct teaching this round: (1) **A rotation direction/sign
+> convention must be confirmed by an actual colored render, never by
+> sign-reasoning alone.** v16 built the tray's stow direction from
+> abstract "CCW=negative" reasoning and got it backwards (the tray
+> folded UP past apex A instead of down toward the ground) — the bug
+> only surfaced once a real render with distinct, correctly-rendering
+> colors was produced (an earlier attempt used a colorscheme that
+> silently dropped explicit `color()` calls in full CGAL `--render`
+> mode, masking the direction error). Any hinge/fold direction gets a
+> real render check before being called correct, full stop — this
+> project's own "verify against real geometry" rule applies to
+> DIRECTION, not just position. (2) **Two rigid, same-width bars sharing
+> one pivot point cannot fold together without interpenetrating unless
+> offset in DEPTH, not in-plane.** Confirmed via a real rectangle-overlap
+> (SAT) simulation before applying it: an in-plane offset between 2
+> pivots doesn't remove the collision, it only relocates it (can make it
+> worse at some angles); only a depth (out-of-plane) split works,
+> because it gives the bars a genuine separating axis regardless of
+> their in-plane angle — the same reason real hinges and scissors stack
+> their 2 leaves instead of building them coplanar. Applies to ANY
+> future 2-bar/lap-joint mechanism in this project, not just this tray
+> link. Detail addition, not new document structure — X.Y bump.
+> Previous: 1.19 — 2026-07-30
 > Changes: bbq-lid-hinge-v16. New locked lesson: **a "gap" constant
 > shared by two rigidly-linked-but-not-identical geometries (a fixed
 > anchor point and a rotating plate riding the SAME pivot) is not a

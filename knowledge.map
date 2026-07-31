@@ -1,5 +1,36 @@
 # knowledge.map
-# Version: v105 — 2026-07-31
+# Version: v106 — 2026-07-31
+# Changes: bbq-lid-hinge-v18 (new version file). Janis's own direct
+# teaching after reviewing the v17 render: "it seem like you put in on
+# the apex a and al plane not the tip of the small hinge notch" -- v17's
+# tray rotation pivot still sat at the OLD inner point
+# (Y=-HINGE_PIVOT_OFFSET), not the hinge block's own real outer tip.
+# This was the root cause of v17's disclosed 87-90 degree collision
+# (only ~3mm of real depth existed behind the folded tray before this
+# fix). FIX: pivot now at Y=-HINGE_OUT (the block's own real outer tip,
+# matching a real door hinge's own knuckle position at the leaf's outer
+# edge). TRAY_MOUNT_GAP retired -- plate mounts flush at the same point.
+# Also fixed link length sizing: TRAY_LINK_C_HALF is now exactly half
+# the deployed reach, no lap-overlap padding -- checked in Python before
+# writing this: with c1=c2 exactly half the max chord, the fold angle at
+# the middle joint (lc) is mathematically guaranteed 180 degrees at 0
+# degrees (proven via the law of cosines) and stays smooth across the
+# ENTIRE 0-90 sweep, unlike v17's padded sizing which was
+# ill-conditioned near full stow. The real slop a lap joint needs is
+# what Janis's own SLOTTED PIVOT correction provides instead of a fixed
+# pad (not modeled as a literal mechanism). ALSO CAUGHT AND FIXED, same
+# round: mounting the plate exactly coincident with the hinge block's
+# own face made the full assembly genuinely non-manifold (Simple: no)
+# at intermediate angles -- only caught via a real full-assembly CGAL
+# sweep, not the isolated collision probe -- fixed with the project's
+# own `e` epsilon (a genuine tiny overlap into the block, not a
+# coincident face). Re-verified via a real isolated intersection()
+# probe: EMPTY (no collision) across the ENTIRE 0-90 degree sweep --
+# v17's disclosed 87-90 degree gap is now CLOSED COMPLETELY. v15.scad
+# archived (last-3-live: v16/v17/v18). Full summary:
+# docs/handoff-2026-07-30.md, docs/tray-relocation-bracket.md (both
+# updated, "v18" section).
+# Previous: v105 — 2026-07-31
 # Changes: bbq-lid-hinge-v17 (new version file). TWO real fixes, both
 # Janis's own direct catches after reviewing the v16 render: (1) FOLD
 # DIRECTION, LOCKED, never to change: angle_deg -90=stowed actually

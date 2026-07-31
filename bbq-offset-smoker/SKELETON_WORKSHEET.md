@@ -1,5 +1,28 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.37 — 2026-07-31
+> Version 1.38 — 2026-07-31
+> Changes: bbq-lid-hinge-v18. Active base assembly pointer is now
+> `BBQ-offset-smoker-base-v18.scad` (source v17). Janis's own direct
+> teaching after reviewing the v17 render: the tray's rotation pivot was
+> still at the hinge block's OLD inner point, not its real outer tip
+> ("it seem like you put in on the apex a and al plane not the tip of
+> the small hinge notch") — this was the root cause of v17's disclosed
+> 87-90° collision. Fixed: pivot now at `Y=-HINGE_OUT` (the block's own
+> real outer tip, matching a real door hinge's own knuckle position);
+> `TRAY_MOUNT_GAP` retired (plate mounts flush at the same point). Link
+> length sizing also fixed: `TRAY_LINK_C_HALF` = exactly half the
+> deployed reach, no lap-overlap padding — proven via the law of cosines
+> to give exactly 180° at 0° and stay smooth (not ill-conditioned)
+> across the whole sweep; the real slack a lap joint needs comes from
+> Janis's own slotted-pivot correction instead. Also caught and fixed a
+> real non-manifold regression: mounting the plate exactly coincident
+> with the hinge block's face made the full assembly `Simple: no` at
+> intermediate angles (caught via a real full-assembly sweep, not just
+> the isolated probe) — fixed with the project's own `e` epsilon.
+> Re-verified: empty (no collision) across the ENTIRE 0-90° range — the
+> v17 87-90° gap is CLOSED COMPLETELY. `v15.scad` archived. Full
+> summary: `docs/handoff-2026-07-30.md`, `docs/tray-relocation-
+> bracket.md`.
+> Previous: 1.37 — 2026-07-31
 > Changes: bbq-lid-hinge-v17. Active base assembly pointer is now
 > `BBQ-offset-smoker-base-v17.scad` (source v16). TWO real fixes, both
 > Janis's own direct catches after reviewing the v16 render: (1) FOLD
@@ -1046,7 +1069,7 @@ verified via real CGAL render this session (not just the default state
 | ~~Prep shelves~~ | REMOVED v12 | REMOVED v12 | Module + `shelf_deployed` parameter REMOVED entirely from Understructure (2026-07-22) — relocating to a separate accessories file next round, own new kinetic parameter(s) to be established there, not carried over |
 | Prep tray 0 (base-v2, NEW) | stowed (`tray0_angle_deg=-90`, vertical) | deployed (`tray0_angle_deg=0`, horizontal, default) | Continuous angle, own independent parameter. Real live CGAL: full sweep (9 steps) vs chamber shell/closed lid/understructure/firebox all EMPTY (2 real bugs found+fixed first, see PART B) |
 | Prep tray 1 (base-v2, NEW) | stowed (`tray1_angle_deg=-90`, vertical) | deployed (`tray1_angle_deg=0`, horizontal, default) | Continuous angle, own independent parameter (NOT shared with tray 0, per spec) — same real verification as tray 0, plus both-deployed-simultaneously vs each other EMPTY (5mm real margin) |
-| Lid hinge/handle/CB1 (base-v17, 2026-07-31) | closed (`door_open_deg=0`) | open (`door_open_deg=90`) | CB1 lateral link (`cb1_link_2d()`, bracket only) built and wired in on ALL 3 ribs via a `with_cb1` boolean param. CB1's real counterweight mass, `cb1_pipe()` (4" sq. tube, both ends capped, real computed mass ~8kg), restored, cross-section aligned to the bracket's own DE-tangent frame. Shared pivot `FC_Y`/`FC_Z` = `HINGE_PIVOT_Y`/`HINGE_PIVOT_Z` (`BBQ-chambers-v26.scad`). Real moment analysis (`docs/lid-hinge-moment-analysis.md`): meets 1 of Janis's 4 stated criteria outright (2.5kgf startup lift); lands near-neutral equilibrium at full open rather than the ~5kgf self-holding target — a tuning decision, not a code defect. *** REAL DEFECT, STILL NOT FIXED, RE-CONFIRMED *** rib0/rib2 (X=200/715) still fall inside tray0/tray1's own stow X-span. Prep trays relocated (`docs/tray-relocation-bracket.md`): v15 rebuilt the folding link as real hardware-style geometry (flat 15mm steel strip, ~10mm lap overlap at the middle pivot, U-hinge+pin at both `ts` and `tt`, `tt` pulled clear of the tray surface) and fixed `TRAY_MOUNT_GAP` so the widened hinge actually creates real space behind the tray for the folded link. v16 wired the link to genuinely track the tray's own angle. v17 fixed a real fold-DIRECTION bug (LOCKED convention now: 0=deployed .. +90=stowed tip-down) and rebuilt the link kinematics to match (`ts` reverted to a true fixed anchor at `al`, the middle joint `lc` now does the real folding via circle/circle intersection, the 2 link halves split in depth with a real 10mm combined stack) — collision-free 0° to about 86°, a large improvement over v16. *** NEW REAL FINDING, DISCLOSED, ACCEPTED AS A PRACTICAL LIMIT *** a small collision remains from about 87° to 90° (near-degenerate `ts`/`tt` geometry at full stow, not fixable by a different root choice) — Janis's own call, this link isn't critical. |
+| Lid hinge/handle/CB1 (base-v18, 2026-07-31) | closed (`door_open_deg=0`) | open (`door_open_deg=90`) | CB1 lateral link (`cb1_link_2d()`, bracket only) built and wired in on ALL 3 ribs via a `with_cb1` boolean param. CB1's real counterweight mass, `cb1_pipe()` (4" sq. tube, both ends capped, real computed mass ~8kg), restored, cross-section aligned to the bracket's own DE-tangent frame. Shared pivot `FC_Y`/`FC_Z` = `HINGE_PIVOT_Y`/`HINGE_PIVOT_Z` (`BBQ-chambers-v26.scad`). Real moment analysis (`docs/lid-hinge-moment-analysis.md`): meets 1 of Janis's 4 stated criteria outright (2.5kgf startup lift); lands near-neutral equilibrium at full open rather than the ~5kgf self-holding target — a tuning decision, not a code defect. *** REAL DEFECT, STILL NOT FIXED, RE-CONFIRMED *** rib0/rib2 (X=200/715) still fall inside tray0/tray1's own stow X-span. Prep trays relocated (`docs/tray-relocation-bracket.md`): v15 rebuilt the folding link as real hardware-style geometry; v16 wired the link to genuinely track the tray's own angle; v17 fixed a real fold-DIRECTION bug (LOCKED convention: 0=deployed .. +90=stowed tip-down) and rebuilt the link kinematics to match, disclosing a real 87-90° collision. v18 traced that collision to the tray's own rotation pivot sitting at the hinge block's OLD inner point instead of its real outer tip (`Y=-HINGE_OUT`, matching a real door hinge's own knuckle position) and fixed the link's own length sizing (`TRAY_LINK_C_HALF` = exactly half the deployed reach, no overlap padding) — collision-free across the ENTIRE 0-90° range now, verified via a real isolated probe. `TRAY_MOUNT_GAP` retired. A real non-manifold regression (coincident plate/hinge-block faces) was caught and fixed with the project's own `e` epsilon during this same round. Still not perfect (Janis's own call, this link isn't critical): the fold angle at the middle joint reaches ~11° at full stow, not a literal 0°. |
 | Tow handle (v6 TASK 6) | towing/use (`handle_fold_deg=0`, horizontal) | folded vertical storage (`handle_fold_deg=90`, UNCHANGED default from v5) | Continuous angle. `TRIANGLE_Z`=`FRONT_AXLE_Z` directly now (228.6mm, was `FRONT_AXLE_Z+100`=328.6mm floating above the axle plane — Janis's own annotated finding, fixed) + new curved gusset fillet bridging the plate to the stub axle. `TBAR_LEN` UNCHANGED (1102.735mm). Real, flagged side effect of the `TRIANGLE_Z` fix (not the goal of TASK 6): tip Z at the 90deg default is now 50mm BELOW the roof (was 50mm above under v5) — the v5-flagged roof-overshoot resolves as a welcome consequence, confirmed via echo. `steer_deg` UNCHANGED mechanism, re-verified via a real CGAL sweep at the new narrower track — still a SEPARATE parameter from fold, not its own dual-view row |
 
 Static/removable parts (Grill grate segments — *** TEMPORARILY,

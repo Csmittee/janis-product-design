@@ -1,5 +1,36 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.22 — 2026-07-31
+> Version 1.23 — 2026-07-31
+> Changes: bbq-lid-hinge-v20. TWO new locked lessons: (1) **A part's own
+> RENDERED length must be checked as a real, fixed number across the
+> whole sweep — never just accept a formula because the resulting shape
+> "looks right" at a couple of sample angles.** v19's `lc = midpoint(ts,
+> tt)` fix looked clean in every render and passed every collision
+> probe, but `flat_link(ts,lc,xc)`'s own rendered length is literally
+> `norm(lc-ts)` — since `lc` was a computed midpoint, that length
+> shrank continuously across the fold (110.76mm to 10.92mm), which no
+> real steel bar can do. Nothing about the render or the collision
+> checks would ever catch this — only reading what the CODE actually
+> computes for a "constant" like a bar's own length, then verifying it
+> stays constant via a real numeric check (`echo()` across a sweep, not
+> a single sample), would. Going forward: any part meant to be a single
+> rigid piece of real stock gets its own length/size explicitly verified
+> constant across the full range of motion, not just visually spot-
+> checked. (2) **A point rigidly attached to a rotating body orbits that
+> body's own pivot at a CONSTANT radius — this is a hard geometric fact,
+> not a design choice, and any other part's own reach from that point is
+> bounded by it.** Caught mid-design: forcing a link's own tip to land
+> exactly on a target point at one specific angle, without checking
+> whether the resulting path stays within the moving anchor's own
+> orbit, produced a tip swinging up to 37mm PAST that orbit — physically
+> unreachable by any hinge confined to rotate with that body. The fix
+> that replaced it (a bar with its own truly free bearing, sweeping
+> monotonically, verified via a full-sweep numeric check against the
+> orbit radius) never had this problem. Going forward: any mechanism
+> involving a part attached to a rotating anchor gets its own reach
+> checked against that anchor's own constant orbit radius before the
+> mechanism is accepted, not just its endpoints.
+> Detail addition, not new document structure — X.Y bump.
+> Previous: 1.22 — 2026-07-31
 > Changes: bbq-lid-hinge-v19. TWO new locked lessons: (1) **Collision QA
 > must check a moving part against EVERY nearby solid it could touch,
 > not just the most obvious one.** v18's "empty across the ENTIRE 0-90°

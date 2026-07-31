@@ -347,6 +347,72 @@ this asks for is large — nearly the bar's own full length. Not modeled
 as a literal slot mechanism here (schematic, matching `hinge_u()`'s own
 convention), but disclosed plainly rather than glossed over.
 
+## v20 — real fixed-length-arm-plus-slot mechanism, replacing v19's shrinking link
+
+Janis's own direct catch, reading the v19 CODE (not just a render):
+`flat_link(ts,lc,xc)` draws a bar whose rendered length is literally
+`norm(lc-ts)`, and since v19's `lc` was `midpoint(ts,tt)`, that length
+shrank continuously — 110.76mm at deployed down to 10.92mm at 90° stow.
+A real steel bar cannot change its own physical length; v19's "no
+bowing" fix had quietly traded the bowing-link problem for a
+shrinking-link problem instead.
+
+**The real mechanism, co-developed over several rounds of Python
+simulation before writing any `.scad` code** (free-tip paths, an
+orbit-boundary check Janis caught being violated on a first attempt,
+and a mandatory CW/CCW rotation-sense verification):
+
+- `ts`'s own bar: a **true fixed length** (`TRAY_LINK_C_HALF`,
+  110.76mm, never varies), pinned at `ts`, free to rotate. Its bearing
+  sweeps smoothly and monotonically **clockwise** (viewed from +X,
+  Janis's own stated mandatory direction) from the historical 0°
+  straight-line bearing to exactly 90° (straight up, `pin.Y=0`) at full
+  stow.
+- `tt`'s own bar: **also** a true fixed length, same nominal 110.76mm
+  stock, pinned at `tt` — but with a real **slot** cut along its outer
+  section so the shared pin can ride at a variable distance from `tt`,
+  never past its own physical tip. Janis's own explicit call: "just one
+  link need to have slot." `TRAY_LINK_TP_REACH_MIN` is computed directly
+  from a sampled 0-90° sweep (not guessed), giving a real **~30mm
+  slot** — far smaller than earlier, discarded mechanism attempts that
+  needed 100-230mm of travel.
+
+**A hard constraint Janis caught me violating on the way here**: `tp`
+(=`tt`) orbits the tray's own rotation pivot at a *constant* radius
+(143.75mm, since rotation never changes distance from its own center).
+An early attempt (forcing the shared pin to land exactly on `ts` at
+90°) swung the pin's own path up to 37mm *past* that orbit — not
+reachable by any real hinge confined to it. That attempt was discarded;
+the CW-sweep design above was verified, via a 901-point sweep, to never
+exceed the orbit at any angle.
+
+**Re-verified, using the real `tray_link()` code**:
+
+| check | result |
+|---|---|
+| bar length constant at every sampled angle (0,15,...,90°) | 110.764mm, both bars, always — confirmed via `echo()`, no shrink |
+| `pin.Y` crosses positive (bracket sink) | never, across the full sweep |
+| pin's distance from tray pivot exceeds `tt`'s own orbit radius | never |
+| both bearings monotonic (no reversal) | confirmed |
+| full assembly `Simple: yes` | clean at 0/20/40/60/80/90° |
+| `tray_link()` vs `tray_bracket()` | empty at 0,15,...,90° |
+| `tray_link()` vs tray plate | empty at 0,15,...,90° |
+| `tray_link()` self-manifold | `Simple: yes`, `Volumes: 7`, clean at 0/30/45/60/90° |
+
+At 90° stow: `ts.Y=0`, `tt.Y=-6.0`, pin.Y=0.0, `tt`'s own bar tip
+`.Y=+1.4` — all four within 7mm, satisfying Janis's own alignment
+requirement.
+
+**Disclosed, not addressed this round**: `ts`'s own hinge (`al`) still
+sits exactly on one of `tray_bracket()`'s own 3 triangle vertices —
+unchanged by this round, since only the bearing/reach of the arms
+coming *from* `ts` changed, not `ts`'s own Y/Z position.
+`TRAY_LINK_BRACKET_CLEAR`'s existing X-offset (unchanged from v19) is
+still what keeps this collision-free — Janis's separate complaint that
+this offset makes `ts` look shifted to an asymmetric corner instead of
+staying centered on the bracket's own face is **not resolved here** and
+needs its own round.
+
 ## Tray skirt
 
 A 10mm skirt (`TRAY_SKIRT_H`) runs along the tray's own **tip and both
@@ -362,10 +428,10 @@ visible design defect). The hinge side now has zero skirt, on purpose.
 - Full `--render` CGAL `Simple: yes`, no warnings, at `door_open_deg`
   0/45/90° and a tray angle sweep (0/20/40/60/80/90°), both trays
   independently — re-verified after every round of fixes, including the
-  v19 `lc` rebuild + `ts` repositioning. A real, live-caught non-manifold
-  regression (coincident plate/hinge-block faces) was found and fixed
-  with the project's own `e` epsilon during the v18 round — see "v18"
-  above.
+  v20 fixed-length-arm-plus-slot rebuild. A real, live-caught
+  non-manifold regression (coincident plate/hinge-block faces) was found
+  and fixed with the project's own `e` epsilon during the v18 round —
+  see "v18" above.
 - Real interference sweep (`intersection(trays(), front_wheel_support())`)
   at tray angles 0/30/60/90° (corrected convention): **empty at every
   angle**.
@@ -373,10 +439,18 @@ visible design defect). The hinge side now has zero skirt, on purpose.
   across angles (both trays): **empty across the ENTIRE 0-90° range**.
 - Real collision check (`intersection(tray_link(), tray_bracket())`)
   swept across angles (both trays): **empty across the ENTIRE 0-90°
-  range** — v19 fix, see "v19" above. (Earlier rounds had NOT checked
-  the link against the bracket at all, only against the tray plate —
-  the `ts`-hinge-sinks-into-the-bracket defect was a real gap in QA
-  coverage, not a tolerated touch.)
+  range**. (Earlier rounds, before v19, had NOT checked the link against
+  the bracket at all, only against the tray plate — the
+  `ts`-hinge-sinks-into-the-bracket defect was a real gap in QA
+  coverage, not a tolerated touch. `ts`'s own hinge STILL sits exactly
+  on one of the bracket's own vertices as of v20 — collision-free only
+  because of `TRAY_LINK_BRACKET_CLEAR`'s X-offset, not because the
+  underlying vertex-overlap was fixed — see "v20" above.)
+- v20's own bar-length constancy verified directly via `echo()`, not
+  assumed from the design intent: both bars measure exactly
+  `TRAY_LINK_C_HALF` (110.764mm) at every one of 7 sampled angles
+  (0,15,30,45,60,75,90°) — the shrinking-link defect v19 introduced is
+  gone.
 - Bracket X positions (87.5/365/550/827.5) never overlap any rib X
   position (200/457.5/715) even accounting for real part thickness — the
   tray/bracket system is geometrically independent of the rib assembly,

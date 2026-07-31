@@ -4,7 +4,50 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.51 — 2026-07-31 (bbq-lid-hinge-v19, fix ts sinking into
+# Version: 1.52 — 2026-07-31 (bbq-lid-hinge-v20, replace v19's
+# non-physical shrinking link with a real fixed-length-arm-plus-slot
+# mechanism): new version file per the standing rule. Janis's own direct
+# catch, reading the v19 CODE, not just a render: flat_link(ts,lc,xc)'s
+# rendered length is literally norm(lc-ts), and since v19's lc was
+# midpoint(ts,tt), that length shrank continuously -- 110.76mm at
+# deployed down to 10.92mm at 90 degree stow. A real steel bar cannot
+# change its own physical length. Co-developed with Janis over several
+# rounds of Python simulation before writing any .scad code (free-tip
+# paths, an orbit-boundary check Janis caught being violated on a first
+# discarded attempt -- forcing the pin onto ts at 90 degrees swung it up
+# to 37mm past tt's own constant 143.75mm orbit radius, not reachable by
+# any real hinge confined to it -- and a mandatory CW/CCW rotation-sense
+# verification, viewed from +X). REAL FIX: ts's own bar keeps a TRUE
+# FIXED length (TRAY_LINK_C_HALF, 110.76mm, never varies), free to
+# rotate, sweeping smoothly and monotonically CLOCKWISE from the
+# historical 0 degree bearing to exactly 90 degrees (straight up,
+# pin.Y=0) at full stow. tt's own bar is ALSO a true fixed length (same
+# nominal stock) but carries a real SLOT cut in its outer section, per
+# Janis's own explicit call ("just one link need to have slot"), so the
+# shared pin can ride at a variable distance from tt -- TRAY_LINK_TP_
+# REACH_MIN is computed directly from a sampled 0-90 degree sweep (not
+# guessed), giving a real ~30mm slot, far smaller than the 100-230mm
+# earlier discarded mechanism attempts needed. Re-verified: bar lengths
+# constant at every sampled angle (confirmed via echo(), not assumed --
+# both bars measure exactly 110.764mm at 0,15,30,45,60,75,90 degrees),
+# pin.Y never crosses positive (no bracket sink), pin's own distance
+# from the tray pivot never exceeds tt's own orbit radius, full assembly
+# Simple:yes/Volumes:12 at every angle 0-90, link vs tray_bracket()
+# empty, link vs tray plate empty, link's own self-manifold-ness clean
+# (Simple:yes, Volumes:7). At 90 degree stow: ts.Y=0, tt.Y=-6.0,
+# pin.Y=0.0, tt's own bar tip.Y=+1.4 -- all four within 7mm, satisfying
+# Janis's own alignment requirement. DISCLOSED, NOT ADDRESSED THIS
+# ROUND: ts's own hinge (al) still sits exactly on one of
+# tray_bracket()'s own 3 triangle vertices -- unchanged, since only the
+# arms' bearing/reach changed, not ts's own Y/Z position.
+# TRAY_LINK_BRACKET_CLEAR's existing X-offset (unchanged from v19) is
+# still the only thing keeping this collision-free, and Janis's separate
+# complaint that this offset makes ts look shifted to an asymmetric
+# corner instead of centered on the bracket's own face is NOT resolved
+# this round. v17.scad archived (last-3-live: v18/v19/v20). Full
+# summary: docs/handoff-2026-07-30.md (updated),
+# docs/tray-relocation-bracket.md (updated, "v20" section).
+# Previous: 1.51 — 2026-07-31 (bbq-lid-hinge-v19, fix ts sinking into
 # tray_bracket() + rebuild lc as a telescoping midpoint): new version
 # file per the standing rule. Two real defects Janis caught directly
 # from inspecting the v18 render (never caught by any prior collision

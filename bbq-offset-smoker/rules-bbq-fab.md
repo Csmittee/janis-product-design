@@ -1,5 +1,41 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.21 — 2026-07-31
+> Version 1.22 — 2026-07-31
+> Changes: bbq-lid-hinge-v19. TWO new locked lessons: (1) **Collision QA
+> must check a moving part against EVERY nearby solid it could touch,
+> not just the most obvious one.** v18's "empty across the ENTIRE 0-90°
+> range" claim only checked `tray_link()` against the tray PLATE — it
+> never checked the link against `tray_bracket()` itself, even though
+> the link's own fixed anchor (`ts`, at `al`) is literally one of the
+> bracket's own 3 triangle vertices. This let a real, genuine overlap
+> (confirmed via `intersection()`: 22 vertices, 3 volumes) go undetected
+> through 3 full rounds, only caught when Janis directly inspected a
+> render of the folded tray from behind. Going forward: when a part
+> attaches to or pivots near a bracket/mount, the collision sweep must
+> include that mount as its own explicit check, not just the part it's
+> functionally serving. (2) **A rigid 2-bar link's mid-joint cannot be
+> forced to stay near both of its own endpoints once the endpoint gap
+> shrinks well below each bar's own fixed segment length — only a
+> slot/telescoping joint (or a collinear-midpoint redesign) resolves
+> this, never a different root choice on the same rigid circle/circle
+> solve.** Proven via a free-body diagram, not just observed: at v18's
+> full 90° fold, `ts`-to-`tt` shrinks to ~22mm while each rigid link
+> half stays fixed at ~110.8mm — forcing the mid-joint's Y into the
+> desired alignment band left the OTHER half ~21mm SHORT of its own
+> fixed length, a real physical impossibility for a rigid bar, not an
+> ill-conditioning artifact. Janis's own resolution (a telescoping-slot
+> pivot: "we do not change the link length, we allow the pivot pin to
+> slide along the link to compensate the diff of length need at each
+> require angle") led to redefining the mid-joint as simply
+> `midpoint(ts, tt)` at every angle — collinear by construction, so the
+> alignment requirement and the anchor-overlap requirement are BOTH
+> satisfied automatically, with no circle-intersection ill-conditioning
+> anywhere in the sweep. When a rigid-link design demands a mid-joint
+> position that's geometrically provably unreachable by a fixed-length
+> bar, don't keep tuning the same rigid model — check whether a
+> telescoping/collinear redesign is what the real hardware (a slotted
+> pivot) already implies.
+> Detail addition, not new document structure — X.Y bump.
+> Previous: 1.21 — 2026-07-31
 > Changes: bbq-lid-hinge-v18. TWO new locked lessons: (1) **A rotation
 > axis must sit at the real physical hinge point (the knuckle's own real
 > location), not an arbitrary offset chosen to solve a different

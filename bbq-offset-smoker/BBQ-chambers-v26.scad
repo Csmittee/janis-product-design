@@ -179,7 +179,7 @@ RIDGE_SPLIT_Y    = chamfer + 64;                                // 242.665mm -- 
 // rotation-centers setup that caused the drift no longer exists.
 HINGE_PIVOT_RISE = 64;                                          // mm -- real UCP204-12 H0 spec dimension
 HINGE_PIVOT_Y    = RIDGE_SPLIT_Y;                                // 242.665mm -- exactly on the parting line, safe because the real hinge bracket mounts outside the door's own X-span
-HINGE_PIVOT_Z    = DATUM_Z_RIDGE + HINGE_PIVOT_RISE;             // 1445.335mm
+HINGE_PIVOT_Z    = DATUM_Z_RIDGE + HINGE_PIVOT_RISE;             // 1345.34mm -- echo()-verified 2026-07-31, corrects a stale 1445.335mm comment that never matched the live computed value
 
 // ───────────────────────────────
 // FIREBOX DATUMS — v15 TASK 1/2: outer shell rebuilt as a true cube, inner

@@ -1,5 +1,14 @@
 # SKELETON_WORKSHEET.md — BBQ Offset Smoker
-> Version 1.40 — 2026-07-31
+> Version 1.41 — 2026-07-31
+> Changes: bbq-lid-hinge-v20 governance round, no new .scad version. See
+> also the 5 new subsystem construction-rule docs (same folder,
+> `construction-rules-1-chamber.md` through `-5-tray-system.md`) —
+> concept + generalizable rules + current-implementation pointers per
+> subsystem, written for revising this product OR a future BBQ variant
+> (round bullet capsule, square firebox, other scales/offsets) without
+> re-reading the full round history. Full round detail: `docs/
+> handoff-2026-07-31.md`.
+> Previous: 1.40 — 2026-07-31
 > Changes: bbq-lid-hinge-v20. Active base assembly pointer is now
 > `BBQ-offset-smoker-base-v20.scad` (source v19). Replaces v19's `lc`
 > fix entirely — Janis's own catch, reading the v19 CODE not just a

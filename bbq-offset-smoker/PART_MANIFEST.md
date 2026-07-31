@@ -4,7 +4,14 @@
 # new part. Update this file in the SAME prompt that adds/renames/removes
 # any ASSEMBLY-called module — never let it drift from the real file.
 #
-# Version: 1.52 — 2026-07-31 (bbq-lid-hinge-v20, replace v19's
+# Version: 1.53 — 2026-07-31 (bbq-lid-hinge-v20 governance round, no new
+# .scad version): see also the 5 new subsystem construction-rule docs —
+# construction-rules-1-chamber.md through -5-tray-system.md, same
+# folder — concept + generalizable rules + current-implementation
+# pointers per subsystem, written for revising this product OR a future
+# BBQ variant without re-reading the full round history. Full round
+# detail: docs/handoff-2026-07-31.md.
+# Previous: 1.52 — 2026-07-31 (bbq-lid-hinge-v20, replace v19's
 # non-physical shrinking link with a real fixed-length-arm-plus-slot
 # mechanism): new version file per the standing rule. Janis's own direct
 # catch, reading the v19 CODE, not just a render: flat_link(ts,lc,xc)'s

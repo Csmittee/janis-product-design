@@ -1,5 +1,23 @@
 # BBQ Offset Smoker — Fabrication Rules
-> Version 1.23 — 2026-07-31
+> Version 1.24 — 2026-07-31
+> Changes: governance round, no new locked lesson. Split this file's own
+> reusable conventions into 5 subsystem-organized navigational docs —
+> `construction-rules-1-chamber.md` through `-5-tray-system.md` (same
+> folder) — one per chamber/firebox/understructure/ribs+counterbalance/
+> tray system, each stating that subsystem's CONCEPT (invariant across
+> future BBQ variants) and generalizable RULES, pointing back at this
+> file's own locked sections below for full derivations rather than
+> duplicating them (this file stays the one source of truth for the
+> fine print — if a subsystem doc and this file ever disagree, THIS
+> file's dated locked section wins). Written for Janis's stated future
+> roadmap (round bullet capsule, square firebox, other scales/offsets)
+> so a future chat/cc can start there instead of reading this entire
+> changelog top to bottom. Also fixed one stale comment this round
+> found while independently re-verifying the moment analysis:
+> `BBQ-chambers-v26.scad`'s `HINGE_PIVOT_Z` comment said `1445.335mm`,
+> live echo() gives `1345.34mm` — the constant/formula was always
+> correct, only the comment text was wrong.
+> Previous: 1.23 — 2026-07-31
 > Changes: bbq-lid-hinge-v20. TWO new locked lessons: (1) **A part's own
 > RENDERED length must be checked as a real, fixed number across the
 > whole sweep — never just accept a formula because the resulting shape
